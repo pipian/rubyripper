@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Rubyripper
+GenericName=Secure Audio Disc Ripper
+GenericName[nl]=Veilige Audio CD Ripper
+Icon=rubyripper
+Exec=rrip_gui
+Categories=Audio;AudioVideo;

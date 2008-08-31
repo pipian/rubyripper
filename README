@@ -1,0 +1,240 @@
+TABLE OF CONTENTS
+	1. INTRODUCTION
+	2. SECURE RIP METHOD
+	3. HOW TO INSTALL
+	3a. MACOS SUPPORT
+	4. CHANGELOG
+	5. FAQ
+	6. RELEVANT URLS
+
+
+1. INTRODUCTION
+
+Rubyripper aims to deliver high quality rips from audio cd's to your computer
+drive. It tries to do so by ripping the same track with cdparanoia multiple 
+times and then comparing the results. It currently has a gtk2 and a command-
+line interface.
+
+Some of it's main features:
+* grapical (gtk2) and command line interface
+* a secure rip method -> see 2. SECURE RIP METHOD
+* editable freedb tag fetching
+* flac, vorbis, mp3, wav support
+* any other codec by passing the command
+* multiple codec encoding in one run
+* offset support
+* pass parameters to cdparanoia
+* playlist creation
+* logfile with analysis of corrected and impossible to correct positions
+* MD5sum for each track included in the logfile
+
+
+2. SECURE RIP METHOD
+
+The underlying philosophy is that errors are random and therefore will differ 
+with each trial. Since the files don't always match directly proves that at 
+least part of this is true. However, it might be that some read errors are not 
+random and will happen exactly the same with multiple trials. In this case an 
+error would slip through unnoticed.
+
+A completely secure rip can never be guaranteed, neither by Exact Audio Copy 
+(which inspired Rubyripper), nor by any other ripper. Factors like the 
+quality of the audio-cd and the quality of the cdrom drive are very important 
+as well. Despite these problems Rubyripper tries to do it's very best.
+
+The user can set a number of 'A' matches for each chunk of 1000 bytes. Each 
+chunk represents about 0,006 seconds. If, after ripping the track 'A' times,
+there are chunks that don't match 'A' times, another trial is launched. This
+time however, the mismatched chunks must match 'B' times, which can be equal,
+but not smaller to 'A' times.
+
+When Rubyripper has finished the ripping process, a suspicious positions
+analysis will be added to the logfile. For each second in the file it will
+be shown how much mismatched chunks there were originally. And at which trial
+these were corrected or not at all.
+
+It's possible to set a limit to the number of times a track is ripped. For some
+tracks it seems impossible to ever get a correct rip. The amount of errors left
+are usually very small though. It's not likely one actually will be able to
+hear this.
+
+
+3. HOW TO INSTALL
+
+Dependencies:
+* cdparanoia
+* ruby
+
+Suggested:
+* ruby-gettext (for translations)
+* ruby-gtk2 (for gtk2 gui)
+* cd-discid or discid (for proper freedb support)
+* eject or diskutil for MacOS (for eject support)
+* flac, oggenc, lame (if the codec is wanted)
+* wavgain, vorbisgain, mp3gain (for replaygain support)
+* normalize (for normalize support)
+
+Run from directory:
+(1) ./rubyripper_gtk2.rb or
+(1) ./rubyripper_cli.rb
+
+To install:
+(1) ./configure --enable-lang-all --enable-gtk2 --enable-cli --prefix=/usr or
+(1) ./configure --enable-lang=de,hu --enable-gtk2 --enable-cli --prefix=/usr
+(2) make install
+The executables will be named `rrip_cli` and `rrip_gui`
+
+To uninstall: (1) `make uninstall`
+To cleanup: (1) `make clean`
+
+3a) MACOS SUPPORT
+
+The CLI now works in MacOS. However, if your cdparanoia version
+doesn't support the -d switch (to set the device), only the default
+drive can be used. Rubyripper doesn't do this for you, so if you got
+weird results with freedb fetching, use your other cdrom drive.
+
+A cdparanoia port for MacOS that supports the -d switch can be found here:
+http://sourceforge.net/project/showfiles.php?group_id=158413
+
+For MacOS on x86 systems cd-discid is not working (ppc does), but discid is:
+website => http://discid.sourceforge.net/
+You can also test the fallback code for creating the discid ourselves,
+but it may not work on audio-cd's with a data track.
+
+
+4. CHANGELOG
+---------0.5.2 RELEASE------
+* add a check for permission while reading the cdrom drive
+* fix the configure script to obey the not needing ruby-gettext dependency
+* fix the terrible state of the command-line client
+
+---------0.5.1 RELEASE------
+
+* important fix that prevents creating corrupted wav files
+* move over to one single language file
+* make ruby-gettext optionally
+* single file ripping supported
+* cuesheet support
+* some small fixes all over the place
+
+---------0.5.0 RELEASE------
+
+* Make freedb work again (using http instead of socked connection)
+* Add basic support for normalize using "mp3gain/wavgain/vorbisgain/metaflac"
+* Add basic support for normalize using "normalize"
+* Ability to set multiple processes for encoding tasks (for all those dualcores)
+* Support to load freedb from local $HOME/.cddb folder
+* Reload disc metadata from the internet if same disc is still in the drive
+* Some fixes so the gtk2 interface (resizing, grey out buttons)
+* Fix for some cases the preferences weren't saved in time
+* Cdparanoia installation check on startup, prevents mysterious error
+* Option to not keep the logfile if no correction is needed
+* When warning that a directory already exists, mention which directory
+* Save various artist correctly on local yaml file
+* Get a larger icon for even more beauty, also install it conform standards
+* Use some environment variables
+* Add Spanish translation
+* Look if an encoding process exited normally and otherwise WARN
+* Any other fix I missed
+
+---------0.4.4 RELEASE------
+
+* Add Hungarian and Russian translation
+* Update the install procedure. Most distributions can now
+easily wrap the install to their standard procedure for packaging.
+After running the configure script a Makefile is created. In the configure
+phase --prefix is supported. With the make install --prefix and $DESTDIR
+ are both supported. If any wishes remain, please file an issue.
+* rake is no longer needed as dependency
+* helpfile.rb is no longer needed (replaced by configure)
+* the Makefile is no longer needed (auto-created by configure)
+* the Rakefile is no longer needed (replaced by configure)
+
+---------0.4.3 RELEASE------
+
+* first release that's translatable. Dutch and German languages 
+are supported initially. This adds the ruby-gettext dependency.
+* check if there is write permission on the output location
+* improve other codec support (actually make it work)
+* unicode fixes in tags
+* off by one error. First sector was always read once
+* some small fixes all over the place
+
+----------0.4.2 RELEASE------
+
+* kill a memory leak, reduces memory use a lot with long tracks
+* removed the ruby-libglade2 dependency (ruby-gtk2 still needed)
+* implemented a dialog for the case that an ouput directory already exists
+* license included as a file: the GPL-3 License
+* changed location of settings file to $HOME/.rubyripper/settings
+* saving of (edited) freedb metadata to local disk $HOME/.rubyripper/freedb.yaml
+* added a .desktop file for auto inclusion in for instance the KDE menu
+* a lot of small fixes
+
+----------0.4.1 RELEASE------
+
+* fix a typo that prevented the loading of the icon after install and resulted in a crash
+* fix a bug where basedirs with a space would result in a crash
+* correct a typo for 'other codec'
+* make the parsing of rubyripper_settings file more foolproof
+* change the way 'Preferences' are shown. No more closebutton, but dynamic sidebutton
+
+----------0.4 RELEASE---------
+
+* rewrite of gtk2 interface => improved usability
+* MacOS support (cli interface)
+* improved freedb support (various artists, long tracknames)
+* fix for all known bugs of 0.3 release
+
+----------0.3 RELEASE---------
+
+* some gtk2 interface improvements
+* some cli interface improvements
+* make the freedb options now configurable
+* multiple freedb hits handling
+* removed cdda2wav support and dependency (too many bugs in cdda2wav)
+* removed ruby-freedb dependency, replaced with cd-discid
+* option to set amount of matches for all chunks
+* option to set amount of matches for erronous chunks
+* time based error reporting, no more chunk based
+* option to use any codec by using an external command
+* Makefile for easy installing / de-installing
+* Fix for all known bugs of 0.2 release
+
+
+5. FAQ
+
+Q : Why does the last track go slower than the rest?
+A : Chances are that you've supplied an offset different than 0 and supplied the
+option -Z to cdparanoia. A cdparanoia bug prevents finishing ripping the last
+track if -Z is supplied, so it's automatically removed for the last track.
+
+Q : Will Rubyripper work on any platform other than linux?
+A : If the same dependencies are available on these platforms, then things will
+probably just work fine. If some of the dependencies are missing, but you do
+know one other utility which does just about the same, please report a 
+feature request at the Google bugtracker.
+
+Q : How do I report a bug / request a missing feature?
+A : Go to http://code.google.com/p/rubyripper/issues/list. The Rubyripper
+developer will typically respond within one week. You can add your e-mail,
+so any changes or updates in the bug will be send to you.
+
+Q : How do I get the very latest code (I don't care how many bugs there are)?
+A : Install subversion. Then use the following command 
+`svn checkout http://rubyripper.googlecode.com/svn/trunk/ rubyripper`
+`svn update` will update to the latest commited version
+`svn log` will show all the commit messages.
+
+Q : My buttons don't react and give the following error in a terminal:
+warning: GRClosure invoking callback: already destroyed Callback error
+A : Upgrade your ruby gtk bindings to a >=0.16.* version.
+
+Q: How can I help translate rubyripper to my language?
+A: See the wiki for instructions
+
+
+6. RELEVANT URLS
+
+Bug tracker + filehosting + subversion server + wiki : http://code.google.com/p/rubyripper/
