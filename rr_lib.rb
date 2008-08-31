@@ -712,7 +712,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 
 	def freedbChoice(choice=false)
 		if choice != false
-			if choice ==@choices[-1] # keep defaults?
+			if choice == @choices.size - 1 # keep defaults?
 				@gui.update("cddb_hit", false)
 				return true
 			end
