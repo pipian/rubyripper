@@ -32,6 +32,7 @@ require 'optparse'
 require 'ostruct'
 
 class Gui_CLI
+	attr_reader :update
 	def initialize()
 		parse_options()
 		@ripping_log = ""
@@ -263,7 +264,7 @@ class Gui_CLI
 			puts _("Audio-disc found, number of tracks : %s, total playlength : %s") % [@settings['cd'].audiotracks, @settings['cd'].playtime]
 			if @settings['freedb'] #freedb enabled?
 				puts _("Fetching freedb info...")
-				@settings['cd'].md.freedb(@settings, !@settings['first_hit'])
+				@settings['cd'].md.freedb(@settings, @settings['first_hit'])
 			else
 				freedb_finished()
 			end
