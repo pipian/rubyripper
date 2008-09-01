@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.3\n"
-"POT-Creation-Date: 2008-08-18 20:45+0200\n"
+"POT-Creation-Date: 2008-09-01 22:16+0200\n"
 "PO-Revision-Date: 2008-01-06 01:11+0300\n"
 "Last-Translator: Alexander Kuzmenkov <rc.4096@gmail.com>\n"
 "Language-Team: Russian <rc.4096@gmail.com>\n"
@@ -15,261 +15,261 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: rubyripper_cli.rb:61
+#: rubyripper_cli.rb:62
 msgid "Show current version of rubyripper."
 msgstr ""
 
-#: rubyripper_cli.rb:65
+#: rubyripper_cli.rb:66
 msgid "Load configuration settings from file <FILE>."
 msgstr "Загрузить настройки из файла <FILE>."
 
-#: rubyripper_cli.rb:68
+#: rubyripper_cli.rb:69
 msgid "Display verbose output."
 msgstr "Отображать подробности."
 
-#: rubyripper_cli.rb:71
+#: rubyripper_cli.rb:72
 msgid "Change configuration settings."
 msgstr "Изменить настройки."
 
-#: rubyripper_cli.rb:74
+#: rubyripper_cli.rb:75
 msgid "Rip all tracks. Skip any questions about track selection."
 msgstr "Извлечь все треки. Пропустить все вопросы по поводу выбора треков."
 
-#: rubyripper_cli.rb:77
+#: rubyripper_cli.rb:78
 msgid "Show this usage statement."
 msgstr "Вывести эту подсказку."
 
-#: rubyripper_cli.rb:92
+#: rubyripper_cli.rb:93
 msgid "Verbose output specified."
 msgstr "Выбран показ подробностей."
 
-#: rubyripper_cli.rb:93
+#: rubyripper_cli.rb:94
 msgid "Configure option specified."
 msgstr "Выбрана опция конфигурирования."
 
-#: rubyripper_cli.rb:94
+#: rubyripper_cli.rb:95
 msgid "Rip all tracks specified."
 msgstr "Выбраны все треки."
 
-#: rubyripper_cli.rb:95
+#: rubyripper_cli.rb:96
 msgid "Use config file "
 msgstr "Загрузка конфигурационного файла "
 
-#: rubyripper_cli.rb:99
+#: rubyripper_cli.rb:100
 msgid "*** RUBYRIPPER SETTINGS ***"
 msgstr "*** НАСТРОЙКИ ПРОГРАММЫ ***"
 
-#: rubyripper_cli.rb:101
+#: rubyripper_cli.rb:102
 msgid "** ENCODING **"
 msgstr "** СЖАТИЕ **"
 
-#: rubyripper_cli.rb:102
+#: rubyripper_cli.rb:103
 msgid "1)  flac [%s] , settings: %s"
 msgstr "1)  flac [%s] , параметры: %s"
 
-#: rubyripper_cli.rb:103
+#: rubyripper_cli.rb:104
 msgid "2)  vorbis [%s] , settings: %s"
 msgstr "2)  vorbis [%s] , параметры: %s"
 
-#: rubyripper_cli.rb:104
+#: rubyripper_cli.rb:105
 msgid "3)  mp3 [%s] , settings: %s"
 msgstr "3)  mp3 [%s] , параметры: %s"
 
-#: rubyripper_cli.rb:105
+#: rubyripper_cli.rb:106
 msgid "4)  wav [%s]"
 msgstr "4)  wav [%s]"
 
-#: rubyripper_cli.rb:106
+#: rubyripper_cli.rb:107
 msgid "5)  other [%s], settings: %s"
 msgstr "5)  другой [%s], параметры: %s"
 
-#: rubyripper_cli.rb:107
+#: rubyripper_cli.rb:108
 msgid "6)  playlist support [%s]"
 msgstr "6)  поддержка плейлиста [%s]"
 
-#: rubyripper_cli.rb:108
+#: rubyripper_cli.rb:109
 msgid "7)  encode while ripping [%s]"
 msgstr "7)  сжимать во время извлечения [%s]"
 
-#: rubyripper_cli.rb:110
+#: rubyripper_cli.rb:111
 msgid "** RIPPING **"
 msgstr "** ИЗВЛЕЧЕНИЕ **"
 
-#: rubyripper_cli.rb:111
+#: rubyripper_cli.rb:112
 msgid "8)  cdrom : %s with offset %s"
 msgstr "8)  cd-привод : %s со смещением %s"
 
-#: rubyripper_cli.rb:112
+#: rubyripper_cli.rb:113
 msgid ""
 "   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
 "   **Your drive model is shown in the logfile."
 msgstr ""
 
-#: rubyripper_cli.rb:113
+#: rubyripper_cli.rb:114
 msgid "9)  passing extra cdparanoia parameters : %s"
 msgstr "9)  дополнительные параметры cdparanoia : %s"
 
-#: rubyripper_cli.rb:114
+#: rubyripper_cli.rb:115
 msgid "10) match all chunks : %s"
 msgstr "10) число попыток извлечения всех кусков : %s"
 
-#: rubyripper_cli.rb:115
+#: rubyripper_cli.rb:116
 msgid "11) match erroneous chunks : %s"
 msgstr "11) число попыток извлечения кусков с ошибками : %s"
 
-#: rubyripper_cli.rb:116
+#: rubyripper_cli.rb:117
 msgid "12) maximum trials : %s"
 msgstr "12) максимальное число попыток : %s"
 
-#: rubyripper_cli.rb:117
+#: rubyripper_cli.rb:118
 msgid "13) eject disc after ripping [%s]"
 msgstr "13) извлечь диск после извлечения [%s]"
 
-#: rubyripper_cli.rb:119
+#: rubyripper_cli.rb:120
 msgid "** NAMING SCHEME **"
 msgstr "** СХЕМА ИМЕНОВАНИЯ **"
 
-#: rubyripper_cli.rb:120
+#: rubyripper_cli.rb:121
 msgid "14) base directory : %s"
 msgstr "14) базовая директория : %s"
 
-#: rubyripper_cli.rb:121
+#: rubyripper_cli.rb:122
 msgid "15) standard scheme: %s"
 msgstr "15) стандартная схема: %s"
 
-#: rubyripper_cli.rb:122
+#: rubyripper_cli.rb:123
 msgid "16) various artist scheme: %s"
 msgstr "16) схема для сборников (с разными исполнителями): %s"
 
-#: rubyripper_cli.rb:124
+#: rubyripper_cli.rb:125
 msgid "** FREEDB  **"
 msgstr "** FREEDB  **"
 
-#: rubyripper_cli.rb:125
+#: rubyripper_cli.rb:126
 msgid "17) fetch cd info with freedb [%s]"
 msgstr "17) заполнить данные о диске с помощью freedb [%s]"
 
-#: rubyripper_cli.rb:126
+#: rubyripper_cli.rb:127
 msgid "18) always use first hit [%s]"
 msgstr "18) использовать первое совпадение [%s]"
 
-#: rubyripper_cli.rb:127
+#: rubyripper_cli.rb:128
 msgid "19) site = %s"
 msgstr "19) сайт = %s"
 
-#: rubyripper_cli.rb:128
+#: rubyripper_cli.rb:129
 msgid "20) username = %s"
 msgstr "20) имя пользователя = %s"
 
-#: rubyripper_cli.rb:129
+#: rubyripper_cli.rb:130
 msgid "21) hostname = %s"
 msgstr "21) имя узла = %s"
 
-#: rubyripper_cli.rb:130
+#: rubyripper_cli.rb:131
 msgid "22) edit freedb data before ripping [%s]"
 msgstr "22) редактировать данные с freedb перед извлечением [%s]"
 
-#: rubyripper_cli.rb:132
+#: rubyripper_cli.rb:133
 msgid "88) config file = %s"
 msgstr "88) конфигурационный файл = %s"
 
-#: rubyripper_cli.rb:133 rubyripper_cli.rb:307
+#: rubyripper_cli.rb:134 rubyripper_cli.rb:308
 msgid "99) Don't change any setting"
 msgstr "99) Не менять настройки"
 
-#: rubyripper_cli.rb:139
+#: rubyripper_cli.rb:140
 msgid "Please type the number of the setting you wish to change : "
 msgstr "Укажите номер настройки, которую вы хотите изменить : "
 
-#: rubyripper_cli.rb:143
+#: rubyripper_cli.rb:144
 msgid "wav disabled"
 msgstr "wav отключён"
 
-#: rubyripper_cli.rb:143
+#: rubyripper_cli.rb:144
 msgid "wav enabled"
 msgstr "wav включён"
 
-#: rubyripper_cli.rb:145
+#: rubyripper_cli.rb:146
 msgid "playlist disabled"
 msgstr "плейлист отключён"
 
-#: rubyripper_cli.rb:145
+#: rubyripper_cli.rb:146
 msgid "playlist enabled"
 msgstr "плейлист отключён"
 
-#: rubyripper_cli.rb:146
+#: rubyripper_cli.rb:147
 msgid "How many encoding threads would you like? : "
 msgstr ""
 
-#: rubyripper_cli.rb:148
+#: rubyripper_cli.rb:149
 msgid "Which options to pass to cdparanoia? : "
 msgstr "Какие параметры передавать cdparanoia? : "
 
-#: rubyripper_cli.rb:149
+#: rubyripper_cli.rb:150
 msgid "How many times must all chunks be matched? : "
 msgstr "Сколько раз должны извлекаться все куски? : "
 
-#: rubyripper_cli.rb:150
+#: rubyripper_cli.rb:151
 msgid "How many times must erroneous chunks be matched? : "
 msgstr "Сколько раз должны извлекаться куски с ошибками? : "
 
-#: rubyripper_cli.rb:151
+#: rubyripper_cli.rb:152
 msgid "What should be the maximum number of tries? : "
 msgstr "Каково максимальное число попыток извлечения трека? : "
 
-#: rubyripper_cli.rb:152
+#: rubyripper_cli.rb:153
 msgid "eject disabled"
 msgstr "выброс диска отключён"
 
-#: rubyripper_cli.rb:152
+#: rubyripper_cli.rb:153
 msgid "eject enabled"
 msgstr "выброс диска включён"
 
-#: rubyripper_cli.rb:153
+#: rubyripper_cli.rb:154
 msgid "Please enter your directory for your encodings: "
 msgstr "Введите директорую для сжатых файлов: "
 
-#: rubyripper_cli.rb:156
+#: rubyripper_cli.rb:157
 msgid "freedb disabled"
 msgstr "freedb отключён"
 
-#: rubyripper_cli.rb:156
+#: rubyripper_cli.rb:157
 msgid "freedb enabled"
 msgstr "freedb включён"
 
-#: rubyripper_cli.rb:157
+#: rubyripper_cli.rb:158
 msgid "first hit disabled"
 msgstr "первая попытка отключена"
 
-#: rubyripper_cli.rb:157
+#: rubyripper_cli.rb:158
 msgid "first hit enabled"
 msgstr "первая попытка включена"
 
-#: rubyripper_cli.rb:158
+#: rubyripper_cli.rb:159
 msgid "Freedb mirror: "
 msgstr "Зеркало FreeDB: "
 
-#: rubyripper_cli.rb:159
+#: rubyripper_cli.rb:160
 msgid "Username : "
 msgstr "Имя пользователя : "
 
-#: rubyripper_cli.rb:160
+#: rubyripper_cli.rb:161
 msgid "Hostname : "
 msgstr "Имя узла : "
 
-#: rubyripper_cli.rb:161
+#: rubyripper_cli.rb:162
 msgid "freedb editing disabled"
 msgstr "редактирование данных с freedb отключено"
 
-#: rubyripper_cli.rb:161
+#: rubyripper_cli.rb:162
 msgid "freedb editing enabled"
 msgstr "редактирование данных с freedb включено"
 
-#: rubyripper_cli.rb:162
+#: rubyripper_cli.rb:163
 msgid "Config file : "
 msgstr "Конфигурационный файл : "
 
-#: rubyripper_cli.rb:163
+#: rubyripper_cli.rb:164
 msgid ""
 "Number %s is not an option!\n"
 "Please try again."
@@ -277,24 +277,24 @@ msgstr ""
 "Число %s не является параметром!\n"
 "Попробуйте снова."
 
-#: rubyripper_cli.rb:169
+#: rubyripper_cli.rb:170
 msgid "Do you want to continue with the program now? (y/n) : "
 msgstr "Продолжить работу с программой? (д/н) : "
 
-#: rubyripper_cli.rb:169 rubyripper_cli.rb:173 rubyripper_cli.rb:240
-#: rubyripper_cli.rb:245 rubyripper_cli.rb:358 rubyripper_cli.rb:373
+#: rubyripper_cli.rb:170 rubyripper_cli.rb:174 rubyripper_cli.rb:241
+#: rubyripper_cli.rb:246 rubyripper_cli.rb:359 rubyripper_cli.rb:374
 msgid "y"
 msgstr "д"
 
-#: rubyripper_cli.rb:175
+#: rubyripper_cli.rb:176
 msgid "Do you want to change the encoding parameters for %s? (y/n) : "
 msgstr "Хотите ли вы изменить параметры сжатия для %s? (д/н) : "
 
-#: rubyripper_cli.rb:175 rubyripper_cli.rb:240 rubyripper_cli.rb:396
+#: rubyripper_cli.rb:176 rubyripper_cli.rb:241 rubyripper_cli.rb:397
 msgid "n"
 msgstr "н"
 
-#: rubyripper_cli.rb:176
+#: rubyripper_cli.rb:177
 msgid ""
 "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
 "tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
@@ -303,19 +303,19 @@ msgstr ""
 "%n = номер трека, %i = исходный файл, %o = результат (не забудьте о "
 "расширении)"
 
-#: rubyripper_cli.rb:177
+#: rubyripper_cli.rb:178
 msgid "Encoding paramaters for %s : "
 msgstr "Параметры сжатия для %s : "
 
-#: rubyripper_cli.rb:183
+#: rubyripper_cli.rb:184
 msgid "Cdrom device : "
 msgstr "CD-привод : "
 
-#: rubyripper_cli.rb:184
+#: rubyripper_cli.rb:185
 msgid "Offset for drive : "
 msgstr "Смещение для привода : "
 
-#: rubyripper_cli.rb:189 rubyripper_cli.rb:192
+#: rubyripper_cli.rb:190 rubyripper_cli.rb:193
 msgid ""
 "\n"
 "Current naming scheme: %s"
@@ -323,7 +323,7 @@ msgstr ""
 "\n"
 "Текущая схема: %s"
 
-#: rubyripper_cli.rb:196
+#: rubyripper_cli.rb:197
 msgid ""
 "\n"
 "%a = Artist\t\n"
@@ -345,15 +345,15 @@ msgstr ""
 "%t = Название песни\n"
 "%va = Разные исполнители\n"
 
-#: rubyripper_cli.rb:197
+#: rubyripper_cli.rb:198
 msgid "New %s naming scheme (q to quit) : "
 msgstr "Новая %s схема (ё для выхода) : "
 
-#: rubyripper_cli.rb:198
+#: rubyripper_cli.rb:199
 msgid "q"
 msgstr "ё"
 
-#: rubyripper_cli.rb:200 rubyripper_cli.rb:203
+#: rubyripper_cli.rb:201 rubyripper_cli.rb:204
 msgid ""
 "An example filename is now:\n"
 "\n"
@@ -363,103 +363,103 @@ msgstr ""
 "\n"
 "\t%s"
 
-#: rubyripper_cli.rb:240 rubyripper_cli.rb:245
+#: rubyripper_cli.rb:241 rubyripper_cli.rb:246
 msgid "yes"
 msgstr "да"
 
-#: rubyripper_cli.rb:240
+#: rubyripper_cli.rb:241
 msgid "no"
 msgstr "нет"
 
-#: rubyripper_cli.rb:246
+#: rubyripper_cli.rb:247
 msgid "Please answer yes or no"
 msgstr "Ответьте \"да\" или \"нет\""
 
-#: rubyripper_cli.rb:255
+#: rubyripper_cli.rb:256
 msgid "We should never get here"
 msgstr "Никогда не должно получаться так"
 
-#: rubyripper_cli.rb:255
+#: rubyripper_cli.rb:256
 msgid "answer = %s, question = %s (error)"
 msgstr "ответ = %s, вопрос = %s (ошибка)"
 
-#: rubyripper_cli.rb:263
+#: rubyripper_cli.rb:264
 msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
 msgstr "Обнаружен аудиодиск, количество треков : %s, длительность : %s"
 
-#: rubyripper_cli.rb:265
+#: rubyripper_cli.rb:266
 msgid "Fetching freedb info..."
 msgstr "Получение информации с freedb..."
 
-#: rubyripper_cli.rb:285
+#: rubyripper_cli.rb:286
 msgid "Freedb reported multiple possibilities."
 msgstr "Для этого диска найдено несколько записей в базе freedb."
 
-#: rubyripper_cli.rb:287
+#: rubyripper_cli.rb:288
 msgid "Please type the number of the one you prefer? : "
 msgstr "Выберите номер подходящей вам записи : "
 
-#: rubyripper_cli.rb:293
+#: rubyripper_cli.rb:294
 msgid "FREEDB INFO"
 msgstr "ИНФОРМАЦИЯ С FREEDB"
 
-#: rubyripper_cli.rb:300
+#: rubyripper_cli.rb:301
 msgid "%sTrack %s : %s"
 msgstr ""
 
-#: rubyripper_cli.rb:309
+#: rubyripper_cli.rb:310
 msgid "Please type the letter or number of the setting you wish to change : "
 msgstr "Укажите номер или букву настройки, которую вы хотите изменить : "
 
-#: rubyripper_cli.rb:310
+#: rubyripper_cli.rb:311
 msgid "Artist : "
 msgstr "Исполнитель : "
 
-#: rubyripper_cli.rb:311
+#: rubyripper_cli.rb:312
 msgid "Album : "
 msgstr "Альбом : "
 
-#: rubyripper_cli.rb:312
+#: rubyripper_cli.rb:313
 msgid "Genre : "
 msgstr "Жанр : "
 
-#: rubyripper_cli.rb:313
+#: rubyripper_cli.rb:314
 msgid "Year : "
 msgstr "Год : "
 
-#: rubyripper_cli.rb:318
+#: rubyripper_cli.rb:319
 msgid "This is not a valid number. Try again"
 msgstr "Неверный номер. Попробуйте снова."
 
-#: rubyripper_cli.rb:326
+#: rubyripper_cli.rb:327
 msgid "The output directory already exists. What would you like to do?"
 msgstr "Директория уже существует. Что делать?"
 
-#: rubyripper_cli.rb:328
+#: rubyripper_cli.rb:329
 msgid "1) Auto rename the output directory"
 msgstr "1) Автоматически переименовать директорию"
 
-#: rubyripper_cli.rb:329
+#: rubyripper_cli.rb:330
 msgid "2) Overwrite the existing directory"
 msgstr "2) Заменить директорию"
 
-#: rubyripper_cli.rb:330
+#: rubyripper_cli.rb:331
 msgid "3) Cancel the rip"
 msgstr "3) Отменить извлечение"
 
-#: rubyripper_cli.rb:332
+#: rubyripper_cli.rb:333
 msgid "Please enter the number of your choice: "
 msgstr "Укажите номер пункта : "
 
-#: rubyripper_cli.rb:335
+#: rubyripper_cli.rb:336
 msgid "Rip is canceled, exiting..."
 msgstr "Извлечение отменено, выходим..."
 
-#: rubyripper_cli.rb:358
+#: rubyripper_cli.rb:359
 msgid "Do you want to change your settings? (y/n) : "
 msgstr "Хотите ли вы изменить настройки? (д/н) : "
 
-#: rubyripper_cli.rb:373
+#: rubyripper_cli.rb:374
 msgid ""
 "\n"
 "Should all tracks be ripped ? (y/n) "
@@ -467,15 +467,15 @@ msgstr ""
 "\n"
 "Извлечь все треки? (д/н) "
 
-#: rubyripper_cli.rb:374
+#: rubyripper_cli.rb:375
 msgid "Tracks to rip are %s"
 msgstr "Треки, которые будут извлечены с диска : %s"
 
-#: rubyripper_cli.rb:378 rubyripper_cli.rb:395
+#: rubyripper_cli.rb:379 rubyripper_cli.rb:396
 msgid "Current selection of tracks : %s"
 msgstr "Выбранные треки : %s"
 
-#: rubyripper_cli.rb:379
+#: rubyripper_cli.rb:380
 msgid ""
 "Enter 1 for entering the tracknumbers you want to remove.\n"
 "Enter 2 for entering the tracks you want to keep.\n"
@@ -485,25 +485,25 @@ msgstr ""
 "Введите 2 для выбора треков, которые вы хотите сохранить.\n"
 "Ваш выбор : "
 
-#: rubyripper_cli.rb:381
+#: rubyripper_cli.rb:382
 msgid ""
 "Type the numbers of the tracks you want to remove and separate them with a "
 "space: "
 msgstr ""
 "Введите номера треков, которые вы хотите удалить, разделяя их пробелом:\n"
 
-#: rubyripper_cli.rb:386
+#: rubyripper_cli.rb:387
 msgid ""
 "Type the numbers of the tracks you want to keep and separate them with a "
 "space: "
 msgstr ""
 "Введите номера треков, которые вы хотите сохранить, разделяя их пробелом:\n"
 
-#: rubyripper_cli.rb:392
+#: rubyripper_cli.rb:393
 msgid "%s is not a valid number! Please enter 1 or 2!\n"
 msgstr "%s - некорректное число! Введите 1 или 2!\n"
 
-#: rubyripper_cli.rb:396
+#: rubyripper_cli.rb:397
 msgid "Do you want to make any changes? (y/n) : "
 msgstr "Хотите ли вы изменить что-нибудь? (д/н) : "
 
@@ -666,9 +666,8 @@ msgid "Cdrom offset:"
 msgstr "Смещение привода:"
 
 #: rubyripper_gtk2.rb:622
-#, fuzzy
 msgid "List with offsets"
-msgstr "8)  cd-привод : %s со смещением %s"
+msgstr ""
 
 #: rubyripper_gtk2.rb:623
 msgid ""
@@ -1100,7 +1099,6 @@ msgid ""
 msgstr ""
 
 #: rr_lib.rb:428
-#, fuzzy
 msgid ""
 "Perhaps cdparanoia doesn't support the drive parameter.\n"
 " Will retry with default drive"
@@ -1184,7 +1182,6 @@ msgid ""
 msgstr ""
 
 #: rr_lib.rb:931
-#, fuzzy
 msgid "Filesize is not correct! Trying another time\n"
 msgstr ""
 "После %s попыток не удалось получить файлы одного размера. Пробуем ещё раз\n"
@@ -1219,9 +1216,8 @@ msgstr ""
 "\n"
 
 #: rr_lib.rb:1308
-#, fuzzy
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
-msgstr "ВНИМАНИЕ: Кодек flac вернул ошибку при обработке трека %s!\n"
+msgstr "ВНИМАНИЕ: Кодек %s вернул ошибку при обработке трека %s!\n"
 
 #: rr_lib.rb:1344
 msgid "The device %s doesn't exist on your system!"
@@ -1368,16 +1364,3 @@ msgstr ""
 "\n"
 "СТАТУС\n"
 "\n"
-
-#~ msgid "File size of trial %s does not match previous attempts\n"
-#~ msgstr "Размер файла после %s попытки не совпадает с предыдущими\n"
-
-#~ msgid "WARNING: The 'other' codec exited with an error encoding track %s!\n"
-#~ msgstr "ВНИМАНИЕ: 'Другой' кодек вернул ошибку при обработке трека %s!\n"
-
-#~ msgid "WARNING: Oggenc (vorbis) exited with an error encoding track %s!\n"
-#~ msgstr ""
-#~ "ВНИМАНИЕ: Кодек oggenc (vorbis) вернул ошибку при обработке трека %s!\n"
-
-#~ msgid "WARNING: Lame (mp3) exited with an error encoding track %s!\n"
-#~ msgstr "ВНИМАНИЕ: Кодек lame (mp3) вернул ошибку при обработке трека %s!\n"
