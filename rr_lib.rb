@@ -668,7 +668,15 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 		require 'cgi' #for communicating with the server
 		
 		@url = URI.parse(@freedbSettings['site'])
-		@server = Net::HTTP.new(@url.host, @url.port)
+		
+		if ENV['http_proxy']
+			@proxy = URI.parse(ENV['http_proxy'])
+			@server = Net::HTTP.new(@url.host, @url.port, @proxy.host, 
+				@proxy.port, @proxy.user, CGI.unescape(@proxy.password))
+		else
+			@server = Net::HTTP.new(@url.host, @url.port)
+		end
+		
 		@query = @url.path + "?cmd=cddb+query+" + CGI.escape("#{@disc.freedbString.chomp}") + "&hello=" + 
 			CGI.escape("#{@freedbSettings['username']} #{@freedbSettings['hostname']} rubyripper #{$rr_version}") + "&proto=6"
 		if @verbose : puts "Created query string: #{@query}" end
