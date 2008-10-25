@@ -1279,7 +1279,7 @@ class Encode < Monitor
 		else
 			tags = %Q{-c DATE="#{@settings['cd'].md.year}" -c TRACKNUMBER="#{track}" -c TITLE="#{clean(@settings['cd'].md.tracklist[track-1])}" -c ALBUM="#{clean(@settings['cd'].md.album)}" -c ARTIST="#{@settings['cd'].md.varArtists.empty? ? clean(@settings['cd'].md.artist) : clean(@settings['cd'].md.varArtists[track-1]) + %Q{" -c "ALBUM ARTIST"="#{clean(@settings['cd'].md.artist)}}}" -c GENRE="#{@settings['cd'].md.genre}" -c TRACKTOTAL="#{@settings['cd'].audiotracks}"}
 		end
-		command = %Q{oggenc -o "#{filename}" #{@settings['vorbissettings']} #{tags} "#{@settings['temp_dir']}track#{track}_1.wav" #{" 2>&1" unless @settings['verbose']}}
+		command = %Q{oggenc -o "#{filename}" -p 4 #{@settings['vorbissettings']} #{tags} "#{@settings['temp_dir']}track#{track}_1.wav" #{" 2>&1" unless @settings['verbose']}}
 		checkCommand(command, track, 'vorbis')
 	end
 	
