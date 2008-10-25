@@ -105,6 +105,14 @@ but it may not work on audio-cd's with a data track.
 
 4. CHANGELOG
 
+---------0.5.4 RELEASE------
+
+* disable threaded encoding, because since the ruby-gtk2 0.17
+release forking a process within a thread results in a freeze.
+Hopefully a more elegant solution will follow.
+* add French translation
+* add proxy support
+
 ---------0.5.3 RELEASE------
 
 * fix detection of some devices
