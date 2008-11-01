@@ -1100,7 +1100,6 @@ class Encode < Monitor
 					encodeTrack(track, codec)
 				else
 					thread = Thread.new{ encodeTrack(track, codec) }
-					thread.priority = -1 #Encoding gets low priority
 				end
 			end
 			if @settings['maxThreads'] > @threads || @settings['maxThreads'] == 0 : @ready = true else @ready = false end
@@ -1304,7 +1303,7 @@ class Encode < Monitor
 	end
 	
 	def checkCommand(command, track, codec)
-		exec = IO.popen(command) #execute command
+		exec = IO.popen("nice -n 6 " + command) #execute command
 		exec.readlines() #get all the output
 		
 		if @settings['debug']
