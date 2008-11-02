@@ -366,7 +366,7 @@ end
 
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, :startSector, :lengthText, :devicename,
- :playtime, :freedbString, :oldFreedbString, :pregap, :postgap, :totalSectors, :md, :error, :fileSizeWav
+ :playtime, :freedbString, :oldFreedbString, :pregap, :postgap, :totalSectors, :md, :error, :fileSizeWav, :fileSizeDisc
 
 	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
 		@cdrom = cdrom
@@ -398,6 +398,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, :startSe
 		@pregap = Array.new
 		@totalSectors = 0
 		@fileSizeWav = Array.new
+		@fileSizeDisc = 0
 		
 		@error = '' #set to the error messsage
 	end
@@ -586,6 +587,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, :startSe
 		
 		# filesize = 44 bytes wav overhead + 2352 bytes per sector
 		@audiotracks.times{|track| @fileSizeWav[track] = 44 + (@pregap[track] + @lengthSector[track]) * 2352}
+		@fileSizeDisc = @totalSectors * 2352 + 44
 	end
 end
 
@@ -930,15 +932,22 @@ class SecureRip
 	end
 	
 	def testFileSize(track) #check if wavfile is of correct size
-		if (File.size("#{@settings['temp_dir']}track#{track}_#{@trial}.wav") != @settings['cd'].fileSizeWav[track-1])
+		sizeRip = File.size("#{@settings['temp_dir']}track#{track}_#{@trial}.wav")
+
+		if @settings['image']
+			sizeExpected = @settings['cd'].fileSizeDisc
+		else
+			sizeExpected = @settings['cd'].fileSizeWav[track-1]
+		end
+		
+		if sizeRip != sizeExpected 
 			if @settings['debug']
-				puts "Wrong filesize reported for track #{track} : #{File.size("#{@settings['temp_dir']}track#{track}_#{@trial}.wav")}"
-				puts "Filesize should be : #{@settings['cd'].fileSizeWav[track-1]}"
+				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
+				puts "Filesize should be : #{sizeExpected}"
 			end
+			File.delete("#{@settings['temp_dir']}track#{track}_#{@trial}.wav") # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
 			@settings['log'].append_2_log(_("Filesize is not correct! Trying another time\n"))
-			
-			File.delete("#{@settings['temp_dir']}track#{track}_#{@trial}.wav") # Delete file with wrong filesize
 			return false
 		end
 		return true
@@ -1136,7 +1145,7 @@ class Encode < Monitor
 		@progress = 1.0 ; @settings['log'].update_encoding_progress(@progress)
 		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
 		if @settings['no_log']  : @settings['log'].delete_logfiles end #Delete the logfile if no correction was needed if no_log is true
-		createPlaylists() if @settings['playlist']
+		createPlaylists() if (@settings['playlist'] && !@settings['image'])
 		cleanup()
 		@settings['instance'].update("finished")
 	end
@@ -1145,7 +1154,7 @@ class Encode < Monitor
 		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
 			if @settings[codec]
 				dirname = File.dirname(get_filename(@settings,  codec, 1)) #tracknumber 1 for instance
-				m3ufile = File.new(File.join(dirname, "#{@settings['cd'].md.artist} - #{@settings['cd'].md.album} (#{codec}).m3u"), 'w')
+				m3ufile = File.new(File.join(dirname, "#{clean(@settings['cd'].md.artist, true)} - #{clean(@settings['cd'].md.album, true)} (#{codec}).m3u"), 'w')
 				Dir.entries(dirname).sort.each do |file|
 					if File.file?(File.join(dirname, file)) && file != 'ripping.log' && file[-4,4] != '.m3u' && file[-4,4] != '.cue'
 						m3ufile.puts file
