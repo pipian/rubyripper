@@ -329,11 +329,15 @@ class Gui_CLI
 		puts _("1) Auto rename the output directory")
 		puts _("2) Overwrite the existing directory")
 		puts _("3) Cancel the rip")
+		puts _("4) Cancel the rip and eject the disc")
 		puts ""
 		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
 		if answer == 1: @rubyripper.postfix_dir() ; start()
 		elsif answer == 2: @rubyripper.overwrite_dir() ; start()
-		else puts _("Rip is canceled, exiting...") ; exit()
+		else
+			puts _("Rip is canceled, exiting...")
+			eject(@settings['cd'].cdrom) if answer == 4
+			exit()
 		end
 	end
 

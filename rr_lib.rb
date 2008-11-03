@@ -170,6 +170,15 @@ def get_filename(settings, codec = 'mp3', track = 1, command = false) #function 
 	return filename
 end
 
+def eject(cdrom)
+	Thread.new do
+	 	if installed('eject') : `eject #{cdrom}`
+		elsif installed('diskutil'): `diskutil eject #{cdrom}` #Mac users don't got eject, but diskutil
+		else puts _("No eject utility found!")
+		end
+	end
+end
+
 class Gui_support
 attr_reader :update_ripping_progress, :update_encoding_progress, :append_2_log, :summary, :ripping_progress, :encoding_progress, :mismatch, :short_summary, :delete_logfiles
 attr_writer :encodingErrors
@@ -875,14 +884,7 @@ class SecureRip
 			if main(track) : @encoding.addTrack(track) else return false end #ready to encode
 		end
 		
-		if @settings['eject'] #eject the disc when finished if user checked this option
-			Thread.new do
-			 	if installed('eject') : `eject #{@settings['cd'].cdrom}`
-				elsif installed('diskutil'): `diskutil eject #{@settings['cd'].cdrom}` #Mac users don't got eject, but diskutil
-				else puts _("No eject utility found!")
-				end
-			end
-		end
+		eject(@settings['cd'].cdrom) if @settings['eject'] 
 	end
 	
 	def main(track)
