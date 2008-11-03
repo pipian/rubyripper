@@ -290,18 +290,26 @@ class Gui_CLI
 		puts ""
 		puts _("TRACK INFO")
 		
-		@settings['cd'].audiotracks.times do |index|
-			puts _("%s) %s")  % ["#{index + 1}", @settings['cd'].md.tracklist[index]]
-		end
-
+		showTracks()
 		showFreedbOptions()
+	end
+
+	def showTracks()
+		@settings['cd'].audiotracks.times do |index|
+			trackname = @settings['cd'].md.tracklist[index]
+			if not @settings['cd'].md.varArtists.empty?
+				trackname = "#{@settings['cd'].md.varArtists[index]} - #{trackname}"
+			end
+
+			puts "#{index +1 }) #{trackname}"
+		end
 	end
 
 	def showFreedbOptions()
 		puts ""
 		puts _("What would you like to do?")
 		puts ""
-		puts _("1) Start the rip!")
+		puts _("1) Select the tracks to rip")
 		puts _("2) Edit the disc info")
 		puts _("3) Edit the track info")
 		puts _("4) Cancel the rip and eject the disc")
@@ -336,9 +344,8 @@ class Gui_CLI
 	end
 
 	def editTrackInfo()
-		@settings['cd'].audiotracks.times do |index|
-			puts _("%s) %s")  % ["#{index + 1}", @settings['cd'].md.tracklist[index]]
-		end
+		showTracks()
+		puts ""
 		puts "99) " + _("Finished editing track info\n\n")
 
 		while true
@@ -347,6 +354,9 @@ class Gui_CLI
 			if answer == 99 : break
 			elsif (answer.to_i > 0 && answer.to_i <= @settings['cd'].audiotracks)
 				@settings['cd'].md.tracklist[answer - 1] = get_answer("Track #{answer} : ", "open", @settings['cd'].md.tracklist[answer - 1])
+				if not @settings['cd'].md.varArtists.empty?
+					@settings['cd'].md.varArtists[answer - 1] = get_answer("Artist for Track #{answer} : ", "open", @settings['cd'].md.varArtists[answer - 1])
+				end
 			else
 				puts _("This is not a valid number. Try again")
 			end
@@ -364,7 +374,6 @@ class Gui_CLI
 	def prepareRip()
 		tracklist() # Which tracks should be ripped?
 		@rubyripper = Rubyripper.new(@settings, self) # starts some check if the settings are sane
-		puts "Now here, class = #{@rubyripper.class}"
 		if @rubyripper.settings_ok : start() end
 	end
 	
