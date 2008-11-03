@@ -128,7 +128,6 @@ class Gui_CLI
 		puts _("19) site = %s") % [@settings['site']]
 		puts _("20) username = %s") % [@settings['username']]
 		puts _("21) hostname = %s") % [@settings['hostname']]
-		puts _("22) edit freedb data before ripping [%s]") % [@settings['edit'] ? '*' : ' ']
  		puts ""
 		puts _("88) config file = %s") % [@options.file]
  		puts _("99) Don't change any setting")
@@ -159,7 +158,6 @@ class Gui_CLI
 			elsif number == 19 : @settings['site'] = get_answer(_("Freedb mirror: "), "open", "freedb.org")
 			elsif number == 20 : @settings['username'] = get_answer(_("Username : "), "open", "anonymous")
 			elsif number == 21 : @settings['hostname'] = get_answer(_("Hostname : "), "open", "my_secret.com")
-			elsif number == 22 : if @settings['edit'] : puts _("freedb editing disabled") ; @settings['edit'] = false else puts _("freedb editing enabled") ; @settings['edit'] = true end 
 			elsif number == 88 : @options.file = get_answer(_("Config file : "), "open", @options.file)
 			else puts _("Number %s is not an option!\nPlease try again.") % [number]
 			end
@@ -274,14 +272,6 @@ class Gui_CLI
 		end
 	end
 
-	def freedb_finished #got the signal that all the metadata info is ready for processing
-		if @settings['edit'] : edit_freedb() else show_freedb() end
-		tracklist() # Which tracks should be ripped?
-		@rubyripper = Rubyripper.new(@settings, self) # starts some check if the settings are sane
-		puts "Now here, class = #{@rubyripper.class}"
-		if @rubyripper.settings_ok : start() end
-	end
-	
 	def choose_freedb(choices) #callback function initiated by rr_lib.rb via our update function
 		puts _("Freedb reported multiple possibilities.")
 		choices.each_index{|index| puts "#{index + 1}) #{choices[index]}"}
@@ -289,62 +279,115 @@ class Gui_CLI
 		@settings['cd'].md.freedbChoice(choice - 1)
 	end
 
-	def show_freedb(edit = false) # leave the letters and numbers away if edit mode == false
+	def showFreedb()
 		puts ""
-		puts _("FREEDB INFO")
-		puts _("#{"a) " if edit}Artist : %s") % [@settings['cd'].md.artist]
-		puts _("#{"b) " if edit}Album : %s") % [@settings['cd'].md.album]
-		puts _("#{"c) " if edit}Genre : %s") % [@settings['cd'].md.genre]
-		puts _("#{"d) " if edit}Year : %s") % [@settings['cd'].md.year]
+		puts _("FREEDB INFO\n\n")
+		puts _("DISC INFO")
+		puts _("Artist : %s") % [@settings['cd'].md.artist]
+		puts _("Album : %s") % [@settings['cd'].md.album]
+		puts _("Genre : %s") % [@settings['cd'].md.genre]
+		puts _("Year : %s") % [@settings['cd'].md.year]
 		puts ""
+		puts _("TRACK INFO")
+		
 		@settings['cd'].audiotracks.times do |index|
-			puts _("%sTrack %s : %s")  % [if edit : "#{index + 1}) " end, index + 1, @settings['cd'].md.tracklist[index]]
+			puts _("%s) %s")  % ["#{index + 1}", @settings['cd'].md.tracklist[index]]
 		end
-		puts ""
+
+		showFreedbOptions()
 	end
-	
-	def edit_freedb
-		show_freedb(edit = true)
-		puts _("99) Don't change any setting")
- 		puts ""
-		while (answer = get_answer(_("Please type the letter or number of the setting you wish to change : "), "open", "99")) != "99"
-			if answer == "a" : @settings['cd'].md.artist = get_answer(_("Artist : "), "open", @settings['cd'].md.artist)
-			elsif answer == "b" : @settings['cd'].md.album = get_answer(_("Album : "), "open", @settings['cd'].md.album)
-			elsif answer == "c" : @settings['cd'].md.genre = get_answer(_("Genre : "), "open", @settings['cd'].md.genre)
-			elsif answer == "d" : @settings['cd'].md.year = get_answer(_("Year : "), "open", @settings['cd'].md.year)
-			else
-				if answer.to_i > 0 && answer.to_i <= @settings['cd'].audiotracks #Check if tracknumber is in valid range
-					@settings['cd'].md.tracklist[answer.to_i - 1] = get_answer("Track #{answer.to_i} : ", "open", @settings['cd'].md.tracklist[answer.to_i - 1])
-				else
-					puts _("This is not a valid number. Try again")
-				end
-			end	
-			show_freedb(edit = true)
+
+	def showFreedbOptions()
+		puts ""
+		puts _("What would you like to do?")
+		puts ""
+		puts _("1) Start the rip!")
+		puts _("2) Edit the disc info")
+		puts _("3) Edit the track info")
+		puts _("4) Cancel the rip and eject the disc")
+		puts ""
+
+		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
+		if answer == 1 : prepareRip()
+		elsif answer == 2 : editDiscInfo()
+		elsif answer == 3 : editTrackInfo()
+		else cancelRip()
 		end
 	end
 
+	def editDiscInfo()
+		puts "1) " + _("Artist : %s") % [@settings['cd'].md.artist]
+		puts "2) " + _("Album : %s") % [@settings['cd'].md.album]
+		puts "3) " + _("Genre : %s") % [@settings['cd'].md.genre]
+		puts "4) " + _("Year : %s") % [@settings['cd'].md.year]
+		puts "99) " + _("Finished editing disc info\n\n")
+		
+		while true
+			answer = get_answer(_("Please enter the number you'd like to edit: "), "number", 99)
+			if answer == 1 : @settings['cd'].md.artist = get_answer(_("Artist : "), "open", @settings['cd'].md.artist)
+			elsif answer == 2 : @settings['cd'].md.album = get_answer(_("Album : "), "open", @settings['cd'].md.album)
+			elsif answer == 3 : @settings['cd'].md.genre = get_answer(_("Genre : "), "open", @settings['cd'].md.genre)
+			elsif answer == 4 : @settings['cd'].md.year = get_answer(_("Year : "), "open", @settings['cd'].md.year)
+			elsif answer == 99 : break
+			end
+		end
+
+		showFreedb()
+	end
+
+	def editTrackInfo()
+		@settings['cd'].audiotracks.times do |index|
+			puts _("%s) %s")  % ["#{index + 1}", @settings['cd'].md.tracklist[index]]
+		end
+		puts "99) " + _("Finished editing track info\n\n")
+
+		while true
+			answer = get_answer(_("Please enter the number you'd like to edit: "), "number", 99)
+		
+			if answer == 99 : break
+			elsif (answer.to_i > 0 && answer.to_i <= @settings['cd'].audiotracks)
+				@settings['cd'].md.tracklist[answer - 1] = get_answer("Track #{answer} : ", "open", @settings['cd'].md.tracklist[answer - 1])
+			else
+				puts _("This is not a valid number. Try again")
+			end
+		end
+
+		showFreedb()
+	end
+
+	def cancelRip()
+		puts _("Rip is canceled, exiting...")
+		eject(@settings['cd'].cdrom)
+		exit()
+	end
+
+	def prepareRip()
+		tracklist() # Which tracks should be ripped?
+		@rubyripper = Rubyripper.new(@settings, self) # starts some check if the settings are sane
+		puts "Now here, class = #{@rubyripper.class}"
+		if @rubyripper.settings_ok : start() end
+	end
+	
 	def dir_exists
 		puts _("The output directory already exists. What would you like to do?")
 		puts ""
 		puts _("1) Auto rename the output directory")
 		puts _("2) Overwrite the existing directory")
-		puts _("3) Cancel the rip")
-		puts _("4) Cancel the rip and eject the disc")
+		puts _("3) Cancel the rip and eject the disc")
 		puts ""
+
 		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
 		if answer == 1: @rubyripper.postfix_dir() ; start()
 		elsif answer == 2: @rubyripper.overwrite_dir() ; start()
-		else
-			puts _("Rip is canceled, exiting...")
-			eject(@settings['cd'].cdrom) if answer == 4
-			exit()
+		else cancelRip()
 		end
 	end
 
 	def start
 		@rubyripper.start_rip()
 		while @finished == false
-			sleep(1) #loop until the finished signal is given. This is not ideal, but apparently the program gets terminated otherwise.
+			sleep(1) #loop until the finished signal is given.
+			#This is not ideal, but apparently the program gets terminated otherwise.
 		end
 	end
 
@@ -362,7 +405,7 @@ class Gui_CLI
 			print "\n"
 			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y")) : edit_settings() end
 		elsif modus == "cddb_hit" && value == false #final values freedb
-			freedb_finished
+			showFreedb()
 		elsif modus == "cddb_hit" && value != false #multiple freedb hits
 			choose_freedb(value)
 		elsif modus == "dir_exists"
