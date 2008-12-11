@@ -118,6 +118,8 @@ def clean(variable, filename=false) #clean strange tokens
 	end
 	var.gsub!('`', "'") #replace a backquote with a single quote	
 	var.gsub!('_', ' ') # replace any underscores with spaces, some freedb info got underscores instead of spaces
+	var.gsub!(/\342\200\230|\342\200\231/, "'") # replace utf-8 single quotes with latin single quote
+	var.gsub!(/\342\200\234|\342\200\235/, '"') # replace utf-8 double quotes with latin double quote
 	return var.strip
 end
 
