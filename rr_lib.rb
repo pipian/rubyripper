@@ -354,7 +354,7 @@ class Cuesheet
 		end
 
 		if @disc.pregap[track] != 0 && @image
-			@cuesheet << "    INDEX 00 #{time(@disc.startsector[track] - @disc.pregap[track])}"
+			@cuesheet << "    INDEX 00 #{time(@disc.startSector[track] - @disc.pregap[track])}"
 		elsif @disc.pregap[track] != 0
 			@cuesheet << "    INDEX 00 00:00:00"
 		end
@@ -1262,8 +1262,9 @@ class Encode < Monitor
 	end
 	
 	def doOther(track)
-		command = get_filename(@settings, 'other', track, @settings['othersettings'].dup) #pass the commandline for other and replace all % fields (except %i)
-		command.gsub!('%i', " \"#{@settings['temp_dir']}track#{track}_1.wav\"") # %i = input filename
+		#pass the commandline for other and replace all % fields (except %i)
+		command = get_filename(@settings, 'other', track, @settings['othersettings'].dup) 
+		command.gsub!('%i', "#{@settings['temp_dir']}track#{track}_1.wav") # %i = input filename
 		
 		checkCommand(command, track, 'other')
 	end
@@ -1380,10 +1381,32 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 			@settings['instance'].update("error", _("No codecs are selected!"))
 			return false
  		end
+
+		if @settings['other'] : checkOtherSettings() end
  		
 		#Make sure errors get at least as much corrected as non-errors.
  		if @settings['req_matches_all'] > @settings['req_matches_errors'] : @settings['req_matches_errors'] = @settings['req_matches_all'] end
 		return true
+	end
+
+	def checkOtherSettings
+		copyString = ""
+		lastChar = ""
+		
+		#first remove all double quotes. then iterate over each char
+		@settings['othersettings'].delete('"').split(//).each do |char|
+			if char == '%' # prepend double quote before %
+				copyString << '"' + char
+			elsif lastChar == '%' # append double quote after %char
+				copyString << char + '"'
+			else
+				copyString << char
+			end
+			lastChar = char
+		end
+		@settings['othersettings'] = copyString
+
+		puts @settings['othersettings'] if @settings['debug']
 	end
 	
 	def test_for_deps()
