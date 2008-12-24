@@ -5,8 +5,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Rubyripper 0.5.3\n"
-"POT-Creation-Date: 2008-10-25 15:17+0200\n"
+"Project-Id-Version: Rubyripper 0.5.4\n"
+"POT-Creation-Date: 2008-12-24 19:19+0100\n"
 "PO-Revision-Date: 2008-06-18 21:16+0200\n"
 "Last-Translator: FULL NAME <rubyripperdev@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,158 +165,146 @@ msgstr ""
 msgid "21) hostname = %s"
 msgstr ""
 
-#: rubyripper_cli.rb:131
-msgid "22) edit freedb data before ripping [%s]"
-msgstr ""
-
-#: rubyripper_cli.rb:133
+#: rubyripper_cli.rb:132
 msgid "88) config file = %s"
 msgstr ""
 
-#: rubyripper_cli.rb:134 rubyripper_cli.rb:308
+#: rubyripper_cli.rb:133
 msgid "99) Don't change any setting"
 msgstr ""
 
-#: rubyripper_cli.rb:140
+#: rubyripper_cli.rb:139
 msgid "Please type the number of the setting you wish to change : "
 msgstr ""
 
-#: rubyripper_cli.rb:144
+#: rubyripper_cli.rb:143
 msgid "wav disabled"
 msgstr ""
 
-#: rubyripper_cli.rb:144
+#: rubyripper_cli.rb:143
 msgid "wav enabled"
 msgstr ""
 
-#: rubyripper_cli.rb:146
+#: rubyripper_cli.rb:145
 msgid "playlist disabled"
 msgstr ""
 
-#: rubyripper_cli.rb:146
+#: rubyripper_cli.rb:145
 msgid "playlist enabled"
 msgstr ""
 
-#: rubyripper_cli.rb:147
+#: rubyripper_cli.rb:146
 msgid "How many encoding threads would you like? : "
 msgstr ""
 
-#: rubyripper_cli.rb:149
+#: rubyripper_cli.rb:148
 msgid "Which options to pass to cdparanoia? : "
 msgstr ""
 
-#: rubyripper_cli.rb:150
+#: rubyripper_cli.rb:149
 msgid "How many times must all chunks be matched? : "
 msgstr ""
 
-#: rubyripper_cli.rb:151
+#: rubyripper_cli.rb:150
 msgid "How many times must erroneous chunks be matched? : "
 msgstr ""
 
-#: rubyripper_cli.rb:152
+#: rubyripper_cli.rb:151
 msgid "What should be the maximum number of tries? : "
 msgstr ""
 
-#: rubyripper_cli.rb:153
+#: rubyripper_cli.rb:152
 msgid "eject disabled"
 msgstr ""
 
-#: rubyripper_cli.rb:153
+#: rubyripper_cli.rb:152
 msgid "eject enabled"
 msgstr ""
 
-#: rubyripper_cli.rb:154
+#: rubyripper_cli.rb:153
 msgid "Please enter your directory for your encodings: "
 msgstr ""
 
-#: rubyripper_cli.rb:157
+#: rubyripper_cli.rb:156
 msgid "freedb disabled"
 msgstr ""
 
-#: rubyripper_cli.rb:157
+#: rubyripper_cli.rb:156
 msgid "freedb enabled"
 msgstr ""
 
-#: rubyripper_cli.rb:158
+#: rubyripper_cli.rb:157
 msgid "first hit disabled"
 msgstr ""
 
-#: rubyripper_cli.rb:158
+#: rubyripper_cli.rb:157
 msgid "first hit enabled"
 msgstr ""
 
-#: rubyripper_cli.rb:159
+#: rubyripper_cli.rb:158
 msgid "Freedb mirror: "
 msgstr ""
 
-#: rubyripper_cli.rb:160
+#: rubyripper_cli.rb:159
 msgid "Username : "
 msgstr ""
 
-#: rubyripper_cli.rb:161
+#: rubyripper_cli.rb:160
 msgid "Hostname : "
 msgstr ""
 
-#: rubyripper_cli.rb:162
-msgid "freedb editing disabled"
-msgstr ""
-
-#: rubyripper_cli.rb:162
-msgid "freedb editing enabled"
-msgstr ""
-
-#: rubyripper_cli.rb:163
+#: rubyripper_cli.rb:161
 msgid "Config file : "
 msgstr ""
 
-#: rubyripper_cli.rb:164
+#: rubyripper_cli.rb:162
 msgid ""
 "Number %s is not an option!\n"
 "Please try again."
 msgstr ""
 
-#: rubyripper_cli.rb:170
+#: rubyripper_cli.rb:168
 msgid "Do you want to continue with the program now? (y/n) : "
 msgstr ""
 
-#: rubyripper_cli.rb:170 rubyripper_cli.rb:174 rubyripper_cli.rb:241
-#: rubyripper_cli.rb:246 rubyripper_cli.rb:359 rubyripper_cli.rb:374
+#: rubyripper_cli.rb:168 rubyripper_cli.rb:172 rubyripper_cli.rb:239
+#: rubyripper_cli.rb:244 rubyripper_cli.rb:415 rubyripper_cli.rb:430
 msgid "y"
 msgstr ""
 
-#: rubyripper_cli.rb:176
+#: rubyripper_cli.rb:174
 msgid "Do you want to change the encoding parameters for %s? (y/n) : "
 msgstr ""
 
-#: rubyripper_cli.rb:176 rubyripper_cli.rb:241 rubyripper_cli.rb:397
+#: rubyripper_cli.rb:174 rubyripper_cli.rb:239 rubyripper_cli.rb:453
 msgid "n"
 msgstr ""
 
-#: rubyripper_cli.rb:177
+#: rubyripper_cli.rb:175
 msgid ""
 "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
 "tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
 msgstr ""
 
-#: rubyripper_cli.rb:178
+#: rubyripper_cli.rb:176
 msgid "Encoding paramaters for %s : "
 msgstr ""
 
-#: rubyripper_cli.rb:184
+#: rubyripper_cli.rb:182
 msgid "Cdrom device : "
 msgstr ""
 
-#: rubyripper_cli.rb:185
+#: rubyripper_cli.rb:183
 msgid "Offset for drive : "
 msgstr ""
 
-#: rubyripper_cli.rb:190 rubyripper_cli.rb:193
+#: rubyripper_cli.rb:188 rubyripper_cli.rb:191
 msgid ""
 "\n"
 "Current naming scheme: %s"
 msgstr ""
 
-#: rubyripper_cli.rb:197
+#: rubyripper_cli.rb:195
 msgid ""
 "\n"
 "%a = Artist\t\n"
@@ -329,155 +317,209 @@ msgid ""
 "%va = Various Artist\n"
 msgstr ""
 
-#: rubyripper_cli.rb:198
+#: rubyripper_cli.rb:196
 msgid "New %s naming scheme (q to quit) : "
 msgstr ""
 
-#: rubyripper_cli.rb:199
+#: rubyripper_cli.rb:197
 msgid "q"
 msgstr ""
 
-#: rubyripper_cli.rb:201 rubyripper_cli.rb:204
+#: rubyripper_cli.rb:199 rubyripper_cli.rb:202
 msgid ""
 "An example filename is now:\n"
 "\n"
 "\t%s"
 msgstr ""
 
-#: rubyripper_cli.rb:241 rubyripper_cli.rb:246
+#: rubyripper_cli.rb:239 rubyripper_cli.rb:244
 msgid "yes"
 msgstr ""
 
-#: rubyripper_cli.rb:241
+#: rubyripper_cli.rb:239
 msgid "no"
 msgstr ""
 
-#: rubyripper_cli.rb:247
+#: rubyripper_cli.rb:245
 msgid "Please answer yes or no"
 msgstr ""
 
-#: rubyripper_cli.rb:256
+#: rubyripper_cli.rb:254
 msgid "We should never get here"
 msgstr ""
 
-#: rubyripper_cli.rb:256
+#: rubyripper_cli.rb:254
 msgid "answer = %s, question = %s (error)"
 msgstr ""
 
-#: rubyripper_cli.rb:264
+#: rubyripper_cli.rb:262
 msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
 msgstr ""
 
-#: rubyripper_cli.rb:266
+#: rubyripper_cli.rb:264
 msgid "Fetching freedb info..."
 msgstr ""
 
-#: rubyripper_cli.rb:286
+#: rubyripper_cli.rb:276
 msgid "Freedb reported multiple possibilities."
 msgstr ""
 
-#: rubyripper_cli.rb:288
+#: rubyripper_cli.rb:278
 msgid "Please type the number of the one you prefer? : "
 msgstr ""
 
-#: rubyripper_cli.rb:294
-msgid "FREEDB INFO"
+#: rubyripper_cli.rb:284
+msgid ""
+"FREEDB INFO\n"
+"\n"
 msgstr ""
 
-#: rubyripper_cli.rb:301
-msgid "%sTrack %s : %s"
+#: rubyripper_cli.rb:285
+msgid "DISC INFO"
+msgstr ""
+
+#: rubyripper_cli.rb:286 rubyripper_cli.rb:327
+msgid "Artist : %s"
+msgstr ""
+
+#: rubyripper_cli.rb:287 rubyripper_cli.rb:328
+msgid "Album : %s"
+msgstr ""
+
+#: rubyripper_cli.rb:288 rubyripper_cli.rb:329
+msgid "Genre : %s"
+msgstr ""
+
+#: rubyripper_cli.rb:289 rubyripper_cli.rb:330
+msgid "Year : %s"
+msgstr ""
+
+#: rubyripper_cli.rb:291
+msgid "TRACK INFO"
 msgstr ""
 
 #: rubyripper_cli.rb:310
-msgid "Please type the letter or number of the setting you wish to change : "
-msgstr ""
-
-#: rubyripper_cli.rb:311
-msgid "Artist : "
+msgid "What would you like to do?"
 msgstr ""
 
 #: rubyripper_cli.rb:312
-msgid "Album : "
+msgid "1) Select the tracks to rip"
 msgstr ""
 
 #: rubyripper_cli.rb:313
-msgid "Genre : "
+msgid "2) Edit the disc info"
 msgstr ""
 
 #: rubyripper_cli.rb:314
-msgid "Year : "
+msgid "3) Edit the track info"
 msgstr ""
 
-#: rubyripper_cli.rb:319
-msgid "This is not a valid number. Try again"
+#: rubyripper_cli.rb:315
+msgid "4) Cancel the rip and eject the disc"
 msgstr ""
 
-#: rubyripper_cli.rb:327
-msgid "The output directory already exists. What would you like to do?"
-msgstr ""
-
-#: rubyripper_cli.rb:329
-msgid "1) Auto rename the output directory"
-msgstr ""
-
-#: rubyripper_cli.rb:330
-msgid "2) Overwrite the existing directory"
-msgstr ""
-
-#: rubyripper_cli.rb:331
-msgid "3) Cancel the rip"
-msgstr ""
-
-#: rubyripper_cli.rb:333
+#: rubyripper_cli.rb:318 rubyripper_cli.rb:388
 msgid "Please enter the number of your choice: "
 msgstr ""
 
+#: rubyripper_cli.rb:331
+msgid ""
+"Finished editing disc info\n"
+"\n"
+msgstr ""
+
+#: rubyripper_cli.rb:334 rubyripper_cli.rb:352
+msgid "Please enter the number you'd like to edit: "
+msgstr ""
+
+#: rubyripper_cli.rb:335
+msgid "Artist : "
+msgstr ""
+
 #: rubyripper_cli.rb:336
+msgid "Album : "
+msgstr ""
+
+#: rubyripper_cli.rb:337
+msgid "Genre : "
+msgstr ""
+
+#: rubyripper_cli.rb:338
+msgid "Year : "
+msgstr ""
+
+#: rubyripper_cli.rb:349
+msgid ""
+"Finished editing track info\n"
+"\n"
+msgstr ""
+
+#: rubyripper_cli.rb:361
+msgid "This is not a valid number. Try again"
+msgstr ""
+
+#: rubyripper_cli.rb:369
 msgid "Rip is canceled, exiting..."
 msgstr ""
 
-#: rubyripper_cli.rb:359
+#: rubyripper_cli.rb:381
+msgid "The output directory already exists. What would you like to do?"
+msgstr ""
+
+#: rubyripper_cli.rb:383
+msgid "1) Auto rename the output directory"
+msgstr ""
+
+#: rubyripper_cli.rb:384
+msgid "2) Overwrite the existing directory"
+msgstr ""
+
+#: rubyripper_cli.rb:385
+msgid "3) Cancel the rip and eject the disc"
+msgstr ""
+
+#: rubyripper_cli.rb:415
 msgid "Do you want to change your settings? (y/n) : "
 msgstr ""
 
-#: rubyripper_cli.rb:374
+#: rubyripper_cli.rb:430
 msgid ""
 "\n"
 "Should all tracks be ripped ? (y/n) "
 msgstr ""
 
-#: rubyripper_cli.rb:375
+#: rubyripper_cli.rb:431
 msgid "Tracks to rip are %s"
 msgstr ""
 
-#: rubyripper_cli.rb:379 rubyripper_cli.rb:396
+#: rubyripper_cli.rb:435 rubyripper_cli.rb:452
 msgid "Current selection of tracks : %s"
 msgstr ""
 
-#: rubyripper_cli.rb:380
+#: rubyripper_cli.rb:436
 msgid ""
 "Enter 1 for entering the tracknumbers you want to remove.\n"
 "Enter 2 for entering the tracks you want to keep.\n"
 "Your choice: "
 msgstr ""
 
-#: rubyripper_cli.rb:382
+#: rubyripper_cli.rb:438
 msgid ""
 "Type the numbers of the tracks you want to remove and separate them with a "
 "space: "
 msgstr ""
 
-#: rubyripper_cli.rb:387
+#: rubyripper_cli.rb:443
 msgid ""
 "Type the numbers of the tracks you want to keep and separate them with a "
 "space: "
 msgstr ""
 
-#: rubyripper_cli.rb:393
+#: rubyripper_cli.rb:449
 msgid "%s is not a valid number! Please enter 1 or 2!\n"
 msgstr ""
 
-#: rubyripper_cli.rb:397
+#: rubyripper_cli.rb:453
 msgid "Do you want to make any changes? (y/n) : "
 msgstr ""
 
@@ -603,8 +645,8 @@ msgstr ""
 msgid "<b>Track selection</b>"
 msgstr ""
 
-#: rubyripper_gtk2.rb:439 rr_lib.rb:604 rr_lib.rb:605 rr_lib.rb:606
-#: rr_lib.rb:788 rr_lib.rb:790 rr_lib.rb:791 rr_lib.rb:798
+#: rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618 rr_lib.rb:619
+#: rr_lib.rb:801 rr_lib.rb:803 rr_lib.rb:804 rr_lib.rb:811
 msgid "Unknown"
 msgstr ""
 
@@ -905,124 +947,128 @@ msgstr ""
 msgid "Ripping and encoding is finished"
 msgstr ""
 
-#: rr_lib.rb:186
+#: rr_lib.rb:179
+msgid "No eject utility found!"
+msgstr ""
+
+#: rr_lib.rb:197
 msgid ""
 "Artist : %s\n"
 "Album: %s\n"
 msgstr ""
 
-#: rr_lib.rb:187
+#: rr_lib.rb:198
 msgid "This log is created by Rubyripper, version %s\n"
 msgstr ""
 
-#: rr_lib.rb:188
+#: rr_lib.rb:199
 msgid ""
 "Website: http://code.google.com/p/rubyripper\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:232
+#: rr_lib.rb:243
 msgid ""
 "\n"
 "WARNING: ENCODING ERRORS WERE DETECTED\n"
 msgstr ""
 
-#: rr_lib.rb:233
+#: rr_lib.rb:244
 msgid ""
 "\n"
 "RIPPING SUMMARY\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:235
+#: rr_lib.rb:246
 msgid "All chunks were tried to match at least %s times.\n"
 msgstr ""
 
-#: rr_lib.rb:236
+#: rr_lib.rb:247
 msgid ""
 "Chunks that differed after %s trials,\n"
 "were tried to match %s times.\n"
 msgstr ""
 
-#: rr_lib.rb:239
+#: rr_lib.rb:250
 msgid "None of the tracks gave any problems\n"
 msgstr ""
 
-#: rr_lib.rb:241
+#: rr_lib.rb:252
 msgid ""
 "Some track(s) could NOT be corrected within the maximum amount of trials\n"
 msgstr ""
 
-#: rr_lib.rb:243
+#: rr_lib.rb:254
 msgid "Track %s could NOT be corrected completely\n"
 msgstr ""
 
-#: rr_lib.rb:246
+#: rr_lib.rb:257
 msgid ""
 "Some track(s) needed correction,but could\n"
 "be corrected within the maximum amount of trials\n"
 msgstr ""
 
-#: rr_lib.rb:251
+#: rr_lib.rb:262
 msgid ""
 "The exact positions of the suspicious chunks\n"
 "can be found in the ripping log\n"
 msgstr ""
 
-#: rr_lib.rb:257
+#: rr_lib.rb:268
 msgid ""
 "\n"
 "SUSPICION POSITION ANALYSIS\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:258
+#: rr_lib.rb:269
 msgid "Since there are 75 chunks per second, after making the notion of the\n"
 msgstr ""
 
-#: rr_lib.rb:259
+#: rr_lib.rb:270
 msgid ""
 "suspicion position, the amount of initially mismatched chunks for that "
 "position is shown.\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:261
+#: rr_lib.rb:272
 msgid "TRACK %s\n"
 msgstr ""
 
-#: rr_lib.rb:266
+#: rr_lib.rb:277
 msgid "\tSuspicion position : %s:%s (%s x) (CORRECTED at trial %s\n"
 msgstr ""
 
-#: rr_lib.rb:268
+#: rr_lib.rb:279
 msgid "\tSuspicion position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
 msgstr ""
 
-#: rr_lib.rb:392
+#: rr_lib.rb:403
 msgid "Unknown drive"
 msgstr ""
 
-#: rr_lib.rb:421
+#: rr_lib.rb:433
 msgid ""
 "No disc found in drive %s.\n"
 "\n"
 "Please put an audio disc in first..."
 msgstr ""
 
-#: rr_lib.rb:428
+#: rr_lib.rb:440
 msgid ""
 "Perhaps cdparanoia doesn't support the drive parameter.\n"
 " Will retry with default drive"
 msgstr ""
 
-#: rr_lib.rb:451
+#: rr_lib.rb:463
 msgid ""
 "Cdrom drive %s does not exist on your system!\n"
 "Please configure your cdrom drive first."
 msgstr ""
 
-#: rr_lib.rb:458 rr_lib.rb:488
+#: rr_lib.rb:470 rr_lib.rb:500
 msgid ""
 "You don't have read and write permission\n"
 "for device %s on your system! These permissions are\n"
@@ -1032,213 +1078,209 @@ msgid ""
 "You might want to add yourself to the necessary group in /etc/group"
 msgstr ""
 
-#: rr_lib.rb:527
+#: rr_lib.rb:539
 msgid ""
 "warning: discid or cd-discid isn't found on your system! Using fallback..."
 msgstr ""
 
-#: rr_lib.rb:530
+#: rr_lib.rb:542
 msgid "freedb string = %s"
 msgstr ""
 
-#: rr_lib.rb:609
+#: rr_lib.rb:622
 msgid "Track %s"
 msgstr ""
 
-#: rr_lib.rb:623
+#: rr_lib.rb:636
 msgid "No audio disc found in %s"
 msgstr ""
 
-#: rr_lib.rb:689
+#: rr_lib.rb:702
 msgid ""
 "Couldn't connect to freedb server. Network down?\n"
 "\n"
 "Default values will be shown..."
 msgstr ""
 
-#: rr_lib.rb:707
+#: rr_lib.rb:720
 msgid "No match in Freedb database. Default values are used."
 msgstr ""
 
-#: rr_lib.rb:710
+#: rr_lib.rb:723
 msgid "cddb_query return code = %s. Return code not supported."
 msgstr ""
 
-#: rr_lib.rb:718
+#: rr_lib.rb:731
 msgid "Keep defaults / don't use freedb"
 msgstr ""
 
-#: rr_lib.rb:880
-msgid "No eject utility found!"
-msgstr ""
-
-#: rr_lib.rb:892
+#: rr_lib.rb:898
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
 msgstr ""
 
-#: rr_lib.rb:893
+#: rr_lib.rb:899
 msgid "Will continue with the file we've got so far\n"
 msgstr ""
 
-#: rr_lib.rb:926
+#: rr_lib.rb:932
 msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
 msgstr ""
 
-#: rr_lib.rb:939
+#: rr_lib.rb:954
 msgid "Filesize is not correct! Trying another time\n"
 msgstr ""
 
-#: rr_lib.rb:948
+#: rr_lib.rb:961
 msgid "Analyzing files for mismatching chunks\n"
 msgstr ""
 
-#: rr_lib.rb:969
+#: rr_lib.rb:982
 msgid "Every chunk matched %s times :)\n"
 msgstr ""
 
-#: rr_lib.rb:972 rr_lib.rb:1009
+#: rr_lib.rb:985 rr_lib.rb:1022
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr ""
 
-#: rr_lib.rb:1006
+#: rr_lib.rb:1019
 msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr ""
 
-#: rr_lib.rb:1015
+#: rr_lib.rb:1028
 msgid "log"
 msgstr ""
 
-#: rr_lib.rb:1043
+#: rr_lib.rb:1056
 msgid ""
 "MD5 sum: %s\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:1316
+#: rr_lib.rb:1329
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
 msgstr ""
 
-#: rr_lib.rb:1352
+#: rr_lib.rb:1365
 msgid "The device %s doesn't exist on your system!"
 msgstr ""
 
-#: rr_lib.rb:1357
+#: rr_lib.rb:1370
 msgid "Please select at least one track."
 msgstr ""
 
-#: rr_lib.rb:1363
+#: rr_lib.rb:1376
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
 msgstr ""
 
-#: rr_lib.rb:1368
+#: rr_lib.rb:1381
 msgid "No codecs are selected!"
 msgstr ""
 
-#: rr_lib.rb:1380
+#: rr_lib.rb:1415
 msgid "%s not found on your system!"
 msgstr ""
 
-#: rr_lib.rb:1420
+#: rr_lib.rb:1455
 msgid ""
 "Can't create output directory!\n"
 "You have no writing acces in dir %s"
 msgstr ""
 
-#: rr_lib.rb:1454
+#: rr_lib.rb:1489
 msgid ""
 "Cdrom player used to rip:\n"
 "%s\n"
 msgstr ""
 
-#: rr_lib.rb:1455
+#: rr_lib.rb:1490
 msgid ""
 "Cdrom offset used: %s\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:1456
+#: rr_lib.rb:1491
 msgid "Ripper used: cdparanoia %s\n"
 msgstr ""
 
-#: rr_lib.rb:1456
+#: rr_lib.rb:1491
 msgid "default settings"
 msgstr ""
 
-#: rr_lib.rb:1457
+#: rr_lib.rb:1492
 msgid "Matches required for all chunks: %s\n"
 msgstr ""
 
-#: rr_lib.rb:1458
+#: rr_lib.rb:1493
 msgid ""
 "Matches required for erroneous chunks: %s\n"
 "\n"
 msgstr ""
 
-#: rr_lib.rb:1460
+#: rr_lib.rb:1495
 msgid "Codec(s) used:\n"
 msgstr ""
 
-#: rr_lib.rb:1461
+#: rr_lib.rb:1496
 msgid "-flac \t-> %s (%s)\n"
 msgstr ""
 
-#: rr_lib.rb:1462
+#: rr_lib.rb:1497
 msgid "-vorbis\t-> %s (%s)\n"
 msgstr ""
 
-#: rr_lib.rb:1463
+#: rr_lib.rb:1498
 msgid ""
 "-mp3\t-> %s\n"
 "(%s\n"
 msgstr ""
 
-#: rr_lib.rb:1464
+#: rr_lib.rb:1499
 msgid "-wav\n"
 msgstr ""
 
-#: rr_lib.rb:1465
+#: rr_lib.rb:1500
 msgid "-other\t-> %s\n"
 msgstr ""
 
-#: rr_lib.rb:1466
+#: rr_lib.rb:1501
 msgid ""
 "\n"
 "CDDB INFO\n"
 msgstr ""
 
-#: rr_lib.rb:1467
+#: rr_lib.rb:1502
 msgid ""
 "\n"
 "Artist\t= "
 msgstr ""
 
-#: rr_lib.rb:1468
+#: rr_lib.rb:1503
 msgid ""
 "\n"
 "Album\t= "
 msgstr ""
 
-#: rr_lib.rb:1469
+#: rr_lib.rb:1504
 msgid ""
 "\n"
 "Year\t= "
 msgstr ""
 
-#: rr_lib.rb:1470
+#: rr_lib.rb:1505
 msgid ""
 "\n"
 "Genre\t= "
 msgstr ""
 
-#: rr_lib.rb:1471
+#: rr_lib.rb:1506
 msgid ""
 "\n"
 "Tracks\t= "
 msgstr ""
 
-#: rr_lib.rb:1475
+#: rr_lib.rb:1510
 msgid ""
 "\n"
 "STATUS\n"
