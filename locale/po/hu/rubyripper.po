@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2009-01-14 00:15+0100\n"
+"POT-Creation-Date: 2009-01-14 00:36+0100\n"
 "PO-Revision-Date: 2008-07-28 01:58+0100\n"
 "Last-Translator: Berke Viktor <bervi@users.sourceforge.net>\n"
 "Language-Team: Hungarian\n"
@@ -685,7 +685,7 @@ msgid "<b>Track selection</b>"
 msgstr "<b>Kiválaszott számok</b>"
 
 #: rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618 rr_lib.rb:619
-#: rr_lib.rb:801 rr_lib.rb:803 rr_lib.rb:804 rr_lib.rb:811
+#: rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -1001,6 +1001,14 @@ msgstr "Mappa megnyitása"
 msgid "Ripping and encoding is finished"
 msgstr "A másolás és tömörítés befejeződött"
 
+#: rr_lib.rb:131 rr_lib.rb:139
+#, fuzzy
+msgid "Example filename: %s.ext"
+msgstr ""
+"Egy fájlnév minta:\n"
+"\n"
+"\t%s"
+
 #: rr_lib.rb:179
 msgid "No eject utility found!"
 msgstr "Az eject program nem található!"
@@ -1181,7 +1189,7 @@ msgstr "%s. szám"
 msgid "No audio disc found in %s"
 msgstr "Nem található hanglemez a %s eszközben"
 
-#: rr_lib.rb:702
+#: rr_lib.rb:703
 msgid ""
 "Couldn't connect to freedb server. Network down?\n"
 "\n"
@@ -1191,29 +1199,29 @@ msgstr ""
 "\n"
 "Az alapértelmezett értékek érhetők el..."
 
-#: rr_lib.rb:720
+#: rr_lib.rb:721
 msgid "No match in Freedb database. Default values are used."
 msgstr "Nincs freedb találat. Az alapértelmezett értékeket használom."
 
-#: rr_lib.rb:723
+#: rr_lib.rb:724
 msgid "cddb_query return code = %s. Return code not supported."
 msgstr "cddb_query visszatérési kód = %s. A kód nem támogatott."
 
-#: rr_lib.rb:731
+#: rr_lib.rb:732
 msgid "Keep defaults / don't use freedb"
 msgstr "Alapértékek / freedb kihagyása"
 
-#: rr_lib.rb:898
+#: rr_lib.rb:899
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
 msgstr ""
 "Max. próbálkozás megtörtént. %s darab nem egyezik a szükséges %{amount2} "
 "alkalommal\n"
 
-#: rr_lib.rb:899
+#: rr_lib.rb:900
 msgid "Will continue with the file we've got so far\n"
 msgstr "Az eddig létrejött fájlt folytatom\n"
 
-#: rr_lib.rb:932
+#: rr_lib.rb:933
 msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
@@ -1221,35 +1229,35 @@ msgstr ""
 "A cdparanoia nem készít wav fájlokat.\n"
 "Ellenőrizd a beállításokat."
 
-#: rr_lib.rb:954
+#: rr_lib.rb:955
 msgid "Filesize is not correct! Trying another time\n"
 msgstr ""
 
-#: rr_lib.rb:961
+#: rr_lib.rb:962
 msgid "Analyzing files for mismatching chunks\n"
 msgstr "Fájlok elemzése hibás darabokért\n"
 
-#: rr_lib.rb:982
+#: rr_lib.rb:983
 msgid "Every chunk matched %s times :)\n"
 msgstr "Minden darab %s alkalommal megegyezett :)\n"
 
-#: rr_lib.rb:985 rr_lib.rb:1022
+#: rr_lib.rb:986 rr_lib.rb:1023
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr "%s darab nem egyezett %s alkalommal.\n"
 
-#: rr_lib.rb:1019
+#: rr_lib.rb:1020
 msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr "A hibák sikeresen kijavítva, %s egyezést találtam minden darabhoz :)\n"
 
-#: rr_lib.rb:1028
+#: rr_lib.rb:1029
 msgid "Starting to rip CD image, trial #%s\n"
 msgstr ""
 
-#: rr_lib.rb:1030
+#: rr_lib.rb:1031
 msgid "Starting to rip track %s, trial #%s\n"
 msgstr ""
 
-#: rr_lib.rb:1056
+#: rr_lib.rb:1057
 msgid ""
 "MD5 sum: %s\n"
 "\n"
@@ -1257,31 +1265,31 @@ msgstr ""
 "MD5 sum: %s\n"
 "\n"
 
-#: rr_lib.rb:1329
+#: rr_lib.rb:1330
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
 msgstr "FIGYELMEZTETÉS: A %s hibával leállt a %s. szám tömörítésekor!\n"
 
-#: rr_lib.rb:1365
+#: rr_lib.rb:1366
 msgid "The device %s doesn't exist on your system!"
 msgstr "A %s eszköz nem létezik a rendszeren!"
 
-#: rr_lib.rb:1370
+#: rr_lib.rb:1371
 msgid "Please select at least one track."
 msgstr "Legalább egy számot válassz ki."
 
-#: rr_lib.rb:1376
+#: rr_lib.rb:1377
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
 msgstr "A GUI nem észleli a betett CD-t. Kattints a Beolvasásra."
 
-#: rr_lib.rb:1381
+#: rr_lib.rb:1382
 msgid "No codecs are selected!"
 msgstr "Nincs kodek kiválasztva!"
 
-#: rr_lib.rb:1415
+#: rr_lib.rb:1416
 msgid "%s not found on your system!"
 msgstr "A %s nem található a rendszeren!"
 
-#: rr_lib.rb:1455
+#: rr_lib.rb:1456
 msgid ""
 "Can't create output directory!\n"
 "You have no writing acces in dir %s"
@@ -1289,7 +1297,7 @@ msgstr ""
 "A kimeneti mappa nem hozható létre!\n"
 "Nincs írási jogod a %s mappára"
 
-#: rr_lib.rb:1489
+#: rr_lib.rb:1490
 msgid ""
 "Cdrom player used to rip:\n"
 "%s\n"
@@ -1297,7 +1305,7 @@ msgstr ""
 "Másoláshoz használt CD-ROM eszköz:\n"
 "%s\n"
 
-#: rr_lib.rb:1490
+#: rr_lib.rb:1491
 msgid ""
 "Cdrom offset used: %s\n"
 "\n"
@@ -1305,19 +1313,19 @@ msgstr ""
 "Használt CD-ROM offset: %s\n"
 "\n"
 
-#: rr_lib.rb:1491
+#: rr_lib.rb:1492
 msgid "Ripper used: cdparanoia %s\n"
 msgstr "Használt másoló: cdparanoia %s\n"
 
-#: rr_lib.rb:1491
+#: rr_lib.rb:1492
 msgid "default settings"
 msgstr "alapértékek"
 
-#: rr_lib.rb:1492
+#: rr_lib.rb:1493
 msgid "Matches required for all chunks: %s\n"
 msgstr "Szükséges egyezés minden darabhoz: %s\n"
 
-#: rr_lib.rb:1493
+#: rr_lib.rb:1494
 msgid ""
 "Matches required for erroneous chunks: %s\n"
 "\n"
@@ -1325,19 +1333,19 @@ msgstr ""
 "Szükséges egyezés a hibás darabokhoz: %s\n"
 "\n"
 
-#: rr_lib.rb:1495
+#: rr_lib.rb:1496
 msgid "Codec(s) used:\n"
 msgstr "Használt kodek(ek):\n"
 
-#: rr_lib.rb:1496
+#: rr_lib.rb:1497
 msgid "-flac \t-> %s (%s)\n"
 msgstr "-flac \t-> %s (%s)\n"
 
-#: rr_lib.rb:1497
+#: rr_lib.rb:1498
 msgid "-vorbis\t-> %s (%s)\n"
 msgstr "-vorbis\t-> %s (%s)\n"
 
-#: rr_lib.rb:1498
+#: rr_lib.rb:1499
 msgid ""
 "-mp3\t-> %s\n"
 "(%s\n"
@@ -1345,15 +1353,15 @@ msgstr ""
 "-mp3\t-> %s\n"
 "(%s\n"
 
-#: rr_lib.rb:1499
+#: rr_lib.rb:1500
 msgid "-wav\n"
 msgstr "-wav\n"
 
-#: rr_lib.rb:1500
+#: rr_lib.rb:1501
 msgid "-other\t-> %s\n"
 msgstr "-egyéb\t-> %s\n"
 
-#: rr_lib.rb:1501
+#: rr_lib.rb:1502
 msgid ""
 "\n"
 "CDDB INFO\n"
@@ -1361,7 +1369,7 @@ msgstr ""
 "\n"
 "CDDB INFÓ\n"
 
-#: rr_lib.rb:1502
+#: rr_lib.rb:1503
 msgid ""
 "\n"
 "Artist\t= "
@@ -1369,7 +1377,7 @@ msgstr ""
 "\n"
 "Előadó\t= "
 
-#: rr_lib.rb:1503
+#: rr_lib.rb:1504
 msgid ""
 "\n"
 "Album\t= "
@@ -1377,7 +1385,7 @@ msgstr ""
 "\n"
 "Album\t= "
 
-#: rr_lib.rb:1504
+#: rr_lib.rb:1505
 msgid ""
 "\n"
 "Year\t= "
@@ -1385,7 +1393,7 @@ msgstr ""
 "\n"
 "Év\t= "
 
-#: rr_lib.rb:1505
+#: rr_lib.rb:1506
 msgid ""
 "\n"
 "Genre\t= "
@@ -1393,7 +1401,7 @@ msgstr ""
 "\n"
 "Műfaj\t= "
 
-#: rr_lib.rb:1506
+#: rr_lib.rb:1507
 msgid ""
 "\n"
 "Tracks\t= "
@@ -1401,7 +1409,7 @@ msgstr ""
 "\n"
 "Számok\t= "
 
-#: rr_lib.rb:1510
+#: rr_lib.rb:1511
 msgid ""
 "\n"
 "STATUS\n"

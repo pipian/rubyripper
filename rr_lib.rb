@@ -128,7 +128,7 @@ $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)
 	filename = File.expand_path(filename)
-	filename = "Example filename: #{filename}.ext"
+	filename = _("Example filename: %s.ext") % [filename]
 	{'%a' => 'Judas Priest', '%b' => 'Sin After Sin', '%f' => 'codec', '%g' => 'Rock', '%y' => '1977', '%n' =>'01', '%t' => 'Sinner', '%i' =>'inputfile', '%o' => 'outputfile'}.each{|key, value| filename.gsub!(key,value)}
 	return filename
 end
@@ -136,7 +136,7 @@ end
 def get_example_filename_various(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)
 	filename = File.expand_path(filename)
-	filename = "Example filename: #{filename}.ext"
+	filename = _("Example filename: %s.ext") % [filename]
 	{'%a' => 'Various Artists', '%b' => 'TMF Rockzone', '%f' => 'codec', '%g' => "Rock", '%y' => '1999', '%n' => '01', '%va' => 'Kid Rock', '%t' => 'Cowboy'}.each{|key, value| filename.gsub!(key,value)}
 	return filename
 end

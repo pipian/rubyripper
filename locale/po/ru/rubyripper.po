@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2009-01-14 00:15+0100\n"
+"POT-Creation-Date: 2009-01-14 00:36+0100\n"
 "PO-Revision-Date: 2009-01-08 19:31+0300\n"
 "Last-Translator: Alexander Kuzmenkov <rc.4096@gmail.com>\n"
 "Language-Team: Russian <rc.4096@gmail.com>\n"
@@ -700,7 +700,7 @@ msgid "<b>Track selection</b>"
 msgstr "<b>Выбор треков</b>"
 
 #: rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618 rr_lib.rb:619
-#: rr_lib.rb:801 rr_lib.rb:803 rr_lib.rb:804 rr_lib.rb:811
+#: rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
 msgid "Unknown"
 msgstr "Неизвестный"
 
@@ -1021,6 +1021,14 @@ msgstr "Открыть директорию"
 msgid "Ripping and encoding is finished"
 msgstr "Извлечение и сжатие завершено"
 
+#: rr_lib.rb:131 rr_lib.rb:139
+#, fuzzy
+msgid "Example filename: %s.ext"
+msgstr ""
+"Имя файла будет выглядеть так:\n"
+"\n"
+"\t%s"
+
 #: rr_lib.rb:179
 msgid "No eject utility found!"
 msgstr "Не найдена утилита eject!"
@@ -1205,7 +1213,7 @@ msgstr "Потреково"
 msgid "No audio disc found in %s"
 msgstr "Аудиодиск в устройстве %s не обнаружен"
 
-#: rr_lib.rb:702
+#: rr_lib.rb:703
 msgid ""
 "Couldn't connect to freedb server. Network down?\n"
 "\n"
@@ -1215,29 +1223,29 @@ msgstr ""
 "\n"
 "Вам придётся вручную заполнить имена треков..."
 
-#: rr_lib.rb:720
+#: rr_lib.rb:721
 msgid "No match in Freedb database. Default values are used."
 msgstr "Не найдено совпадений в базе Freedb. Заполняйте названия вручную."
 
-#: rr_lib.rb:723
+#: rr_lib.rb:724
 msgid "cddb_query return code = %s. Return code not supported."
 msgstr "cddb_query вернул код %s. Возвращаемое значение не поддерживается."
 
-#: rr_lib.rb:731
+#: rr_lib.rb:732
 msgid "Keep defaults / don't use freedb"
 msgstr "Названия по умолчанию (не использовать freedb)"
 
-#: rr_lib.rb:898
+#: rr_lib.rb:899
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
 msgstr ""
 "Было достигнуто максимальное число попыток чтения (%s). Число кусков,\n"
 "которые не были восстановлены: %s.\n"
 
-#: rr_lib.rb:899
+#: rr_lib.rb:900
 msgid "Will continue with the file we've got so far\n"
 msgstr "Продолжаем с файлом, полученным до этого\n"
 
-#: rr_lib.rb:932
+#: rr_lib.rb:933
 msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
@@ -1245,37 +1253,37 @@ msgstr ""
 "Cdparanoia не выводит wav-файлов.\n"
 "Проверьте ваши настройки."
 
-#: rr_lib.rb:954
+#: rr_lib.rb:955
 msgid "Filesize is not correct! Trying another time\n"
 msgstr ""
 "После %s попыток не удалось получить файлы одного размера. Пробуем ещё раз\n"
 
-#: rr_lib.rb:961
+#: rr_lib.rb:962
 msgid "Analyzing files for mismatching chunks\n"
 msgstr "Анализ файлов на несовпадающие куски\n"
 
-#: rr_lib.rb:982
+#: rr_lib.rb:983
 msgid "Every chunk matched %s times :)\n"
 msgstr "Каждый совпадающий кусок извлекался %s раз(а) (:\n"
 
-#: rr_lib.rb:985 rr_lib.rb:1022
+#: rr_lib.rb:986 rr_lib.rb:1023
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr "%s кусков не совпали за %s попыток извлечения.\n"
 
-#: rr_lib.rb:1019
+#: rr_lib.rb:1020
 msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr ""
 "Ошибки исправлены, каждый совпадающий кусок был извлечён %s раз(а) (:\n"
 
-#: rr_lib.rb:1028
+#: rr_lib.rb:1029
 msgid "Starting to rip CD image, trial #%s\n"
 msgstr ""
 
-#: rr_lib.rb:1030
+#: rr_lib.rb:1031
 msgid "Starting to rip track %s, trial #%s\n"
 msgstr ""
 
-#: rr_lib.rb:1056
+#: rr_lib.rb:1057
 msgid ""
 "MD5 sum: %s\n"
 "\n"
@@ -1283,31 +1291,31 @@ msgstr ""
 "Хэш MD5: %s\n"
 "\n"
 
-#: rr_lib.rb:1329
+#: rr_lib.rb:1330
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
 msgstr "ВНИМАНИЕ: Кодек %s вернул ошибку при обработке трека %s!\n"
 
-#: rr_lib.rb:1365
+#: rr_lib.rb:1366
 msgid "The device %s doesn't exist on your system!"
 msgstr "Устройства %s в вашей системе не существует!"
 
-#: rr_lib.rb:1370
+#: rr_lib.rb:1371
 msgid "Please select at least one track."
 msgstr "Выберите хотя бы один трек."
 
-#: rr_lib.rb:1376
+#: rr_lib.rb:1377
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
 msgstr "Интерфейс не распознаёт вставленный диск. Нажмите \"Прочитать\"."
 
-#: rr_lib.rb:1381
+#: rr_lib.rb:1382
 msgid "No codecs are selected!"
 msgstr "Кодек не выбран!"
 
-#: rr_lib.rb:1415
+#: rr_lib.rb:1416
 msgid "%s not found on your system!"
 msgstr "Кодек %s не найден в вашей системе!"
 
-#: rr_lib.rb:1455
+#: rr_lib.rb:1456
 msgid ""
 "Can't create output directory!\n"
 "You have no writing acces in dir %s"
@@ -1315,7 +1323,7 @@ msgstr ""
 "Невозможно создать директорию!\n"
 "У вас нет прав на запись в %s"
 
-#: rr_lib.rb:1489
+#: rr_lib.rb:1490
 msgid ""
 "Cdrom player used to rip:\n"
 "%s\n"
@@ -1323,7 +1331,7 @@ msgstr ""
 "CD-привод, используемый для извлечения:\n"
 "%s\n"
 
-#: rr_lib.rb:1490
+#: rr_lib.rb:1491
 msgid ""
 "Cdrom offset used: %s\n"
 "\n"
@@ -1331,51 +1339,51 @@ msgstr ""
 "Смещение привода: %s\n"
 "\n"
 
-#: rr_lib.rb:1491
+#: rr_lib.rb:1492
 msgid "Ripper used: cdparanoia %s\n"
 msgstr "Программа извлечения: cdparanoia %s\n"
 
-#: rr_lib.rb:1491
+#: rr_lib.rb:1492
 msgid "default settings"
 msgstr "настройки по умолчанию"
 
-#: rr_lib.rb:1492
+#: rr_lib.rb:1493
 msgid "Matches required for all chunks: %s\n"
 msgstr "Число попыток для всех кусков: %s\n"
 
-#: rr_lib.rb:1493
+#: rr_lib.rb:1494
 msgid ""
 "Matches required for erroneous chunks: %s\n"
 "\n"
 msgstr "Число попыток для кусков с ошибками: %s\n"
 
-#: rr_lib.rb:1495
+#: rr_lib.rb:1496
 msgid "Codec(s) used:\n"
 msgstr "Используемый кодек:\n"
 
-#: rr_lib.rb:1496
+#: rr_lib.rb:1497
 msgid "-flac \t-> %s (%s)\n"
 msgstr ""
 
-#: rr_lib.rb:1497
+#: rr_lib.rb:1498
 msgid "-vorbis\t-> %s (%s)\n"
 msgstr ""
 
-#: rr_lib.rb:1498
+#: rr_lib.rb:1499
 msgid ""
 "-mp3\t-> %s\n"
 "(%s\n"
 msgstr ""
 
-#: rr_lib.rb:1499
+#: rr_lib.rb:1500
 msgid "-wav\n"
 msgstr ""
 
-#: rr_lib.rb:1500
+#: rr_lib.rb:1501
 msgid "-other\t-> %s\n"
 msgstr "-другой\t-> %s\n"
 
-#: rr_lib.rb:1501
+#: rr_lib.rb:1502
 msgid ""
 "\n"
 "CDDB INFO\n"
@@ -1383,7 +1391,7 @@ msgstr ""
 "\n"
 "ИНФОРМАЦИЯ С CDDB\n"
 
-#: rr_lib.rb:1502
+#: rr_lib.rb:1503
 msgid ""
 "\n"
 "Artist\t= "
@@ -1391,7 +1399,7 @@ msgstr ""
 "\n"
 "Исполнитель\t= "
 
-#: rr_lib.rb:1503
+#: rr_lib.rb:1504
 msgid ""
 "\n"
 "Album\t= "
@@ -1399,7 +1407,7 @@ msgstr ""
 "\n"
 "Альбом\t\t= "
 
-#: rr_lib.rb:1504
+#: rr_lib.rb:1505
 msgid ""
 "\n"
 "Year\t= "
@@ -1407,7 +1415,7 @@ msgstr ""
 "\n"
 "Год\t\t\t= "
 
-#: rr_lib.rb:1505
+#: rr_lib.rb:1506
 msgid ""
 "\n"
 "Genre\t= "
@@ -1415,7 +1423,7 @@ msgstr ""
 "\n"
 "Жанр\t\t= "
 
-#: rr_lib.rb:1506
+#: rr_lib.rb:1507
 msgid ""
 "\n"
 "Tracks\t= "
@@ -1423,7 +1431,7 @@ msgstr ""
 "\n"
 "Треки\t\t= "
 
-#: rr_lib.rb:1510
+#: rr_lib.rb:1511
 msgid ""
 "\n"
 "STATUS\n"

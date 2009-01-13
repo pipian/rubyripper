@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2009-01-14 00:15+0100\n"
+"POT-Creation-Date: 2009-01-14 00:36+0100\n"
 "PO-Revision-Date: 2007-11-12 20:25+0100\n"
 "Last-Translator: Persona <anom.cuen@yahoo.es>\n"
 "MIME-Version: 1.0\n"
@@ -690,7 +690,7 @@ msgid "<b>Track selection</b>"
 msgstr "<b>Selección de pistas</b>"
 
 #: rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618 rr_lib.rb:619
-#: rr_lib.rb:801 rr_lib.rb:803 rr_lib.rb:804 rr_lib.rb:811
+#: rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
 msgid "Unknown"
 msgstr "Desconocido."
 
@@ -1006,6 +1006,14 @@ msgstr "Abrir directorio."
 msgid "Ripping and encoding is finished"
 msgstr "Extracción y codificación terminadas."
 
+#: rr_lib.rb:131 rr_lib.rb:139
+#, fuzzy
+msgid "Example filename: %s.ext"
+msgstr ""
+"Un ejemplo de nombre de archivo es:\n"
+"\n"
+"\t%s"
+
 #: rr_lib.rb:179
 msgid "No eject utility found!"
 msgstr "¡Utilidad de expulsión no encontrada!"
@@ -1178,7 +1186,7 @@ msgstr ""
 msgid "No audio disc found in %s"
 msgstr "Disco de audio no encontrado en %s"
 
-#: rr_lib.rb:702
+#: rr_lib.rb:703
 msgid ""
 "Couldn't connect to freedb server. Network down?\n"
 "\n"
@@ -1188,68 +1196,68 @@ msgstr ""
 "\n"
 "Se muestran los valores por defecto..."
 
-#: rr_lib.rb:720
+#: rr_lib.rb:721
 msgid "No match in Freedb database. Default values are used."
 msgstr ""
 "No hay coincidencias en la base de freedb. Se muestran los valores por "
 "defecto... "
 
-#: rr_lib.rb:723
+#: rr_lib.rb:724
 msgid "cddb_query return code = %s. Return code not supported."
 msgstr ""
 "Código de respuesta de cddb_query = %s. Código de retorno no soportado."
 
-#: rr_lib.rb:731
+#: rr_lib.rb:732
 msgid "Keep defaults / don't use freedb"
 msgstr "Mantener los valores por defecto / no usar freedb."
 
-#: rr_lib.rb:898
+#: rr_lib.rb:899
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
 msgstr ""
 "Número máximo de intentos alcanzado.  %s fragmento(s) no correpondieron las %"
 "s veces requeridas\n"
 
-#: rr_lib.rb:899
+#: rr_lib.rb:900
 msgid "Will continue with the file we've got so far\n"
 msgstr "Continuar con el archivo que hemos obtenido\n"
 
-#: rr_lib.rb:932
+#: rr_lib.rb:933
 msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
 msgstr ""
 
-#: rr_lib.rb:954
+#: rr_lib.rb:955
 msgid "Filesize is not correct! Trying another time\n"
 msgstr ""
 
-#: rr_lib.rb:961
+#: rr_lib.rb:962
 msgid "Analyzing files for mismatching chunks\n"
 msgstr "Buscando fragmentos discordantes en el archivo\n"
 
-#: rr_lib.rb:982
+#: rr_lib.rb:983
 msgid "Every chunk matched %s times :)\n"
 msgstr "Cada fragmento correspondió %s veces :)\n"
 
-#: rr_lib.rb:985 rr_lib.rb:1022
+#: rr_lib.rb:986 rr_lib.rb:1023
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr "%s fragmento(s) no correspondió %s veces.\n"
 
-#: rr_lib.rb:1019
+#: rr_lib.rb:1020
 msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr ""
 "Error(es) corregidos con éxito, %s correspondencias encontradas para cada "
 "fragmento :) \n"
 
-#: rr_lib.rb:1028
+#: rr_lib.rb:1029
 msgid "Starting to rip CD image, trial #%s\n"
 msgstr ""
 
-#: rr_lib.rb:1030
+#: rr_lib.rb:1031
 msgid "Starting to rip track %s, trial #%s\n"
 msgstr ""
 
-#: rr_lib.rb:1056
+#: rr_lib.rb:1057
 msgid ""
 "MD5 sum: %s\n"
 "\n"
@@ -1257,33 +1265,33 @@ msgstr ""
 "MD5 sum: %s\n"
 "\n"
 
-#: rr_lib.rb:1329
+#: rr_lib.rb:1330
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
 msgstr ""
 
-#: rr_lib.rb:1365
+#: rr_lib.rb:1366
 msgid "The device %s doesn't exist on your system!"
 msgstr "¡El dispositivo  %s no existe en su sistema!"
 
-#: rr_lib.rb:1370
+#: rr_lib.rb:1371
 msgid "Please select at least one track."
 msgstr "Por favor, seleccione al menos una pista."
 
-#: rr_lib.rb:1376
+#: rr_lib.rb:1377
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
 msgstr ""
 "El Gui no corresponde con el cd insetado. Por favor, pulse primero Analizar "
 "Dispositivo."
 
-#: rr_lib.rb:1381
+#: rr_lib.rb:1382
 msgid "No codecs are selected!"
 msgstr "¡No se ha seleccionado ningún codec!"
 
-#: rr_lib.rb:1415
+#: rr_lib.rb:1416
 msgid "%s not found on your system!"
 msgstr "¡%s no encontrado en su sistema!"
 
-#: rr_lib.rb:1455
+#: rr_lib.rb:1456
 msgid ""
 "Can't create output directory!\n"
 "You have no writing acces in dir %s"
@@ -1291,7 +1299,7 @@ msgstr ""
 "¡No se pudo crear directorio de salida!\n"
 "No tiene permiso de escritura en el directorio %s"
 
-#: rr_lib.rb:1489
+#: rr_lib.rb:1490
 msgid ""
 "Cdrom player used to rip:\n"
 "%s\n"
@@ -1299,7 +1307,7 @@ msgstr ""
 "Lector de cdrom usado para la extracción:\n"
 "%s\n"
 
-#: rr_lib.rb:1490
+#: rr_lib.rb:1491
 msgid ""
 "Cdrom offset used: %s\n"
 "\n"
@@ -1307,19 +1315,19 @@ msgstr ""
 "Offset de cdrom utilizado: %s\n"
 "\n"
 
-#: rr_lib.rb:1491
+#: rr_lib.rb:1492
 msgid "Ripper used: cdparanoia %s\n"
 msgstr "Extractor utilizado: cdparanoia %s\n"
 
-#: rr_lib.rb:1491
+#: rr_lib.rb:1492
 msgid "default settings"
 msgstr "preferencias por defecto"
 
-#: rr_lib.rb:1492
+#: rr_lib.rb:1493
 msgid "Matches required for all chunks: %s\n"
 msgstr "Correspondencias requeridas para todos los fragmentos: %s\n"
 
-#: rr_lib.rb:1493
+#: rr_lib.rb:1494
 msgid ""
 "Matches required for erroneous chunks: %s\n"
 "\n"
@@ -1327,19 +1335,19 @@ msgstr ""
 "Correspondencias requeridas para fragmentos erróneos: %s\n"
 "\n"
 
-#: rr_lib.rb:1495
+#: rr_lib.rb:1496
 msgid "Codec(s) used:\n"
 msgstr "Codec(s) utilizado(s):\n"
 
-#: rr_lib.rb:1496
+#: rr_lib.rb:1497
 msgid "-flac \t-> %s (%s)\n"
 msgstr "-flac \t-> %s (%s)\n"
 
-#: rr_lib.rb:1497
+#: rr_lib.rb:1498
 msgid "-vorbis\t-> %s (%s)\n"
 msgstr "-vorbis\t-> %s (%s)\n"
 
-#: rr_lib.rb:1498
+#: rr_lib.rb:1499
 msgid ""
 "-mp3\t-> %s\n"
 "(%s\n"
@@ -1347,15 +1355,15 @@ msgstr ""
 "-mp3\t-> %s\n"
 "(%s\n"
 
-#: rr_lib.rb:1499
+#: rr_lib.rb:1500
 msgid "-wav\n"
 msgstr "-wav\n"
 
-#: rr_lib.rb:1500
+#: rr_lib.rb:1501
 msgid "-other\t-> %s\n"
 msgstr "-otro\t-> %s\n"
 
-#: rr_lib.rb:1501
+#: rr_lib.rb:1502
 msgid ""
 "\n"
 "CDDB INFO\n"
@@ -1363,7 +1371,7 @@ msgstr ""
 "\n"
 "INFORMACIÓN DE CDDB\n"
 
-#: rr_lib.rb:1502
+#: rr_lib.rb:1503
 msgid ""
 "\n"
 "Artist\t= "
@@ -1371,7 +1379,7 @@ msgstr ""
 "\n"
 "Artista\t= "
 
-#: rr_lib.rb:1503
+#: rr_lib.rb:1504
 msgid ""
 "\n"
 "Album\t= "
@@ -1379,7 +1387,7 @@ msgstr ""
 "\n"
 "Album\t= "
 
-#: rr_lib.rb:1504
+#: rr_lib.rb:1505
 msgid ""
 "\n"
 "Year\t= "
@@ -1387,7 +1395,7 @@ msgstr ""
 "\n"
 "Año\t= "
 
-#: rr_lib.rb:1505
+#: rr_lib.rb:1506
 msgid ""
 "\n"
 "Genre\t= "
@@ -1395,7 +1403,7 @@ msgstr ""
 "\n"
 "Género\t= "
 
-#: rr_lib.rb:1506
+#: rr_lib.rb:1507
 msgid ""
 "\n"
 "Tracks\t= "
@@ -1403,7 +1411,7 @@ msgstr ""
 "\n"
 "Pistas\t= "
 
-#: rr_lib.rb:1510
+#: rr_lib.rb:1511
 msgid ""
 "\n"
 "STATUS\n"
