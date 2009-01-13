@@ -684,8 +684,9 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 		
 		if ENV['http_proxy']
 			@proxy = URI.parse(ENV['http_proxy'])
-			@server = Net::HTTP.new(@url.host, @url.port, @proxy.host, 
-				@proxy.port, @proxy.user, CGI.unescape(@proxy.password))
+			@server = Net::HTTP.new(@url.host, @url.port, @proxy.host,
+				@proxy.port, @proxy.user,
+				@proxy.password ? CGI.unescape(@proxy.password) : '')
 		else
 			@server = Net::HTTP.new(@url.host, @url.port)
 		end
