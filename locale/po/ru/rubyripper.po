@@ -1,14 +1,14 @@
-# Russian translations of RubyRipper.
-# Copyright (C) 2008 Alexander Kuzmenkov <rc.4096@gmail.com>
-# This file is distributed under the same license as the PACKAGE package.
-# Alexander Kuzmenkov <rc.4096@gmail.com>, 2007, 2008.
+# Russian translation of RubyRipper.
+# Copyright (C) 2009 Alexander Kuzmenkov <rc.4096@gmail.com>
+# This file is distributed under the same license as the RubyRipper package.
+# Alexander Kuzmenkov <rc.4096@gmail.com>, 2007, 2008, 2009.
 #
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
 "POT-Creation-Date: 2008-12-24 19:19+0100\n"
-"PO-Revision-Date: 2008-01-06 01:11+0300\n"
+"PO-Revision-Date: 2009-01-08 19:31+0300\n"
 "Last-Translator: Alexander Kuzmenkov <rc.4096@gmail.com>\n"
 "Language-Team: Russian <rc.4096@gmail.com>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 
 #: rubyripper_cli.rb:62
 msgid "Show current version of rubyripper."
-msgstr ""
+msgstr "Показать текущую версию rubyripper."
 
 #: rubyripper_cli.rb:66
 msgid "Load configuration settings from file <FILE>."
@@ -104,6 +104,8 @@ msgid ""
 "   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
 "   **Your drive model is shown in the logfile."
 msgstr ""
+"   **Найдите смещение для своего привода на <http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Модель вашего привода отображается в журнале.\n"
 
 #: rubyripper_cli.rb:114
 msgid "9)  passing extra cdparanoia parameters : %s"
@@ -195,7 +197,7 @@ msgstr "плейлист отключён"
 
 #: rubyripper_cli.rb:146
 msgid "How many encoding threads would you like? : "
-msgstr ""
+msgstr "Сколько потоков кодирования использовать?"
 
 #: rubyripper_cli.rb:148
 msgid "Which options to pass to cdparanoia? : "
@@ -397,7 +399,7 @@ msgstr ""
 
 #: rubyripper_cli.rb:285
 msgid "DISC INFO"
-msgstr ""
+msgstr "ИНФОРМАЦИЯ О ДИСКЕ"
 
 #: rubyripper_cli.rb:286 rubyripper_cli.rb:327
 msgid "Artist : %s"
@@ -421,23 +423,23 @@ msgstr "ТРЕК"
 
 #: rubyripper_cli.rb:310
 msgid "What would you like to do?"
-msgstr ""
+msgstr "Что будем делать?"
 
 #: rubyripper_cli.rb:312
 msgid "1) Select the tracks to rip"
-msgstr ""
+msgstr "1) Выбрать треки для извлечения"
 
 #: rubyripper_cli.rb:313
 msgid "2) Edit the disc info"
-msgstr ""
+msgstr "2) Отредактировать информацию о диске"
 
 #: rubyripper_cli.rb:314
 msgid "3) Edit the track info"
-msgstr ""
+msgstr "3) Отредактировать информацию о треке"
 
 #: rubyripper_cli.rb:315
 msgid "4) Cancel the rip and eject the disc"
-msgstr ""
+msgstr "4) Ничего не надо делать, извлечь диск"
 
 #: rubyripper_cli.rb:318 rubyripper_cli.rb:388
 msgid "Please enter the number of your choice: "
@@ -447,7 +449,7 @@ msgstr "Укажите номер пункта : "
 msgid ""
 "Finished editing disc info\n"
 "\n"
-msgstr ""
+msgstr "\nРедактирование информации о диске завершено\n"
 
 #: rubyripper_cli.rb:334 rubyripper_cli.rb:352
 msgid "Please enter the number you'd like to edit: "
@@ -473,7 +475,7 @@ msgstr "Год : "
 msgid ""
 "Finished editing track info\n"
 "\n"
-msgstr ""
+msgstr "\nРедактирование информации о треке завершено\n"
 
 #: rubyripper_cli.rb:361
 msgid "This is not a valid number. Try again"
@@ -497,7 +499,7 @@ msgstr "2) Заменить директорию"
 
 #: rubyripper_cli.rb:385
 msgid "3) Cancel the rip and eject the disc"
-msgstr ""
+msgstr "3) Отменить и извлечь диск"
 
 #: rubyripper_cli.rb:415
 msgid "Do you want to change your settings? (y/n) : "
@@ -711,13 +713,16 @@ msgstr "Смещение привода:"
 
 #: rubyripper_gtk2.rb:623
 msgid "List with offsets"
-msgstr ""
+msgstr "Список смещений"
 
 #: rubyripper_gtk2.rb:624
 msgid ""
 "A website which lists the offset for most drives.\n"
 "Your drivename can be found in each logfile."
 msgstr ""
+"\n"
+"Веб-страница со смещениями для большинства приводов.\n"
+"Имя вашего привода можно найти в любом файле журнала."
 
 #: rubyripper_gtk2.rb:634
 msgid "Cdrom device"
@@ -753,15 +758,15 @@ msgstr "Выдвигать лоток после завершения"
 
 #: rubyripper_gtk2.rb:682
 msgid "Only keep logfile if correction is needed"
-msgstr "Хранить журнал (лог) только в том случае, если требуется коррекция"
+msgstr "Сохранять журнал только в том случае, если требуется коррекция"
 
 #: rubyripper_gtk2.rb:683
 msgid "Create cuesheet"
-msgstr ""
+msgstr "Создать cue"
 
 #: rubyripper_gtk2.rb:684
 msgid "Rip CD to single file"
-msgstr ""
+msgstr "Извлечь в образ"
 
 #: rubyripper_gtk2.rb:694
 msgid "Ripping related"
@@ -769,7 +774,7 @@ msgstr "Извлечение"
 
 #: rubyripper_gtk2.rb:701
 msgid "Secure Ripping"
-msgstr "Извлечение"
+msgstr "Точное извлечение"
 
 #: rubyripper_gtk2.rb:711
 msgid "Flac"
@@ -887,7 +892,7 @@ msgstr "Схема для сборников:"
 
 #: rubyripper_gtk2.rb:839
 msgid "Single file image:"
-msgstr ""
+msgstr "Файл образа:"
 
 #: rubyripper_gtk2.rb:841
 msgid "Show options for \"Filenaming scheme\""
@@ -1020,6 +1025,8 @@ msgid ""
 "Artist : %s\n"
 "Album: %s\n"
 msgstr ""
+"Исполнитель : %s\n"
+"Альбом : %s\n"
 
 #: rr_lib.rb:198
 msgid "This log is created by Rubyripper, version %s\n"
@@ -1037,7 +1044,7 @@ msgstr ""
 msgid ""
 "\n"
 "WARNING: ENCODING ERRORS WERE DETECTED\n"
-msgstr ""
+msgstr "ВНИМАНИЕ: ОБНАРУЖЕНЫ ОШИБКИ СЖАТИЯ\n"
 
 #: rr_lib.rb:244
 msgid ""
@@ -1141,6 +1148,8 @@ msgid ""
 "\n"
 "Please put an audio disc in first..."
 msgstr ""
+"Диск в приводе %s не найден.\n"
+"Вставьте диск."
 
 #: rr_lib.rb:440
 msgid ""
@@ -1155,6 +1164,8 @@ msgid ""
 "Cdrom drive %s does not exist on your system!\n"
 "Please configure your cdrom drive first."
 msgstr ""
+"Привод %s отсутствует в вашей системе!\n"
+"Пожалуйста, настройте ваш привод сначала."
 
 #: rr_lib.rb:470 rr_lib.rb:500
 msgid ""
@@ -1165,6 +1176,12 @@ msgid ""
 "%s\n"
 "You might want to add yourself to the necessary group in /etc/group"
 msgstr ""
+"У вас нет прав на чтение и запись для устройства\n"
+"%s! Эти права необходимы для правильной работы\n"
+"cdparanoia.\n"
+"\n"
+"%s\n"
+"Возможно, вам нужно добавить себя в соответствующую группу."
 
 #: rr_lib.rb:539
 msgid ""
@@ -1220,6 +1237,8 @@ msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
 msgstr ""
+"Cdparanoia не выводит wav-файлов.\n"
+"Проверьте ваши настройки."
 
 #: rr_lib.rb:954
 msgid "Filesize is not correct! Trying another time\n"
@@ -1245,7 +1264,7 @@ msgstr ""
 
 #: rr_lib.rb:1028
 msgid "log"
-msgstr ""
+msgstr "журнал"
 
 #: rr_lib.rb:1056
 msgid ""
