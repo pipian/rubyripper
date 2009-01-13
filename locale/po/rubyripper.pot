@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2008-12-24 19:19+0100\n"
+"POT-Creation-Date: 2009-01-14 00:15+0100\n"
 "PO-Revision-Date: 2008-06-18 21:16+0200\n"
 "Last-Translator: FULL NAME <rubyripperdev@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1149,7 +1149,11 @@ msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr ""
 
 #: rr_lib.rb:1028
-msgid "log"
+msgid "Starting to rip CD image, trial #%s\n"
+msgstr ""
+
+#: rr_lib.rb:1030
+msgid "Starting to rip track %s, trial #%s\n"
 msgstr ""
 
 #: rr_lib.rb:1056

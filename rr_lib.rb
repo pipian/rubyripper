@@ -1025,9 +1025,9 @@ class SecureRip
 	
 	def rip(track) # set cdparanoia command + parameters
 		if @settings['image']
-			@settings['log'].append_2_log(_("Starting to rip CD image, trial #%s\n") % [@trial])
+			@settings['log'].append_2_log(_("Starting to rip CD image, trial \#%s\n") % [@trial])
 		else
-			@settings['log'].append_2_log(_("Starting to rip track %s, trial #%s\n") % [track, @trial])
+			@settings['log'].append_2_log(_("Starting to rip track %s, trial \#%s\n") % [track, @trial])
 		end
 		command = "cdparanoia"
 		if @settings['rippersettings'].size != 0 : command += " #{@settings['rippersettings']}" end 

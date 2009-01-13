@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2008-12-24 19:19+0100\n"
+"POT-Creation-Date: 2009-01-14 00:15+0100\n"
 "PO-Revision-Date: 2009-01-08 19:31+0300\n"
 "Last-Translator: Alexander Kuzmenkov <rc.4096@gmail.com>\n"
 "Language-Team: Russian <rc.4096@gmail.com>\n"
@@ -104,7 +104,8 @@ msgid ""
 "   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
 "   **Your drive model is shown in the logfile."
 msgstr ""
-"   **Найдите смещение для своего привода на <http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Найдите смещение для своего привода на <http://www.accuraterip.com/"
+"driveoffsets.htm.\n"
 "   **Модель вашего привода отображается в журнале.\n"
 
 #: rubyripper_cli.rb:114
@@ -449,7 +450,9 @@ msgstr "Укажите номер пункта : "
 msgid ""
 "Finished editing disc info\n"
 "\n"
-msgstr "\nРедактирование информации о диске завершено\n"
+msgstr ""
+"\n"
+"Редактирование информации о диске завершено\n"
 
 #: rubyripper_cli.rb:334 rubyripper_cli.rb:352
 msgid "Please enter the number you'd like to edit: "
@@ -475,7 +478,9 @@ msgstr "Год : "
 msgid ""
 "Finished editing track info\n"
 "\n"
-msgstr "\nРедактирование информации о треке завершено\n"
+msgstr ""
+"\n"
+"Редактирование информации о треке завершено\n"
 
 #: rubyripper_cli.rb:361
 msgid "This is not a valid number. Try again"
@@ -1263,8 +1268,12 @@ msgstr ""
 "Ошибки исправлены, каждый совпадающий кусок был извлечён %s раз(а) (:\n"
 
 #: rr_lib.rb:1028
-msgid "log"
-msgstr "журнал"
+msgid "Starting to rip CD image, trial #%s\n"
+msgstr ""
+
+#: rr_lib.rb:1030
+msgid "Starting to rip track %s, trial #%s\n"
+msgstr ""
 
 #: rr_lib.rb:1056
 msgid ""
@@ -1423,3 +1432,6 @@ msgstr ""
 "\n"
 "СТАТУС\n"
 "\n"
+
+#~ msgid "log"
+#~ msgstr "журнал"

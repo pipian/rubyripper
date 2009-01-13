@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2008-12-24 19:19+0100\n"
+"POT-Creation-Date: 2009-01-14 00:15+0100\n"
 "PO-Revision-Date: 2008-07-28 01:58+0100\n"
 "Last-Translator: Berke Viktor <bervi@users.sourceforge.net>\n"
 "Language-Team: Hungarian\n"
@@ -1242,8 +1242,12 @@ msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr "A hibák sikeresen kijavítva, %s egyezést találtam minden darabhoz :)\n"
 
 #: rr_lib.rb:1028
-msgid "log"
-msgstr "log"
+msgid "Starting to rip CD image, trial #%s\n"
+msgstr ""
+
+#: rr_lib.rb:1030
+msgid "Starting to rip track %s, trial #%s\n"
+msgstr ""
 
 #: rr_lib.rb:1056
 msgid ""
@@ -1406,3 +1410,6 @@ msgstr ""
 "\n"
 "ÁLLAPOT\n"
 "\n"
+
+#~ msgid "log"
+#~ msgstr "log"

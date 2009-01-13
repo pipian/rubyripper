@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2008-12-24 19:19+0100\n"
+"POT-Creation-Date: 2009-01-14 00:15+0100\n"
 "PO-Revision-Date: 2007-11-12 20:25+0100\n"
 "Last-Translator: Persona <anom.cuen@yahoo.es>\n"
 "MIME-Version: 1.0\n"
@@ -1242,7 +1242,11 @@ msgstr ""
 "fragmento :) \n"
 
 #: rr_lib.rb:1028
-msgid "log"
+msgid "Starting to rip CD image, trial #%s\n"
+msgstr ""
+
+#: rr_lib.rb:1030
+msgid "Starting to rip track %s, trial #%s\n"
 msgstr ""
 
 #: rr_lib.rb:1056
