@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2009-01-14 00:36+0100\n"
+"POT-Creation-Date: 2009-01-15 21:03+0100\n"
 "PO-Revision-Date: 2008-12-20 09:04+0100\n"
 "Last-Translator: Rodolphe RIDEL <rodolphe.ridel@gmail.com>\n"
 "Language-Team: French\n"
@@ -276,7 +276,7 @@ msgid "Do you want to continue with the program now? (y/n) : "
 msgstr "Voulez-vous continuer? (o/n) :"
 
 #: rubyripper_cli.rb:168 rubyripper_cli.rb:172 rubyripper_cli.rb:239
-#: rubyripper_cli.rb:244 rubyripper_cli.rb:415 rubyripper_cli.rb:430
+#: rubyripper_cli.rb:244 rubyripper_cli.rb:435 rubyripper_cli.rb:450
 msgid "y"
 msgstr "o"
 
@@ -284,7 +284,7 @@ msgstr "o"
 msgid "Do you want to change the encoding parameters for %s? (y/n) : "
 msgstr "Voulez-vous changer les paramètres d'encodage pour %s? (o/n) :"
 
-#: rubyripper_cli.rb:174 rubyripper_cli.rb:239 rubyripper_cli.rb:453
+#: rubyripper_cli.rb:174 rubyripper_cli.rb:239 rubyripper_cli.rb:473
 msgid "n"
 msgstr "n"
 
@@ -405,21 +405,21 @@ msgstr ""
 msgid "DISC INFO"
 msgstr "INFORMATIONS DU DISQUE"
 
-#: rubyripper_cli.rb:286 rubyripper_cli.rb:327
-msgid "Artist : %s"
-msgstr "Artiste : %s"
+#: rubyripper_cli.rb:286 rubyripper_cli.rb:327 rubyripper_gtk2.rb:348
+msgid "Artist:"
+msgstr "Artiste:"
 
-#: rubyripper_cli.rb:287 rubyripper_cli.rb:328
-msgid "Album : %s"
-msgstr "Album : %s"
+#: rubyripper_cli.rb:287 rubyripper_cli.rb:328 rubyripper_gtk2.rb:349
+msgid "Album:"
+msgstr "Album:"
 
-#: rubyripper_cli.rb:288 rubyripper_cli.rb:329
-msgid "Genre : %s"
-msgstr "Genre : %s"
+#: rubyripper_cli.rb:288 rubyripper_cli.rb:329 rubyripper_gtk2.rb:350
+msgid "Genre:"
+msgstr "Genre:"
 
-#: rubyripper_cli.rb:289 rubyripper_cli.rb:330
-msgid "Year : %s"
-msgstr "Année : %s"
+#: rubyripper_cli.rb:289 rubyripper_cli.rb:330 rubyripper_gtk2.rb:351
+msgid "Year:"
+msgstr "Année:"
 
 #: rubyripper_cli.rb:291
 msgid "TRACK INFO"
@@ -445,11 +445,20 @@ msgstr "3) Editer les informations des pistes"
 msgid "4) Cancel the rip and eject the disc"
 msgstr "3) Annuler l'extraction et éjecter le disque"
 
-#: rubyripper_cli.rb:318 rubyripper_cli.rb:388
+#: rubyripper_cli.rb:318 rubyripper_cli.rb:408
 msgid "Please enter the number of your choice: "
 msgstr "Votre choix :"
 
-#: rubyripper_cli.rb:331
+#: rubyripper_cli.rb:333 rubyripper_gtk2.rb:352
+msgid "Mark disc as various artist"
+msgstr "Déclarer le disque comme 'Artistes Divers'"
+
+#: rubyripper_cli.rb:335
+#, fuzzy
+msgid "Mark disc as single artist"
+msgstr "Déclarer le disque comme 'Artistes Divers'"
+
+#: rubyripper_cli.rb:338
 msgid ""
 "Finished editing disc info\n"
 "\n"
@@ -457,27 +466,32 @@ msgstr ""
 "Édition des informations du disque terminée\n"
 "\n"
 
-#: rubyripper_cli.rb:334 rubyripper_cli.rb:352
+#: rubyripper_cli.rb:341 rubyripper_cli.rb:372
 msgid "Please enter the number you'd like to edit: "
 msgstr "Votre choix :"
 
-#: rubyripper_cli.rb:335
+#: rubyripper_cli.rb:342
 msgid "Artist : "
 msgstr "Artiste :"
 
-#: rubyripper_cli.rb:336
+#: rubyripper_cli.rb:343
 msgid "Album : "
 msgstr "Album :"
 
-#: rubyripper_cli.rb:337
+#: rubyripper_cli.rb:344
 msgid "Genre : "
 msgstr "Genre :"
 
-#: rubyripper_cli.rb:338
+#: rubyripper_cli.rb:345
 msgid "Year : "
 msgstr "Année :"
 
-#: rubyripper_cli.rb:349
+#: rubyripper_cli.rb:357 rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618
+#: rr_lib.rb:619 rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
+msgid "Unknown"
+msgstr "Inconnu"
+
+#: rubyripper_cli.rb:369
 msgid ""
 "Finished editing track info\n"
 "\n"
@@ -485,35 +499,35 @@ msgstr ""
 "Édition des informations des pistes terminée\n"
 "\n"
 
-#: rubyripper_cli.rb:361
+#: rubyripper_cli.rb:381
 msgid "This is not a valid number. Try again"
 msgstr "Ce choix n'est pas valide. Nouvel essai"
 
-#: rubyripper_cli.rb:369
+#: rubyripper_cli.rb:389
 msgid "Rip is canceled, exiting..."
 msgstr "Extraction annulée, abandon..."
 
-#: rubyripper_cli.rb:381
+#: rubyripper_cli.rb:401
 msgid "The output directory already exists. What would you like to do?"
 msgstr "Le dossier de destination existe déjà. Que voulez-vous faire?"
 
-#: rubyripper_cli.rb:383
+#: rubyripper_cli.rb:403
 msgid "1) Auto rename the output directory"
 msgstr "1) Renommer automatiquement le dossier de destination"
 
-#: rubyripper_cli.rb:384
+#: rubyripper_cli.rb:404
 msgid "2) Overwrite the existing directory"
 msgstr "2) Effacer le dossier de destination"
 
-#: rubyripper_cli.rb:385
+#: rubyripper_cli.rb:405
 msgid "3) Cancel the rip and eject the disc"
 msgstr "3) Annuler l'extraction et éjecter le disque"
 
-#: rubyripper_cli.rb:415
+#: rubyripper_cli.rb:435
 msgid "Do you want to change your settings? (y/n) : "
 msgstr "Voulez-vous changer vos préférences? (o/n) :"
 
-#: rubyripper_cli.rb:430
+#: rubyripper_cli.rb:450
 msgid ""
 "\n"
 "Should all tracks be ripped ? (y/n) "
@@ -521,15 +535,15 @@ msgstr ""
 "\n"
 "Extraire toutes les pistes ? (o/n)"
 
-#: rubyripper_cli.rb:431
+#: rubyripper_cli.rb:451
 msgid "Tracks to rip are %s"
 msgstr "Les pistes à extraire sont %s"
 
-#: rubyripper_cli.rb:435 rubyripper_cli.rb:452
+#: rubyripper_cli.rb:455 rubyripper_cli.rb:472
 msgid "Current selection of tracks : %s"
 msgstr "Pistes actuellement sélectionnées : %s"
 
-#: rubyripper_cli.rb:436
+#: rubyripper_cli.rb:456
 msgid ""
 "Enter 1 for entering the tracknumbers you want to remove.\n"
 "Enter 2 for entering the tracks you want to keep.\n"
@@ -539,7 +553,7 @@ msgstr ""
 "Tapez 2 pour entrer les numéros des pistes à garder.\n"
 "Votre choix:"
 
-#: rubyripper_cli.rb:438
+#: rubyripper_cli.rb:458
 msgid ""
 "Type the numbers of the tracks you want to remove and separate them with a "
 "space: "
@@ -547,7 +561,7 @@ msgstr ""
 "Indiquez les numéros des pistes que vous ne souhaitez pas garder et séparez "
 "les avec un espace:"
 
-#: rubyripper_cli.rb:443
+#: rubyripper_cli.rb:463
 msgid ""
 "Type the numbers of the tracks you want to keep and separate them with a "
 "space: "
@@ -555,11 +569,11 @@ msgstr ""
 "Indiquez les numéros des pistes que vous souhaitez garder et séparez les "
 "avec un espace:"
 
-#: rubyripper_cli.rb:449
+#: rubyripper_cli.rb:469
 msgid "%s is not a valid number! Please enter 1 or 2!\n"
 msgstr "%s n'est pas un choix valide!\n"
 
-#: rubyripper_cli.rb:453
+#: rubyripper_cli.rb:473
 msgid "Do you want to make any changes? (y/n) : "
 msgstr "Voulez-vous effectuer des changements? (o/n) :"
 
@@ -658,26 +672,6 @@ msgstr ""
 msgid "The eject utility is not found on your system!"
 msgstr "L'utilitaire d'éjection est absent de votre système!"
 
-#: rubyripper_gtk2.rb:348
-msgid "Artist:"
-msgstr "Artiste:"
-
-#: rubyripper_gtk2.rb:349
-msgid "Album:"
-msgstr "Album:"
-
-#: rubyripper_gtk2.rb:350
-msgid "Genre:"
-msgstr "Genre:"
-
-#: rubyripper_gtk2.rb:351
-msgid "Year:"
-msgstr "Année:"
-
-#: rubyripper_gtk2.rb:352
-msgid "Mark disc as various artist"
-msgstr "Déclarer le disque comme 'Artistes Divers'"
-
 #: rubyripper_gtk2.rb:379
 msgid "All"
 msgstr "Toutes"
@@ -697,11 +691,6 @@ msgstr "<b>Informations du disque</b>"
 #: rubyripper_gtk2.rb:418
 msgid "<b>Track selection</b>"
 msgstr "<b>Selection des pistes</b>"
-
-#: rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618 rr_lib.rb:619
-#: rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
-msgid "Unknown"
-msgstr "Inconnu"
 
 #: rubyripper_gtk2.rb:441
 msgid "Artist"
@@ -1443,6 +1432,18 @@ msgstr ""
 "\n"
 "STATUS\n"
 "\n"
+
+#~ msgid "Artist : %s"
+#~ msgstr "Artiste : %s"
+
+#~ msgid "Album : %s"
+#~ msgstr "Album : %s"
+
+#~ msgid "Genre : %s"
+#~ msgstr "Genre : %s"
+
+#~ msgid "Year : %s"
+#~ msgstr "Année : %s"
 
 #~ msgid "log"
 #~ msgstr "journal"

@@ -283,10 +283,10 @@ class Gui_CLI
 		puts ""
 		puts _("FREEDB INFO\n\n")
 		puts _("DISC INFO")
-		puts _("Artist : %s") % [@settings['cd'].md.artist]
-		puts _("Album : %s") % [@settings['cd'].md.album]
-		puts _("Genre : %s") % [@settings['cd'].md.genre]
-		puts _("Year : %s") % [@settings['cd'].md.year]
+		puts _("Artist:") + " #{@settings['cd'].md.artist}"
+		puts _("Album:") + " #{@settings['cd'].md.album}"
+		puts _("Genre:") + " #{@settings['cd'].md.genre}"
+		puts _("Year:") + " #{@settings['cd'].md.year}"
 		puts ""
 		puts _("TRACK INFO")
 		
@@ -324,10 +324,17 @@ class Gui_CLI
 	end
 
 	def editDiscInfo()
-		puts "1) " + _("Artist : %s") % [@settings['cd'].md.artist]
-		puts "2) " + _("Album : %s") % [@settings['cd'].md.album]
-		puts "3) " + _("Genre : %s") % [@settings['cd'].md.genre]
-		puts "4) " + _("Year : %s") % [@settings['cd'].md.year]
+		puts "1) " + _("Artist:") + " #{@settings['cd'].md.artist}"
+		puts "2) " + _("Album:") + " #{@settings['cd'].md.album}"
+		puts "3) " + _("Genre:") + " #{@settings['cd'].md.genre}"
+		puts "4) " + _("Year:") + " #{@settings['cd'].md.year}"
+		
+		if @settings['cd'].md.varArtists.empty?
+			puts "5) " + _("Mark disc as various artist")
+		else
+			puts "5) " + _("Mark disc as single artist")
+		end
+
 		puts "99) " + _("Finished editing disc info\n\n")
 		
 		while true
@@ -336,11 +343,24 @@ class Gui_CLI
 			elsif answer == 2 : @settings['cd'].md.album = get_answer(_("Album : "), "open", @settings['cd'].md.album)
 			elsif answer == 3 : @settings['cd'].md.genre = get_answer(_("Genre : "), "open", @settings['cd'].md.genre)
 			elsif answer == 4 : @settings['cd'].md.year = get_answer(_("Year : "), "open", @settings['cd'].md.year)
+			elsif answer == 5 : if @settings['cd'].md.varArtists.empty? : setVarArtist() else unsetVarArtist() end
 			elsif answer == 99 : break
 			end
 		end
 
 		showFreedb()
+	end
+
+	def setVarArtist #Fill with unknown if the artistfield is not there
+		@settings['cd'].audiotracks.times do |time|
+			if @settings['cd'].md.varArtists[time] == nil
+				@settings['cd'].md.varArtists[time] = _('Unknown')
+			end
+		end
+	end
+	
+	def unsetVarArtist #Reset the varArtist field
+		@settings['cd'].md.undoVarArtist()
 	end
 
 	def editTrackInfo()
