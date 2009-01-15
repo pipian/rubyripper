@@ -104,6 +104,14 @@ but it may not work on audio-cd's with a data track.
 
 
 4. CHANGELOG
+---------0.5.5 RELEASE------
+* Set lower priority to encoding processes
+* Fix image rips crash
+* Some CLI enhancements
+* Removed -p option of vorbis since it didn't work as intended.
+* Add Swedish translation and update others
+* Make the other codec setting more foolproof
+* Fix problem with proxy without password
 
 ---------0.5.4 RELEASE------
 

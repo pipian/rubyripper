@@ -5,8 +5,8 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2009-01-15 21:03+0100\n"
+"Project-Id-Version: Rubyripper 0.5.5\n"
+"POT-Creation-Date: 2009-01-15 21:58+0100\n"
 "PO-Revision-Date: 2008-07-28 01:58+0100\n"
 "Last-Translator: Berke Viktor <bervi@users.sourceforge.net>\n"
 "Language-Team: Hungarian\n"
@@ -448,9 +448,8 @@ msgid "Mark disc as various artist"
 msgstr "A lemezen több előadó van"
 
 #: rubyripper_cli.rb:335
-#, fuzzy
 msgid "Mark disc as single artist"
-msgstr "A lemezen több előadó van"
+msgstr ""
 
 #: rubyripper_cli.rb:338
 msgid ""
@@ -991,12 +990,8 @@ msgid "Ripping and encoding is finished"
 msgstr "A másolás és tömörítés befejeződött"
 
 #: rr_lib.rb:131 rr_lib.rb:139
-#, fuzzy
 msgid "Example filename: %s.ext"
-msgstr ""
-"Egy fájlnév minta:\n"
-"\n"
-"\t%s"
+msgstr "Egy fájlnév minta: %s.ext"
 
 #: rr_lib.rb:179
 msgid "No eject utility found!"
@@ -1407,18 +1402,3 @@ msgstr ""
 "\n"
 "ÁLLAPOT\n"
 "\n"
-
-#~ msgid "Artist : %s"
-#~ msgstr "Előadó : %s"
-
-#~ msgid "Album : %s"
-#~ msgstr "Album : %s"
-
-#~ msgid "Genre : %s"
-#~ msgstr "Műfaj : %s"
-
-#~ msgid "Year : %s"
-#~ msgstr "Év : %s"
-
-#~ msgid "log"
-#~ msgstr "log"

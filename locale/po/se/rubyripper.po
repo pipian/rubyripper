@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Rubyripper 0.5.4\n"
-"POT-Creation-Date: 2009-01-15 21:03+0100\n"
+"Project-Id-Version: Rubyripper 0.5.5\n"
+"POT-Creation-Date: 2009-01-15 21:58+0100\n"
 "PO-Revision-Date: 2008-11-25 15:30+0100\n"
 "Last-Translator: Joachim Nyqvist <Joachim@JNyqvist.se>\n"
 "Language-Team: sv <Joachim@JNyqvist.se>\n"
@@ -445,7 +445,6 @@ msgid "Mark disc as various artist"
 msgstr "Markera skiva som olika artister"
 
 #: rubyripper_cli.rb:335
-#, fuzzy
 msgid "Mark disc as single artist"
 msgstr "Markera skiva som olika artister"
 
@@ -992,12 +991,8 @@ msgid "Ripping and encoding is finished"
 msgstr "Extrahering och omkodning är klar"
 
 #: rr_lib.rb:131 rr_lib.rb:139
-#, fuzzy
 msgid "Example filename: %s.ext"
-msgstr ""
-"Ett exempel på filnamn är nu:\n"
-"\n"
-"\t%s"
+msgstr "Ett exempel på filnamn är nu: %s.ext"
 
 #: rr_lib.rb:179
 msgid "No eject utility found!"
@@ -1414,18 +1409,3 @@ msgstr ""
 "\n"
 "STATUS\n"
 "\n"
-
-#~ msgid "Artist : %s"
-#~ msgstr "Artist : %s"
-
-#~ msgid "Album : %s"
-#~ msgstr "Album : %s"
-
-#~ msgid "Genre : %s"
-#~ msgstr "Genre : %s"
-
-#~ msgid "Year : %s"
-#~ msgstr "År : %s"
-
-#~ msgid "log"
-#~ msgstr "logg"
