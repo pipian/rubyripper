@@ -20,13 +20,21 @@ $BINDIR='/bin'
 $LOCALE='/share/locale'
 $ICONDIR='/share/icons/hicolor/128x128/apps'
 $DESKTOP='/share/applications'
-$RUBYDIR= "#{$:[0]}"
+$RUBYDIR= '/lib/rubyripper' #in case site_ruby doesn't return any matches
+$:.each do |ruby_dir|
+	if ruby_dir.include?("site_ruby")
+		if ruby_dir[0..3] == "/usr"
+				ruby_dir[0..3] = '' #it's prepended by $PREFIX later
+		end
+		$RUBYDIR = ruby_dir
+		break
+	end
+end
 
 if RUBY_PLATFORM.include?('darwin')
 	$INSTALL = 'install'
 else
 	$INSTALL = 'install -D'
-	$RUBYDIR= $RUBYDIR[$RUBYDIR.index('/lib')..-1] # remove the prefix
 end
 
 $GTK2 = false
