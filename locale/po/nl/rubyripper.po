@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.5\n"
 "POT-Creation-Date: 2009-01-15 21:58+0100\n"
-"PO-Revision-Date: 2007-08-11 14:52+0200\n"
-"Last-Translator:  <rubyripperdev@gmail.com>\n"
+"PO-Revision-Date: 2009-01-20 22:38+0100\n"
+"Last-Translator: Bouke Woudstra <rubyripperdev@gmail.com>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -104,6 +104,8 @@ msgid ""
 "   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
 "   **Your drive model is shown in the logfile."
 msgstr ""
+"   **Vind uw offset op http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Uw drive model kunt u vinden in het logbestand."
 
 #: rubyripper_cli.rb:114
 msgid "9)  passing extra cdparanoia parameters : %s"
@@ -269,8 +271,12 @@ msgstr ""
 msgid "Do you want to continue with the program now? (y/n) : "
 msgstr "Wilt u nu verder gaan met het programma? (j/n) : "
 
-#: rubyripper_cli.rb:168 rubyripper_cli.rb:172 rubyripper_cli.rb:239
-#: rubyripper_cli.rb:244 rubyripper_cli.rb:435 rubyripper_cli.rb:450
+#: rubyripper_cli.rb:168
+#: rubyripper_cli.rb:172
+#: rubyripper_cli.rb:239
+#: rubyripper_cli.rb:244
+#: rubyripper_cli.rb:435
+#: rubyripper_cli.rb:450
 msgid "y"
 msgstr "j"
 
@@ -278,18 +284,15 @@ msgstr "j"
 msgid "Do you want to change the encoding parameters for %s? (y/n) : "
 msgstr "Wilt u de parameters voor het encoderen met %s veranderen? (j/n) : "
 
-#: rubyripper_cli.rb:174 rubyripper_cli.rb:239 rubyripper_cli.rb:473
+#: rubyripper_cli.rb:174
+#: rubyripper_cli.rb:239
+#: rubyripper_cli.rb:473
 msgid "n"
 msgstr "n"
 
 #: rubyripper_cli.rb:175
-msgid ""
-"%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
-"tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
-msgstr ""
-"%a = artiest, %b = album, %g = genre, %y = jaar, %t = tracknaam, %n = "
-"tracknummer, %i = invoerbestand, %o = uitvoerbestand (vergeet de extensie "
-"niet)"
+msgid "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
+msgstr "%a = artiest, %b = album, %g = genre, %y = jaar, %t = tracknaam, %n = tracknummer, %i = invoerbestand, %o = uitvoerbestand (vergeet de extensie niet)"
 
 #: rubyripper_cli.rb:176
 msgid "Encoding paramaters for %s : "
@@ -303,7 +306,8 @@ msgstr "Cdrom apparaat : "
 msgid "Offset for drive : "
 msgstr "Offset voor apparaat : "
 
-#: rubyripper_cli.rb:188 rubyripper_cli.rb:191
+#: rubyripper_cli.rb:188
+#: rubyripper_cli.rb:191
 msgid ""
 "\n"
 "Current naming scheme: %s"
@@ -341,7 +345,8 @@ msgstr "Nieuw %s naamschema (a om te annuleren) : "
 msgid "q"
 msgstr "a"
 
-#: rubyripper_cli.rb:199 rubyripper_cli.rb:202
+#: rubyripper_cli.rb:199
+#: rubyripper_cli.rb:202
 msgid ""
 "An example filename is now:\n"
 "\n"
@@ -351,7 +356,8 @@ msgstr ""
 "\n"
 "\t%s"
 
-#: rubyripper_cli.rb:239 rubyripper_cli.rb:244
+#: rubyripper_cli.rb:239
+#: rubyripper_cli.rb:244
 msgid "yes"
 msgstr "ja"
 
@@ -399,19 +405,27 @@ msgstr ""
 msgid "DISC INFO"
 msgstr "DISK INFO"
 
-#: rubyripper_cli.rb:286 rubyripper_cli.rb:327 rubyripper_gtk2.rb:348
+#: rubyripper_cli.rb:286
+#: rubyripper_cli.rb:327
+#: rubyripper_gtk2.rb:348
 msgid "Artist:"
 msgstr "Artiest:"
 
-#: rubyripper_cli.rb:287 rubyripper_cli.rb:328 rubyripper_gtk2.rb:349
+#: rubyripper_cli.rb:287
+#: rubyripper_cli.rb:328
+#: rubyripper_gtk2.rb:349
 msgid "Album:"
 msgstr "Album:"
 
-#: rubyripper_cli.rb:288 rubyripper_cli.rb:329 rubyripper_gtk2.rb:350
+#: rubyripper_cli.rb:288
+#: rubyripper_cli.rb:329
+#: rubyripper_gtk2.rb:350
 msgid "Genre:"
 msgstr "Genre:"
 
-#: rubyripper_cli.rb:289 rubyripper_cli.rb:330 rubyripper_gtk2.rb:351
+#: rubyripper_cli.rb:289
+#: rubyripper_cli.rb:330
+#: rubyripper_gtk2.rb:351
 msgid "Year:"
 msgstr "Jaar:"
 
@@ -439,11 +453,13 @@ msgstr "3) Bewerk de track info"
 msgid "4) Cancel the rip and eject the disc"
 msgstr "4) Annuleer de rip en open de lade"
 
-#: rubyripper_cli.rb:318 rubyripper_cli.rb:408
+#: rubyripper_cli.rb:318
+#: rubyripper_cli.rb:408
 msgid "Please enter the number of your choice: "
 msgstr "Naar welk nummer gaat uw voorkeur uit? "
 
-#: rubyripper_cli.rb:333 rubyripper_gtk2.rb:352
+#: rubyripper_cli.rb:333
+#: rubyripper_gtk2.rb:352
 msgid "Mark disc as various artist"
 msgstr "Markeer disk als verscheide artiesten"
 
@@ -459,7 +475,8 @@ msgstr ""
 "Klaar met het bewerken van de disk info\n"
 "\n"
 
-#: rubyripper_cli.rb:341 rubyripper_cli.rb:372
+#: rubyripper_cli.rb:341
+#: rubyripper_cli.rb:372
 msgid "Please enter the number you'd like to edit: "
 msgstr "Naar welk nummer gaat uw voorkeur uit? "
 
@@ -479,8 +496,15 @@ msgstr "Genre : "
 msgid "Year : "
 msgstr "Jaar : "
 
-#: rubyripper_cli.rb:357 rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618
-#: rr_lib.rb:619 rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
+#: rubyripper_cli.rb:357
+#: rubyripper_gtk2.rb:439
+#: rr_lib.rb:617
+#: rr_lib.rb:618
+#: rr_lib.rb:619
+#: rr_lib.rb:802
+#: rr_lib.rb:804
+#: rr_lib.rb:805
+#: rr_lib.rb:812
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -532,7 +556,8 @@ msgstr ""
 msgid "Tracks to rip are %s"
 msgstr "De tracks die worden geript zijn %s"
 
-#: rubyripper_cli.rb:455 rubyripper_cli.rb:472
+#: rubyripper_cli.rb:455
+#: rubyripper_cli.rb:472
 msgid "Current selection of tracks : %s"
 msgstr "Huidige selectie van tracks: %s"
 
@@ -547,16 +572,11 @@ msgstr ""
 "Uw keuze: "
 
 #: rubyripper_cli.rb:458
-msgid ""
-"Type the numbers of the tracks you want to remove and separate them with a "
-"space: "
-msgstr ""
-"Vul de nummers in die u wilt verwijderen en scheidt ze met een spatie: "
+msgid "Type the numbers of the tracks you want to remove and separate them with a space: "
+msgstr "Vul de nummers in die u wilt verwijderen en scheidt ze met een spatie: "
 
 #: rubyripper_cli.rb:463
-msgid ""
-"Type the numbers of the tracks you want to keep and separate them with a "
-"space: "
+msgid "Type the numbers of the tracks you want to keep and separate them with a space: "
 msgstr "Vul de nummers in die u wilt behouden en scheidt ze met een spatie: "
 
 #: rubyripper_cli.rb:469
@@ -567,7 +587,8 @@ msgstr "%s is niet een geldig getal! Kies 1 or 2!\n"
 msgid "Do you want to make any changes? (y/n) : "
 msgstr "Wilt u nog veranderingen maken? (j/n) : "
 
-#: rubyripper_gtk2.rb:65 rubyripper_gtk2.rb:94
+#: rubyripper_gtk2.rb:65
+#: rubyripper_gtk2.rb:94
 msgid "Preferences"
 msgstr "Voorkeuren"
 
@@ -575,8 +596,11 @@ msgstr "Voorkeuren"
 msgid "Scan drive"
 msgstr "Scan drive"
 
-#: rubyripper_gtk2.rb:65 rubyripper_gtk2.rb:168 rubyripper_gtk2.rb:169
-#: rubyripper_gtk2.rb:190 rubyripper_gtk2.rb:203
+#: rubyripper_gtk2.rb:65
+#: rubyripper_gtk2.rb:168
+#: rubyripper_gtk2.rb:169
+#: rubyripper_gtk2.rb:190
+#: rubyripper_gtk2.rb:203
 msgid "Open tray"
 msgstr "Open lade"
 
@@ -592,7 +616,8 @@ msgstr "Afsluiten"
 msgid "Disc info"
 msgstr "Disk info"
 
-#: rubyripper_gtk2.rb:195 rubyripper_gtk2.rb:274
+#: rubyripper_gtk2.rb:195
+#: rubyripper_gtk2.rb:274
 msgid "Close tray"
 msgstr "Sluit lade"
 
@@ -704,6 +729,8 @@ msgid ""
 "A website which lists the offset for most drives.\n"
 "Your drivename can be found in each logfile."
 msgstr ""
+"Een website die een overzicht geeft van de offset van de meeste drives.\n"
+"Uw drivenaam kan worden gevonden in het logbestand. "
 
 #: rubyripper_gtk2.rb:634
 msgid "Cdrom device"
@@ -721,7 +748,9 @@ msgstr "Match foutieve delen:"
 msgid "Maximum trials (0 = unlimited):"
 msgstr "Maximum pogingen (0 = ongelimiteerd):"
 
-#: rubyripper_gtk2.rb:652 rubyripper_gtk2.rb:653 rubyripper_gtk2.rb:654
+#: rubyripper_gtk2.rb:652
+#: rubyripper_gtk2.rb:653
+#: rubyripper_gtk2.rb:654
 msgid "times"
 msgstr "maal"
 
@@ -743,11 +772,11 @@ msgstr "Behoud alleen het logbestand als er correctie nodig was"
 
 #: rubyripper_gtk2.rb:683
 msgid "Create cuesheet"
-msgstr ""
+msgstr "Maak een cuesheet aan"
 
 #: rubyripper_gtk2.rb:684
 msgid "Rip CD to single file"
-msgstr ""
+msgstr "Rip de cd naar een enkel bestand"
 
 #: rubyripper_gtk2.rb:694
 msgid "Ripping related"
@@ -773,7 +802,8 @@ msgstr "Lame Mp3"
 msgid "Wav"
 msgstr "Wav"
 
-#: rubyripper_gtk2.rb:715 rubyripper_gtk2.rb:925
+#: rubyripper_gtk2.rb:715
+#: rubyripper_gtk2.rb:925
 msgid "Other"
 msgstr "Overig"
 
@@ -919,7 +949,8 @@ msgstr "Debug opties"
 msgid "<b>Ripping status</b>"
 msgstr "<b>Rip status</b>"
 
-#: rubyripper_gtk2.rb:975 rubyripper_gtk2.rb:976
+#: rubyripper_gtk2.rb:975
+#: rubyripper_gtk2.rb:976
 msgid "Not yet started (0%)"
 msgstr "Nog niet begonnen (0%)"
 
@@ -983,7 +1014,8 @@ msgstr ""
 msgid "Open log file"
 msgstr "Open logbestand"
 
-#: rubyripper_gtk2.rb:1089 rubyripper_gtk2.rb:1097
+#: rubyripper_gtk2.rb:1089
+#: rubyripper_gtk2.rb:1097
 msgid "%s is not found on your system!"
 msgstr ""
 "Het programma %s is niet op\n"
@@ -997,7 +1029,8 @@ msgstr "Open directory"
 msgid "Ripping and encoding is finished"
 msgstr "Het rippen en encoderen is voltooid"
 
-#: rr_lib.rb:131 rr_lib.rb:139
+#: rr_lib.rb:131
+#: rr_lib.rb:139
 msgid "Example filename: %s.ext"
 msgstr "Een voorbeeld bestandsnaam is nu: %s.ext"
 
@@ -1010,6 +1043,8 @@ msgid ""
 "Artist : %s\n"
 "Album: %s\n"
 msgstr ""
+"Artiest : %s\n"
+"Album: %s\n"
 
 #: rr_lib.rb:198
 msgid "This log is created by Rubyripper, version %s\n"
@@ -1028,6 +1063,8 @@ msgid ""
 "\n"
 "WARNING: ENCODING ERRORS WERE DETECTED\n"
 msgstr ""
+"\n"
+"WAARSCHUWING: ENCODEER FOUTEN GEDETECTEERD\n"
 
 #: rr_lib.rb:244
 msgid ""
@@ -1056,11 +1093,8 @@ msgid "None of the tracks gave any problems\n"
 msgstr "Geen van de tracks heeft problemen opgeleverd\n"
 
 #: rr_lib.rb:252
-msgid ""
-"Some track(s) could NOT be corrected within the maximum amount of trials\n"
-msgstr ""
-"Sommige track(s) konden NIET worden gerepareerd binnen het maximum aantal "
-"pogingen\n"
+msgid "Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr "Sommige track(s) konden NIET worden gerepareerd binnen het maximum aantal pogingen\n"
 
 #: rr_lib.rb:254
 msgid "Track %s could NOT be corrected completely\n"
@@ -1098,12 +1132,10 @@ msgstr "Omdat er 75 delen per seconde zijn, wordt er na de melding van de "
 
 #: rr_lib.rb:270
 msgid ""
-"suspicion position, the amount of initially mismatched chunks for that "
-"position is shown.\n"
+"suspicion position, the amount of initially mismatched chunks for that position is shown.\n"
 "\n"
 msgstr ""
-"gecorrigeerde positie, het aantal oorspronkelijk aantal niet overeenkomende "
-"delen voor die positie weergegeven.\n"
+"gecorrigeerde positie, het aantal oorspronkelijk aantal niet overeenkomende delen voor die positie weergegeven.\n"
 "\n"
 
 #: rr_lib.rb:272
@@ -1148,7 +1180,8 @@ msgstr ""
 "Cdrom apparaat %s bestaat niet op uw systeem!\n"
 "Configureert u aub eerst het juiste apparaat."
 
-#: rr_lib.rb:470 rr_lib.rb:500
+#: rr_lib.rb:470
+#: rr_lib.rb:500
 msgid ""
 "You don't have read and write permission\n"
 "for device %s on your system! These permissions are\n"
@@ -1165,8 +1198,7 @@ msgstr ""
 "Misschien dat u nog moet worden toegevoegd aan de groep in /etc/group"
 
 #: rr_lib.rb:539
-msgid ""
-"warning: discid or cd-discid isn't found on your system! Using fallback..."
+msgid "warning: discid or cd-discid isn't found on your system! Using fallback..."
 msgstr "Let op: Discid of cd-discid niet gevonden. Probeer fallback..."
 
 #: rr_lib.rb:542
@@ -1193,13 +1225,11 @@ msgstr ""
 
 #: rr_lib.rb:721
 msgid "No match in Freedb database. Default values are used."
-msgstr ""
-"Geen overeenkomst in de Freedb database. Standaard waarden worden gebruikt."
+msgstr "Geen overeenkomst in de Freedb database. Standaard waarden worden gebruikt."
 
 #: rr_lib.rb:724
 msgid "cddb_query return code = %s. Return code not supported."
-msgstr ""
-"cddb_query terugkoppel waarde = %s. Deze waarden wordt niet ondersteund."
+msgstr "cddb_query terugkoppel waarde = %s. Deze waarden wordt niet ondersteund."
 
 #: rr_lib.rb:732
 msgid "Keep defaults / don't use freedb"
@@ -1207,9 +1237,7 @@ msgstr "Maak geen gebruik van freedb"
 
 #: rr_lib.rb:899
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
-msgstr ""
-"Maximum aantal pogingen bereikt. %s delen heeft niet de vereiste aantal van %"
-"s matches\n"
+msgstr "Maximum aantal pogingen bereikt. %s delen heeft niet de vereiste aantal van %s matches\n"
 
 #: rr_lib.rb:900
 msgid "Will continue with the file we've got so far\n"
@@ -1220,6 +1248,8 @@ msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
 msgstr ""
+"Cdparanoia geeft geen wav file als uitvoer.\n"
+"Controleer uw instellingen a.u.b."
 
 #: rr_lib.rb:955
 msgid "Filesize is not correct! Trying another time\n"
@@ -1233,7 +1263,8 @@ msgstr "De bestanden worden onderzocht op verschillen\n"
 msgid "Every chunk matched %s times :)\n"
 msgstr "Elk deel komt %s keer overeen :)\n"
 
-#: rr_lib.rb:986 rr_lib.rb:1023
+#: rr_lib.rb:986
+#: rr_lib.rb:1023
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr "%s delen kwamen niet %s keer overeen.\n"
 
@@ -1243,11 +1274,11 @@ msgstr "Fouten succesvol gecorrigeerd, %s matches voor elk deel gevonden :)\n"
 
 #: rr_lib.rb:1029
 msgid "Starting to rip CD image, trial #%s\n"
-msgstr ""
+msgstr "Begonnen met het rippen van het CD image, poging #%s\n"
 
 #: rr_lib.rb:1031
 msgid "Starting to rip track %s, trial #%s\n"
-msgstr ""
+msgstr "Begonnen met het rippen van track %s, poging #%s\n"
 
 #: rr_lib.rb:1057
 msgid ""
@@ -1273,9 +1304,7 @@ msgstr "Selecteer a.u.b. tenminste 1 track."
 
 #: rr_lib.rb:1377
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
-msgstr ""
-"De grafische interface komt niet overeen met de cd. Ververs eerst de cd-"
-"gegevens."
+msgstr "De grafische interface komt niet overeen met de cd. Ververs eerst de cd-gegevens."
 
 #: rr_lib.rb:1382
 msgid "No codecs are selected!"
@@ -1416,3 +1445,4 @@ msgstr ""
 "\n"
 "STATUS\n"
 "\n"
+
