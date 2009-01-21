@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.5\n"
 "POT-Creation-Date: 2009-01-15 21:58+0100\n"
-"PO-Revision-Date: 2008-08-08 14:23+0100\n"
+"PO-Revision-Date: 2009-01-21 16:14+0100\n"
 "Last-Translator: Jan Buecken <jb.faq@gmx.de>\n"
 "Language-Team: German <h-m.w@gmx.de>\n"
 "MIME-Version: 1.0\n"
@@ -270,8 +270,12 @@ msgstr ""
 msgid "Do you want to continue with the program now? (y/n) : "
 msgstr "Möchten Sie weiter mit dem Programm arbeiten? (J/N) :"
 
-#: rubyripper_cli.rb:168 rubyripper_cli.rb:172 rubyripper_cli.rb:239
-#: rubyripper_cli.rb:244 rubyripper_cli.rb:435 rubyripper_cli.rb:450
+#: rubyripper_cli.rb:168
+#: rubyripper_cli.rb:172
+#: rubyripper_cli.rb:239
+#: rubyripper_cli.rb:244
+#: rubyripper_cli.rb:435
+#: rubyripper_cli.rb:450
 msgid "y"
 msgstr "J"
 
@@ -279,18 +283,15 @@ msgstr "J"
 msgid "Do you want to change the encoding parameters for %s? (y/n) : "
 msgstr "Möchten Sie die Kodierparameter für %s ändern? (J/N) :"
 
-#: rubyripper_cli.rb:174 rubyripper_cli.rb:239 rubyripper_cli.rb:473
+#: rubyripper_cli.rb:174
+#: rubyripper_cli.rb:239
+#: rubyripper_cli.rb:473
 msgid "n"
 msgstr "N"
 
 #: rubyripper_cli.rb:175
-msgid ""
-"%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
-"tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
-msgstr ""
-"%a = Künstler, %b = Album, %g = Genre, %y = Jahr, %t = Titel, %n = "
-"Titelnummer, %i = Eingabedatei, %o = Ausgabedatei (Dateiendung nicht "
-"vergessen)"
+msgid "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
+msgstr "%a = Künstler, %b = Album, %g = Genre, %y = Jahr, %t = Titel, %n = Titelnummer, %i = Eingabedatei, %o = Ausgabedatei (Dateiendung nicht vergessen)"
 
 #: rubyripper_cli.rb:176
 msgid "Encoding paramaters for %s : "
@@ -304,7 +305,8 @@ msgstr "Cdrom Laufwerk : "
 msgid "Offset for drive : "
 msgstr "Offset für das Laufwerk :"
 
-#: rubyripper_cli.rb:188 rubyripper_cli.rb:191
+#: rubyripper_cli.rb:188
+#: rubyripper_cli.rb:191
 msgid ""
 "\n"
 "Current naming scheme: %s"
@@ -342,7 +344,8 @@ msgstr "Neues %s Benennungsschema (q um abzubrechen) : "
 msgid "q"
 msgstr "q"
 
-#: rubyripper_cli.rb:199 rubyripper_cli.rb:202
+#: rubyripper_cli.rb:199
+#: rubyripper_cli.rb:202
 msgid ""
 "An example filename is now:\n"
 "\n"
@@ -352,7 +355,8 @@ msgstr ""
 "\n"
 "\t%s"
 
-#: rubyripper_cli.rb:239 rubyripper_cli.rb:244
+#: rubyripper_cli.rb:239
+#: rubyripper_cli.rb:244
 msgid "yes"
 msgstr "Ja"
 
@@ -400,19 +404,27 @@ msgstr ""
 msgid "DISC INFO"
 msgstr "DISK INFO"
 
-#: rubyripper_cli.rb:286 rubyripper_cli.rb:327 rubyripper_gtk2.rb:348
+#: rubyripper_cli.rb:286
+#: rubyripper_cli.rb:327
+#: rubyripper_gtk2.rb:348
 msgid "Artist:"
 msgstr "Künstler:"
 
-#: rubyripper_cli.rb:287 rubyripper_cli.rb:328 rubyripper_gtk2.rb:349
+#: rubyripper_cli.rb:287
+#: rubyripper_cli.rb:328
+#: rubyripper_gtk2.rb:349
 msgid "Album:"
 msgstr "Album:"
 
-#: rubyripper_cli.rb:288 rubyripper_cli.rb:329 rubyripper_gtk2.rb:350
+#: rubyripper_cli.rb:288
+#: rubyripper_cli.rb:329
+#: rubyripper_gtk2.rb:350
 msgid "Genre:"
 msgstr "Genre:"
 
-#: rubyripper_cli.rb:289 rubyripper_cli.rb:330 rubyripper_gtk2.rb:351
+#: rubyripper_cli.rb:289
+#: rubyripper_cli.rb:330
+#: rubyripper_gtk2.rb:351
 msgid "Year:"
 msgstr "Jahr:"
 
@@ -422,43 +434,48 @@ msgstr "TRACK INFO"
 
 #: rubyripper_cli.rb:310
 msgid "What would you like to do?"
-msgstr ""
+msgstr "Was möchten Sie machen?"
 
 #: rubyripper_cli.rb:312
 msgid "1) Select the tracks to rip"
-msgstr ""
+msgstr "1) Dieie zu rippenden Tracks wählen"
 
 #: rubyripper_cli.rb:313
 msgid "2) Edit the disc info"
-msgstr ""
+msgstr "2) Die CD/DVD Informationen bearbeiten"
 
 #: rubyripper_cli.rb:314
 msgid "3) Edit the track info"
-msgstr ""
+msgstr "3) Die Track Informationen bearbeiten"
 
 #: rubyripper_cli.rb:315
 msgid "4) Cancel the rip and eject the disc"
-msgstr ""
+msgstr "4) Rip abbrechen und CD/DVD auswerfen"
 
-#: rubyripper_cli.rb:318 rubyripper_cli.rb:408
+#: rubyripper_cli.rb:318
+#: rubyripper_cli.rb:408
 msgid "Please enter the number of your choice: "
 msgstr "Bitte die Nummer der Auswahl eingeben:"
 
-#: rubyripper_cli.rb:333 rubyripper_gtk2.rb:352
+#: rubyripper_cli.rb:333
+#: rubyripper_gtk2.rb:352
 msgid "Mark disc as various artist"
 msgstr "CD als 'Verschiedene Künstler' markieren"
 
 #: rubyripper_cli.rb:335
 msgid "Mark disc as single artist"
-msgstr ""
+msgstr "Makiere CD als \"einzelner Künstler\""
 
 #: rubyripper_cli.rb:338
 msgid ""
 "Finished editing disc info\n"
 "\n"
 msgstr ""
+"Bearbeiten der CD/DVD Informationen beendet\n"
+"\n"
 
-#: rubyripper_cli.rb:341 rubyripper_cli.rb:372
+#: rubyripper_cli.rb:341
+#: rubyripper_cli.rb:372
 msgid "Please enter the number you'd like to edit: "
 msgstr "Bitte die Nummer der Auswahl eingeben:"
 
@@ -478,8 +495,15 @@ msgstr "Genre : "
 msgid "Year : "
 msgstr "Jahr :"
 
-#: rubyripper_cli.rb:357 rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618
-#: rr_lib.rb:619 rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
+#: rubyripper_cli.rb:357
+#: rubyripper_gtk2.rb:439
+#: rr_lib.rb:617
+#: rr_lib.rb:618
+#: rr_lib.rb:619
+#: rr_lib.rb:802
+#: rr_lib.rb:804
+#: rr_lib.rb:805
+#: rr_lib.rb:812
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -488,6 +512,8 @@ msgid ""
 "Finished editing track info\n"
 "\n"
 msgstr ""
+"Bearbeiten der CD/DVD Informationen beendet\n"
+"\n"
 
 #: rubyripper_cli.rb:381
 msgid "This is not a valid number. Try again"
@@ -511,7 +537,7 @@ msgstr "2) Ausgabeverzeichnis überschreiben"
 
 #: rubyripper_cli.rb:405
 msgid "3) Cancel the rip and eject the disc"
-msgstr ""
+msgstr "3) Rippen abbrechen und CD/DVD auswerfen"
 
 #: rubyripper_cli.rb:435
 msgid "Do you want to change your settings? (y/n) : "
@@ -529,7 +555,8 @@ msgstr ""
 msgid "Tracks to rip are %s"
 msgstr "Es werden folgende Titel ausgelesen: %s"
 
-#: rubyripper_cli.rb:455 rubyripper_cli.rb:472
+#: rubyripper_cli.rb:455
+#: rubyripper_cli.rb:472
 msgid "Current selection of tracks : %s"
 msgstr "Momentan ausgewählte Titel: %s"
 
@@ -544,18 +571,12 @@ msgstr ""
 "Ihre Auswahl: "
 
 #: rubyripper_cli.rb:458
-msgid ""
-"Type the numbers of the tracks you want to remove and separate them with a "
-"space: "
-msgstr ""
-"Titelnummern, die entfernt werden sollen mit Leerzeichen getrennt eingeben:"
+msgid "Type the numbers of the tracks you want to remove and separate them with a space: "
+msgstr "Titelnummern, die entfernt werden sollen mit Leerzeichen getrennt eingeben:"
 
 #: rubyripper_cli.rb:463
-msgid ""
-"Type the numbers of the tracks you want to keep and separate them with a "
-"space: "
-msgstr ""
-"Titelnummern, die behalten werden sollen mit Leerzeichen getrennt eingeben:"
+msgid "Type the numbers of the tracks you want to keep and separate them with a space: "
+msgstr "Titelnummern, die behalten werden sollen mit Leerzeichen getrennt eingeben:"
 
 #: rubyripper_cli.rb:469
 msgid "%s is not a valid number! Please enter 1 or 2!\n"
@@ -565,7 +586,8 @@ msgstr "%s ist keine gültige Auswahl. Bitte 1 oder 2 eingeben!\n"
 msgid "Do you want to make any changes? (y/n) : "
 msgstr "Möchten Sie etwas ändern? (J/N) :"
 
-#: rubyripper_gtk2.rb:65 rubyripper_gtk2.rb:94
+#: rubyripper_gtk2.rb:65
+#: rubyripper_gtk2.rb:94
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -573,8 +595,11 @@ msgstr "Einstellungen"
 msgid "Scan drive"
 msgstr "Laufwerk abfragen"
 
-#: rubyripper_gtk2.rb:65 rubyripper_gtk2.rb:168 rubyripper_gtk2.rb:169
-#: rubyripper_gtk2.rb:190 rubyripper_gtk2.rb:203
+#: rubyripper_gtk2.rb:65
+#: rubyripper_gtk2.rb:168
+#: rubyripper_gtk2.rb:169
+#: rubyripper_gtk2.rb:190
+#: rubyripper_gtk2.rb:203
 msgid "Open tray"
 msgstr "Laufwerk öffnen"
 
@@ -590,7 +615,8 @@ msgstr "Schließen"
 msgid "Disc info"
 msgstr "Diskinfo"
 
-#: rubyripper_gtk2.rb:195 rubyripper_gtk2.rb:274
+#: rubyripper_gtk2.rb:195
+#: rubyripper_gtk2.rb:274
 msgid "Close tray"
 msgstr "Laufwerk schließen"
 
@@ -720,7 +746,9 @@ msgstr "Fehlerhafte Teilstücke abgleichen:"
 msgid "Maximum trials (0 = unlimited):"
 msgstr "Maximale Anzahl von Versuchen (0=unendlich)"
 
-#: rubyripper_gtk2.rb:652 rubyripper_gtk2.rb:653 rubyripper_gtk2.rb:654
+#: rubyripper_gtk2.rb:652
+#: rubyripper_gtk2.rb:653
+#: rubyripper_gtk2.rb:654
 msgid "times"
 msgstr "mal"
 
@@ -772,7 +800,8 @@ msgstr "Lame Mp3"
 msgid "Wav"
 msgstr "Wav"
 
-#: rubyripper_gtk2.rb:715 rubyripper_gtk2.rb:925
+#: rubyripper_gtk2.rb:715
+#: rubyripper_gtk2.rb:925
 msgid "Other"
 msgstr "Andere"
 
@@ -808,8 +837,7 @@ msgstr "Kein Lautstärkenabgleich"
 
 #: rubyripper_gtk2.rb:771
 msgid "Use replaygain on audio files"
-msgstr ""
-"Benutze Replay Gain für Audio Dateien (Verfahren für Lautstärkeabgleich)"
+msgstr "Benutze Replay Gain für Audio Dateien (Verfahren für Lautstärkeabgleich)"
 
 #: rubyripper_gtk2.rb:772
 msgid "Use normalize on wav files"
@@ -919,7 +947,8 @@ msgstr "Debug Optionen"
 msgid "<b>Ripping status</b>"
 msgstr "<b>Auslesestatus</b>"
 
-#: rubyripper_gtk2.rb:975 rubyripper_gtk2.rb:976
+#: rubyripper_gtk2.rb:975
+#: rubyripper_gtk2.rb:976
 msgid "Not yet started (0%)"
 msgstr "Noch nicht gestartet (0%)"
 
@@ -981,7 +1010,8 @@ msgstr ""
 msgid "Open log file"
 msgstr "Logdatei öffnen"
 
-#: rubyripper_gtk2.rb:1089 rubyripper_gtk2.rb:1097
+#: rubyripper_gtk2.rb:1089
+#: rubyripper_gtk2.rb:1097
 msgid "%s is not found on your system!"
 msgstr "%s wurde auf Ihrem Computer nicht gefunden!"
 
@@ -993,7 +1023,8 @@ msgstr "Verzeichnis öffnen"
 msgid "Ripping and encoding is finished"
 msgstr "Auslesen und Kodieren abgeschlossen"
 
-#: rr_lib.rb:131 rr_lib.rb:139
+#: rr_lib.rb:131
+#: rr_lib.rb:139
 msgid "Example filename: %s.ext"
 msgstr "Ein Beispiel-Dateiname ist: %s.ext"
 
@@ -1057,11 +1088,8 @@ msgid "None of the tracks gave any problems\n"
 msgstr "Keine Probleme in allen Tracks\n"
 
 #: rr_lib.rb:252
-msgid ""
-"Some track(s) could NOT be corrected within the maximum amount of trials\n"
-msgstr ""
-"Einige Track(s) konnten nach der maximalen Anzahl von Versuchen nicht "
-"korrigiert werden\n"
+msgid "Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr "Einige Track(s) konnten nach der maximalen Anzahl von Versuchen nicht korrigiert werden\n"
 
 #: rr_lib.rb:254
 msgid "Track %s could NOT be corrected completely\n"
@@ -1095,17 +1123,14 @@ msgstr ""
 
 #: rr_lib.rb:269
 msgid "Since there are 75 chunks per second, after making the notion of the\n"
-msgstr ""
-"Da 75 Abschnitte pro Sekunde vorhanden sind, nachdem die verdächtigen\n"
+msgstr "Da 75 Abschnitte pro Sekunde vorhanden sind, nachdem die verdächtigen\n"
 
 #: rr_lib.rb:270
 msgid ""
-"suspicion position, the amount of initially mismatched chunks for that "
-"position is shown.\n"
+"suspicion position, the amount of initially mismatched chunks for that position is shown.\n"
 "\n"
 msgstr ""
-"Positionen markiert wurden, wird die Anzahl der ursprünglich nicht "
-"deckungsgleichen Abschnitte angezeigt.\n"
+"Positionen markiert wurden, wird die Anzahl der ursprünglich nicht deckungsgleichen Abschnitte angezeigt.\n"
 "\n"
 
 #: rr_lib.rb:272
@@ -1118,8 +1143,7 @@ msgstr "\tVerdächtige Position:%s:%s (%sx) (KORRIGIERT bei Versuch %s\n"
 
 #: rr_lib.rb:279
 msgid "\tSuspicion position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
-msgstr ""
-"\tVerdächtige Position : %s:%s (%sx) (KONNTE NICHT KORRIGIERT  WERDEN)\n"
+msgstr "\tVerdächtige Position : %s:%s (%sx) (KONNTE NICHT KORRIGIERT  WERDEN)\n"
 
 #: rr_lib.rb:403
 msgid "Unknown drive"
@@ -1139,9 +1163,7 @@ msgstr ""
 msgid ""
 "Perhaps cdparanoia doesn't support the drive parameter.\n"
 " Will retry with default drive"
-msgstr ""
-"Keine CD gefunden oder cdparanoia unterstützt die Laufwerksparameter nicht. "
-"Versuche es mit dem Standardlaufwerk"
+msgstr "Keine CD gefunden oder cdparanoia unterstützt die Laufwerksparameter nicht. Versuche es mit dem Standardlaufwerk"
 
 #: rr_lib.rb:463
 msgid ""
@@ -1151,7 +1173,8 @@ msgstr ""
 "Cdrom Laufwerk %s existiert nicht auf dem System!\n"
 "Bitte erst Cdrom Laufwerk einrichten."
 
-#: rr_lib.rb:470 rr_lib.rb:500
+#: rr_lib.rb:470
+#: rr_lib.rb:500
 msgid ""
 "You don't have read and write permission\n"
 "for device %s on your system! These permissions are\n"
@@ -1161,14 +1184,13 @@ msgid ""
 "You might want to add yourself to the necessary group in /etc/group"
 msgstr ""
 "Keine Lese- und Schreibrechte\n"
-"für Device %s auf dem System! Diese Rechte sind notwendig für Cdparanoia um "
-"das Laufwerk zu scannen.\n"
+"für Device %s auf dem System! Diese Rechte sind notwendig für Cdparanoia um das Laufwerk zu scannen.\n"
 "\n"
 "%s\n"
+"Eventuell wollen sie sich in die erforderliche Gruppe in /etc/group eintragen"
 
 #: rr_lib.rb:539
-msgid ""
-"warning: discid or cd-discid isn't found on your system! Using fallback..."
+msgid "warning: discid or cd-discid isn't found on your system! Using fallback..."
 msgstr "discid oder cd-discid nicht gefunden. Versuche Ausweichlösung..."
 
 #: rr_lib.rb:542
@@ -1177,9 +1199,7 @@ msgstr "Versuche Ausweichlösung... Freedb Zeichenfolge = %s"
 
 #: rr_lib.rb:622
 msgid "Track %s"
-msgstr ""
-"\n"
-"Tracks\t= "
+msgstr "Track %s"
 
 #: rr_lib.rb:636
 msgid "No audio disc found in %s"
@@ -1209,9 +1229,7 @@ msgstr "Vorgaben verwenden / Freedb nicht benutzen"
 
 #: rr_lib.rb:899
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
-msgstr ""
-"Maximum an Versuchen erreicht. %s Abschnitt(e) stimmten bei den benötigten %"
-"s Versuchen nicht überein\n"
+msgstr "Maximum an Versuchen erreicht. %s Abschnitt(e) stimmten bei den benötigten %s Versuchen nicht überein\n"
 
 #: rr_lib.rb:900
 msgid "Will continue with the file we've got so far\n"
@@ -1237,22 +1255,22 @@ msgstr "Analysiere Datei auf nicht übereinstimmende Abschnitte\n"
 msgid "Every chunk matched %s times :)\n"
 msgstr "Jeder Abschnitt stimmte %s mal überein :)\n"
 
-#: rr_lib.rb:986 rr_lib.rb:1023
+#: rr_lib.rb:986
+#: rr_lib.rb:1023
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr "%s Abschnitt(e) stimmten %s mal nicht überein.\n"
 
 #: rr_lib.rb:1020
 msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
-msgstr ""
-"Fehler erfolgreich korrigiert, %s Übereinstimmungen für jeden Abschnitt :)\n"
+msgstr "Fehler erfolgreich korrigiert, %s Übereinstimmungen für jeden Abschnitt :)\n"
 
 #: rr_lib.rb:1029
 msgid "Starting to rip CD image, trial #%s\n"
-msgstr ""
+msgstr "Rippen des CD Image gestartet, Versuch #%s\n"
 
 #: rr_lib.rb:1031
 msgid "Starting to rip track %s, trial #%s\n"
-msgstr ""
+msgstr "Rippen des Tracks %s gestartet, Versuch #%s\n"
 
 #: rr_lib.rb:1057
 msgid ""
@@ -1276,9 +1294,7 @@ msgstr "Bitte mindestens einen Track auswählen."
 
 #: rr_lib.rb:1377
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
-msgstr ""
-"Die angezeigten Angaben stimmen nicht mit der eingelegten CD überein. Bitte "
-"auf 'CD einlesen' klicken."
+msgstr "Die angezeigten Angaben stimmen nicht mit der eingelegten CD überein. Bitte auf 'CD einlesen' klicken."
 
 #: rr_lib.rb:1382
 msgid "No codecs are selected!"
@@ -1415,3 +1431,4 @@ msgstr ""
 "\n"
 "STATUS\n"
 "\n"
+
