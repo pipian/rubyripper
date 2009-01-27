@@ -21,12 +21,16 @@ $LOCALE='/share/locale'
 $ICONDIR='/share/icons/hicolor/128x128/apps'
 $DESKTOP='/share/applications'
 $RUBYDIR= '/lib/rubyripper' #in case site_ruby doesn't return any matches
-$:.each do |ruby_dir|
+
+#onderstaand stukje code gaat iets mis. Alle volgende libs worden niet meer geladen.
+a = $:.dup()
+a.each do |ruby_dir|
 	if ruby_dir.include?("site_ruby")
 		if ruby_dir[0..3] == "/usr"
-				ruby_dir[0..3] = '' #it's prepended by $PREFIX later
+			$RUBYDIR = ruby_dir[4..-1] # '/usr' is prepended by $PREFIX later
+		else
+			$RUBYDIR = ruby_dir
 		end
-		$RUBYDIR = ruby_dir
 		break
 	end
 end
