@@ -3,23 +3,25 @@
 # Traducciones al español para el paquete PACKAGE.
 # Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-#
 # javi <anom.cuen@yahoo.es>, 2007.
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.5\n"
-"POT-Creation-Date: 2009-01-15 21:58+0100\n"
-"PO-Revision-Date: 2007-11-12 20:25+0100\n"
-"Last-Translator: Persona <anom.cuen@yahoo.es>\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2009-01-24 23:28+0100\n"
+"PO-Revision-Date: 2009-01-24 23:25+0100\n"
+"Last-Translator: javi <anom.cuen@yahoo.es>\n"
+"Language-Team:  <es@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
-"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: rubyripper_cli.rb:62
 msgid "Show current version of rubyripper."
-msgstr ""
+msgstr "Mostrar versión actual de rubyripper"
 
 #: rubyripper_cli.rb:66
 msgid "Load configuration settings from file <FILE>."
@@ -106,6 +108,9 @@ msgid ""
 "   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
 "   **Your drive model is shown in the logfile."
 msgstr ""
+"**Encuentre el valor de offset en http://www.accuraterip.com/driveoffsets."
+"htm.\n"
+"**En el logfile se muestra el modelo de su dispositivo."
 
 #: rubyripper_cli.rb:114
 msgid "9)  passing extra cdparanoia parameters : %s"
@@ -197,7 +202,7 @@ msgstr "listas de reproducción activado"
 
 #: rubyripper_cli.rb:146
 msgid "How many encoding threads would you like? : "
-msgstr ""
+msgstr "¿Cuantos hilos de codificación desea?: "
 
 #: rubyripper_cli.rb:148
 msgid "Which options to pass to cdparanoia? : "
@@ -400,7 +405,7 @@ msgstr ""
 
 #: rubyripper_cli.rb:285
 msgid "DISC INFO"
-msgstr ""
+msgstr "INFORMACIÓN DEL DISCO"
 
 #: rubyripper_cli.rb:286 rubyripper_cli.rb:327 rubyripper_gtk2.rb:348
 msgid "Artist:"
@@ -424,23 +429,23 @@ msgstr "PISTA"
 
 #: rubyripper_cli.rb:310
 msgid "What would you like to do?"
-msgstr ""
+msgstr "¿Qué desea hacer?"
 
 #: rubyripper_cli.rb:312
 msgid "1) Select the tracks to rip"
-msgstr ""
+msgstr "1) Seleccione las pistas a extraer"
 
 #: rubyripper_cli.rb:313
 msgid "2) Edit the disc info"
-msgstr ""
+msgstr "2) Editar la información del disco"
 
 #: rubyripper_cli.rb:314
 msgid "3) Edit the track info"
-msgstr ""
+msgstr "3) Editar la información de la pista"
 
 #: rubyripper_cli.rb:315
 msgid "4) Cancel the rip and eject the disc"
-msgstr ""
+msgstr "4) Cancelar la extracción y expulsar el disco"
 
 #: rubyripper_cli.rb:318 rubyripper_cli.rb:408
 msgid "Please enter the number of your choice: "
@@ -452,13 +457,15 @@ msgstr "Marcar como Varios Artistas"
 
 #: rubyripper_cli.rb:335
 msgid "Mark disc as single artist"
-msgstr ""
+msgstr "Marcar como artista único"
 
 #: rubyripper_cli.rb:338
 msgid ""
 "Finished editing disc info\n"
 "\n"
 msgstr ""
+"Edición de información del disco finalizada\n"
+"\n"
 
 #: rubyripper_cli.rb:341 rubyripper_cli.rb:372
 msgid "Please enter the number you'd like to edit: "
@@ -483,13 +490,15 @@ msgstr "Año :"
 #: rubyripper_cli.rb:357 rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618
 #: rr_lib.rb:619 rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
 msgid "Unknown"
-msgstr "Desconocido."
+msgstr "Desconocido"
 
 #: rubyripper_cli.rb:369
 msgid ""
 "Finished editing track info\n"
 "\n"
 msgstr ""
+"Edición de información de la pista finalizada\n"
+"\n"
 
 #: rubyripper_cli.rb:381
 msgid "This is not a valid number. Try again"
@@ -513,7 +522,7 @@ msgstr "2) Sobreescribir el ya existente"
 
 #: rubyripper_cli.rb:405
 msgid "3) Cancel the rip and eject the disc"
-msgstr ""
+msgstr "3) Cancelar la extracción y expulsar el disco"
 
 #: rubyripper_cli.rb:435
 msgid "Do you want to change your settings? (y/n) : "
@@ -619,6 +628,8 @@ msgid ""
 "Welcome to rubyripper %s.\n"
 "Scanning drive %s for an audio disc..."
 msgstr ""
+"Bienvenido a rubyripper %s.\n"
+"Comprobando disco de audio en unidad %s ..."
 
 #: rubyripper_gtk2.rb:306
 msgid ""
@@ -696,13 +707,15 @@ msgstr "Offset del cdrom:"
 
 #: rubyripper_gtk2.rb:623
 msgid "List with offsets"
-msgstr ""
+msgstr "Lista de offsets"
 
 #: rubyripper_gtk2.rb:624
 msgid ""
 "A website which lists the offset for most drives.\n"
 "Your drivename can be found in each logfile."
 msgstr ""
+"Una web que muestra la lista de offsets para la mayoría de unidades.\n"
+"En cada logfile puede encontrar el nombre de su unidad."
 
 #: rubyripper_gtk2.rb:634
 msgid "Cdrom device"
@@ -738,15 +751,15 @@ msgstr "Expulsar el cd una vez finalizado"
 
 #: rubyripper_gtk2.rb:682
 msgid "Only keep logfile if correction is needed"
-msgstr ""
+msgstr "Guardar el logfile sólo si se necesita correción."
 
 #: rubyripper_gtk2.rb:683
 msgid "Create cuesheet"
-msgstr ""
+msgstr "Crear cuesheet"
 
 #: rubyripper_gtk2.rb:684
 msgid "Rip CD to single file"
-msgstr ""
+msgstr "Extraer CD en un sólo archivo"
 
 #: rubyripper_gtk2.rb:694
 msgid "Ripping related"
@@ -774,7 +787,7 @@ msgstr "Wav"
 
 #: rubyripper_gtk2.rb:715 rubyripper_gtk2.rb:925
 msgid "Other"
-msgstr "Otro"
+msgstr "Otros"
 
 #: rubyripper_gtk2.rb:716
 msgid "Show options for \"Other\""
@@ -804,27 +817,27 @@ msgstr "Acerca del codec"
 
 #: rubyripper_gtk2.rb:770
 msgid "Don't standardize volume"
-msgstr ""
+msgstr "No estandarizar el volumen"
 
 #: rubyripper_gtk2.rb:771
 msgid "Use replaygain on audio files"
-msgstr ""
+msgstr "Utilizar replaygain en los archivos de audio"
 
 #: rubyripper_gtk2.rb:772
 msgid "Use normalize on wav files"
-msgstr ""
+msgstr "Normalizar archivos wav"
 
 #: rubyripper_gtk2.rb:775
 msgid "Album / Audiophile modus"
-msgstr ""
+msgstr "Modo Album / Audiófilo "
 
 #: rubyripper_gtk2.rb:776
 msgid "Track modus"
-msgstr ""
+msgstr "Modo pista"
 
 #: rubyripper_gtk2.rb:784
 msgid "Normalize to standard volume"
-msgstr ""
+msgstr "Normalizar al volumen standad"
 
 #: rubyripper_gtk2.rb:791
 msgid "Codecs"
@@ -872,7 +885,7 @@ msgstr "Varios artistas: "
 
 #: rubyripper_gtk2.rb:839
 msgid "Single file image:"
-msgstr ""
+msgstr "Imagen en un solo archivo:"
 
 #: rubyripper_gtk2.rb:841
 msgid "Show options for \"Filenaming scheme\""
@@ -884,7 +897,7 @@ msgid ""
 "%b=album   %y=year   %n=track   %va=various artist"
 msgstr ""
 "%a=artista   %g=género   %t=título de la pista   %f=codec\n"
-"%b=álbum   %y=año   %n=número de pista  %va=varios artistas\n"
+"%b=álbum   %y=año   %n=número de pista  %va=varios artistas"
 
 #: rubyripper_gtk2.rb:872
 msgid "Filenaming scheme"
@@ -1007,6 +1020,8 @@ msgid ""
 "Artist : %s\n"
 "Album: %s\n"
 msgstr ""
+"Artista: %s\n"
+"Álbum: %s\n"
 
 #: rr_lib.rb:198
 msgid "This log is created by Rubyripper, version %s\n"
@@ -1025,6 +1040,8 @@ msgid ""
 "\n"
 "WARNING: ENCODING ERRORS WERE DETECTED\n"
 msgstr ""
+"\n"
+"ATENCIÓN:SE HAN ENCONTRADO ERRORS EN LA CODIFICACIÓN\n"
 
 #: rr_lib.rb:244
 msgid ""
@@ -1126,6 +1143,9 @@ msgid ""
 "\n"
 "Please put an audio disc in first..."
 msgstr ""
+"No se ha encontrado ningún disco en la unidad %s.\n"
+"\n"
+"Por favor, inserte un disco de audio primero..."
 
 #: rr_lib.rb:440
 msgid ""
@@ -1140,6 +1160,8 @@ msgid ""
 "Cdrom drive %s does not exist on your system!\n"
 "Please configure your cdrom drive first."
 msgstr ""
+"¡La unidad de cdrom %s no existe en su sistema!\n"
+"Por favor, configure su unidad de cdrom primero."
 
 #: rr_lib.rb:470 rr_lib.rb:500
 msgid ""
@@ -1150,6 +1172,12 @@ msgid ""
 "%s\n"
 "You might want to add yourself to the necessary group in /etc/group"
 msgstr ""
+"¡No tiene permisos de lectura ni escritura/npara el dispositivo %s en su "
+"sistema! Estos permisos son\n"
+"necesarios para que cdparanoia pueda comprobar su unidad.\n"
+"\n"
+"%s\n"
+"Puede que desee añadirse usted mismo al grupo necesario en /etc/group"
 
 #: rr_lib.rb:539
 msgid ""
@@ -1162,9 +1190,7 @@ msgstr "Utilizando alternativa... cadena de freedb  = %s"
 
 #: rr_lib.rb:622
 msgid "Track %s"
-msgstr ""
-"\n"
-"Pistas\t= "
+msgstr "Pistas %s"
 
 #: rr_lib.rb:636
 msgid "No audio disc found in %s"
@@ -1210,10 +1236,12 @@ msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
 msgstr ""
+"Cdparanoia no extrae archivos wav.\n"
+"Compuebe su configuración."
 
 #: rr_lib.rb:955
 msgid "Filesize is not correct! Trying another time\n"
-msgstr ""
+msgstr "¡El tamaño no es correcto! Intentando otra vez\n"
 
 #: rr_lib.rb:962
 msgid "Analyzing files for mismatching chunks\n"
@@ -1235,11 +1263,11 @@ msgstr ""
 
 #: rr_lib.rb:1029
 msgid "Starting to rip CD image, trial #%s\n"
-msgstr ""
+msgstr "Comenzando a extraer la imagen de CD, intento #%s\n"
 
 #: rr_lib.rb:1031
 msgid "Starting to rip track %s, trial #%s\n"
-msgstr ""
+msgstr "Comenzando a extraer la pista %s, intento #%s\n"
 
 #: rr_lib.rb:1057
 msgid ""
@@ -1251,7 +1279,7 @@ msgstr ""
 
 #: rr_lib.rb:1330
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
-msgstr ""
+msgstr "AVISO:¡La codificación a %s terminó con un error en la pista %s!\n"
 
 #: rr_lib.rb:1366
 msgid "The device %s doesn't exist on your system!"
@@ -1403,3 +1431,4 @@ msgid ""
 msgstr ""
 "\n"
 "ESTADO \n"
+"\n"
