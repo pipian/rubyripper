@@ -22,9 +22,7 @@ $ICONDIR='/share/icons/hicolor/128x128/apps'
 $DESKTOP='/share/applications'
 $RUBYDIR= '/lib/rubyripper' #in case site_ruby doesn't return any matches
 
-#onderstaand stukje code gaat iets mis. Alle volgende libs worden niet meer geladen.
-a = $:.dup()
-a.each do |ruby_dir|
+$:.each do |ruby_dir|
 	if ruby_dir.include?("site_ruby")
 		if ruby_dir[0..3] == "/usr"
 			$RUBYDIR = ruby_dir[4..-1] # '/usr' is prepended by $PREFIX later
