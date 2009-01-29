@@ -316,7 +316,7 @@ class Cuesheet
 		end
 		
 		@filename = File.join(File.dirname(get_filename(@settings, @codec, 1)),
-			"#{@disc.md.artist} - #{@disc.md.album} (#{@codec}).cue")
+			"#{clean(@disc.md.artist, true)} - #{clean(@disc.md.album, true)} (#{@codec}).cue")
 	end
 
 	def time(sector) # minutes:seconds:leftover frames
