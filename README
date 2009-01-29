@@ -87,9 +87,6 @@ The executables will be named `rrip_cli` and `rrip_gui`
 To uninstall: (1) `make uninstall`
 To cleanup: (1) `make clean`
 
-IMPORTANT NOTE: don't use sudo when executing ./configure. It will fail with the 
-error: ./rr_lib.rb:19: undefined method `+' for nil:NilClass (NoMethodError)
-
 3a) MACOS SUPPORT
 
 The CLI now works in MacOS. However, if your cdparanoia version
