@@ -104,7 +104,7 @@ def browser
 	end
 end
 
-def clean(variable, filename=false) #clean strange tokens
+def clean(variable, filename=false, settings=Hash.new) #clean strange tokens
 	if variable == nil : return nil end
 	var = variable.dup
 	if filename == true
@@ -113,17 +113,20 @@ def clean(variable, filename=false) #clean strange tokens
 		var.gsub!('[', '(') #replace the ' [ ' with a ' ( '
 		var.gsub!(']', ')') #replace the ' ] ' with a ' ) '
 		var.gsub!('"', '') #Add a slash before the double quote chars, otherwise the shell will complain
+		if settings['noSpaces'] : var.gsub!(" ", "_") end
+		if settings['noCapitals'] : var.downcase! end
 	else
 		var.gsub!('"', '\"') #Add a slash before the double quote chars, otherwise the shell will complain
 	end
 	var.gsub!('`', "'") #replace a backquote with a single quote	
-	var.gsub!('_', ' ') # replace any underscores with spaces, some freedb info got underscores instead of spaces
+	# replace any underscores with spaces, some freedb info got underscores instead of spaces
+	if not settings['noSpaces'] : var.gsub!('_', ' ') end 
 	var.gsub!(/\342\200\230|\342\200\231/, "'") # replace utf-8 single quotes with latin single quote
 	var.gsub!(/\342\200\234|\342\200\235/, '"') # replace utf-8 double quotes with latin double quote
 	return var.strip
 end
 
-$rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, "vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3", "wav" => false, "other" => false, "othersettings" => '', "playlist" => true, "cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)', "verbose" => false, "debug" => true, "instance" => self, "eject" => true, "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => false, "image" => false, 'normalize' => false, 'gain' => "album"}
+$rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, "vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3", "wav" => false, "other" => false, "othersettings" => '', "playlist" => true, "cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)', "verbose" => false, "debug" => true, "instance" => self, "eject" => true, "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => false, "image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)
@@ -857,6 +860,297 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 		@varTracklist = Array.new
 	end
 end
+
+# Output is a helpclass that defines all the names of the directories, 
+# filenames and tags. It filters out special characters that are not
+# well supported in the different platforms. It also offers some help
+# functions to create the output dirs and to get a preview of the output.
+# Output is initialized as soon as the player pushes Rip Now!
+#
+# TODO other command
+# MAYBE playlist creation
+
+class Output
+attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist, :getTempDirName
+	
+	def initialize(settings)
+		@settings = settings
+		@md = @settings['cd'].md
+		@codecs = ['flac', 'vorbis', 'mp3', 'wav', 'other']
+
+		# the output of the dirs for each codec, and files for each tracknumber + codec.
+		@dir = Hash.new
+		@file = Hash.new
+		@tempDirName = String.new
+		@image = Hash.new
+
+		# the metadata made ready for tagging usage
+		@artist = String.new
+		@album = String.new
+		@year = String.new
+		@genre = String.new
+		@tracklist = Array.new
+		@varArtists = Array.new
+		
+		splitDirFile()
+		setDirectory()
+		checkDir()
+		setFileNames()
+		setTempDirName()
+		setMetadata()
+	end
+
+	# split the filescheme into a dir and a file
+	def splitDirFile
+		if @settings['image']
+			fileScheme = File.join(@settings['basedir'], @settings['naming_image'])
+		elsif @md.varArtists.empty?
+			fileScheme =  File.join(@settings['basedir'], @settings['naming_normal'])
+		else
+			fileScheme = File.join(@settings['basedir'], @settings['naming_various'])
+		end
+		
+		@dirName, @filename = File.split(fileScheme)
+		
+		checkNames()
+	end
+
+# Do a few sanity checks
+# 1) Remove dot(s) from the albumname when it's the start of a directory,
+# otherwise they're hidden files in linux.
+# 2) Check if %va exists in filescheme for normal artists
+# 3) Check if %n exists in single file rip scheme
+# 4) Check if %va exists in single file rip scheme
+# 5) Check if %t exists in single file rip scheme
+
+	def checkNames
+		if @dirName.include?("/%b") && @md.album[0,1] == '.' 
+ 			@dirName.sub!(/\.*/, '')
+ 		end
+
+		if @md.varArtists.empty? && @fileName.include?('%va')
+			@fileName.gsub!('%va', '')
+			puts "Warning: '%va' in the filescheme for normal cd's makes no sense!"
+			puts "This is automatically removed"
+		end
+
+		if @settings['image']
+			if @fileName.include?('%n')
+				@filename.gsub!('%n', '')
+				puts "Warning: '%n' in the filescheme for image rips makes no sense!"
+				puts "This is automatically removed"
+			end
+			
+			if @filename.include?('%va')
+				@filename.gsub!('%va', '')
+				puts "Warning: '%va' in the filescheme for image rips makes no sense!"
+				puts "This is automatically removed"
+			end
+
+			if @filename.include?('%t')
+				@filename.gsub!('%t', '')
+				puts "Warning: '%t' in the filescheme for image rips makes no sense!"
+				puts "This is automatically removed"
+			end
+		end
+	end
+
+	# fill the @dir variable with all output dirs
+	def setDirectory
+		@codecs.each do |codec|
+			if @settings[codec]
+				@dir[codec] = giveDir(codec)
+			end
+		end
+	end
+
+	# determine the output dir
+	def giveDir(codec)
+		dirName = @dirName
+
+		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year}.each do |key, value|
+			dirName.gsub!(key, value)
+		end
+		
+		return File.expand_path(fileFilter(dirName))
+	end
+
+	# check the existence of the output dir
+	def checkDirExistence
+		@dir.values.each do |dir|
+			if File.directory?(dir)
+				@settings['instance'].update("dir_exists", dir)
+			end
+			return false
+		end
+	end
+
+	# check write access of the output dirs
+	def checkDirRights
+		@dir.values.each do |directory|
+			dir = directory
+			# search for the first existing directory
+			while not File.directory?(dir) : dir = File.dirname(dir) end
+			
+			if not File.writable?(dir)
+				@settings['instance'].update("error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir])
+ 				return false
+ 			end
+		end
+	end
+
+	# add the first free number as a postfix to the output dir
+ 	def postfixDir
+ 		postfix = 1
+ 		@dir.values.each{|dir| while File.directory?(dir + "\##{postfix}") : postfix += 1 end}
+		@dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
+ 	end
+ 	
+	# remove the existing dir, starting with the files in it
+ 	def overwriteDir
+ 		@dirs.values.each do |dir|
+ 			if File.directory?(dir)
+ 				Dir.foreach(dir){|file| if File.file?(filename = File.join(dir,file)) : File.delete(filename) end}
+ 				Dir.rmdir(dir)
+ 			end
+ 		end
+ 	end
+
+	# create the output dirs
+	def createDir
+		require 'ftools'
+		@dirs.values.each{|dir| File.makedirs(dir)}
+	end
+
+	# fill the @file variable, so we have for example @file['flac'][0]
+	def setFileNames
+		@codecs.each do |codec|
+			if @settings[codec]
+				@file[codec] = Hash.new
+				if @settings['image']
+					@image[codec] = giveFileName(codec)
+				else
+					@settings['cd'].audiotracks.times do |track|
+						@file[codec][track] = giveFileName(codec, track)
+					end
+				end
+			end
+		end
+	end
+
+	# give the filename for given codec and track
+	def giveFileName(codec, track=0)
+		file = @fileName
+		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%n' => track + 1,
+		'%va' => @md.varArtists[track], '%t' => @md.tracklist[track]}.each do |key, value|
+			file.gsub!(key, value)
+		end
+
+		# other codec has the extension already in the command
+		if codec == 'flac' : file += '.flac'
+		elsif codec == 'vorbis' : file += '.vorbis'
+		elsif codec == 'mp3' : file += '.mp3'
+		elsif codec == 'wav' : file += '.wav'
+		end
+
+		return fileFilter(file)
+	end
+
+	# create the temp dir
+	def setTempDirName
+		@tempDirName = File.join(File.dirname(@dir.keys[0]), 'temp/')
+		if not File.directory?(@tempDirName)
+			Dir.mkdir(@tempDirName)
+		end
+	end
+
+	# Fill the metadata, made ready for tagging
+	def setMetadata
+		@artist = tagFilter(@md.artist)
+		@album = tagFilter(@md.album)
+		@genre = tagFilter(@md.genre)
+		@year = tagFilter(@md.year)
+		@settings['cd'].audiotracks.times{|track| @tracklist << tagFilter(@md.tracklist[track])}
+		if not @md.varArtists.empty?
+			@settings['cd'].audiotracks.times{|track| @varArtists << tagFilter(@md.varArtists[track]}
+		end
+	end
+
+	# characters that will be changed for filenames
+	def fileFilter(var)
+		var.gsub!('/', ' ') #no slashes allowed in filenames
+		var.gsub!('\\', '') #the \\ means a normal \
+ 		var.gsub!('[', '(') 
+ 		var.gsub!(']', ')') 
+ 		var.gsub!('"', '')
+ 		
+		allFilter(var)
+
+		if @settings['noSpaces'] : var.gsub!(" ", "_") end
+ 		if @settings['noCapitals'] : var.downcase! end
+		return var.strip
+	end
+
+	#characters that will be changed for tags
+	def tagFilter(var)
+		allFilter()
+
+		#Add a slash before the double quote chars, otherwise the shell will complain
+		var.gsub!('"', '\"')
+		return var.strip
+	end
+
+	# characters that will be changed for tags and filenames
+	def allFilter(var)
+		var.gsub!('`', "'")
+		
+		# replace any underscores with spaces, some freedb info got underscores instead of spaces
+		if not @settings['noSpaces'] : var.gsub!('_', ' ') end
+
+		# replace utf-8 single quotes with latin single quote 
+		var.gsub!(/\342\200\230|\342\200\231/, "'") 
+		
+		# replace utf-8 double quotes with latin double quote
+		var.gsub!(/\342\200\234|\342\200\235/, '"') 
+	end
+
+	# return the full filename of the track
+	def getTrackName(codec, number)
+		return File.join(@dir[codec], @file[codec][number])
+	end
+
+	# return the full filename of the image
+	def getImageName(codec)
+		return File.join(@dir[codec], @image[codec])
+	end
+
+	# return the full filename of the log
+	def getLogName(codec)
+		return File.join(@dir[codec], 'ripping.log')
+	end
+
+	# return the full filename of the cuesheet
+	def getCueName(codec)
+		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).cue")
+	end
+
+	# return the full filename of the playlist
+	def getPlaylistName(codec)
+		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).m3u")
+	end
+
+	#return the temporary dir
+	def getTempDirName
+		return @tempDirName
+	end
+end
+
+# def get_filename(settings, codec = 'mp3', track = 1, command = false) #function returning filename after conversion of variables
+
+# 	if command != false
+# 		command.gsub!('%o', filename) #replace the %o with the output filename
+# 		filename = command
+# 	end
 
 class SecureRip
 	def initialize(settings, encoding)
