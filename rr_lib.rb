@@ -144,37 +144,6 @@ def get_example_filename_various(basedir, layout) #separate function to make it 
 	return filename
 end
 
-def get_filename(settings, codec = 'mp3', track = 1, command = false) #function returning filename after conversion of variables
-	if settings['image'] # We're dealing with a single file rip
-		filename = File.join(settings['basedir'], settings['naming_image'])
-	elsif settings['cd'].md.varArtists.empty?
-	 	filename =  File.join(settings['basedir'], settings['naming_normal'])
-	else
-		filename = File.join(settings['basedir'], settings['naming_various'])
-	end
-	filename = File.expand_path(filename) #Replace any ~/ with the relevant information, such as /home/username/
-	
-	if command != false
-		command.gsub!('%o', filename) #replace the %o with the output filename
-		filename = command
-	end
-	
-	if (filename.include?('%va') && settings['cd'].md.varArtists.empty?)
-		filename.gsub!('%va', '')
-		puts "Warning: you are using the various artist (%va) in the naming scheme for normal cd's!"
-		puts "This is automatically removed"
-	end
-	{'%a' => clean(settings['cd'].md.artist, true),
-	'%b' => clean(settings['cd'].md.album, true),
-	'%f' => codec,
-	'%g' => clean(settings['cd'].md.genre, true),
-	'%y' => clean(settings['cd'].md.year, true),
-	'%n' => sprintf("%02d", track),
-	'%va' => clean(settings['cd'].md.varArtists[track - 1], true),
-	'%t' => clean(settings['cd'].md.tracklist[track - 1], true)}.each{|key,value| if filename.include?(key) : filename.gsub!(key, value) end}
-	return filename
-end
-
 def eject(cdrom)
 	Thread.new do
 	 	if installed('eject') : `eject #{cdrom}`
@@ -188,10 +157,10 @@ class Gui_support
 attr_reader :update_ripping_progress, :update_encoding_progress, :append_2_log, :summary, :ripping_progress, :encoding_progress, :mismatch, :short_summary, :delete_logfiles
 attr_writer :encodingErrors
 
-	def initialize(settings, dirnames) #gui is an instance of the graphical user interface used
+	def initialize(settings) #gui is an instance of the graphical user interface used
 		@settings = settings
-		@logfiles = Array.new
-		dirnames.each{|dir| @logfiles << File.open(dir + "/ripping.log", "a")} # Open a log file in append mode for each directory
+		createLog()
+		
 		@problem_tracks = Hash.new # key = tracknumber, value = new dictionary with key = seconds_chunk, value = [amount_of_chunks, trials_needed]
 		@not_corrected_tracks = Array.new # Array of tracks that weren't corrected within the maximum amount of trials set by the user
 		@ripping_progress = 0.0
@@ -200,6 +169,15 @@ attr_writer :encodingErrors
 		@short_summary = _("Artist : %s\nAlbum: %s\n") % [@settings['cd'].md.artist, @settings['cd'].md.album]
 		update_logfiles(_("This log is created by Rubyripper, version %s\n") % [$rr_version])
 		update_logfiles(_("Website: http://code.google.com/p/rubyripper\n\n"))
+	end
+
+	def createLog
+		@logfiles = Array.new
+		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
+			if @settings[codec]
+				@logfiles << File.open(@settings['Out'].getLogFile(codec), 'a')
+			end
+		end
 	end
 	
 	def update_ripping_progress(new_value, calling_function = false) #new_value = float, 1 = 100%
@@ -303,23 +281,9 @@ class Cuesheet
 		@disc = settings['cd']
 		@image = settings['image']
 		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
-		@extension = {'flac' => '.flac', 'wav' => '.wav', 'mp3' => '.mp3', 'vorbis' => '.ogg', 'other' => ''}
 		@cuesheet = Array.new
-		getFilenames
-		createCuesheet
-		saveCuesheet
-	end
-
-	def getFilenames
-		@audiofiles = Array.new
-		if @image == true
-			@audiofiles << File.basename(get_filename(@settings, @codec, 0)) + @extension[@codec]
-		else
-			@disc.audiotracks.times{|track| @audiofiles << File.basename(get_filename(@settings, @codec, track+1) + @extension[@codec])}
-		end
-		
-		@filename = File.join(File.dirname(get_filename(@settings, @codec, 1)),
-			"#{clean(@disc.md.artist, true)} - #{clean(@disc.md.album, true)} (#{@codec}).cue")
+		createCuesheet()
+		saveCuesheet()
 	end
 
 	def time(sector) # minutes:seconds:leftover frames
@@ -337,11 +301,11 @@ class Cuesheet
 		@cuesheet << "TITLE \"#{@disc.md.album}\""
 
 		if @image == true
-			@cuesheet << "FILE \"#{@audiofiles[0]}\" #{@filetype[@codec]}"
+			@cuesheet << "FILE \"#{@settings['Out'].getImageFile(@codec)}\" #{@filetype[@codec]}"
 			@disc.audiotracks.times{|track| trackinfo(track)}
 		else
 			@disc.audiotracks.times do |track|
-				@cuesheet << "FILE \"#{@audiofiles[track]}\" #{@filetype[@codec]}"
+				@cuesheet << "FILE \"#{@settings['Out'].getFile(track, @codec)}\" #{@filetype[@codec]}"
 				trackinfo(track)
 			end
 		end
@@ -370,7 +334,7 @@ class Cuesheet
 	end
 
 	def saveCuesheet
-		file = File.new(@filename, 'w')
+		file = File.new(@settings['Out'].getCueFile(@codec), 'w')
 		@cuesheet.each do |line|
 			file.puts(line)
 		end
@@ -871,7 +835,7 @@ end
 # MAYBE playlist creation
 
 class Output
-attr_reader :getDir, :getFile, :getImageName, :getLogName, :getCueName, :getPlaylist, :temp, :postfixDir, :overwriteDir, :status
+attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlaylist, :temp, :postfixDir, :overwriteDir, :status
 	
 	def initialize(settings)
 		@settings = settings
@@ -1133,27 +1097,27 @@ attr_reader :getDir, :getFile, :getImageName, :getLogName, :getCueName, :getPlay
 	end
 
 	# return the full filename of the track
-	def getFile(codec, number)
+	def getFile(number, codec)
 		return File.join(@dir[codec], @file[codec][number])
 	end
 
 	# return the full filename of the image
-	def getImageName(codec)
+	def getImageFile(codec)
 		return File.join(@dir[codec], @image[codec])
 	end
 
 	# return the full filename of the log
-	def getLogName(codec)
+	def getLogFile(codec)
 		return File.join(@dir[codec], 'ripping.log')
 	end
 
 	# return the full filename of the cuesheet
-	def getCueName(codec)
+	def getCueFile(codec)
 		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).cue")
 	end
 
 	# return the full filename of the playlist
-	def getPlaylistName(codec)
+	def getPlaylist(codec)
 		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).m3u")
 	end
 
@@ -1654,6 +1618,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
 		if @settings['Out'].status == false : return false end
+		@settings['log'] = Gui_Support.new(@settings)
 		@outputDir = @settings['Out'].getDir()
 		return true
 	end
