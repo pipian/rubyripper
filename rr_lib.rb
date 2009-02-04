@@ -867,21 +867,23 @@ end
 # functions to create the output dirs and to get a preview of the output.
 # Output is initialized as soon as the player pushes Rip Now!
 #
-# TODO other command
+# TODO other command, no need, will be done in Encode class
 # MAYBE playlist creation
 
 class Output
-attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist, :getTempDirName
+attr_reader :getFile, :getImageName, :getLogName, :getCueName, :getPlaylist, :temp, :postfixDir, :overwriteDir, :status
 	
 	def initialize(settings)
 		@settings = settings
 		@md = @settings['cd'].md
 		@codecs = ['flac', 'vorbis', 'mp3', 'wav', 'other']
+		# Status of the class is false until proven otherwise
+		@status = false
 
 		# the output of the dirs for each codec, and files for each tracknumber + codec.
 		@dir = Hash.new
 		@file = Hash.new
-		@tempDirName = String.new
+		@tempDir = String.new
 		@image = Hash.new
 
 		# the metadata made ready for tagging usage
@@ -893,11 +895,9 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 		@varArtists = Array.new
 		
 		splitDirFile()
+		checkNames()
 		setDirectory()
-		checkDir()
-		setFileNames()
-		setTempDirName()
-		setMetadata()
+		attemptDirCreation()
 	end
 
 	# split the filescheme into a dir and a file
@@ -911,8 +911,6 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 		end
 		
 		@dirName, @filename = File.split(fileScheme)
-		
-		checkNames()
 	end
 
 # Do a few sanity checks
@@ -975,14 +973,15 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 		return File.expand_path(fileFilter(dirName))
 	end
 
-	# check the existence of the output dir
-	def checkDirExistence
-		@dir.values.each do |dir|
-			if File.directory?(dir)
-				@settings['instance'].update("dir_exists", dir)
-			end
-			return false
-		end
+	# (re)attempt creation of the dirs, when succesfull create the filenames
+	def attemptDirCreation
+		if not checkDirRights : return false end
+		if not checkDirExistence() : return false end
+		createDir()
+		createTempDir()
+		setFileNames()
+		setMetadata()
+		@status = true
 	end
 
 	# check write access of the output dirs
@@ -997,29 +996,32 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
  				return false
  			end
 		end
+		return true
 	end
 
-	# add the first free number as a postfix to the output dir
- 	def postfixDir
- 		postfix = 1
- 		@dir.values.each{|dir| while File.directory?(dir + "\##{postfix}") : postfix += 1 end}
-		@dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
- 	end
- 	
-	# remove the existing dir, starting with the files in it
- 	def overwriteDir
- 		@dirs.values.each do |dir|
- 			if File.directory?(dir)
- 				Dir.foreach(dir){|file| if File.file?(filename = File.join(dir,file)) : File.delete(filename) end}
- 				Dir.rmdir(dir)
- 			end
- 		end
- 	end
+	# check the existence of the output dir
+	def checkDirExistence
+		@dir.values.each do |dir|
+			if File.directory?(dir)
+				@settings['instance'].update("dir_exists", dir)
+			end
+			return false
+		end
+		return true
+	end
 
 	# create the output dirs
 	def createDir
 		require 'ftools'
 		@dirs.values.each{|dir| File.makedirs(dir)}
+	end
+
+	# create the temp dir
+	def createTempDir
+		@tempDir = File.join(File.dirname(@dir.keys[0]), 'temp/')
+		if not File.directory?(@tempDir)
+			Dir.mkdir(@tempDir)
+		end
 	end
 
 	# fill the @file variable, so we have for example @file['flac'][0]
@@ -1041,7 +1043,7 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 	# give the filename for given codec and track
 	def giveFileName(codec, track=0)
 		file = @fileName
-		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%n' => track + 1,
+		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%n' => track + 1, 
 		'%va' => @md.varArtists[track], '%t' => @md.tracklist[track]}.each do |key, value|
 			file.gsub!(key, value)
 		end
@@ -1056,14 +1058,6 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 		return fileFilter(file)
 	end
 
-	# create the temp dir
-	def setTempDirName
-		@tempDirName = File.join(File.dirname(@dir.keys[0]), 'temp/')
-		if not File.directory?(@tempDirName)
-			Dir.mkdir(@tempDirName)
-		end
-	end
-
 	# Fill the metadata, made ready for tagging
 	def setMetadata
 		@artist = tagFilter(@md.artist)
@@ -1072,7 +1066,7 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 		@year = tagFilter(@md.year)
 		@settings['cd'].audiotracks.times{|track| @tracklist << tagFilter(@md.tracklist[track])}
 		if not @md.varArtists.empty?
-			@settings['cd'].audiotracks.times{|track| @varArtists << tagFilter(@md.varArtists[track]}
+			@settings['cd'].audiotracks.times{|track| @varArtists << tagFilter(@md.varArtists[track])}
 		end
 	end
 
@@ -1114,8 +1108,27 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 		var.gsub!(/\342\200\234|\342\200\235/, '"') 
 	end
 
+	# add the first free number as a postfix to the output dir
+ 	def postfixDir
+ 		postfix = 1
+ 		@dir.values.each{|dir| while File.directory?(dir + "\##{postfix}") : postfix += 1 end}
+		@dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
+		attemptDirCreation()
+ 	end
+ 	
+	# remove the existing dir, starting with the files in it
+ 	def overwriteDir
+ 		@dirs.values.each do |dir|
+ 			if File.directory?(dir)
+ 				Dir.foreach(dir){|file| if File.file?(filename = File.join(dir,file)) : File.delete(filename) end}
+ 				Dir.rmdir(dir)
+ 			end
+ 		end
+		attemptDirCreation()
+ 	end
+
 	# return the full filename of the track
-	def getTrackName(codec, number)
+	def getFile(codec, number)
 		return File.join(@dir[codec], @file[codec][number])
 	end
 
@@ -1140,17 +1153,10 @@ attr_reader :getTrackName, :getImageName, :getLogName, :getCueName, :getPlaylist
 	end
 
 	#return the temporary dir
-	def getTempDirName
-		return @tempDirName
+	def temp
+		return @tempDir
 	end
 end
-
-# def get_filename(settings, codec = 'mp3', track = 1, command = false) #function returning filename after conversion of variables
-
-# 	if command != false
-# 		command.gsub!('%o', filename) #replace the %o with the output filename
-# 		filename = command
-# 	end
 
 class SecureRip
 	def initialize(settings, encoding)
@@ -1638,24 +1644,31 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 	end
 	
 	def settings_ok
-	# update_yaml saves all the (changed?) metadata on the local disk and updates the different metadata fields in case of weird characters
-		if check_configuration && test_for_deps && @settings['cd'].md.saveChanges()  && prepare_dirs
-			return true
-		else
-			return false
-		end
+		if not checkConfig() : return false end
+		if not testDeps() : return false end
+		@settings['cd'].md.saveChanges()
+		@settings['Out'] = Output.new(@settings)
+		if @settings['Out'].status == false : return false end
+		return true
 	end
 	
 	def start_rip
-		update_gui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
-		compute_percentage() # Do some pre-work to get the progress updater working later on
-		temp_dir() # Check if the temporary dir exists, if not: make it if basedir does exist or fallback to /tmp/rr/.
+		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
+		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@settings) #Create an instance for encoding
 		@ripping = SecureRip.new(@settings, @encoding) #create an instance for ripping
 	end
 	
-	def check_configuration
+	# check the configuration of the user.
+	# 1) does the ripping drive exists
+	# 2) are there tracks selected to rip
+	# 3) is the current disc the same as loaded in memory
+	# 4) is at least one codec is selected
+	# 5) are the otherSettings correct
+	# 6) is req_matches_all <= req_matches_errors
+
+	def checkConfig
 		unless File.symlink?(@settings['cdrom']) || File.blockdev?(@settings['cdrom']) # does the cdrom device or a symlink to it exist?
 			@settings['instance'].update("error", _("The device %s doesn't exist on your system!") % [@settings['cdrom']])
 			return false
@@ -1704,7 +1717,7 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 		puts @settings['othersettings'] if @settings['debug']
 	end
 	
-	def test_for_deps()
+	def testDeps
 		{"ripper" => "cdparanoia", "flac" => "flac", "vorbis" => "oggenc", "mp3" => "lame"}.each do |setting, binary|
 			if @settings[setting] && !installed(binary)
 				@settings['instance'].update("error", _("%s not found on your system!") % [binary.capitalize])
@@ -1713,74 +1726,18 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 		end
 		return true
 	end
-	
-	def prepare_dirs() # Look if the dirs already exist and create them
-		if @settings['cd'].md.varArtists.empty? # if no various artist cd is found
-			destination_dir = File.join(@settings['basedir'], @settings['naming_normal'])
-		else
-			destination_dir = File.join(@settings['basedir'], @settings['naming_various'])
-		end
-			
-		if destination_dir.include?("/%b") && @settings['cd'].md.album[0,1] == '.' #If a dir or file starts with an album and the album starts with a dot 
-			@settings['cd'].md.album.sub!(/\.*/, '') #remove those dot(s) from the albumname, otherwise they're hidden files in linux.
-		end
-		
-		require 'ftools' # Adding some extra File functions like makedirs
-	
-		@output_dirs = Array.new
-		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec| #save the dirname in @output_dirs
-			if @settings[codec] #for each selected codec, save the dirname
-				@output_dirs << File.dirname(get_filename(@settings, codec))
-				unless destination_dir.include?('%f') : break end #only run the code ones if no codec format is found, otherwise the dirs are the same
-			end
-		end
 
-		@output_dirs.each do |dir| #look for each dir if it exists
-			 if File.directory?(dir)
-			 	@settings['instance'].update("dir_exists", dir)
-				return false 
-			 end
-		end
-		
-		@output_dirs.each do |dir| #Look for the highest existing dir and check if we have writing access there.
-			while not File.directory?(dir)
-				dir = File.dirname(dir) #chop of the subdir if it's not yet created
-			end
-			if not File.writable?(dir)
-				@settings['instance'].update("error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir])
-				return false
-			end
-		end
-		
-		@output_dirs.each{|dir| File.makedirs(dir)} #create the dir
-		
-		@settings['log'] = @gui = Gui_support.new(@settings, @output_dirs) # The gui communication class :)
-		return true
-	end
-	
-	def postfix_dir #add the first free number as a postfix to the output dir
-		postfix = 1
-		@output_dirs.each{|dir| while File.directory?(dir + "\##{postfix}") : postfix += 1 end} #increase enough for all directories
-
-		if @settings['cd'].md.varArtists.empty? #use a trick with File.join to remove any trailing '/'
-			@settings['naming_normal'] = File.join(File.dirname(@settings['naming_normal']) + "\##{postfix}", File.basename(@settings['naming_normal']))
-		else
-			@settings['naming_various'] = File.join(File.dirname(@settings['naming_various']) + "\##{postfix}", File.basename(@settings['naming_various']))
-		end
-		prepare_dirs() #problem is solved, so continue
-	end
-	
-	def overwrite_dir #overwrite the dir
-		@output_dirs.each do |dir|
-			if File.directory?(dir)
-				Dir.foreach(dir){|file| if File.file?(File.join(dir,file)) : File.delete(File.join(dir, file)) end} #first delete all files in the dir
-				Dir.rmdir(dir) #then delete the dir itself
-			end
-		end
-		prepare_dirs() #problem is solved, so continue
+	def postfix_dir
+		@settings['Out'].postfixDir()
+		start_rip()
 	end
 
-	def update_gui
+	def overwrite_dir
+		@settings['Out'].overwriteDir()
+		start_rip()
+	end
+
+	def updateGui
 		@settings['log'].append_2_log(_("Cdrom player used to rip:\n%s\n") % [@settings['cd'].devicename])
 		@settings['log'].append_2_log(_("Cdrom offset used: %s\n\n") % [@settings['offset']])
 		@settings['log'].append_2_log(_("Ripper used: cdparanoia %s\n") % [if @settings['rippersettings'] : @settings['rippersettings'] else _('default settings') end])
@@ -1805,15 +1762,10 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 		@settings['log'].append_2_log(_("\nSTATUS\n\n"))
 	end
 	
-	def compute_percentage
+	def computePercentage
 		@settings['percentages'] = Hash.new() #progress for each track
 		totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
 		@settings['tracksToRip'].each{|track| totalSectors += @settings['cd'].lengthSector[track - 1]} #update totalSectors
 		@settings['tracksToRip'].each{|track| @settings['percentages'][track] = @settings['cd'].lengthSector[track-1] / totalSectors}
-	end	
-
-	def temp_dir # use a directory named temp where encoding takes place
-		@settings['temp_dir'] = File.dirname(@output_dirs[0]) + '/temp/' #Asking the dirname of a directory returns the directory of one higher level
-		unless File.directory?(@settings['temp_dir']) : Dir.mkdir(@settings['temp_dir']) end # If the directory not yet exists, create it
 	end
 end
