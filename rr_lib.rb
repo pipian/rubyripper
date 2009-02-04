@@ -104,28 +104,6 @@ def browser
 	end
 end
 
-def clean(variable, filename=false, settings=Hash.new) #clean strange tokens
-	if variable == nil : return nil end
-	var = variable.dup
-	if filename == true
-		var.gsub!('/', ' ') #no slashes allowed in filenames
-		var.gsub!('\\', '') #remove any '\', the \\ means a normal \
-		var.gsub!('[', '(') #replace the ' [ ' with a ' ( '
-		var.gsub!(']', ')') #replace the ' ] ' with a ' ) '
-		var.gsub!('"', '') #Add a slash before the double quote chars, otherwise the shell will complain
-		if settings['noSpaces'] : var.gsub!(" ", "_") end
-		if settings['noCapitals'] : var.downcase! end
-	else
-		var.gsub!('"', '\"') #Add a slash before the double quote chars, otherwise the shell will complain
-	end
-	var.gsub!('`', "'") #replace a backquote with a single quote	
-	# replace any underscores with spaces, some freedb info got underscores instead of spaces
-	if not settings['noSpaces'] : var.gsub!('_', ' ') end 
-	var.gsub!(/\342\200\230|\342\200\231/, "'") # replace utf-8 single quotes with latin single quote
-	var.gsub!(/\342\200\234|\342\200\235/, '"') # replace utf-8 double quotes with latin double quote
-	return var.strip
-end
-
 $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, "vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3", "wav" => false, "other" => false, "othersettings" => '', "playlist" => true, "cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)', "verbose" => false, "debug" => true, "instance" => self, "eject" => true, "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => false, "image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
