@@ -218,7 +218,7 @@ attr_reader :change_display, :instances, :update
 		@settings['tracksToRip'] = @instances['GtkMetadata'].tracks_to_rip
 
 		@rubyripper = Rubyripper.new(@settings, self) # start a new instance, keep it out the Thread for later callbacks (yet_to_implement)
-		if @rubyripper.settings_ok # configuration check
+		if @rubyripper.settingsOk # configuration check
 			do_rip()
 		else
 			@buttons[0..3].each{|button| button.sensitive = true}
@@ -230,13 +230,13 @@ attr_reader :change_display, :instances, :update
 			@buttons[0..3].each{|button| button.sensitive = false}
  			if @instances['RipStatus'] ==  false : @instances['RipStatus'] = RipStatus.new() else @instances['RipStatus'].reset end
 			change_display(@instances['RipStatus'])
-			@rubyripper.start_rip # fire away the start shot
+			@rubyripper.startRip # fire away the start shot
 		end
 	end
 	
 	def showSummary
 		@buttons[0..3].each{|button| button.sensitive = true}
-		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.output_dirs[0], @rubyripper.gui.short_summary)
+		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.gui.short_summary)
 		change_display(@instances['Summary'])
 		@instances['RipStatus'].reset()
 		@rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
@@ -1014,8 +1014,8 @@ attr_reader :display
 		end
 		
 		@buttons[0].signal_connect("released") {gui.change_display(gui.instances['GtkMetadata'])}
-		@buttons[1].signal_connect("released") {rubyripper.overwrite_dir() ; gui.do_rip() }
-		@buttons[2].signal_connect("released") {rubyripper.postfix_dir() ; gui.do_rip() }
+		@buttons[1].signal_connect("released") {rubyripper.overwriteDir() ; gui.do_rip() }
+		@buttons[2].signal_connect("released") {rubyripper.postfixDir() ; gui.do_rip() }
 
 		@vbox = Gtk::VBox.new
 		@vbox.border_width = 10

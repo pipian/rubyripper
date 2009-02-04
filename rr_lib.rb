@@ -871,7 +871,7 @@ end
 # MAYBE playlist creation
 
 class Output
-attr_reader :getFile, :getImageName, :getLogName, :getCueName, :getPlaylist, :temp, :postfixDir, :overwriteDir, :status
+attr_reader :getDir, :getFile, :getImageName, :getLogName, :getCueName, :getPlaylist, :temp, :postfixDir, :overwriteDir, :status
 	
 	def initialize(settings)
 		@settings = settings
@@ -1126,6 +1126,11 @@ attr_reader :getFile, :getImageName, :getLogName, :getCueName, :getPlaylist, :te
  		end
 		attemptDirCreation()
  	end
+
+	# return the first directory (for the summary)
+	def getDir
+		return @dir.values[0]
+	end
 
 	# return the full filename of the track
 	def getFile(codec, number)
@@ -1634,7 +1639,7 @@ class Encode < Monitor
 end
 
 class Rubyripper
-attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwrite_dir
+attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir
 	
 	def initialize(settings, gui)
 		@settings = settings.dup
@@ -1643,16 +1648,17 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 		@settings['instance'] = gui
 	end
 	
-	def settings_ok
+	def settingsOk
 		if not checkConfig() : return false end
 		if not testDeps() : return false end
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
 		if @settings['Out'].status == false : return false end
+		@outputDir = @settings['Out'].getDir()
 		return true
 	end
 	
-	def start_rip
+	def startRip
 		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
@@ -1669,7 +1675,7 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 	# 6) is req_matches_all <= req_matches_errors
 
 	def checkConfig
-		unless File.symlink?(@settings['cdrom']) || File.blockdev?(@settings['cdrom']) # does the cdrom device or a symlink to it exist?
+		unless File.symlink?(@settings['cdrom']) || File.blockdev?(@settings['cdrom'])
 			@settings['instance'].update("error", _("The device %s doesn't exist on your system!") % [@settings['cdrom']])
 			return false
 		end
@@ -1680,19 +1686,18 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 		end
 		
 		temp = Disc.new(@settings['cdrom'], @settings['freedb'], @settings['instance'])
-		if @settings['cd'].freedbString != temp.freedbString # Test if the user has put in another CD to fool me ;)
+		if @settings['cd'].freedbString != temp.freedbString
 			@settings['instance'].update("error", _("The Gui doesn't match inserted cd. Please press Scan Drive first."))
  			return false
 		end
 		
-		unless @settings['flac'] || @settings['vorbis'] || @settings['mp3'] || @settings['wav'] || @settings['other'] # Test if at least one codec is selected
+		unless @settings['flac'] || @settings['vorbis'] || @settings['mp3'] || @settings['wav'] || @settings['other']
 			@settings['instance'].update("error", _("No codecs are selected!"))
 			return false
  		end
 
 		if @settings['other'] : checkOtherSettings() end
  		
-		#Make sure errors get at least as much corrected as non-errors.
  		if @settings['req_matches_all'] > @settings['req_matches_errors'] : @settings['req_matches_errors'] = @settings['req_matches_all'] end
 		return true
 	end
@@ -1727,14 +1732,14 @@ attr_reader :settings_ok, :start_rip, :output_dirs, :gui,  :postfix_dir, :overwr
 		return true
 	end
 
-	def postfix_dir
+	def postfixDir
 		@settings['Out'].postfixDir()
-		start_rip()
+		startRip()
 	end
 
-	def overwrite_dir
+	def overwriteDir
 		@settings['Out'].overwriteDir()
-		start_rip()
+		startRip()
 	end
 
 	def updateGui

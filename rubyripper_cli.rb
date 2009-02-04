@@ -394,7 +394,7 @@ class Gui_CLI
 	def prepareRip()
 		tracklist() # Which tracks should be ripped?
 		@rubyripper = Rubyripper.new(@settings, self) # starts some check if the settings are sane
-		if @rubyripper.settings_ok : start() end
+		if @rubyripper.settingsOk : start() end
 	end
 	
 	def dir_exists
@@ -406,14 +406,14 @@ class Gui_CLI
 		puts ""
 
 		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
-		if answer == 1: @rubyripper.postfix_dir() ; start()
-		elsif answer == 2: @rubyripper.overwrite_dir() ; start()
+		if answer == 1: @rubyripper.postfixDir() ; start()
+		elsif answer == 2: @rubyripper.overwriteDir() ; start()
 		else cancelRip()
 		end
 	end
 
 	def start
-		@rubyripper.start_rip()
+		@rubyripper.startRip()
 		while @finished == false
 			sleep(1) #loop until the finished signal is given.
 			#This is not ideal, but apparently the program gets terminated otherwise.
