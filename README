@@ -254,10 +254,7 @@ developer will typically respond within one week. You can add your e-mail,
 so any changes or updates in the bug will be send to you.
 
 Q : How do I get the very latest code (I don't care how many bugs there are)?
-A : Install subversion. Then use the following command 
-`svn checkout http://rubyripper.googlecode.com/svn/trunk/ rubyripper`
-`svn update` will update to the latest commited version
-`svn log` will show all the commit messages.
+A : Using git. See the wiki for instructions.
 
 Q : My buttons don't react and give the following error in a terminal:
 warning: GRClosure invoking callback: already destroyed Callback error
