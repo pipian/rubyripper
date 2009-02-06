@@ -852,7 +852,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlay
 			fileScheme = File.join(@settings['basedir'], @settings['naming_various'])
 		end
 		
-		@dirName, @filename = File.split(fileScheme)
+		@dirName, @fileName = File.split(fileScheme)
 	end
 
 # Do a few sanity checks
@@ -876,19 +876,19 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlay
 
 		if @settings['image']
 			if @fileName.include?('%n')
-				@filename.gsub!('%n', '')
+				@fileName.gsub!('%n', '')
 				puts "Warning: '%n' in the filescheme for image rips makes no sense!"
 				puts "This is automatically removed"
 			end
 			
-			if @filename.include?('%va')
-				@filename.gsub!('%va', '')
+			if @fileName.include?('%va')
+				@fileName.gsub!('%va', '')
 				puts "Warning: '%va' in the filescheme for image rips makes no sense!"
 				puts "This is automatically removed"
 			end
 
-			if @filename.include?('%t')
-				@filename.gsub!('%t', '')
+			if @fileName.include?('%t')
+				@fileName.gsub!('%t', '')
 				puts "Warning: '%t' in the filescheme for image rips makes no sense!"
 				puts "This is automatically removed"
 			end
