@@ -1099,6 +1099,10 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlay
 		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).m3u")
 	end
 
+	def tempFile(track, trial)
+		return File.join(@tempDir, "track#{track}_#{trial}.wav")
+	end
+
 	#return the temporary dir
 	def temp
 		return @tempDir
@@ -1147,7 +1151,7 @@ class SecureRip
 		if installed('df')				
 			freeDiskSpace = `df #{@settings['Out'].getDir()}`.split()[10]
 			if @sizeExpected > freeDiskSpace
-				@settings['log'].append_2_log(_("No disk space left! Rip aborted"))
+				@settings['log'].append_2_log(_("Not enough disk space left! Rip aborted"))
 				return false
 			end
 		end
@@ -1193,7 +1197,7 @@ class SecureRip
 	end
 	
 	def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
-		if not File.exist?("#{@settings['temp_dir']}track#{track}_#{@trial}.wav")
+		if not File.exist?(@settings['Out']}.tempFile(track, @trial))
 			@settings['instance'].update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
 			return false
 		end
@@ -1201,14 +1205,14 @@ class SecureRip
 	end
 	
 	def testFileSize(track) #check if wavfile is of correct size
-		sizeRip = File.size("#{@settings['temp_dir']}track#{track}_#{@trial}.wav")
+		sizeRip = File.size(@settings['Out'].tempFile(track, @trial))
 		
 		if sizeRip != @sizeExpected 
 			if @settings['debug']
 				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
 				puts "Filesize should be : #{sizeExpected}"
 			end
-			File.delete("#{@settings['temp_dir']}track#{track}_#{@trial}.wav") # Delete file with wrong filesize
+			File.delete(@settings['Out'].tempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
 			@settings['log'].append_2_log(_("Filesize is not correct! Trying another time\n"))
 			return false
@@ -1220,7 +1224,7 @@ class SecureRip
 		@settings['log'].append_2_log(_("Analyzing files for mismatching chunks\n"))
 		files = Array.new
 		@reqMatchesAll.times do |time|
-			files << File.new("#{@settings['temp_dir']}track#{track}_#{time + 1}.wav", 'r')
+			files << File.new(@settings['Out'].tempFile(track, time + 1), 'r')
 		end
 				
 		(@reqMatchesAll - 1).times do |time|
@@ -1236,7 +1240,10 @@ class SecureRip
 		end
 		
 		files.each{|file| file.close}
-		(@reqMatchesAll - 1).times{|time| File.delete("#{@settings['temp_dir']}track#{track}_#{time + 2}.wav")} # Don't need these files anymore. Differences are saved in memory.
+		
+		# Remove the files now we analyzed them. Differences are saved in memory.
+		(@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].tempFile(track, time + 2))}
+ 
 		if @errors.size == 0
 			@settings['log'].append_2_log(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
 		else
@@ -1245,35 +1252,58 @@ class SecureRip
 		end
 	end
 	
-	def readErrorPos(track) # This is used if the required amount of matches is too big to ever be realized
-		file = File.new("#{@settings['temp_dir']}track#{track}_#{@trial}.wav", 'r')
+	# When required matches for mismatched sectors are bigger than there are 
+	# trials to be tested, readErrorPos() just reads the mismatched sectors
+	# without analysing them.
+	# Wav-containter overhead = 44 bytes.
+	# Audio-cd sector = 2352 bytes.
+
+	def readErrorPos(track)
+		file = File.new(@settings['Out'].tempFile(track, @trial), 'r')
 		@errors.keys.sort.each do |start_chunk|
-			file.pos = start_chunk + 44 # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
+			file.pos = start_chunk + 44
 			@errors[start_chunk] << file.read(2352)
 		end
 		file.close
-		File.delete("#{@settings['temp_dir']}track#{track}_#{@trial}.wav") # Don't need this file anymore. Differences are saved in memory.
-		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) # report for later position analysis
+
+		# Remove the file now we read it. Differences are saved in memory.
+		File.delete(@settings['Out'].tempFile(track, @trial))
+
+		# Give an update for the trials for later analysis
+		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) 
 	end
 	
+	# Let the errors 'wave' out. For each sector that isn't unique across
+	# different trials, try to find at least @reqMatchesErrors matches. If
+	# indeed this amount of matches is found, correct the sector in the
+	# reference file (trial 1).
+
 	def correctErrorPos(track)
-	#Let the errors 'wave' out. Chunks with different outcomes must be matches @reqMatchesErrors times.
-		file1 = File.new("#{@settings['temp_dir']}track#{track}_1.wav", 'r+')
-		file2 = File.new("#{@settings['temp_dir']}track#{track}_#{@trial}.wav", 'r')
-		@errors.keys.sort.each do |start_chunk| # Sort the hash keys to prevent jumping forward and backwards in the file
-			file2.pos = start_chunk + 44 # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
+		file1 = File.new(@settings['Out'].tempFile(track, 1), 'r+')
+		file2 = File.new(@settings['Out'].tempFile(track, @trial), 'r')
+		
+		# Sort the hash keys to prevent jumping forward and backwards in the file
+		@errors.keys.sort.each do |start_chunk|
+			file2.pos = start_chunk + 44
 			@errors[start_chunk] << temp = file2.read(2352)
-			@errors[start_chunk].sort! # Sort the array before looking if temp solves our requirement of matches
-			if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1) # Matches are r(ight)index - index because array is sorted
+
+			# now sort the array and see if the new read value has enough matches
+			# right index minus left index of the read value is amount of matches
+			@errors[start_chunk].sort!
+			if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1)
 				file1.pos = start_chunk + 44
 				file1.write(temp)
 				@errors.delete(start_chunk)
 			end
 		end
+
 		file1.close
 		file2.close
-		File.delete("#{@settings['temp_dir']}track#{track}_#{@trial}.wav") # Don't need this file anymore. Differences are saved in memory.
+
+		# Remove the file now we read it. Differences are saved in memory.
+		File.delete(@settings['Out'].tempFile(track, @trial))
 		
+		#give an update of the amount of errors and trials
 		if @errors.size == 0
 			@settings['log'].append_2_log(_("Error(s) succesfully corrected, %s matches found for each chunk :)\n") % [@reqMatchesErrors])
 		else
@@ -1298,14 +1328,14 @@ class SecureRip
 		end
 		if @settings['cd'].multipleDriveSupport : command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
 		command += " -O #{@settings['offset']}"
-		command += " \"#{@settings['temp_dir']}track#{track}_#{@trial}.wav\"" #output name
+		command += " \"#{@settings['Out'].tempFile(track, @trial)}\""
 		unless @settings['verbose'] : command += " 2>&1" end # hide the output of cdparanoia output
 		`#{command}` #Launch the cdparanoia command
 	end
 	
 	def getDigest(track)
 		digest = Digest::MD5.new()
-		file = File.open("#{@settings['temp_dir']}track#{track}_1.wav", 'r')
+		file = File.open(@settings['Out'].tempFile(track, 1), 'r')
 		index = 0
 		while (index < @settings['cd'].fileSizeWav[track-1])
 			digest << file.read(100000)
