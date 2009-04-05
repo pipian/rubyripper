@@ -2,10 +2,10 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007  Bouke Woudstra (rubyripperdev@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
-#    the Free Software Foundation, either version 3 of the License, or
-#    (at your option) any later version.
+#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    redistribute it and/or modify it under the terms of the GNU General
+#    Public License as published by the Free Software Foundation, either 
+#    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -1112,10 +1112,11 @@ class SecureRip
 		@reqMatchesAll = @settings['req_matches_all'] # Matches needed for all chunks
 		@reqMatchesErrors = @settings['req_matches_errors'] # Matches needed for chunks that didn't match immediately
 		@progress = 0.0 #for the progressbar
+		@sizeExpected = 0
 		
 		if @settings['maxThreads'] == 0 : ripTracks() else Thread.new{ripTracks()} end
 	end
-	
+
 	def ripTracks
 		@settings['log'].update_ripping_progress(0.0, "ripper") # Give a hint to the gui that ripping has started
 
@@ -1131,10 +1132,24 @@ class SecureRip
 			@filesizes = Array.new
 			@trial = 0
 
+			# first check if there's enough size available in the output dir
+			if installed('df')			
+				if not sizeTest() : break end
+			end
 			if main(track) : @encoding.addTrack(track) else return false end #ready to encode
 		end
 		
 		eject(@settings['cd'].cdrom) if @settings['eject'] 
+	end
+
+	def sizeTest
+		@sizeExpected = @settings['image'] ? @settings['cd'].fileSizeDisc : @settings['cd'].fileSizeWav[track-1]
+		freeDiskSpace = `df #{@settings['Out'].getDir()}`.split()[10]
+		
+		if @sizeExpected > freeDiskSpace
+			@settings['log'].append_2_log(_("No disk space left! Rip aborted"))
+			return false
+		end
 	end
 	
 	def main(track)
@@ -1185,14 +1200,8 @@ class SecureRip
 	
 	def testFileSize(track) #check if wavfile is of correct size
 		sizeRip = File.size("#{@settings['temp_dir']}track#{track}_#{@trial}.wav")
-
-		if @settings['image']
-			sizeExpected = @settings['cd'].fileSizeDisc
-		else
-			sizeExpected = @settings['cd'].fileSizeWav[track-1]
-		end
 		
-		if sizeRip != sizeExpected 
+		if sizeRip != @sizeExpected 
 			if @settings['debug']
 				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
 				puts "Filesize should be : #{sizeExpected}"
