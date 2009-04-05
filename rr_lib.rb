@@ -1197,7 +1197,7 @@ class SecureRip
 	end
 	
 	def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
-		if not File.exist?(@settings['Out']}.tempFile(track, @trial))
+		if not File.exist?(@settings['Out'].tempFile(track, @trial))
 			@settings['instance'].update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
 			return false
 		end
