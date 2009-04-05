@@ -1133,9 +1133,8 @@ class SecureRip
 			@trial = 0
 
 			# first check if there's enough size available in the output dir
-			if installed('df')			
-				if not sizeTest() : break end
-			end
+			if not sizeTest() : break end
+			
 			if main(track) : @encoding.addTrack(track) else return false end #ready to encode
 		end
 		
@@ -1144,12 +1143,15 @@ class SecureRip
 
 	def sizeTest
 		@sizeExpected = @settings['image'] ? @settings['cd'].fileSizeDisc : @settings['cd'].fileSizeWav[track-1]
-		freeDiskSpace = `df #{@settings['Out'].getDir()}`.split()[10]
 		
-		if @sizeExpected > freeDiskSpace
-			@settings['log'].append_2_log(_("No disk space left! Rip aborted"))
-			return false
+		if installed('df')				
+			freeDiskSpace = `df #{@settings['Out'].getDir()}`.split()[10]
+			if @sizeExpected > freeDiskSpace
+				@settings['log'].append_2_log(_("No disk space left! Rip aborted"))
+				return false
+			end
 		end
+		return true
 	end
 	
 	def main(track)
