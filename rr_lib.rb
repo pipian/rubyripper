@@ -912,7 +912,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlay
 			dirName.gsub!(key, value)
 		end
 		
-		return fileFilter(File.expand_path(dirName))
+		return fileFilter(File.expand_path(dirName), true)
 	end
 
 	# (re)attempt creation of the dirs, when succesfull create the filenames
@@ -1013,8 +1013,10 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlay
 	end
 
 	# characters that will be changed for filenames
-	def fileFilter(var)
-		var.gsub!('/', ' ') #no slashes allowed in filenames
+	def fileFilter(var, isDir=false)
+		if not isDir
+			var.gsub!('/', ' ') #no slashes allowed in filenames
+		end
 		var.gsub!('\\', '') #the \\ means a normal \
  		var.gsub!('[', '(') 
  		var.gsub!(']', ')') 
