@@ -912,7 +912,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlay
 			dirName.gsub!(key, value)
 		end
 		
-		return File.expand_path(fileFilter(dirName))
+		return fileFilter(File.expand_path(dirName))
 	end
 
 	# (re)attempt creation of the dirs, when succesfull create the filenames
