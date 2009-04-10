@@ -814,7 +814,8 @@ end
 
 class Output
 attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
- :getPlaylist, :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status
+ :getPlaylist, :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
+:cleanTempDir
 	
 	def initialize(settings)
 		@settings = settings
@@ -1062,14 +1063,22 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
  	
 	# remove the existing dir, starting with the files in it
  	def overwriteDir
- 		@dirs.values.each do |dir|
- 			if File.directory?(dir)
- 				Dir.foreach(dir){|file| if File.file?(filename = File.join(dir,file)) : File.delete(filename) end}
- 				Dir.rmdir(dir)
- 			end
- 		end
+ 		@dirs.values.each{|dir| cleanDir(dir) if File.directory?(dir)}
 		attemptDirCreation()
  	end
+
+    # clean a directory, starting with the files in it
+	def cleanDir(dir)
+		Dir.each(dir) do |file|
+			File.delete(file) if File.file?(filename = File.join(dir, file))
+		end
+		Dir.delete(dir)
+	end
+
+	# clean temporary Dir (when finished)
+	def cleanTempDir
+		cleanDir(getTempDir()) if File.directory?(getTempDir())
+	end
 
 	# return the first directory (for the summary)
 	def getDir
