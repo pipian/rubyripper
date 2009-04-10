@@ -814,7 +814,7 @@ end
 
 class Output
 attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
- :getPlaylist, :temp, :tempFile, :postfixDir, :overwriteDir, :status
+ :getPlaylist, :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status
 	
 	def initialize(settings)
 		@settings = settings
@@ -961,9 +961,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 
 	# create the temp dir
 	def createTempDir
-		@tempDir = File.join(File.dirname(@dir.keys[0]), 'temp/')
-		if not File.directory?(@tempDir)
-			Dir.mkdir(@tempDir)
+		if not File.directory?(getTempDir)
+			Dir.mkdir(getTempDir)
 		end
 	end
 
@@ -1102,13 +1101,13 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).m3u")
 	end
 
-	def tempFile(track, trial)
+	def getTempFile(track, trial)
 		return File.join(@tempDir, "track#{track}_#{trial}.wav")
 	end
 
 	#return the temporary dir
-	def temp
-		return @tempDir
+	def getTempDir
+		return File.join(File.dirname(@dir.keys[0]), 'temp/')
 	end
 end
 
@@ -1200,7 +1199,7 @@ class SecureRip
 	end
 	
 	def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
-		if not File.exist?(@settings['Out'].tempFile(track, @trial))
+		if not File.exist?(@settings['Out'].getTempFile(track, @trial))
 			@settings['instance'].update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
 			return false
 		end
@@ -1208,14 +1207,14 @@ class SecureRip
 	end
 	
 	def testFileSize(track) #check if wavfile is of correct size
-		sizeRip = File.size(@settings['Out'].tempFile(track, @trial))
+		sizeRip = File.size(@settings['Out'].getTempFile(track, @trial))
 		
 		if sizeRip != @sizeExpected 
 			if @settings['debug']
 				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
 				puts "Filesize should be : #{sizeExpected}"
 			end
-			File.delete(@settings['Out'].tempFile(track, @trial)) # Delete file with wrong filesize
+			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
 			@settings['log'].append_2_log(_("Filesize is not correct! Trying another time\n"))
 			return false
@@ -1227,7 +1226,7 @@ class SecureRip
 		@settings['log'].append_2_log(_("Analyzing files for mismatching chunks\n"))
 		files = Array.new
 		@reqMatchesAll.times do |time|
-			files << File.new(@settings['Out'].tempFile(track, time + 1), 'r')
+			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
 		end
 				
 		(@reqMatchesAll - 1).times do |time|
@@ -1245,7 +1244,7 @@ class SecureRip
 		files.each{|file| file.close}
 		
 		# Remove the files now we analyzed them. Differences are saved in memory.
-		(@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].tempFile(track, time + 2))}
+		(@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].getTempFile(track, time + 2))}
  
 		if @errors.size == 0
 			@settings['log'].append_2_log(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
@@ -1262,7 +1261,7 @@ class SecureRip
 	# Audio-cd sector = 2352 bytes.
 
 	def readErrorPos(track)
-		file = File.new(@settings['Out'].tempFile(track, @trial), 'r')
+		file = File.new(@settings['Out'].getTempFile(track, @trial), 'r')
 		@errors.keys.sort.each do |start_chunk|
 			file.pos = start_chunk + 44
 			@errors[start_chunk] << file.read(2352)
@@ -1270,7 +1269,7 @@ class SecureRip
 		file.close
 
 		# Remove the file now we read it. Differences are saved in memory.
-		File.delete(@settings['Out'].tempFile(track, @trial))
+		File.delete(@settings['Out'].getTempFile(track, @trial))
 
 		# Give an update for the trials for later analysis
 		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) 
@@ -1282,8 +1281,8 @@ class SecureRip
 	# reference file (trial 1).
 
 	def correctErrorPos(track)
-		file1 = File.new(@settings['Out'].tempFile(track, 1), 'r+')
-		file2 = File.new(@settings['Out'].tempFile(track, @trial), 'r')
+		file1 = File.new(@settings['Out'].getTempFile(track, 1), 'r+')
+		file2 = File.new(@settings['Out'].getTempFile(track, @trial), 'r')
 		
 		# Sort the hash keys to prevent jumping forward and backwards in the file
 		@errors.keys.sort.each do |start_chunk|
@@ -1304,7 +1303,7 @@ class SecureRip
 		file2.close
 
 		# Remove the file now we read it. Differences are saved in memory.
-		File.delete(@settings['Out'].tempFile(track, @trial))
+		File.delete(@settings['Out'].getTempFile(track, @trial))
 		
 		#give an update of the amount of errors and trials
 		if @errors.size == 0
@@ -1331,14 +1330,14 @@ class SecureRip
 		end
 		if @settings['cd'].multipleDriveSupport : command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
 		command += " -O #{@settings['offset']}"
-		command += " \"#{@settings['Out'].tempFile(track, @trial)}\""
+		command += " \"#{@settings['Out'].getTempFile(track, @trial)}\""
 		unless @settings['verbose'] : command += " 2>&1" end # hide the output of cdparanoia output
 		`#{command}` #Launch the cdparanoia command
 	end
 	
 	def getDigest(track)
 		digest = Digest::MD5.new()
-		file = File.open(@settings['Out'].tempFile(track, 1), 'r')
+		file = File.open(@settings['Out'].getTempFile(track, 1), 'r')
 		index = 0
 		while (index < @settings['cd'].fileSizeWav[track-1])
 			digest << file.read(100000)
@@ -1350,7 +1349,6 @@ class SecureRip
 end
 
 class Encode < Monitor
-
 	attr_reader :addTrack
 	
 	def initialize(settings)
