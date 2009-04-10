@@ -942,10 +942,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# create playlist + cuesheet files
 	def createFiles
 		['flac','vorbis','mp3','wav','other'].each do |codec|
-			if @settings[codec]
-				if @settings['playlist'] && !@settings['image']
-					createPlaylist(codec)
-				end
+			if @settings[codec] && @settings['playlist'] && !@settings['image']
+				createPlaylist(codec)
 			end
 		end
 		
