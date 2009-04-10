@@ -123,7 +123,6 @@ attr_reader :change_display, :instances, :update
 				if value == "false" : value = false # replace the string with a bool
 				elsif value == "true" : value = true  # replace the string with a bool
 				elsif value == "''" : value = '' #replace a string that contains two quotes with an empty string
-				elsif value[0,1] == "#" : next #name of previous instances should not be loaded
 				elsif value.to_i > 0 || value == '0' : value = value.to_i
 				end
 				if @settings.key?(key) : @settings[key] = value end
@@ -605,10 +604,12 @@ attr_reader :display, :save
 	end
 	
 	def save_configfile
-		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper')) : Dir.mkdir(dirname) end
+		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper'))
+			Dir.mkdir(dirname)
+		end
 		file = File.new(File.join(ENV['HOME'], '.rubyripper/settings'), 'w')
 		@settings.each do |key, value|
-			file.puts "#{key}=#{value}"
+			file.puts "#{key}=#{value}" if $rr_defaultSettings.include?(key)
 		end
 		file.close()
 	end

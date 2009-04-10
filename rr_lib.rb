@@ -813,7 +813,8 @@ end
 # MAYBE playlist creation
 
 class Output
-attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile, :getPlaylist, :temp, :postfixDir, :overwriteDir, :status
+attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
+ :getPlaylist, :temp, :tempFile, :postfixDir, :overwriteDir, :status
 	
 	def initialize(settings)
 		@settings = settings
