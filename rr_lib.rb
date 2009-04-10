@@ -253,15 +253,23 @@ class Cuesheet
 # INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
 # INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
 
-	def initialize(settings, codec)
+	def initialize(settings)
 		@settings = settings
-		@codec = codec
 		@disc = settings['cd']
 		@image = settings['image']
 		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
-		@cuesheet = Array.new
-		createCuesheet()
-		saveCuesheet()
+		allCodecs()
+	end
+
+	def allCodecs
+		['flac','vorbis','mp3','wav','other'].each do |codec|
+			if @settings[codec]
+				@cuesheet = Array.new
+				@codec = codec
+				createCuesheet()
+				saveCuesheet()
+			end
+		end
 	end
 
 	def time(sector) # minutes:seconds:leftover frames
@@ -807,14 +815,15 @@ end
 # filenames and tags. It filters out special characters that are not
 # well supported in the different platforms. It also offers some help
 # functions to create the output dirs and to get a preview of the output.
+# Since all the info is here, also create the playlist files. The cuesheets
+# are also made with help of the Cuesheet class.
 # Output is initialized as soon as the player pushes Rip Now!
 #
 # TODO other command, no need, will be done in Encode class
-# MAYBE playlist creation
 
 class Output
 attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
- :getPlaylist, :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
+:getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
 :cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist
 	
 	def initialize(settings)
@@ -910,7 +919,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	def giveDir(codec)
 		dirName = @dirName
 
-		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year}.each do |key, value|
+		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
+		'%y' => @md.year}.each do |key, value|
 			dirName.gsub!(key, value)
 		end
 		
@@ -925,7 +935,23 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		createTempDir()
 		setFileNames()
 		setMetadata()
+		createFiles()
 		@status = true
+	end
+
+	# create playlist + cuesheet files
+	def createFiles
+		['flac','vorbis','mp3','wav','other'].each do |codec|
+			if @settings[codec]
+				if @settings['playlist'] && !@settings['image']
+					createPlaylist(codec)
+				end
+			end
+		end
+		
+		if @settings['cue_sheet']
+			Cuesheet.new(@settings)
+		end
 	end
 
 	# check write access of the output dirs
@@ -1086,6 +1112,18 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		Dir.delete(dir)
 	end
 
+	# create Playlist for each codec
+	def createPlaylist(codec)
+		playlist = File.new(File.join(@dir[codec], 
+			"#{@artist} - #{@album} (#{codec}).m3u"), 'w')
+		
+		@settings['tracksToRip'].each do |track|
+			playlist.puts getFile(track, codec)
+		end
+
+		playlist.close
+	end
+
 	# clean temporary Dir (when finished)
 	def cleanTempDir
 		cleanDir(getTempDir()) if File.directory?(getTempDir())
@@ -1114,11 +1152,6 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# return the full filename of the cuesheet
 	def getCueFile(codec)
 		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).cue")
-	end
-
-	# return the full filename of the playlist
-	def getPlaylist(codec)
-		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).m3u")
 	end
 
 	def getTempFile(track, trial)
@@ -1386,18 +1419,18 @@ class Encode < Monitor
 		@settings = settings
 		@progress = 0.0
 		@threads = 0 # number of running threads
-		@ready = true # is the encoding process idle or are we running out of threads?
-		@waitingroom = Array.new # Room where each track and codec is listed, waiting for a free thread.
+		@ready = true # is there a thread available?
+		@waitingroom = Array.new # Track/codec waiting for a free thread.
 		@busyTracks = Array.new # Tracks that are currently encoding
 		@lasttrack = false
+		@out = @settings['Out'] # create a shortcut
 
-		ENV['CHARSET'] = "UTF-8" #Needed for correct character handling for the oggenc executable. Perhaps other encoders use it as well.
+		# Set the charset environment variable to UTF-8. Oggenc needs this.
+		# Perhaps others need it as well.
+		ENV['CHARSET'] = "UTF-8" 
 		@codecs = 0 # number of codecs
 		['flac','vorbis','mp3','wav','other'].each do |codec|
-			if @settings[codec]
-				@codecs +=1
-				if @settings['create_cue'] : Cuesheet.new(@settings, codec) end #at the start so we can later embed the cuesheet in the flac image
-			end
+			@codecs += 1 if @settings[codec]
 		end
 	end
 	
@@ -1469,24 +1502,8 @@ class Encode < Monitor
 		@progress = 1.0 ; @settings['log'].update_encoding_progress(@progress)
 		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
 		if @settings['no_log']  : @settings['log'].delete_logfiles end #Delete the logfile if no correction was needed if no_log is true
-		createPlaylists() if (@settings['playlist'] && !@settings['image'])
 		cleanup()
 		@settings['instance'].update("finished")
-	end
-	
-	def createPlaylists
-		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-			if @settings[codec]
-				dirname = File.dirname(get_filename(@settings,  codec, 1)) #tracknumber 1 for instance
-				m3ufile = File.new(File.join(dirname, "#{clean(@settings['cd'].md.artist, true)} - #{clean(@settings['cd'].md.album, true)} (#{codec}).m3u"), 'w')
-				Dir.entries(dirname).sort.each do |file|
-					if File.file?(File.join(dirname, file)) && file != 'ripping.log' && file[-4,4] != '.m3u' && file[-4,4] != '.cue'
-						m3ufile.puts file
-					end
-				end
-				m3ufile.close()
-			end
-		end
 	end
 	
 	def cleanup
@@ -1597,9 +1614,9 @@ class Encode < Monitor
 			
 		end
 
-		if @settings['create_cue'] && @settings['image'] # for images we might as well embed it in the flac
-			file = File.join(File.dirname(get_filename(@settings, 'flac', 1)), "#{clean(@settings['cd'].md.artist, true)} - #{clean(@settings['cd'].md.album, true)} (flac).cue")
-			tags += " --cuesheet=\"#{file}\""
+		 # for images we might as well embed it in the flac
+		if @settings['create_cue'] && @settings['image']
+			tags += " --cuesheet=\"#{@out.getCueFile('flac')}\""
 		end
 
 		command = %Q{flac #{@settings['flacsettings']} -o "#{filename}" #{tags} "#{@settings['temp_dir']}track#{track}_1.wav"#{" 2>&1" unless @settings['verbose']}}
