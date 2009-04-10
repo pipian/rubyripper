@@ -967,7 +967,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		end
 	end
 
-	# fill the @file variable, so we have for example @file['flac'][0]
+	# fill the @file variable, so we have for example @file['flac'][1]
 	def setFileNames
 		@codecs.each do |codec|
 			if @settings[codec]
@@ -976,7 +976,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 					@image[codec] = giveFileName(codec)
 				else
 					@settings['cd'].audiotracks.times do |track|
-						@file[codec][track] = giveFileName(codec, track)
+						@file[codec][track + 1] = giveFileName(codec, track)
 					end
 				end
 			end
@@ -1086,8 +1086,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	end
 
 	# return the full filename of the track
-	def getFile(number, codec)
-		return File.join(@dir[codec], @file[codec][number])
+	def getFile(track, codec)
+		return File.join(@dir[codec], @file[codec][track])
 	end
 
 	# return the full filename of the image
