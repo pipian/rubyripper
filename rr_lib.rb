@@ -815,7 +815,7 @@ end
 class Output
 attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
  :getPlaylist, :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
-:cleanTempDir
+:cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist
 	
 	def initialize(settings)
 		@settings = settings
@@ -986,8 +986,9 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# give the filename for given codec and track
 	def giveFileName(codec, track=0)
 		file = @fileName
-		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%n' => track + 1, 
-		'%va' => @md.varArtists[track], '%t' => @md.tracklist[track]}.each do |key, value|
+		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
+		'%y' => @md.year, '%n' => track + 1, '%va' => @md.varArtists[track], 
+		'%t' => @md.tracklist[track]}.each do |key, value|
 			file.gsub!(key, value)
 		end
 
@@ -1007,9 +1008,13 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		@album = tagFilter(@md.album)
 		@genre = tagFilter(@md.genre)
 		@year = tagFilter(@md.year)
-		@settings['cd'].audiotracks.times{|track| @tracklist << tagFilter(@md.tracklist[track])}
+		@settings['cd'].audiotracks.times do |track|
+			@tracklist << tagFilter(@md.tracklist[track])
+		end
 		if not @md.varArtists.empty?
-			@settings['cd'].audiotracks.times{|track| @varArtists << tagFilter(@md.varArtists[track])}
+			@settings['cd'].audiotracks.times do |track|
+				@varArtists << tagFilter(@md.varArtists[track])
+			end
 		end
 	end
 
@@ -1034,7 +1039,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	def tagFilter(var)
 		allFilter()
 
-		#Add a slash before the double quote chars, otherwise the shell will complain
+		#Add a slash before the double quote chars, 
+		#otherwise the shell will complain
 		var.gsub!('"', '\"')
 		return var.strip
 	end
@@ -1043,7 +1049,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	def allFilter(var)
 		var.gsub!('`', "'")
 		
-		# replace any underscores with spaces, some freedb info got underscores instead of spaces
+		# replace any underscores with spaces, some freedb info got 
+		# underscores instead of spaces
 		if not @settings['noSpaces'] : var.gsub!('_', ' ') end
 
 		# replace utf-8 single quotes with latin single quote 
@@ -1056,7 +1063,11 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# add the first free number as a postfix to the output dir
  	def postfixDir
  		postfix = 1
- 		@dir.values.each{|dir| while File.directory?(dir + "\##{postfix}") : postfix += 1 end}
+ 		@dir.values.each do |dir|
+			while File.directory?(dir + "\##{postfix}")
+				postfix += 1
+			 end
+		end
 		@dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
 		attemptDirCreation()
  	end
@@ -1117,6 +1128,16 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	#return the temporary dir
 	def getTempDir
 		return File.join(File.dirname(@dir.keys[0]), 'temp/')
+	end
+
+	#return the trackname for the metadata
+	def getTrackname(track)
+		return @tracklist[track - 1]
+	end
+
+	#return the artist for the metadata
+	def getVarArtist(track)
+		return @varArtists[track - 1]
 	end
 end
 
