@@ -1168,7 +1168,11 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 
 	#return the artist for the metadata
 	def getVarArtist(track)
-		return @varArtists[track - 1]
+		if @varArtists[track -1] == nil
+			return ''
+		else
+			return @varArtists[track - 1]
+		end
 	end
 end
 
@@ -1622,19 +1626,33 @@ class Encode < Monitor
 	end
 	
 	def flac(filename, track)
-		if @settings['image'] # Handle tags for single file images differently
-			tags = %Q{--tag ARTIST="#{clean(@settings['cd'].md.artist)}" --tag TITLE="#{clean(@settings['cd'].md.album)}" --tag ALBUM="#{clean(@settings['cd'].md.album)}" --tag DATE="#{@settings['cd'].md.year}" --tag GENRE="#{@settings['cd'].md.genre}"}
+		tags = "--tag ALBUM=\"#{@out.album}\" "
+		tags += "--tag DATE=\"#{@out.year}\" "
+		tags += "--tag GENRE=\"#{@out.genre}\" "
+		
+		 # Handle tags for single file images differently
+		if @settings['image']
+			tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
+			tags += "--tag TITLE=\"#{@out.album}\" " # title = album here
+			if @settings['create_cue']
+				tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
+			end
 		else
-			tags = %Q{--tag ARTIST="#{@settings['cd'].md.varArtists.empty? ? clean(@settings['cd'].md.artist) : clean(@settings['cd'].md.varArtists[track-1]) + %Q{" --tag "ALBUM ARTIST"="#{clean(@settings['cd'].md.artist)}}}" --tag TITLE="#{clean(@settings['cd'].md.tracklist[track-1])}" --tag ALBUM="#{clean(@settings['cd'].md.album)}" --tag DATE="#{@settings['cd'].md.year}" --tag GENRE="#{clean(@settings['cd'].md.genre)}" --tag TRACKNUMBER="#{track}" --tag TRACKTOTAL="#{@settings['cd'].audiotracks}"}
-			
+			if @out.getVarArtist != ''
+				tags += "--tags ARTIST=\"#{@out.getVarArtist(track)}\" "
+				tags += "--tags \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+			else
+				tags += "--tags ARTIST=\"#{@out.artist}\" "
+			end
+			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\""
+			tags += "--tag TRACKNUMBER=#{track} "
+			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
-		 # for images we might as well embed it in the flac
-		if @settings['create_cue'] && @settings['image']
-			tags += " --cuesheet=\"#{@out.getCueFile('flac')}\""
-		end
+		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}"
+		command += "\"#{@out.getTempFile(track, 1)}\" "
+		command += "2>&1" unless @settings['verbose']
 
-		command = %Q{flac #{@settings['flacsettings']} -o "#{filename}" #{tags} "#{@settings['temp_dir']}track#{track}_1.wav"#{" 2>&1" unless @settings['verbose']}}
 		checkCommand(command, track, 'flac')
 	end
 	
