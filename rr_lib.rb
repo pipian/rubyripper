@@ -1011,7 +1011,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	def giveFileName(codec, track=0)
 		file = @fileName
 		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
-		'%y' => @md.year, '%n' => track + 1, '%va' => @md.varArtists[track], 
+		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => @md.varArtists[track], 
 		'%t' => @md.tracklist[track]}.each do |key, value|
 			file.gsub!(key, value)
 		end
@@ -1490,7 +1490,7 @@ class Encode < Monitor
 			#clean up wav's that are not needed anymore
 			if !@waitingroom.flatten.include?(track) &&	
 			!@busyTracks.include?(track) &&	File.exist?(@out.getTempFile(track, 1))
-				File.delete(@out.getTempFile(track, 1)
+				File.delete(@out.getTempFile(track, 1))
 			end
 	
 			@threads -= 1
@@ -1555,14 +1555,14 @@ class Encode < Monitor
 	end
 
 	def doFlac(track)
-		filename = get_filename(@settings,  'flac', track) + '.flac'
+		filename = @out.getFile(track, 'flac')
 		if !@settings['flacsettings'] : @settings['flacsettings'] = '--best' end
 		flac(filename, track)
 		replaygain(filename, 'flac', track)
 	end
 		
 	def doVorbis(track)
-		filename = get_filename(@settings, 'vorbis', track) + '.ogg'
+		filename = @out.getFile(track, 'vorbis')
 		if !@settings['vorbissettings'] : @settings['vorbissettings'] = '-q 6' end
 		vorbis(filename, track)
 		replaygain(filename, 'vorbis', track)
@@ -1581,14 +1581,17 @@ class Encode < Monitor
 'RETRO', 'REVIVAL', 'RHYTHMIC SOUL', 'ROCK', 'ROCK & ROLL', 'SALSA', 'SAMBA', 'SATIRE', 'SHOWTUNES', 'SKA', 'SLOW JAM', 'SLOW ROCK', 'SONATA', 'SOUL', 'SOUND CLIP', \
 'SOUNDTRACK', 'SOUTHERN ROCK', 'SPACE', 'SPEECH', 'SWING', 'SYMPHONIC ROCK', 'SYMPHONY', 'SYNTHPOP', 'TANGO', 'TECHNO', 'TECHNO-INDUSTRIAL', 'TERROR', 'THRASH METAL', \
 'TOP 40', 'TRAILER', 'TRANCE', 'TRIBAL', 'TRIP-HOP', 'VOCAL']
-		filename = get_filename(@settings, 'mp3', track) + '.mp3'
+		filename = @out.getFile(track, 'mp3')
 		if !@settings['mp3settings'] : @settings['mp3settings'] = "--preset fast standard" end
 		
+		# lame versions before 3.98 didn't support other genre tags than the 
+		# ones defined above, so change it to 'other' to prevent crashes
 		lameVersion = `lame --version`[20,4].split('.') # for example [3, 98]
-		if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 && !@possible_lame_tags.include?(@settings['cd'].md.genre.upcase))
-		    genre = 'other' # lame versions before 3.98 didn't support other genre tags than the ones defined above
+		if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 && 
+		!@possible_lame_tags.include?(@out.genre.upcase))
+		    genre = 'other' 
 		else
-		    genre = @settings['cd'].md.genre
+		    genre = @out.genre
 		end
 		
 		mp3(filename, genre, track)
@@ -1596,16 +1599,25 @@ class Encode < Monitor
 	end
 		
 	def doWav(track)
-		filename = get_filename(@settings, 'wav', track) + '.wav'
+		filename = getFile(track, 'wav')
 		wav(filename, track)
 		replaygain(filename, 'wav', track)
 	end
-	
+
 	def doOther(track)
-		#pass the commandline for other and replace all % fields (except %i)
-		command = get_filename(@settings, 'other', track, @settings['othersettings'].dup) 
-		command.gsub!('%i', "#{@settings['temp_dir']}track#{track}_1.wav") # %i = input filename
-		
+		filename = @out.getFile(track, 'other')
+		command = @settings['other_settings'].dup
+
+		command.gsub!('%n', sprintf("%02d", track))
+		command.gsub!('%f', 'other')
+		command.gsub!('%a', @out,artist)
+		command.gsub!('%b', @out.album)
+		command.gsub!('%g', @out.genre)
+		command.gsub!('%y', @out.year)
+		command.gsub!('%t', @out.getTrackname(track))
+		command.gsub!('%va', @out.getVarArtist(track))
+		command.gsub!('%i', @out.getTempFile(track, 1))
+		command.gsub!('%o', @out.getFile(track, 'other'))
 		checkCommand(command, track, 'other')
 	end
 	
