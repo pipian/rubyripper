@@ -1478,21 +1478,32 @@ class Encode < Monitor
 		elsif codec == 'other' : doOther(track)
 		end
 		
-		if @settings['debug'] : puts "busytracks = #{@busyTracks}, track = #{track}, codec = #{codec}" end
+		if @settings['debug']
+			puts "busytracks = #{@busyTracks}, track = #{track}, codec = #{codec}"
+		end
 		
-		synchronize do #we don't want to mess up with shared variables, so synchronize
-			@busyTracks.delete_at(@busyTracks.index(track)) #the wav source file is no longer needed for this codec, so delete the first mention of this track,
+		# we don't want to mess up with shared variables, so synchronize
+		synchronize do 
+			# delete the first mention of this track,
+			@busyTracks.delete_at(@busyTracks.index(track)) 
 		
-			if @waitingroom.flatten.include?(track) == false && @busyTracks.include?(track) == false && File.exist?("#{@settings['temp_dir']}track#{track}_1.wav")
-				File.delete("#{@settings['temp_dir']}track#{track}_1.wav") #We don't need the wav file after it's encoded.
+			#clean up wav's that are not needed anymore
+			if !@waitingroom.flatten.include?(track) &&	
+			!@busyTracks.include?(track) &&	File.exist?(@out.getTempFile(track, 1))
+				File.delete(@out.getTempFile(track, 1)
 			end
 	
 			@threads -= 1
 			@progress += @settings['percentages'][track] / @codecs
 			@settings['log'].update_encoding_progress(@progress)
 		end
-		if @waitingroom.empty? && @threads == 0 && @lasttrack == true  : finished() ; return true end
-		if @ready == false : handleThreads end #when a process is finished the loop for using all threads can restart, block all others meanwhile
+
+		if @waitingroom.empty? && @threads == 0 && @lasttrack == true
+			finished()
+		elsif @ready == false
+			#if no threads where available for encoding, update the status
+			handleThreads()
+		end
 	end
 	
 	def finished
@@ -1500,21 +1511,15 @@ class Encode < Monitor
 		@progress = 1.0 ; @settings['log'].update_encoding_progress(@progress)
 		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
 		if @settings['no_log']  : @settings['log'].delete_logfiles end #Delete the logfile if no correction was needed if no_log is true
-		cleanup()
+		@out.cleanTempDir()
 		@settings['instance'].update("finished")
 	end
 	
-	def cleanup
-		if File.directory?(@settings['temp_dir'])
-			Dir.foreach(@settings['temp_dir']) do |file|
-				if File.file?(filename = File.join(@settings['temp_dir'], file)): File.delete(filename) end
-			end
-			Dir.rmdir(@settings['temp_dir'])
-		end
-	end
-	
 	def normalize(track = false)
-		if not installed('normalize') : puts "WARNING: Normalize is not installed. Cannot normalize files"; return false end
+		if not installed('normalize')
+			puts "WARNING: Normalize is not installed. Cannot normalize files"
+			return false
+		end
 		
 		if track == false #album mode
 			command = "normalize -b \"#{@settings['temp_dir']}/\"*.wav"
