@@ -137,6 +137,7 @@ attr_writer :encodingErrors
 
 	def initialize(settings) #gui is an instance of the graphical user interface used
 		@settings = settings
+		puts "getting there though"
 		createLog()
 		
 		@problem_tracks = Hash.new # key = tracknumber, value = new dictionary with key = seconds_chunk, value = [amount_of_chunks, trials_needed]
@@ -818,8 +819,6 @@ end
 # Since all the info is here, also create the playlist files. The cuesheets
 # are also made with help of the Cuesheet class.
 # Output is initialized as soon as the player pushes Rip Now!
-#
-# TODO other command, no need, will be done in Encode class
 
 class Output
 attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
@@ -933,8 +932,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		if not checkDirExistence() : return false end
 		createDir()
 		createTempDir()
-		setFileNames()
 		setMetadata()
+		setFileNames()
 		createFiles()
 		@status = true
 	end
@@ -970,10 +969,11 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# check the existence of the output dir
 	def checkDirExistence
 		@dir.values.each do |dir|
+			puts dir if @settings['debug']
 			if File.directory?(dir)
 				@settings['instance'].update("dir_exists", dir)
+				return false			
 			end
-			return false
 		end
 		return true
 	end
@@ -981,7 +981,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# create the output dirs
 	def createDir
 		require 'ftools'
-		@dirs.values.each{|dir| File.makedirs(dir)}
+		@dir.values.each{|dir| File.makedirs(dir)}
 	end
 
 	# create the temp dir
@@ -1009,10 +1009,10 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 
 	# give the filename for given codec and track
 	def giveFileName(codec, track=0)
-		file = @fileName
+		file = @fileName.dup
 		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
-		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => @md.varArtists[track], 
-		'%t' => @md.tracklist[track]}.each do |key, value|
+		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => getVarArtist(track + 1), 
+		'%t' => getTrackname(track + 1)}.each do |key, value|
 			file.gsub!(key, value)
 		end
 
@@ -1022,8 +1022,10 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		elsif codec == 'mp3' : file += '.mp3'
 		elsif codec == 'wav' : file += '.wav'
 		end
-
-		return fileFilter(file)
+		
+		filename = fileFilter(file)
+		puts filename if @settings['debug']
+		return filename
 	end
 
 	# Fill the metadata, made ready for tagging
@@ -1061,7 +1063,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 
 	#characters that will be changed for tags
 	def tagFilter(var)
-		allFilter()
+		allFilter(var)
 
 		#Add a slash before the double quote chars, 
 		#otherwise the shell will complain
@@ -1098,14 +1100,15 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
  	
 	# remove the existing dir, starting with the files in it
  	def overwriteDir
- 		@dirs.values.each{|dir| cleanDir(dir) if File.directory?(dir)}
+ 		@dir.values.each{|dir| cleanDir(dir) if File.directory?(dir)}
 		attemptDirCreation()
  	end
 
     # clean a directory, starting with the files in it
 	def cleanDir(dir)
-		Dir.each(dir) do |file|
-			File.delete(file) if File.file?(filename = File.join(dir, file))
+		Dir.foreach(dir) do |file|
+			filename = File.join(dir, file)
+			File.delete(filename) if File.file?(filename)
 		end
 		Dir.delete(dir)
 	end
@@ -1116,7 +1119,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 			"#{@artist} - #{@album} (#{codec}).m3u"), 'w')
 		
 		@settings['tracksToRip'].each do |track|
-			playlist.puts getFile(track, codec)
+			playlist.puts @file[codec][track]
 		end
 
 		playlist.close
@@ -1163,7 +1166,11 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 
 	#return the trackname for the metadata
 	def getTrackname(track)
-		return @tracklist[track - 1]
+		if @tracklist[track - 1] == nil
+			return ''
+		else
+			return @tracklist[track - 1]
+		end
 	end
 
 	#return the artist for the metadata
@@ -1751,13 +1758,18 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir
 		if not testDeps() : return false end
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
-		if @settings['Out'].status == false : return false end
-		@settings['log'] = Gui_Support.new(@settings)
-		@outputDir = @settings['Out'].getDir()
-		return true
+		if @settings['Out'].status == false
+			puts "status Output = false" if @settings['debug']
+			return false
+		else
+			puts "status Output = true" if @settings['debug']
+			return true
+		end
 	end
 	
 	def startRip
+		@settings['log'] = Gui_support.new(@settings)
+		@outputDir = @settings['Out'].getDir()
 		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
