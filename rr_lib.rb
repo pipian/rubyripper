@@ -1701,14 +1701,14 @@ class Encode < Monitor
 				tags += "--ta \"#{@out.artist}\" "
 			end
 			tags += "--tt \"#{@out.getTrackname(track)}\" "
-			tags += "--tn #{track}/#{@settings['cd'].audiotracks}"
+			tags += "--tn #{track}/#{@settings['cd'].audiotracks} "
 		end
 
 		#translate the UTF-8 tags to latin because of a lame bug.
 		require 'iconv'
 		tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
 		
-		command = "lame \"#{@settings['mp3settings']}\" #{tags} "
+		command = "lame \"#{@settings['mp3settings']}\" #{tags}"
 		command += "\"#{@out.getTempFile(track, 1)}\" \"#{filename}\""
 		command += " 2>&1" unless @settings['verbose']
 	
