@@ -1649,7 +1649,7 @@ class Encode < Monitor
 			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
-		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}"
+		command ="flac \"#{@settings['flacsettings']}\" -o \"#{filename}\" #{tags}"
 		command += "\"#{@out.getTempFile(track, 1)}\""
 		command += " 2>&1" unless @settings['verbose']
 
@@ -1677,7 +1677,7 @@ class Encode < Monitor
 			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
 		end
 
-		command = "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} "
+		command = "oggenc -o \"#{filename}\" \"#{@settings['vorbissettings']}\" "
 		command += "#{tags} \"#{@out.getTempFile(track, 1)}\" "
 		command += " 2>&1" unless @settings['verbose']
 	
@@ -1685,17 +1685,33 @@ class Encode < Monitor
 	end
 	
 	def mp3(filename, genre, track)
-		if @settings['image'] # Handle tags for single file images differently
-			tags = %Q{--tt "#{clean(@settings['cd'].md.album)}" --ta "#{clean(@settings['cd'].md.artist)}" --tl "#{clean(@settings['cd'].md.album)}" --ty "#{@settings['cd'].md.year}" --tg "#{genre}"}
-		else
-			tags = %Q{--tt "#{clean(@settings['cd'].md.tracklist[track-1])}" --ta "#{@settings['cd'].md.varArtists.empty? ? clean(@settings['cd'].md.artist) : clean(@settings['cd'].md.varArtists[track-1]) + %Q{" --tv "ALBUM ARTIST"="#{clean(@settings['cd'].md.artist)}}}" --tl "#{clean(@settings['cd'].md.album)}" --ty "#{@settings['cd'].md.year}" --tn "#{track}/#{@settings['cd'].audiotracks}" --tg "#{genre}"}
+		tags = "--tl \"#{@out.album}\" "
+		tags += "--ty \"#{@out.year}\" "
+		tags += "--tg \"#{@out.genre}\" "
+
+		 # Handle tags for single file images differently
+		if @settings['image']
+			tags += "--ta \"#{@out.artist}\" "
+			tags += "--tt \"#{@out.album}\" "
+		else # Handle tags for var artist discs differently
+			if @out.getVarArtist(track) != ''
+				tags += "--ta \"#{@out.getVarArtist(track)}\" "
+				tags += "--tv \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+			else
+				tags += "--ta \"#{@out.artist}\" "
+			end
+			tags += "--tt \"#{@out.getTrackname(track)}\" "
+			tags += "--tn #{track}/#{@settings['cd'].audiotracks}"
 		end
-		command = %Q{lame #{@settings['mp3settings']} #{tags} "%i" "%o" #{" 2>&1" unless @settings['verbose']}}
-		
+
+		#translate the UTF-8 tags to latin because of a lame bug.
 		require 'iconv'
-		command = Iconv.conv("ISO-8859-1", "UTF-8", command) #translate the UTF-8 string to latin. This is needed because of a lame bug.
-		command.sub!('%o', filename) #the %o output file should stay in UTF-8
-		command.sub!('%i', "#{@settings['temp_dir']}track#{track}_1.wav") #the %i input file should stay in UTF-8 as well
+		tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
+		
+		command = "lame \"#{@settings['mp3settings']}\" #{tags} "
+		command += "\"#{@out.getTempFile(track, 1)}\" \"#{filename}\""
+		command += " 2>&1" unless @settings['verbose']
+	
 		checkCommand(command, track, 'mp3')
 	end
 	
