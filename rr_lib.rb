@@ -1634,11 +1634,11 @@ class Encode < Monitor
 		if @settings['image']
 			tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
 			tags += "--tag TITLE=\"#{@out.album}\" " # title = album here
-			if @settings['create_cue']
+			if @settings['create_cue'] # embed the cuesheet
 				tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
 			end
-		else
-			if @out.getVarArtist != ''
+		else # Handle tags for var artist discs differently
+			if @out.getVarArtist(track) != ''
 				tags += "--tags ARTIST=\"#{@out.getVarArtist(track)}\" "
 				tags += "--tags \"ALBUM ARTIST\"=\"#{@out.artist}\" "
 			else
