@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.5\n"
 "POT-Creation-Date: 2009-01-15 21:58+0100\n"
-"PO-Revision-Date: 2009-01-21 16:14+0100\n"
+"PO-Revision-Date: 2009-02-08 21:08+0100\n"
 "Last-Translator: Jan Buecken <jb.faq@gmx.de>\n"
 "Language-Team: German <h-m.w@gmx.de>\n"
 "MIME-Version: 1.0\n"
@@ -652,7 +652,7 @@ msgid ""
 "The cdrom drive can be set in 'Preferences'."
 msgstr ""
 "Keine CD im Laufwerk %s gefunden!\n"
-"Bitte eine CD einlegen und 'CD einlesen' wählen.\n"
+"Bitte eine CD einlegen und 'Laufwerk abfragen' wählen.\n"
 "\n"
 "Das Laufwerk kann in 'Einstellungen' ausgewählt werden'."
 
@@ -680,7 +680,7 @@ msgstr ""
 "Bitte eine CD einlegen und auf 'Laufwerk schließen' klicken.\n"
 "Im Laufwerk wird automatisch nach einer Audio-CD gesucht.\n"
 "\n"
-"Wenn die Laufwerksschublade bereits geschlossen ist auf 'CD einlesen' klicken"
+"Wenn die Laufwerksschublade bereits geschlossen ist auf 'Laufwerk abfragen' klicken"
 
 #: rubyripper_gtk2.rb:322
 msgid "The eject utility is not found on your system!"
@@ -1294,7 +1294,7 @@ msgstr "Bitte mindestens einen Track auswählen."
 
 #: rr_lib.rb:1377
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
-msgstr "Die angezeigten Angaben stimmen nicht mit der eingelegten CD überein. Bitte auf 'CD einlesen' klicken."
+msgstr "Die angezeigten Angaben stimmen nicht mit der eingelegten CD überein. Bitte auf 'Laufwerk abfragen' klicken."
 
 #: rr_lib.rb:1382
 msgid "No codecs are selected!"
@@ -1317,7 +1317,7 @@ msgid ""
 "Cdrom player used to rip:\n"
 "%s\n"
 msgstr ""
-"Beutztes CD-ROM Laufwerk:\n"
+"Benutztes CD-ROM Laufwerk:\n"
 "%s\n"
 
 #: rr_lib.rb:1491
