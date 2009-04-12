@@ -1644,25 +1644,43 @@ class Encode < Monitor
 			else
 				tags += "--tags ARTIST=\"#{@out.artist}\" "
 			end
-			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\""
+			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
 			tags += "--tag TRACKNUMBER=#{track} "
 			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
 		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}"
-		command += "\"#{@out.getTempFile(track, 1)}\" "
-		command += "2>&1" unless @settings['verbose']
+		command += "\"#{@out.getTempFile(track, 1)}\""
+		command += " 2>&1" unless @settings['verbose']
 
 		checkCommand(command, track, 'flac')
 	end
 	
 	def vorbis(filename, track)
-		if @settings['image'] # Handle tags for single file images differently
-			tags = %Q{-c DATE="#{@settings['cd'].md.year}" -c TITLE="#{clean(@settings['cd'].md.album)}" -c ALBUM="#{clean(@settings['cd'].md.album)}" -c ARTIST="#{clean(@settings['cd'].md.artist)}" -c GENRE="#{@settings['cd'].md.genre}"}
-		else
-			tags = %Q{-c DATE="#{@settings['cd'].md.year}" -c TRACKNUMBER="#{track}" -c TITLE="#{clean(@settings['cd'].md.tracklist[track-1])}" -c ALBUM="#{clean(@settings['cd'].md.album)}" -c ARTIST="#{@settings['cd'].md.varArtists.empty? ? clean(@settings['cd'].md.artist) : clean(@settings['cd'].md.varArtists[track-1]) + %Q{" -c "ALBUM ARTIST"="#{clean(@settings['cd'].md.artist)}}}" -c GENRE="#{@settings['cd'].md.genre}" -c TRACKTOTAL="#{@settings['cd'].audiotracks}"}
+		tags = "-c ALBUM=\"#{@out.album}\" "
+		tags += "-c DATE=\"#{@out.year}\" "
+		tags += "-c GENRE=\"#{@out.genre}\" "
+
+		 # Handle tags for single file images differently
+		if @settings['image']
+			tags += "-c ARTIST=\"#{@out.artist}\" "
+			tags += "-c TITLE=\"#{@out.album}\""
+		else # Handle tags for var artist discs differently
+			if @out.getVarArtist(track) != ''
+				tags += "-c ARTIST=\"#{@out.getVarArtist(track)}\" "
+				tags += "-c \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+			else
+				tags += "-c ARTIST=\"#{@out.artist}\" "
+			end
+			tags += "-c TITLE=\"#{@out.getTrackname(track)}\" "
+			tags += "-c TRACKNUMBER=#{track} "
+			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
 		end
-		command = %Q{oggenc -o "#{filename}" #{@settings['vorbissettings']} #{tags} "#{@settings['temp_dir']}track#{track}_1.wav" #{" 2>&1" unless @settings['verbose']}}
+
+		command = "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} "
+		command += "#{tags} \"#{@out.getTempFile(track, 1)}\" "
+		command += " 2>&1" unless @settings['verbose']
+	
 		checkCommand(command, track, 'vorbis')
 	end
 	
