@@ -791,7 +791,8 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 		separators.each do |sep|
 			varArtist = sep
 			@disc.audiotracks.times do |tracknumber|
-				if not @tracklist[tracknumber].include?(sep) #if the separator is not found, search for the next separator
+				#if the separator is not found, search for the next separator
+				if !@tracklist[tracknumber] || !@tracklist[tracknumber].include?(sep) 
 					varArtist = false
 					break
 				end
@@ -916,7 +917,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 
 	# determine the output dir
 	def giveDir(codec)
-		dirName = @dirName
+		dirName = @dirName.dup
 
 		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
 		'%y' => @md.year}.each do |key, value|
