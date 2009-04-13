@@ -1764,7 +1764,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		if not testDeps() : return false end
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
-		if !@settings['Out'].status : return false else return true end
+		return @settings['Out'].status
 	end
 	
 	def startRip
