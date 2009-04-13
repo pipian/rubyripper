@@ -137,7 +137,6 @@ attr_writer :encodingErrors
 
 	def initialize(settings) #gui is an instance of the graphical user interface used
 		@settings = settings
-		puts "getting there though"
 		createLog()
 		
 		@problem_tracks = Hash.new # key = tracknumber, value = new dictionary with key = seconds_chunk, value = [amount_of_chunks, trials_needed]
@@ -836,7 +835,6 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		# the output of the dirs for each codec, and files for each tracknumber + codec.
 		@dir = Hash.new
 		@file = Hash.new
-		@tempDir = String.new
 		@image = Hash.new
 
 		# the metadata made ready for tagging usage
@@ -988,7 +986,7 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	# create the temp dir
 	def createTempDir
 		if not File.directory?(getTempDir)
-			Dir.mkdir(getTempDir)
+			File.makedirs(getTempDir)
 		end
 	end
 
@@ -1157,12 +1155,12 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 	end
 
 	def getTempFile(track, trial)
-		return File.join(@tempDir, "track#{track}_#{trial}.wav")
+		return File.join(getTempDir(), "track#{track}_#{trial}.wav")
 	end
 
 	#return the temporary dir
 	def getTempDir
-		return File.join(File.dirname(@dir.keys[0]), 'temp/')
+		return File.join(File.dirname(@dir.values[0]), 'temp/')
 	end
 
 	#return the trackname for the metadata
@@ -1212,20 +1210,26 @@ class SecureRip
 			@trial = 0
 
 			# first check if there's enough size available in the output dir
-			if not sizeTest() : break end
-			
+			if not sizeTest(track) : break end
+
 			if main(track) : @encoding.addTrack(track) else return false end #ready to encode
 		end
 		
 		eject(@settings['cd'].cdrom) if @settings['eject'] 
 	end
 
-	def sizeTest
-		@sizeExpected = @settings['image'] ? @settings['cd'].fileSizeDisc : @settings['cd'].fileSizeWav[track-1]
-		
+	def sizeTest(track)
+		if @settings['image']
+			@sizeExpected = @settings['cd'].fileSizeDisc
+		else
+			@sizeExpected = @settings['cd'].fileSizeWav[track-1]
+		end
+		puts "Expected filesize for track #{track} is #{@sizeExpected} bytes." if @settings['debug'] 
+
 		if installed('df')				
-			freeDiskSpace = `df #{@settings['Out'].getDir()}`.split()[10]
-			if @sizeExpected > freeDiskSpace
+			freeDiskSpace = `df \"#{@settings['Out'].getDir()}\"`.split()[10].to_i
+			puts "Free disk space is #{freeDiskSpace} MB" if @settings['debug']
+			if @sizeExpected > freeDiskSpace*1000
 				@settings['log'].append_2_log(_("Not enough disk space left! Rip aborted"))
 				return false
 			end
@@ -1246,7 +1250,7 @@ class SecureRip
 			end
 			
 			doNewTrial(track)
-			
+
 			if @trial > @reqMatchesErrors # If the reqMatches errors is equal of higher to @trial, no match would ever be found, so skip
 				correctErrorPos(track)
 			else
@@ -1285,7 +1289,7 @@ class SecureRip
 		if sizeRip != @sizeExpected 
 			if @settings['debug']
 				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
-				puts "Filesize should be : #{sizeExpected}"
+				puts "Filesize should be : #{@sizeExpected}"
 			end
 			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
@@ -1405,6 +1409,7 @@ class SecureRip
 		command += " -O #{@settings['offset']}"
 		command += " \"#{@settings['Out'].getTempFile(track, @trial)}\""
 		unless @settings['verbose'] : command += " 2>&1" end # hide the output of cdparanoia output
+		puts command if @settings['debug']
 		`#{command}` #Launch the cdparanoia command
 	end
 	
@@ -1647,17 +1652,17 @@ class Encode < Monitor
 			end
 		else # Handle tags for var artist discs differently
 			if @out.getVarArtist(track) != ''
-				tags += "--tags ARTIST=\"#{@out.getVarArtist(track)}\" "
-				tags += "--tags \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+				tags += "--tag ARTIST=\"#{@out.getVarArtist(track)}\" "
+				tags += "--tag \"ALBUM ARTIST\"=\"#{@out.artist}\" "
 			else
-				tags += "--tags ARTIST=\"#{@out.artist}\" "
+				tags += "--tag ARTIST=\"#{@out.artist}\" "
 			end
 			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
 			tags += "--tag TRACKNUMBER=#{track} "
 			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
-		command ="flac \"#{@settings['flacsettings']}\" -o \"#{filename}\" #{tags}"
+		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}"
 		command += "\"#{@out.getTempFile(track, 1)}\""
 		command += " 2>&1" unless @settings['verbose']
 
@@ -1685,7 +1690,7 @@ class Encode < Monitor
 			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
 		end
 
-		command = "oggenc -o \"#{filename}\" \"#{@settings['vorbissettings']}\" "
+		command = "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} "
 		command += "#{tags} \"#{@out.getTempFile(track, 1)}\" "
 		command += " 2>&1" unless @settings['verbose']
 	
@@ -1716,7 +1721,7 @@ class Encode < Monitor
 		require 'iconv'
 		tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
 		
-		command = "lame \"#{@settings['mp3settings']}\" #{tags}"
+		command = "lame #{@settings['mp3settings']} #{tags}"
 		command += "\"#{@out.getTempFile(track, 1)}\" \"#{filename}\""
 		command += " 2>&1" unless @settings['verbose']
 	
@@ -1745,7 +1750,7 @@ class Encode < Monitor
 end
 
 class Rubyripper
-attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir
+attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :summary
 	
 	def initialize(settings, gui)
 		@settings = settings.dup
@@ -1759,13 +1764,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir
 		if not testDeps() : return false end
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
-		if @settings['Out'].status == false
-			puts "status Output = false" if @settings['debug']
-			return false
-		else
-			puts "status Output = true" if @settings['debug']
-			return true
-		end
+		if !@settings['Out'].status : return false else return true end
 	end
 	
 	def startRip
@@ -1842,6 +1841,10 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir
 			end
 		end
 		return true
+	end
+
+	def summary
+		return @settings['log'].short_summary
 	end
 
 	def postfixDir

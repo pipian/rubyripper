@@ -227,7 +227,12 @@ attr_reader :change_display, :instances, :update
 	def do_rip
 		Thread.new do
 			@buttons[0..3].each{|button| button.sensitive = false}
- 			if @instances['RipStatus'] ==  false : @instances['RipStatus'] = RipStatus.new() else @instances['RipStatus'].reset end
+ 			if @instances['RipStatus'] == false
+				@instances['RipStatus'] = RipStatus.new()
+			else
+				@instances['RipStatus'].reset
+			end
+
 			change_display(@instances['RipStatus'])
 			@rubyripper.startRip # fire away the start shot
 		end
@@ -235,7 +240,7 @@ attr_reader :change_display, :instances, :update
 	
 	def showSummary
 		@buttons[0..3].each{|button| button.sensitive = true}
-		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.gui.short_summary)
+		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary)
 		change_display(@instances['Summary'])
 		@instances['RipStatus'].reset()
 		@rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
@@ -260,10 +265,9 @@ attr_reader :change_display, :instances, :update
 			elsif modus == "encoding_progress"
 				updateProgress('encoding', value)
 			elsif modus == "log_change"
-				@lock.synchronize do
-					@instances['RipStatus'].textview.buffer.insert(@instances['RipStatus'].textview.buffer.end_iter, value) # First parameter is the last character + 1 in the log
-					@instances['RipStatus'].textview.scroll_to_iter(@instances['RipStatus'].textview.buffer.end_iter, 0, true, 1, 1)
-				end
+				puts "help, the ripstatus is gone!" if !@instances.include?('RipStatus')
+				@instances['RipStatus'].textview.buffer.insert(@instances['RipStatus'].textview.buffer.end_iter, value) # First parameter is the last character + 1 in the log
+				@instances['RipStatus'].textview.scroll_to_iter(@instances['RipStatus'].textview.buffer.end_iter, 0, true, 1, 1)
 			elsif modus == "dir_exists"
 				@instances['DirExists'] = DirExists.new(self, @rubyripper, value)
 				change_display(@instances['DirExists'])
