@@ -132,7 +132,7 @@ def eject(cdrom)
 end
 
 class Gui_support
-attr_reader :update_ripping_progress, :update_encoding_progress, :append_2_log, :summary, :ripping_progress, :encoding_progress, :mismatch, :short_summary, :delete_logfiles
+attr_reader :ripPerc, :encPerc, :add, :summary, :ripping_progress, :encoding_progress, :mismatch, :short_summary, :delLog
 attr_writer :encodingErrors
 
 	def initialize(settings) #gui is an instance of the graphical user interface used
@@ -145,8 +145,8 @@ attr_writer :encodingErrors
 		@encoding_progress = 0.0
 		@encodingErrors = false
 		@short_summary = _("Artist : %s\nAlbum: %s\n") % [@settings['cd'].md.artist, @settings['cd'].md.album]
-		update_logfiles(_("This log is created by Rubyripper, version %s\n") % [$rr_version])
-		update_logfiles(_("Website: http://code.google.com/p/rubyripper\n\n"))
+		addLog(_("This log is created by Rubyripper, version %s\n") % [$rr_version])
+		addLog(_("Website: http://code.google.com/p/rubyripper\n\n"))
 	end
 
 	def createLog
@@ -158,22 +158,26 @@ attr_writer :encodingErrors
 		end
 	end
 	
-	def update_ripping_progress(new_value, calling_function = false) #new_value = float, 1 = 100%
+	# update the ripping percentage of the gui
+	def ripPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
 		new_value <= 1.0 ? @ripping_progress = new_value : @ripping_progress = 1.0
 		@settings['instance'].update("ripping_progress", @ripping_progress)
 	end
 	
-	def update_encoding_progress(new_value, calling_function = false) #new_value = float, 1 = 100%
+	# update the encoding percentage of the gui
+	def encPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
 		new_value <= 1.0 ? @encoding_progress = new_value : @encoding_progress = 1.0
 		@settings['instance'].update("encoding_progress", @encoding_progress)
 	end
 	
-	def append_2_log(message, calling_function = false)
+	# Add a message to the logging file + update the gui
+	def add(message, calling_function = false)
 		@logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
 		@settings['instance'].update("log_change", message)
 	end
 	
-	def update_logfiles(message, summary = false)
+	# Add a message to the logging file
+	def addLog(message, summary = false)
 		@logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
 		if summary : @short_summary += message end
 	end
@@ -199,21 +203,21 @@ attr_writer :encodingErrors
 	end
 	
 	def summary(matches_all, matches_errors, maxtries) #Give an overview of errors
-		if @encodingErrors : update_logfiles(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
-		update_logfiles(_("\nRIPPING SUMMARY\n\n"), true)
+		if @encodingErrors : addLog(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
+		addLog(_("\nRIPPING SUMMARY\n\n"), true)
 		
-		update_logfiles(_("All chunks were tried to match at least %s times.\n") % [matches_all], true)
-		if matches_all != matches_errors: update_logfiles(_("Chunks that differed after %s trials,\nwere tried to match %s times.\n") % [matches_all, matches_errors], true) end
+		addLog(_("All chunks were tried to match at least %s times.\n") % [matches_all], true)
+		if matches_all != matches_errors: addLog(_("Chunks that differed after %s trials,\nwere tried to match %s times.\n") % [matches_all, matches_errors], true) end
 
 		if @problem_tracks.empty?
- 			update_logfiles(_("None of the tracks gave any problems\n"), true)
+ 			addLog(_("None of the tracks gave any problems\n"), true)
  		elsif @not_corrected_tracks.size != 0
- 			update_logfiles(_("Some track(s) could NOT be corrected within the maximum amount of trials\n"), true)
+ 			addLog(_("Some track(s) could NOT be corrected within the maximum amount of trials\n"), true)
  			@not_corrected_tracks.each do |track|
-				update_logfiles(_("Track %s could NOT be corrected completely\n") % [track], true)
+				addLog(_("Track %s could NOT be corrected completely\n") % [track], true)
 			end
  		else
- 			update_logfiles(_("Some track(s) needed correction,but could\nbe corrected within the maximum amount of trials\n"), true)
+ 			addLog(_("Some track(s) needed correction,but could\nbe corrected within the maximum amount of trials\n"), true)
  		end
 
  		if !@problem_tracks.empty? # At least some correction was necessary
@@ -224,25 +228,26 @@ attr_writer :encodingErrors
  	end
  		
  	def position_analyse(matches_errors, maxtries) # Give an overview of suspicion position in the logfile
-		update_logfiles(_("\nSUSPICION POSITION ANALYSIS\n\n"))
-		update_logfiles(_("Since there are 75 chunks per second, after making the notion of the\n"))
-		update_logfiles(_("suspicion position, the amount of initially mismatched chunks for that position is shown.\n\n"))
+		addLog(_("\nSUSPICION POSITION ANALYSIS\n\n"))
+		addLog(_("Since there are 75 chunks per second, after making the notion of the\n"))
+		addLog(_("suspicion position, the amount of initially mismatched chunks for that position is shown.\n\n"))
 		@problem_tracks.keys.sort.each do |track| # For each track show the position of the files, how many chunks of that position and amount of trials needed to solve
-			update_logfiles(_("TRACK %s\n") % [track])
+			addLog(_("TRACK %s\n") % [track])
 			@problem_tracks[track].keys.sort.each do |length| #length = total seconds of suspicious position
 				minutes = length / 60 # ruby math -> 70 / 60 = 1 (how many times does 60 fit in 70)
 				seconds = length % 60 # ruby math -> 70 % 60 = 10 (leftover)
 				if @problem_tracks[track][length][1] != 0
-					update_logfiles(_("\tSuspicion position : %s:%s (%s x) (CORRECTED at trial %s\n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
+					addLog(_("\tSuspicion position : %s:%s (%s x) (CORRECTED at trial %s\n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
 				else # Position could not be corrected
-					update_logfiles(_("\tSuspicion position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n") % [ sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0]])
+					addLog(_("\tSuspicion position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n") % [ sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0]])
 				end
 			end
 		end
 	end
 	
-	def delete_logfiles
-		if @problem_tracks.empty? && !@encodingErrors #only delete the logfile if no errors occured
+	# delete the logfiles if no errors occured
+	def delLog
+		if @problem_tracks.empty? && !@encodingErrors
 			@logfiles.each{|logfile| File.delete(logfile.path)}
 		end
 	end
@@ -1195,7 +1200,7 @@ class SecureRip
 	end
 
 	def ripTracks
-		@settings['log'].update_ripping_progress(0.0, "ripper") # Give a hint to the gui that ripping has started
+		@settings['log'].ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
 
 		@settings['tracksToRip'].each do |track|
 			puts "Ripping track #{track}" if @settings['debug']
@@ -1230,7 +1235,7 @@ class SecureRip
 			freeDiskSpace = `df \"#{@settings['Out'].getDir()}\"`.split()[10].to_i
 			puts "Free disk space is #{freeDiskSpace} MB" if @settings['debug']
 			if @sizeExpected > freeDiskSpace*1000
-				@settings['log'].append_2_log(_("Not enough disk space left! Rip aborted"))
+				@settings['log'].add(_("Not enough disk space left! Rip aborted"))
 				return false
 			end
 		end
@@ -1243,8 +1248,8 @@ class SecureRip
 				
 		while @errors.size > 0
 			if @trial > @settings['max_tries'] && @settings['max_tries'] != 0 # We would like to respect our users settings, wouldn't we?
-				@settings['log'].append_2_log(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
-				@settings['log'].append_2_log(_("Will continue with the file we've got so far\n"))
+				@settings['log'].add(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
+				@settings['log'].add(_("Will continue with the file we've got so far\n"))
 				@settings['log'].mismatch(track, 0, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track - 1]) # zero means it is never solved.
 				break # break out loop and continue using trial1
 			end
@@ -1260,7 +1265,7 @@ class SecureRip
 		
 		getDigest(track) # Get a MD5-digest for the logfile
 		@progress += @settings['percentages'][track]
-		@settings['log'].update_ripping_progress(@progress)
+		@settings['log'].ripPerc(@progress)
 		return true
 	end
 	
@@ -1293,14 +1298,14 @@ class SecureRip
 			end
 			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
-			@settings['log'].append_2_log(_("Filesize is not correct! Trying another time\n"))
+			@settings['log'].add(_("Filesize is not correct! Trying another time\n"))
 			return false
 		end
 		return true
 	end
 
 	def analyzeFiles(track)
-		@settings['log'].append_2_log(_("Analyzing files for mismatching chunks\n"))
+		@settings['log'].add(_("Analyzing files for mismatching chunks\n"))
 		files = Array.new
 		@reqMatchesAll.times do |time|
 			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
@@ -1324,10 +1329,10 @@ class SecureRip
 		(@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].getTempFile(track, time + 2))}
  
 		if @errors.size == 0
-			@settings['log'].append_2_log(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
+			@settings['log'].add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
 		else
 			@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) # report for later position analysis
-			@settings['log'].append_2_log(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
+			@settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
 		end
 	end
 	
@@ -1384,18 +1389,18 @@ class SecureRip
 		
 		#give an update of the amount of errors and trials
 		if @errors.size == 0
-			@settings['log'].append_2_log(_("Error(s) succesfully corrected, %s matches found for each chunk :)\n") % [@reqMatchesErrors])
+			@settings['log'].add(_("Error(s) succesfully corrected, %s matches found for each chunk :)\n") % [@reqMatchesErrors])
 		else
 			@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) # report for later position analysis
-			@settings['log'].append_2_log(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesErrors])
+			@settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesErrors])
 		end
 	end
 	
 	def rip(track) # set cdparanoia command + parameters
 		if @settings['image']
-			@settings['log'].append_2_log(_("Starting to rip CD image, trial \#%s\n") % [@trial])
+			@settings['log'].add(_("Starting to rip CD image, trial \#%s\n") % [@trial])
 		else
-			@settings['log'].append_2_log(_("Starting to rip track %s, trial \#%s\n") % [track, @trial])
+			@settings['log'].add(_("Starting to rip track %s, trial \#%s\n") % [track, @trial])
 		end
 		command = "cdparanoia"
 		if @settings['rippersettings'].size != 0 : command += " #{@settings['rippersettings']}" end 
@@ -1422,7 +1427,7 @@ class SecureRip
 			index += 100000
 		end
 		file.close()
-		@settings['log'].append_2_log(_("MD5 sum: %s\n\n") % [digest.hexdigest])
+		@settings['log'].add(_("MD5 sum: %s\n\n") % [digest.hexdigest])
 	end
 end
 
@@ -1465,7 +1470,7 @@ class Encode < Monitor
 			normalize(track)
 		end
 		
-		if track == @settings['tracksToRip'][0] : @settings['log'].update_encoding_progress(0.0) end # set it to 0% for the first track, so the gui shows it's started.
+		if track == @settings['tracksToRip'][0] : @settings['log'].encPerc(0.0) end # set it to 0% for the first track, so the gui shows it's started.
 		if track == @settings['tracksToRip'][-1] : @lasttrack = true end
 		if @ready == true : handleThreads() end
 	end
@@ -1512,7 +1517,7 @@ class Encode < Monitor
 	
 			@threads -= 1
 			@progress += @settings['percentages'][track] / @codecs
-			@settings['log'].update_encoding_progress(@progress)
+			@settings['log'].encPerc(@progress)
 		end
 
 		if @waitingroom.empty? && @threads == 0 && @lasttrack == true
@@ -1525,9 +1530,9 @@ class Encode < Monitor
 	
 	def finished
 		puts "Inside the finished function" if @settings['debug']
-		@progress = 1.0 ; @settings['log'].update_encoding_progress(@progress)
+		@progress = 1.0 ; @settings['log'].encPerc(@progress)
 		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
-		if @settings['no_log']  : @settings['log'].delete_logfiles end #Delete the logfile if no correction was needed if no_log is true
+		if @settings['no_log']  : @settings['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
 		@out.cleanTempDir()
 		@settings['instance'].update("finished")
 	end
@@ -1743,7 +1748,7 @@ class Encode < Monitor
 		end
 		
 		if Process.waitpid2(exec.pid)[1].exitstatus != 0
-			@settings['log'].append_2_log(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
+			@settings['log'].add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
 			@settings['log'].encodingErrors = true
 		end
 	end
@@ -1858,28 +1863,28 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 	end
 
 	def updateGui
-		@settings['log'].append_2_log(_("Cdrom player used to rip:\n%s\n") % [@settings['cd'].devicename])
-		@settings['log'].append_2_log(_("Cdrom offset used: %s\n\n") % [@settings['offset']])
-		@settings['log'].append_2_log(_("Ripper used: cdparanoia %s\n") % [if @settings['rippersettings'] : @settings['rippersettings'] else _('default settings') end])
-		@settings['log'].append_2_log(_("Matches required for all chunks: %s\n") % [@settings['req_matches_all']])
-		@settings['log'].append_2_log(_("Matches required for erroneous chunks: %s\n\n") % [@settings['req_matches_errors']])
+		@settings['log'].add(_("Cdrom player used to rip:\n%s\n") % [@settings['cd'].devicename])
+		@settings['log'].add(_("Cdrom offset used: %s\n\n") % [@settings['offset']])
+		@settings['log'].add(_("Ripper used: cdparanoia %s\n") % [if @settings['rippersettings'] : @settings['rippersettings'] else _('default settings') end])
+		@settings['log'].add(_("Matches required for all chunks: %s\n") % [@settings['req_matches_all']])
+		@settings['log'].add(_("Matches required for erroneous chunks: %s\n\n") % [@settings['req_matches_errors']])
 		
-		@settings['log'].append_2_log(_("Codec(s) used:\n"))
-		if @settings['flac']: @settings['log'].append_2_log(_("-flac \t-> %s (%s)\n") % [@settings['flacsettings'], `flac --version`.strip]) end
-		if @settings['vorbis']: @settings['log'].append_2_log(_("-vorbis\t-> %s (%s)\n") % [@settings['vorbissettings'], `oggenc --version`.strip]) end
-		if @settings['mp3']: @settings['log'].append_2_log(_("-mp3\t-> %s\n(%s\n") % [@settings['mp3settings'], `lame --version`.split("\n")[0]]) end
-		if @settings['wav']: @settings['log'].append_2_log(_("-wav\n")) end
-		if @settings['other'] : @settings['log'].append_2_log(_("-other\t-> %s\n") % [@settings['othersettings']]) end
-		@settings['log'].append_2_log(_("\nCDDB INFO\n"))
-		@settings['log'].append_2_log(_("\nArtist\t= ") + @settings['cd'].md.artist)
-		@settings['log'].append_2_log(_("\nAlbum\t= ") + @settings['cd'].md.album)
-		@settings['log'].append_2_log(_("\nYear\t= ") + @settings['cd'].md.year)
-		@settings['log'].append_2_log(_("\nGenre\t= ") + @settings['cd'].md.genre)
-		@settings['log'].append_2_log(_("\nTracks\t= ") + @settings['cd'].audiotracks.to_s + "\n\n")
+		@settings['log'].add(_("Codec(s) used:\n"))
+		if @settings['flac']: @settings['log'].add(_("-flac \t-> %s (%s)\n") % [@settings['flacsettings'], `flac --version`.strip]) end
+		if @settings['vorbis']: @settings['log'].add(_("-vorbis\t-> %s (%s)\n") % [@settings['vorbissettings'], `oggenc --version`.strip]) end
+		if @settings['mp3']: @settings['log'].add(_("-mp3\t-> %s\n(%s\n") % [@settings['mp3settings'], `lame --version`.split("\n")[0]]) end
+		if @settings['wav']: @settings['log'].add(_("-wav\n")) end
+		if @settings['other'] : @settings['log'].add(_("-other\t-> %s\n") % [@settings['othersettings']]) end
+		@settings['log'].add(_("\nCDDB INFO\n"))
+		@settings['log'].add(_("\nArtist\t= ") + @settings['cd'].md.artist)
+		@settings['log'].add(_("\nAlbum\t= ") + @settings['cd'].md.album)
+		@settings['log'].add(_("\nYear\t= ") + @settings['cd'].md.year)
+		@settings['log'].add(_("\nGenre\t= ") + @settings['cd'].md.genre)
+		@settings['log'].add(_("\nTracks\t= ") + @settings['cd'].audiotracks.to_s + "\n\n")
 		@settings['cd'].audiotracks.times do |track|
-			@settings['log'].append_2_log("#{sprintf("%02d", track + 1)} - #{@settings['cd'].md.tracklist[track]}\n")
+			@settings['log'].add("#{sprintf("%02d", track + 1)} - #{@settings['cd'].md.tracklist[track]}\n")
 		end
-		@settings['log'].append_2_log(_("\nSTATUS\n\n"))
+		@settings['log'].add(_("\nSTATUS\n\n"))
 	end
 	
 	def computePercentage
