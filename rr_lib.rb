@@ -289,6 +289,8 @@ class Cuesheet
 		@cuesheet << "REM GENRE #{@disc.md.genre}"
 		@cuesheet << "REM DATE #{@disc.md.year}"
 		@cuesheet << "REM COMMENT \"Rubyripper #{$rr_version}\""
+		@cuesheet << "REM DISCID #{@disc.discId}"
+		@cuesheet << "REM FREEDB_QUERY \"#{@disc.freedbString.chomp}\""
 		@cuesheet << "PERFORMER \"#{@disc.md.artist}\""
 		@cuesheet << "TITLE \"#{@disc.md.album}\""
 
@@ -335,8 +337,10 @@ class Cuesheet
 end
 
 class Disc
-attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, :startSector, :lengthText, :devicename,
- :playtime, :freedbString, :oldFreedbString, :pregap, :postgap, :totalSectors, :md, :error, :fileSizeWav, :fileSizeDisc
+attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, 
+:startSector, :lengthText, :devicename, :playtime, :freedbString, 
+:oldFreedbString, :pregap, :postgap, :totalSectors, :md, :error, :fileSizeWav,
+:fileSizeDisc, :discId
 
 	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
 		@cdrom = cdrom
@@ -364,6 +368,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, :startSe
 
 		@datatrack = false
 		@freedbString = ''
+		@discId = ''
 
 		@pregap = Array.new
 		@totalSectors = 0
@@ -500,6 +505,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, :startSe
 			createFreedbString()
 			puts _("freedb string = %s" % [@freedbString])
 		end
+		@discId = @freedbString.split()[0]
 	end
 
 	def checkDataTrack
@@ -1648,6 +1654,7 @@ class Encode < Monitor
 		tags = "--tag ALBUM=\"#{@out.album}\" "
 		tags += "--tag DATE=\"#{@out.year}\" "
 		tags += "--tag GENRE=\"#{@out.genre}\" "
+		tags += "--tag DISCID=\"#{@settings['cd'].discId}\" "
 		
 		 # Handle tags for single file images differently
 		if @settings['image']
@@ -1679,6 +1686,7 @@ class Encode < Monitor
 		tags = "-c ALBUM=\"#{@out.album}\" "
 		tags += "-c DATE=\"#{@out.year}\" "
 		tags += "-c GENRE=\"#{@out.genre}\" "
+		tags += "-c DISCID=\"#{@settings['cd'].discId}\" "
 
 		 # Handle tags for single file images differently
 		if @settings['image']
