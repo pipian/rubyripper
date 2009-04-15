@@ -258,8 +258,9 @@ class Cuesheet
 # INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
 # INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
 
-	def initialize(settings)
+	def initialize(settings, out)
 		@settings = settings
+		@out = out
 		@disc = settings['cd']
 		@image = settings['image']
 		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
@@ -292,11 +293,11 @@ class Cuesheet
 		@cuesheet << "TITLE \"#{@disc.md.album}\""
 
 		if @image == true
-			@cuesheet << "FILE \"#{@settings['Out'].getImageFile(@codec)}\" #{@filetype[@codec]}"
+			@cuesheet << "FILE \"#{@out.getFile('1', @codec)}\" #{@filetype[@codec]}"
 			@disc.audiotracks.times{|track| trackinfo(track)}
 		else
 			@disc.audiotracks.times do |track|
-				@cuesheet << "FILE \"#{@settings['Out'].getFile(track, @codec)}\" #{@filetype[@codec]}"
+				@cuesheet << "FILE \"#{@out.getFile(track, @codec)}\" #{@filetype[@codec]}"
 				trackinfo(track)
 			end
 		end
@@ -325,7 +326,7 @@ class Cuesheet
 	end
 
 	def saveCuesheet
-		file = File.new(@settings['Out'].getCueFile(@codec), 'w')
+		file = File.new(@out.getCueFile(@codec), 'w')
 		@cuesheet.each do |line|
 			file.puts(line)
 		end
@@ -826,7 +827,7 @@ end
 # Output is initialized as soon as the player pushes Rip Now!
 
 class Output
-attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
+attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
 :cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist
 	
@@ -950,8 +951,8 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 			end
 		end
 		
-		if @settings['cue_sheet']
-			Cuesheet.new(@settings)
+		if @settings['create_cue']
+			Cuesheet.new(@settings, self)
 		end
 	end
 
@@ -1139,14 +1140,13 @@ attr_reader :getDir, :getFile, :getImageFile, :getLogFile, :getCueFile,
 		return @dir.values[0]
 	end
 
-	# return the full filename of the track
+	# return the full filename of the track or image
 	def getFile(track, codec)
-		return File.join(@dir[codec], @file[codec][track])
-	end
-
-	# return the full filename of the image
-	def getImageFile(codec)
-		return File.join(@dir[codec], @image[codec])
+		if @settings['image']
+			return File.join(@dir[codec], @image[codec])		
+		else
+			return File.join(@dir[codec], @file[codec][track])
+		end	
 	end
 
 	# return the full filename of the log
