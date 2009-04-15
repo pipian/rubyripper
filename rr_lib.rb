@@ -1015,11 +1015,6 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	# give the filename for given codec and track
 	def giveFileName(codec, track=0)
 		file = @fileName.dup
-
-		# have some various artist support for other codecs as well
-		if codec == 'other' && getVarArtist(track+1) != ''
-			file.gsub!('%a', '%va')
-		end
 		
 		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
 		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => getVarArtist(track + 1), 
