@@ -1030,7 +1030,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 		# other codec has the extension already in the command
 		if codec == 'flac' : file += '.flac'
-		elsif codec == 'vorbis' : file += '.vorbis'
+		elsif codec == 'vorbis' : file += '.ogg'
 		elsif codec == 'mp3' : file += '.mp3'
 		elsif codec == 'wav' : file += '.wav'
 		end
@@ -1732,9 +1732,13 @@ class Encode < Monitor
 		end
 
 		#translate the UTF-8 tags to latin because of a lame bug.
-		require 'iconv'
-		tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
-		
+		begin
+			require 'iconv'
+			tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
+		rescue
+			puts "couldn't convert to ISO-8859-1 succesfully"
+		end
+
 		command = "lame #{@settings['mp3settings']} #{tags}"
 		command += "\"#{@out.getTempFile(track, 1)}\" \"#{filename}\""
 		command += " 2>&1" unless @settings['verbose']
