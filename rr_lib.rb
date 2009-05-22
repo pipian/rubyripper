@@ -1863,12 +1863,10 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 
 	def postfixDir
 		@settings['Out'].postfixDir()
-		startRip()
 	end
 
 	def overwriteDir
 		@settings['Out'].overwriteDir()
-		startRip()
 	end
 
 	def updateGui

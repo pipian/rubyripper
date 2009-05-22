@@ -265,7 +265,6 @@ attr_reader :change_display, :instances, :update
 			elsif modus == "encoding_progress"
 				updateProgress('encoding', value)
 			elsif modus == "log_change"
-				puts "help, the ripstatus is gone!" if !@instances.include?('RipStatus')
 				@instances['RipStatus'].textview.buffer.insert(@instances['RipStatus'].textview.buffer.end_iter, value) # First parameter is the last character + 1 in the log
 				@instances['RipStatus'].textview.scroll_to_iter(@instances['RipStatus'].textview.buffer.end_iter, 0, true, 1, 1)
 			elsif modus == "dir_exists"
