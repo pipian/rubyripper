@@ -299,7 +299,7 @@ class Cuesheet
 			@disc.audiotracks.times{|track| trackinfo(track)}
 		else
 			@disc.audiotracks.times do |track|
-				@cuesheet << "FILE \"#{@out.getFile(track, @codec)}\" #{@filetype[@codec]}"
+				@cuesheet << "FILE \"#{@out.getFile(track + 1, @codec)}\" #{@filetype[@codec]}"
 				trackinfo(track)
 			end
 		end
@@ -1147,7 +1147,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		return @dir.values[0]
 	end
 
-	# return the full filename of the track or image
+	# return the full filename of the track (starting with 1) or image
 	def getFile(track, codec)
 		if @settings['image']
 			return File.join(@dir[codec], @image[codec])		
