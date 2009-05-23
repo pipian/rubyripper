@@ -1628,7 +1628,7 @@ class Encode < Monitor
 	end
 		
 	def doWav(track)
-		filename = getFile(track, 'wav')
+		filename = @out.getFile(track, 'wav')
 		wav(filename, track)
 		replaygain(filename, 'wav', track)
 	end
