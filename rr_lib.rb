@@ -605,6 +605,8 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 	def searchMetadata
  		if File.exist?(metadataFile = File.join(ENV['HOME'], '.rubyripper/freedb.yaml'))
 			@metadataFile = YAML.load(File.open(metadataFile))
+			#in case it got corrupted somehow
+			@metadataFile = Hash.new if @metadataFile.class != Hash
 		else
 			@metadataFile = Hash.new
 		end
