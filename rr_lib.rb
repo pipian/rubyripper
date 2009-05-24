@@ -1556,7 +1556,7 @@ class Encode < Monitor
 			command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
 			`#{command}`
 		else
-			command = "normalize \"#{@out.getTempFile(track, 1)\""
+			command = "normalize \"#{@out.getTempFile(track, 1)}\""
 			`#{command}`
 		end
 	end
@@ -1750,7 +1750,7 @@ class Encode < Monitor
 	
 	def wav(filename, track)
 		require 'fileutils'
-		FileUtils.cp("#{@out.getTempFile(track, 1), filename)
+		FileUtils.cp(@out.getTempFile(track, 1), filename)
 	end
 	
 	def checkCommand(command, track, codec)
