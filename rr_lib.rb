@@ -1553,10 +1553,10 @@ class Encode < Monitor
 		end
 		
 		if track == false #album mode
-			command = "normalize -b \"#{@settings['temp_dir']}/\"*.wav"
+			command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
 			`#{command}`
 		else
-			command = "normalize \"#{@settings['temp_dir']}track#{track}_1.wav\""
+			command = "normalize \"#{@out.getTempFile(track, 1)\""
 			`#{command}`
 		end
 	end
@@ -1750,7 +1750,7 @@ class Encode < Monitor
 	
 	def wav(filename, track)
 		require 'fileutils'
-		FileUtils.cp("#{@settings['temp_dir']}track#{track}_1.wav", filename)
+		FileUtils.cp("#{@out.getTempFile(track, 1), filename)
 	end
 	
 	def checkCommand(command, track, codec)
