@@ -1817,7 +1817,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		end
 		
 		temp = Disc.new(@settings['cdrom'], @settings['freedb'], @settings['instance'])
-		if @settings['cd'].freedbString != temp.freedbString
+		if @settings['cd'].freedbString != temp.freedbString || @settings['cd'].playtime != temp.playtime
 			@settings['instance'].update("error", _("The Gui doesn't match inserted cd. Please press Scan Drive first."))
  			return false
 		end
