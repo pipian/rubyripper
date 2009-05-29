@@ -1848,6 +1848,10 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 			end
 			lastChar = char
 		end
+
+		# above won't work for various artist
+		copyString.gsub!('"%v"a', '"%va"')
+
 		@settings['othersettings'] = copyString
 
 		puts @settings['othersettings'] if @settings['debug']
