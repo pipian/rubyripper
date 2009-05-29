@@ -679,11 +679,11 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 			temp, @category, @discid = @answer.split()
 			freedbChoice()
 		elsif @answer[0..2] == '211' || @answer[0..2] == '210' #Multiple hits were found
-			puts "Multiple hits found"
 			multipleHits()
+			@choices.each{|choice| puts "choice #{choice}"}
 			if (@alwaysFirstChoice || @choices.length < 3) : freedbChoice(0) #Always choose the first one
 			else @gui.update("cddb_hit", @choices) #Let the user choose
-			end	
+			end
 		elsif @answer[0..2] == '202'
 			@gui.update("error", _("No match in Freedb database. Default values are used."))
 			@gui.update("cddb_hit", false)
@@ -695,7 +695,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 	
 	def multipleHits
 		discNames = @answer.split("\n")[1..@answer.length]; # remove the first line, which we know is the header
-		discNames.each { |disc| @choices << disc.strip() unless disc.strip() == "." }
+		discNames.each { |disc| @choices << disc.strip() unless (disc.strip() == "." || disc.strip().length == 0) }
 		@choices << _("Keep defaults / don't use freedb") #also use the option to keep defaults
 	end
 
