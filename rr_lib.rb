@@ -228,18 +228,18 @@ attr_writer :encodingErrors
  	end
  		
  	def position_analyse(matches_errors, maxtries) # Give an overview of suspicion position in the logfile
-		addLog(_("\nSUSPICION POSITION ANALYSIS\n\n"))
+		addLog(_("\nSUSPICIOUS POSITION ANALYSIS\n\n"))
 		addLog(_("Since there are 75 chunks per second, after making the notion of the\n"))
-		addLog(_("suspicion position, the amount of initially mismatched chunks for that position is shown.\n\n"))
+		addLog(_("suspicious position, the amount of initially mismatched chunks for\nthat position is shown.\n\n"))
 		@problem_tracks.keys.sort.each do |track| # For each track show the position of the files, how many chunks of that position and amount of trials needed to solve
 			addLog(_("TRACK %s\n") % [track])
 			@problem_tracks[track].keys.sort.each do |length| #length = total seconds of suspicious position
 				minutes = length / 60 # ruby math -> 70 / 60 = 1 (how many times does 60 fit in 70)
 				seconds = length % 60 # ruby math -> 70 % 60 = 10 (leftover)
 				if @problem_tracks[track][length][1] != 0
-					addLog(_("\tSuspicion position : %s:%s (%s x) (CORRECTED at trial %s\n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
+					addLog(_("\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s\)n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
 				else # Position could not be corrected
-					addLog(_("\tSuspicion position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n") % [ sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0]])
+					addLog(_("\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n") % [ sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0]])
 				end
 			end
 		end
