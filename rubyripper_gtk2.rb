@@ -336,13 +336,14 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 		@cd = cdinfo
 		@tracks_to_rip = Array.new
 		discinfo_objects() #create all necessary objects for displaying the discinfo
+		multipleDisc_objects() # create all objects for displaying the multiple disc info
 		trackselection_objects() #create all necessary objects for displaying the trackselection
 		update()
 		pack_both() #pack them together so we can show this beauty to the world :)
 	end
 	
 	def discinfo_objects #helpfunction for show_cdinfo
-		@table10 = Gtk::Table.new(3,4,false)
+		@table10 = Gtk::Table.new(4,4,false)
 		@table10.column_spacings = 5
 		@table10.row_spacings = 4
 		@table10.border_width = 7
@@ -369,7 +370,28 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 		@table10.attach(@year_label, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table10.attach(@genre_entry, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0) #4th column
 		@table10.attach(@year_entry, 3 , 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-		@table10.attach(@var_checkbox, 0, 4, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)		
+		@table10.attach(@var_checkbox, 0, 4, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0)		
+	end
+
+	def multipleDisc_objects
+#create objects for multiple discs
+		@freeze_checkbox = Gtk::CheckButton.new(_('Freeze disc info'))
+		@freeze_checkbox.tooltip_text = _("Use this option to keep the disc info\nfor albums that span multiple discs")
+		@discNumber_label = Gtk::Label.new(_('Disc:'))
+		@discNumber_label.set_alignment(0.0, 0.5)
+		@discNumber_spin = Gtk::SpinButton.new(1.0, 99.0, 1.0)
+		@discNumber_spin.value = 1.0
+		@discNumber_label.sensitive = false
+		@discNumber_spin.sensitive = false
+#add callback
+		@freeze_checkbox.signal_connect("toggled") do
+			@discNumber_label.sensitive = @freeze_checkbox.active?
+			@discNumber_spin.sensitive = @freeze_checkbox.active?
+		end
+#pack objects
+		@table10.attach(@freeze_checkbox, 0, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)		
+		@table10.attach(@discNumber_label, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)		
+		@table10.attach(@discNumber_spin, 3, 4, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
 	end
 	
 	def trackselection_objects #helpfunction for show_cdinfo
@@ -430,9 +452,11 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 	end	
 	
 	def update() # Update gui with freedb info
-		if not @cd.md.varArtists.empty? : @var_checkbox.active = true end
-		@artist_entry.text = @cd.md.artist ; @album_entry.text = @cd.md.album
-		@year_entry.text = @cd.md.year ; @genre_entry.text = @cd.md.genre
+		if not @freeze_checkbox.active?
+			if not @cd.md.varArtists.empty? : @var_checkbox.active = true end
+			@artist_entry.text = @cd.md.artist ; @album_entry.text = @cd.md.album
+			@year_entry.text = @cd.md.year ; @genre_entry.text = @cd.md.genre
+		end
 		@cd.audiotracks.times{|index| @track_entry_array[index].text = @cd.md.tracklist[index]}
 		unless @cd.md.varArtists.empty? : set_var_artist_in_table() end
 	end
