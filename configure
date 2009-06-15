@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-if ENV['PWD'] == nil : puts "Don't run configure with sudo" ; exit() end
+if ENV['PWD'] == nil ; puts "Don't run configure with sudo" ; exit() end
 
 $PREFIX='/usr/local'
 $BINDIR='/bin'
@@ -158,7 +158,7 @@ ARGV.each do |argument|
 	elsif argument == '--enable-lang-all'
 		$LANG=$LANG_SUPPORT
 	elsif argument[0,14] == '--enable-lang='
-		argument[14..-1].split(',').each{|lang| if $LANG_SUPPORT.include?(lang) : $LANG << lang end}
+		argument[14..-1].split(',').each{|lang| if $LANG_SUPPORT.include?(lang) ; $LANG << lang end}
 	elsif argument == "--update-lang"
 		update_lang()
 	elsif argument == "--update-lib"
@@ -242,9 +242,9 @@ puts "* Desktop file: #{$PREFIX}#{$DESKTOP}"
 puts "* Ruby library: #{$PREFIX}#{$RUBYDIR}"
 puts ""
 
-if $GTK2 == true: puts "Gtk2 frontend will be installed" end
-if $CLI == true: puts "Cli frontend will be installed" end
-unless $LANG.empty?: puts "Languages to be installed: #{$LANG.join(', ')}" end
+if $GTK2 == true; puts "Gtk2 frontend will be installed" end
+if $CLI == true; puts "Cli frontend will be installed" end
+unless $LANG.empty?; puts "Languages to be installed: #{$LANG.join(', ')}" end
 
 puts ""
 puts "You can now run make install"

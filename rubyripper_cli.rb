@@ -42,7 +42,7 @@ class Gui_CLI
 		@settings = $rr_defaultSettings
 		if File.exist?(File.expand_path(@options.file))
 			load_configfile()
-			if @options.configure: edit_settings() end
+			if @options.configure; edit_settings() end
 		else
 			edit_settings() # Always set up settings if no config file exists.
 		end		
@@ -88,7 +88,7 @@ class Gui_CLI
 			exit
 		end
 
-		if @options.help: exit end
+		if @options.help; exit end
 
 		puts _("Verbose output specified.") if @options.verbose
 		puts _("Configure option specified.") if @options.configure
@@ -137,42 +137,42 @@ class Gui_CLI
 	def edit_settings # depending on the input of the user as asked in show_settings(), change the setting
 		show_settings()
 		while (number = get_answer(_("Please type the number of the setting you wish to change : "), "number", 99)) != 99
-			if number == 1 : set_codec('flac')
-			elsif number == 2 : set_codec('vorbis')
-			elsif number == 3 : set_codec('mp3')
-			elsif number == 4 : if @settings['wav'] : puts _("wav disabled") ; @settings['wav'] = false else puts _("wav enabled") ; @settings['wav'] = true end
-			elsif number == 5 : set_codec('other')
-			elsif number == 6 : if @settings['playlist'] : puts _("playlist disabled") ; @settings['playlist'] = false else puts _("playlist enabled") ; @settings['playlist'] = true end
-			elsif number == 7 : @settings['maxThreads'] = get_answer(_("How many encoding threads would you like? : "), "number", 1)
-			elsif number == 8 : set_cdrom()
-			elsif number == 9 : @settings['rippersettings'] = get_answer(_("Which options to pass to cdparanoia? : "), "open", "")
-			elsif number == 10 : @settings['req_matches_all'] = get_answer(_("How many times must all chunks be matched? : "), "number", 2)
-			elsif number == 11 : @settings['req_matches_errors'] = get_answer(_("How many times must erroneous chunks be matched? : "), "number", 3)
-			elsif number == 12 : @settings['max_tries'] = get_answer(_("What should be the maximum number of tries? : "), "number", 5)
-			elsif number == 13 : if @settings['eject'] : puts _("eject disabled") ; @settings['eject'] = false else puts _("eject enabled") ; @settings['eject'] = true end
-			elsif number == 14 : @settings['basedir'] = get_answer(_("Please enter your directory for your encodings: "), "open", "")
-			elsif number == 15 : setdir('normal')
-			elsif number == 16 : setdir('various')
-			elsif number == 17 : if @settings['freedb'] : puts _("freedb disabled") ; @settings['freedb'] = false else puts _("freedb enabled") ; @settings['freedb'] = true end
-			elsif number == 18 : if @settings['first_hit'] : puts _("first hit disabled") ; @settings['first_hit'] = false else puts _("first hit enabled") ; @settings['first_hit'] = true end
-			elsif number == 19 : @settings['site'] = get_answer(_("Freedb mirror: "), "open", "freedb.org")
-			elsif number == 20 : @settings['username'] = get_answer(_("Username : "), "open", "anonymous")
-			elsif number == 21 : @settings['hostname'] = get_answer(_("Hostname : "), "open", "my_secret.com")
-			elsif number == 88 : @options.file = get_answer(_("Config file : "), "open", @options.file)
+			if number == 1 ; set_codec('flac')
+			elsif number == 2 ; set_codec('vorbis')
+			elsif number == 3 ; set_codec('mp3')
+			elsif number == 4 ; if @settings['wav'] ; puts _("wav disabled") ; @settings['wav'] = false else puts _("wav enabled") ; @settings['wav'] = true end
+			elsif number == 5 ; set_codec('other')
+			elsif number == 6 ; if @settings['playlist'] ; puts _("playlist disabled") ; @settings['playlist'] = false else puts _("playlist enabled") ; @settings['playlist'] = true end
+			elsif number == 7 ; @settings['maxThreads'] = get_answer(_("How many encoding threads would you like? : "), "number", 1)
+			elsif number == 8 ; set_cdrom()
+			elsif number == 9 ; @settings['rippersettings'] = get_answer(_("Which options to pass to cdparanoia? : "), "open", "")
+			elsif number == 10 ; @settings['req_matches_all'] = get_answer(_("How many times must all chunks be matched? : "), "number", 2)
+			elsif number == 11 ; @settings['req_matches_errors'] = get_answer(_("How many times must erroneous chunks be matched? : "), "number", 3)
+			elsif number == 12 ; @settings['max_tries'] = get_answer(_("What should be the maximum number of tries? : "), "number", 5)
+			elsif number == 13 ; if @settings['eject'] ; puts _("eject disabled") ; @settings['eject'] = false else puts _("eject enabled") ; @settings['eject'] = true end
+			elsif number == 14 ; @settings['basedir'] = get_answer(_("Please enter your directory for your encodings: "), "open", "")
+			elsif number == 15 ; setdir('normal')
+			elsif number == 16 ; setdir('various')
+			elsif number == 17 ; if @settings['freedb'] ; puts _("freedb disabled") ; @settings['freedb'] = false else puts _("freedb enabled") ; @settings['freedb'] = true end
+			elsif number == 18 ; if @settings['first_hit'] ; puts _("first hit disabled") ; @settings['first_hit'] = false else puts _("first hit enabled") ; @settings['first_hit'] = true end
+			elsif number == 19 ; @settings['site'] = get_answer(_("Freedb mirror: "), "open", "freedb.org")
+			elsif number == 20 ; @settings['username'] = get_answer(_("Username : "), "open", "anonymous")
+			elsif number == 21 ; @settings['hostname'] = get_answer(_("Hostname : "), "open", "my_secret.com")
+			elsif number == 88 ; @options.file = get_answer(_("Config file : "), "open", @options.file)
 			else puts _("Number %s is not an option!\nPlease try again.") % [number]
 			end
 			puts ""
 			show_settings()
 		end
 		save_configfile()
-		unless get_answer(_("Do you want to continue with the program now? (y/n) : "), "yes", _("y")) : exit() end
+		unless get_answer(_("Do you want to continue with the program now? (y/n) : "), "yes", _("y")) ; exit() end
 	end
 	
 	def set_codec(codec) # little help function for edit_settings
 		@settings[codec] = get_answer("Do you want to enable #{codec} encoding? (y/n) : ", "yes", _("y"))
 		if @settings[codec]
 			if get_answer(_("Do you want to change the encoding parameters for %s? (y/n) : ") % [codec], "yes", _("n"))
-				if codec == 'other' : puts _("%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)") end
+				if codec == 'other' ; puts _("%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)") end
 				@settings[codec + 'settings'] = get_answer(_("Encoding paramaters for %s : ") % [codec], "open", "")
 			end
 		end
@@ -211,10 +211,10 @@ class Gui_CLI
 			while line = file.gets
 				key, value = line.split('=', 2)
 				value.rstrip! # remove the trailing newline character
-				if value == "false" : value = false # replace the string with a bool
-				elsif value == "true" : value = true  # replace the string with a bool
-				elsif value == "''" : value = '' #replace a string that contains two quotes with an empty string
-				elsif value.to_i > 0 || value == '0' : value = value.to_i
+				if value == "false" ; value = false # replace the string with a bool
+				elsif value == "true" ; value = true  # replace the string with a bool
+				elsif value == "''" ; value = '' #replace a string that contains two quotes with an empty string
+				elsif value.to_i > 0 || value == '0' ; value = value.to_i
 				end
 				@settings[key] = value
 			end
@@ -223,7 +223,7 @@ class Gui_CLI
 	end
 	
 	def save_configfile # save config file
-		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper')) : Dir.mkdir(dirname) end
+		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper')) ; Dir.mkdir(dirname) end
 		file = File.new(File.expand_path(@options.file), 'w')
 		@settings.each do |key, value|
 			file.puts "#{key}=#{value}" if $rr_defaultSettings.include?(key)
@@ -238,18 +238,18 @@ class Gui_CLI
 				answers = [_("yes"), _("y"), _("no"), _("n")]
 				STDOUT.print(question + " [#{default}] ")
 				input = STDIN.gets.strip
-				if input == '' : input = default end
+				if input == '' ; input = default end
 				if answers.include?(input)
-					if input == _('y') || input == _("yes") : return true else return false end
+					if input == _('y') || input == _("yes") ; return true else return false end
 				else puts _("Please answer yes or no") end
 			elsif answer == "open"
 				STDOUT.print(question + " [#{default}] ")
 				input = STDIN.gets.strip
-				if input == '' : return default else return input end
+				if input == '' ; return default else return input end
 			elsif answer == "number"
 				STDOUT.print(question + " [#{default}] ")
 				input = STDIN.gets.strip.to_i #convert the answer to an integer value, if input is a text it will be 0.
-				if input == 0 : return default else return input end
+				if input == 0 ; return default else return input end
 			else puts _("We should never get here") ; puts _("answer = %s, question = %s (error)") % [answer, question]
  			end
 		end
@@ -315,9 +315,9 @@ class Gui_CLI
 		puts ""
 
 		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
-		if answer == 1 : prepareRip()
-		elsif answer == 2 : editDiscInfo()
-		elsif answer == 3 : editTrackInfo()
+		if answer == 1 ; prepareRip()
+		elsif answer == 2 ; editDiscInfo()
+		elsif answer == 3 ; editTrackInfo()
 		else cancelRip()
 		end
 	end
@@ -338,12 +338,12 @@ class Gui_CLI
 		
 		while true
 			answer = get_answer(_("Please enter the number you'd like to edit: "), "number", 99)
-			if answer == 1 : @settings['cd'].md.artist = get_answer(_("Artist : "), "open", @settings['cd'].md.artist)
-			elsif answer == 2 : @settings['cd'].md.album = get_answer(_("Album : "), "open", @settings['cd'].md.album)
-			elsif answer == 3 : @settings['cd'].md.genre = get_answer(_("Genre : "), "open", @settings['cd'].md.genre)
-			elsif answer == 4 : @settings['cd'].md.year = get_answer(_("Year : "), "open", @settings['cd'].md.year)
-			elsif answer == 5 : if @settings['cd'].md.varArtists.empty? : setVarArtist() else unsetVarArtist() end
-			elsif answer == 99 : break
+			if answer == 1 ; @settings['cd'].md.artist = get_answer(_("Artist : "), "open", @settings['cd'].md.artist)
+			elsif answer == 2 ; @settings['cd'].md.album = get_answer(_("Album : "), "open", @settings['cd'].md.album)
+			elsif answer == 3 ; @settings['cd'].md.genre = get_answer(_("Genre : "), "open", @settings['cd'].md.genre)
+			elsif answer == 4 ; @settings['cd'].md.year = get_answer(_("Year : "), "open", @settings['cd'].md.year)
+			elsif answer == 5 ; if @settings['cd'].md.varArtists.empty? ; setVarArtist() else unsetVarArtist() end
+			elsif answer == 99 ; break
 			end
 		end
 
@@ -370,7 +370,7 @@ class Gui_CLI
 		while true
 			answer = get_answer(_("Please enter the number you'd like to edit: "), "number", 99)
 		
-			if answer == 99 : break
+			if answer == 99 ; break
 			elsif (answer.to_i > 0 && answer.to_i <= @settings['cd'].audiotracks)
 				@settings['cd'].md.tracklist[answer - 1] = get_answer("Track #{answer} : ", "open", @settings['cd'].md.tracklist[answer - 1])
 				if not @settings['cd'].md.varArtists.empty?
@@ -393,7 +393,7 @@ class Gui_CLI
 	def prepareRip()
 		tracklist() # Which tracks should be ripped?
 		@rubyripper = Rubyripper.new(@settings, self) # starts some check if the settings are sane
-		if @rubyripper.settingsOk : start() end
+		if @rubyripper.settingsOk ; start() end
 	end
 	
 	def dir_exists
@@ -405,8 +405,8 @@ class Gui_CLI
 		puts ""
 
 		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
-		if answer == 1: @rubyripper.postfixDir() ; start()
-		elsif answer == 2: @rubyripper.overwriteDir() ; start()
+		if answer == 1; @rubyripper.postfixDir() ; start()
+		elsif answer == 2; @rubyripper.overwriteDir() ; start()
 		else cancelRip()
 		end
 	end
@@ -431,7 +431,7 @@ class Gui_CLI
 		elsif modus == "error"
 			print value
 			print "\n"
-			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y")) : edit_settings() end
+			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y")) ; edit_settings() end
 		elsif modus == "cddb_hit" && value == false #final values freedb
 			showFreedb()
 		elsif modus == "cddb_hit" && value != false #multiple freedb hits

@@ -42,7 +42,7 @@ attr_reader :change_display, :instances, :update
 		@instances = {'Preferences' => false, 'GtkMetadata' => false, 'ShortMessage' => false, 'RipStatus' => false, 'DirExists' => false, 'MultipleFreedbHits' => false, 'Summary' => false}
 		@current_instance = false
 		@gtk_window = Gtk::Window.new('Rubyripper')
-		ICONDIR.each{|dir| if File.exist?(file = File.join(dir, 'rubyripper.png')) : @gtk_window.icon = Gdk::Pixbuf.new(file) ; break end }
+		ICONDIR.each{|dir| if File.exist?(file = File.join(dir, 'rubyripper.png')) ; @gtk_window.icon = Gdk::Pixbuf.new(file) ; break end }
 		@gtk_window.set_default_size(520, 400) #width, height
 		
 		@hbox1 = Gtk::HBox.new(false,5)
@@ -120,17 +120,17 @@ attr_reader :change_display, :instances, :update
 			while line = file.gets
 				key, value = line.split('=', 2)
 				value.rstrip! # remove the trailing newline character
-				if value == "false" : value = false # replace the string with a bool
-				elsif value == "true" : value = true  # replace the string with a bool
-				elsif value == "''" : value = '' #replace a string that contains two quotes with an empty string
-				elsif value.to_i > 0 || value == '0' : value = value.to_i
+				if value == "false" ; value = false # replace the string with a bool
+				elsif value == "true" ; value = true  # replace the string with a bool
+				elsif value == "''" ; value = '' #replace a string that contains two quotes with an empty string
+				elsif value.to_i > 0 || value == '0' ; value = value.to_i
 				end
-				if @settings.key?(key) : @settings[key] = value end
+				if @settings.key?(key) ; @settings[key] = value end
 			end
 			file.close()
 		end
 		@settings['maxThreads'] = 0 # Temporary, so the segfaults are gone
-		if @settings['debug'] : Thread.abort_on_exception = true end
+		if @settings['debug'] ; Thread.abort_on_exception = true end
 	end
 	
 	def welcome_message
@@ -144,10 +144,10 @@ attr_reader :change_display, :instances, :update
 			if @current_instance != 'Preferences'
 				@buttontext[0].set_text('_'+_('Disc info'),true)
 				@buttonicons[0].stock = Gtk::Stock::INFO
-				unless @instances['Preferences'] : @instances['Preferences'] = Preferences.new(@settings) end
+				unless @instances['Preferences'] ; @instances['Preferences'] = Preferences.new(@settings) end
 				@instances['Preferences'].display.page = 0
 				change_display(@instances['Preferences'])
-				@buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] : @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
+				@buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] ; @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
 			elsif @instances['GtkMetadata']
 				change_display(@instances['GtkMetadata'])
 				@buttons.each{|button| button.sensitive = true}
@@ -171,7 +171,7 @@ attr_reader :change_display, :instances, :update
 				@instances['GtkMetadata'] = GtkMetadata.new(@settings['cd']) #build the cdinfo for the gui
 				change_display(@instances['GtkMetadata']) #show this info on the display
 				
-				if @settings['freedb'] : @settings['cd'].md.freedb(@settings, @settings['first_hit']) end #Fetch the cddb info if user wants to
+				if @settings['freedb'] ; @settings['cd'].md.freedb(@settings, @settings['first_hit']) end #Fetch the cddb info if user wants to
 				@buttons.each{|button| button.sensitive = true}
 			else
 				@instances['GtkMetadata'] = false
@@ -206,7 +206,7 @@ attr_reader :change_display, :instances, :update
  			else
  				@instances['ShortMessage'].no_eject_found
 				change_display(@instances['ShortMessage'])
-				@buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] : @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
+				@buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] ; @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
  			end
 		end
 	end
@@ -256,7 +256,7 @@ attr_reader :change_display, :instances, :update
 				@buttons.each{|button| button.sensitive = true}
 			elsif modus == "cddb_hit" && !value
 				@instances['GtkMetadata'].update()
-				if @current_instance != 'GtkMetadata' : change_display(@instances['GtkMetadata']) end
+				if @current_instance != 'GtkMetadata' ; change_display(@instances['GtkMetadata']) end
 			elsif modus == "cddb_hit" && value
 				@instances['MultipleFreedbHits'] = MultipleFreedbHits.new(value, @settings['cd'], self)
 				change_display(@instances['MultipleFreedbHits'])
@@ -453,17 +453,17 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 	
 	def update() # Update gui with freedb info
 		if not @freeze_checkbox.active?
-			if not @cd.md.varArtists.empty? : @var_checkbox.active = true end
+			if not @cd.md.varArtists.empty? ; @var_checkbox.active = true end
 			@artist_entry.text = @cd.md.artist ; @album_entry.text = @cd.md.album
 			@year_entry.text = @cd.md.year ; @genre_entry.text = @cd.md.genre
 		end
 		@cd.audiotracks.times{|index| @track_entry_array[index].text = @cd.md.tracklist[index]}
-		unless @cd.md.varArtists.empty? : set_var_artist_in_table() end
+		unless @cd.md.varArtists.empty? ; set_var_artist_in_table() end
 	end
 
 	def set_var_artist_in_table
-		@cd.audiotracks.times{|time| if @cd.md.varArtists[time] == nil:  @cd.md.varArtists[time] = _('Unknown') end} #Fill with unknown if the artistfield is not there
-		if @table20.children.include?(@var_artist_label) : @table20.remove(@var_artist_label) ; @var_artist_array.each{|object| @table20.remove(object)} end #remove the previous 
+		@cd.audiotracks.times{|time| if @cd.md.varArtists[time] == nil;  @cd.md.varArtists[time] = _('Unknown') end} #Fill with unknown if the artistfield is not there
+		if @table20.children.include?(@var_artist_label) ; @table20.remove(@var_artist_label) ; @var_artist_array.each{|object| @table20.remove(object)} end #remove the previous 
 		@var_artist_label = Gtk::Label.new(_('Artist'))
 		@var_artist_array = Array.new ; @cd.audiotracks.times{|index| @var_artist_array << Gtk::Entry.new}
 		@cd.audiotracks.times{|index| @var_artist_array[index].text = @cd.md.varArtists[index]}
@@ -508,7 +508,7 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 		else
 		    @cd.audiotracks.times do |index|
 			@cd.md.tracklist[index] = @track_entry_array[index].text
-			if @check_track_array[index].active? : @tracks_to_rip << index + 1 end
+			if @check_track_array[index].active? ; @tracks_to_rip << index + 1 end
 		    end
 		end
 		
@@ -564,8 +564,8 @@ attr_reader :display, :save
 		@noSpaces.active = @settings['noSpaces']
 		@noCapitals.active = @settings['noCapitals']
 		#@maxThreads.value = @settings['maxThreads'].to_f
-		@normalize.active = if @settings['normalize'] == false : 0 elsif @settings['normalize'] == "replaygain" : 1 else 2 end
-		@modus.active = if @settings['gain'] == "album" : 0 else 1 end
+		@normalize.active = if @settings['normalize'] == false ; 0 elsif @settings['normalize'] == "replaygain" ; 1 else 2 end
+		@modus.active = if @settings['gain'] == "album" ; 0 else 1 end
 #freedb
 		@enable_freedb.active = @settings['freedb']
 		@first_hit.active = @settings['first_hit']
@@ -609,8 +609,8 @@ attr_reader :display, :save
 		@settings['noSpaces'] = @noSpaces.active?
 		@settings['noCapitals'] = @noCapitals.active?
 		#@settings['maxThreads'] = @maxThreads.value.to_i
-		@settings['normalize'] = if @normalize.active == 0 : false elsif @normalize.active == 1 : "replaygain" else "normalize" end
-		@settings['gain'] = if @modus.active ==0 : "album" else "track" end
+		@settings['normalize'] = if @normalize.active == 0 ; false elsif @normalize.active == 1 ; "replaygain" else "normalize" end
+		@settings['gain'] = if @modus.active ==0 ; "album" else "track" end
 #freedb
 		@settings['freedb'] = @enable_freedb.active?
 		@settings['first_hit'] = @first_hit.active?
@@ -626,7 +626,7 @@ attr_reader :display, :save
 		@settings['debug'] = @debug.active?
 		@settings['editor'] = @editor_entry.text
 		@settings['filemanager'] = @filemanager_entry.text
-		if @settings['debug'] : Thread.abort_on_exception = true end
+		if @settings['debug'] ; Thread.abort_on_exception = true end
 		save_configfile() #also update the config file
 	end
 	
@@ -695,7 +695,7 @@ attr_reader :display, :save
 		@table50.attach(@time2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table50.attach(@time3, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect a signal to @all_chunks to make sure @err_chunks get always at least the same amount of rips as @all_chunks
-		@all_chunks_spin.signal_connect("value_changed") {if @err_chunks_spin.value < @all_chunks_spin.value : @err_chunks_spin.value = @all_chunks_spin.value end ; @err_chunks_spin.set_range(@all_chunks_spin.value,100.0)} #ensure all_chunks cannot be smaller that err_chunks.
+		@all_chunks_spin.signal_connect("value_changed") {if @err_chunks_spin.value < @all_chunks_spin.value ; @err_chunks_spin.value = @all_chunks_spin.value end ; @err_chunks_spin.set_range(@all_chunks_spin.value,100.0)} #ensure all_chunks cannot be smaller that err_chunks.
 #create frame
 		@frame50= Gtk::Frame.new(_('Ripping options'))
 		@frame50.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
@@ -812,7 +812,7 @@ attr_reader :display, :save
 		@modus.append_text(_("Track modus"))
 		@modus.active = 0
 		@modus.sensitive = false
-		@normalize.signal_connect("changed") {if @normalize.active == 0 : @modus.sensitive = false else @modus.sensitive = true end}
+		@normalize.signal_connect("changed") {if @normalize.active == 0 ; @modus.sensitive = false else @modus.sensitive = true end}
 #packing objects
 		@table85.attach(@normalize, 0, 1, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
 		@table85.attach(@modus, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
@@ -959,7 +959,7 @@ attr_reader :display, :save
 		@page4 = Gtk::VBox.new()
 		[@frame100, @frame110, @frame120].each{|frame| @page4.pack_start(frame,false,false)}
 		@page4_label = Gtk::Label.new(_("Other"))
-		@display.signal_connect("switch_page"){|a, b, page| if page == 3: @example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text) end}
+		@display.signal_connect("switch_page"){|a, b, page| if page == 3; @example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text) end}
 		@display.append_page(@page4, @page4_label)
 	end
 end
@@ -1091,7 +1091,7 @@ attr_reader :display
 		@button1.signal_connect("released") do
 			Thread.new do
 				main_instance.change_display(main_instance.instances['GtkMetadata'])
-				if @combobox.active == -1 : cd.md.freedbChoice(0) else cd.md.freedbChoice(@combobox.active) end
+				if @combobox.active == -1 ; cd.md.freedbChoice(0) else cd.md.freedbChoice(@combobox.active) end
 			end
 		end
 	end
@@ -1122,7 +1122,7 @@ attr_reader :display
 		@hbox2 = Gtk::HBox.new()
 		[@image2, @label2].each{|object| @hbox2.pack_start(object)}
 		@button1.add(@hbox2)
-		@button1.signal_connect("released"){Thread.new{if installed(editor.split()[0]) : `#{editor} "#{directory + '/ripping.log'}"` else puts _("%s is not found on your system!") % [editor.split()[0]] end}}
+		@button1.signal_connect("released"){Thread.new{if installed(editor.split()[0]) ; `#{editor} "#{directory + '/ripping.log'}"` else puts _("%s is not found on your system!") % [editor.split()[0]] end}}
 		
 		@button2 = Gtk::Button.new()
 		@label3 = Gtk::Label.new(_("Open directory"))
@@ -1130,7 +1130,7 @@ attr_reader :display
 		@hbox3 = Gtk::HBox.new()
 		[@image3, @label3].each{|object| @hbox3.pack_start(object)}
 		@button2.add(@hbox3)
-		@button2.signal_connect("released"){Thread.new{if installed(filemanager.split()[0]) : `#{filemanager} "#{directory}"` else puts _("%s is not found on your system!") % [filemanager.split()[0]] end}}
+		@button2.signal_connect("released"){Thread.new{if installed(filemanager.split()[0]) ; `#{filemanager} "#{directory}"` else puts _("%s is not found on your system!") % [filemanager.split()[0]] end}}
 		
 		@hbox4 = Gtk::HBox.new(true, 5) #put the two buttons in a box
 		[@button1, @button2].each{|object| @hbox4.pack_start(object)}

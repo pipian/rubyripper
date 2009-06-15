@@ -17,7 +17,7 @@
 
 #ensure translation is working before actually installing
 LOCALE=[ENV['PWD'] + "/locale", "/usr/local/share/locale"]
-LOCALE.each{|dir| if File.directory?(dir) : ENV['GETTEXT_PATH'] = dir ; break end}
+LOCALE.each{|dir| if File.directory?(dir) ; ENV['GETTEXT_PATH'] = dir ; break end}
 
 $rr_version = '0.5.5' #application wide setting
 
@@ -37,9 +37,9 @@ require 'yaml' #help library to save data structures into files
 
 def installed(filename) # a help function to check if an application is installed
 	ENV['PATH'].split(':').each do |dir|
-		if File.exist?(dir + '/' + filename) : return true end
+		if File.exist?(dir + '/' + filename) ; return true end
 	end
-	if File.exist?(filename) : return true else return false end #it can also be in current working dir
+	if File.exist?(filename) ; return true else return false end #it can also be in current working dir
 end
 
 if not installed('cdparanoia')
@@ -124,8 +124,8 @@ end
 
 def eject(cdrom)
 	Thread.new do
-	 	if installed('eject') : `eject #{cdrom}`
-		elsif installed('diskutil'): `diskutil eject #{cdrom}` #Mac users don't got eject, but diskutil
+	 	if installed('eject') ; `eject #{cdrom}`
+		elsif installed('diskutil'); `diskutil eject #{cdrom}` #Mac users don't got eject, but diskutil
 		else puts _("No eject utility found!")
 		end
 	end
@@ -179,7 +179,7 @@ attr_writer :encodingErrors
 	# Add a message to the logging file
 	def addLog(message, summary = false)
 		@logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
-		if summary : @short_summary += message end
+		if summary ; @short_summary += message end
 	end
 	
 	def mismatch(track, trial, indexes_with_errors, size, length)
@@ -199,15 +199,15 @@ attr_writer :encodingErrors
 				@problem_tracks[track][seconds][1] = trial #Update the amount of trials needed
 			end
 		end
-		if trial == 0: @not_corrected_tracks << track end #Reached maxtries and still got errors
+		if trial == 0; @not_corrected_tracks << track end #Reached maxtries and still got errors
 	end
 	
 	def summary(matches_all, matches_errors, maxtries) #Give an overview of errors
-		if @encodingErrors : addLog(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
+		if @encodingErrors ; addLog(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
 		addLog(_("\nRIPPING SUMMARY\n\n"), true)
 		
 		addLog(_("All chunks were tried to match at least %s times.\n") % [matches_all], true)
-		if matches_all != matches_errors: addLog(_("Chunks that differed after %s trials,\nwere tried to match %s times.\n") % [matches_all, matches_errors], true) end
+		if matches_all != matches_errors; addLog(_("Chunks that differed after %s trials,\nwere tried to match %s times.\n") % [matches_all, matches_errors], true) end
 
 		if @problem_tracks.empty?
  			addLog(_("None of the tracks gave any problems\n"), true)
@@ -390,7 +390,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 			return false
 		end
 
-		if $?.success? : return true end #cdparanoia returned no problems
+		if $?.success? ; return true end #cdparanoia returned no problems
 		
 		if @query.include?("Unable to open disc")
 			@query = false
@@ -465,7 +465,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 			"for device %s on your system! These permissions are\n"\
 			"necessary for cdparanoia to scan your drive.\n\n%s\n"\
 			"You might want to add yourself to the necessary group in /etc/group")\
-			%[device, "#{if permission : "ls -l shows #{permission}" end}"]
+			%[device, "#{if permission ; "ls -l shows #{permission}" end}"]
 			
 			return false
 		end
@@ -488,15 +488,15 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 			end
 		end
 		
-		if @freedb : getFreedbString end
+		if @freedb ; getFreedbString end
 		@query = false
 	end
 
 	def getFreedbString
 		if installed('discid')
-			if RUBY_PLATFORM.include?('darwin') : `diskutil unmount #{@cdrom}` end
+			if RUBY_PLATFORM.include?('darwin') ; `diskutil unmount #{@cdrom}` end
 			@freedbString = `discid #{@cdrom}`
-			if RUBY_PLATFORM.include?('darwin') : `diskutil mount #{@cdrom}` end
+			if RUBY_PLATFORM.include?('darwin') ; `diskutil mount #{@cdrom}` end
 		elsif installed('cd-discid') # if no discid exists, try cd-discid
 			@freedbString = `cd-discid #{@cdrom}`
 		else # if both do not exist generate it ourselves (less foolproof)
@@ -532,9 +532,9 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 		seconds = 0
 		freedbOffsets = ''
 		totalSectors = 0
-		audiotracks = @audiotracks + if @datatrack : 1 else 0 end
-		startSector = @startSector ; if @datatrack :  startSector << @datatrack[0] end
-		lengthSector = @lengthSector ; if @datatrack : lengthSector << @datatrack[1] end
+		audiotracks = @audiotracks + if @datatrack ; 1 else 0 end
+		startSector = @startSector ; if @datatrack ;  startSector << @datatrack[0] end
+		lengthSector = @lengthSector ; if @datatrack ; lengthSector << @datatrack[1] end
 
 		audiotracks.times do |track|
 			checksum = 0
@@ -623,14 +623,14 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 			end
 		end
 
-		if @verbose : puts "preparing to contact freedb server" end
+		if @verbose ; puts "preparing to contact freedb server" end
 		handshake()
 	end
 
 	def findLocalMetadata
 		if File.directory?(dir = File.join(ENV['HOME'], '.cddb'))
 			Dir.foreach(dir) do |subdir|
-				if subdir == '.' || subdir == '..' || !File.directory?(File.join(dir, subdir)) :  next end
+				if subdir == '.' || subdir == '..' || !File.directory?(File.join(dir, subdir)) ;  next end
 				Dir.foreach(File.join(dir, subdir)) do |file|
 					if file == @disc.freedbString[0,8]
 						puts "Local file found #{File.join(dir, subdir, file)}"
@@ -660,7 +660,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 		
 		@query = @url.path + "?cmd=cddb+query+" + CGI.escape("#{@disc.freedbString.chomp}") + "&hello=" + 
 			CGI.escape("#{@freedbSettings['username']} #{@freedbSettings['hostname']} rubyripper #{$rr_version}") + "&proto=6"
-		if @verbose : puts "Created query string: #{@query}" end
+		if @verbose ; puts "Created query string: #{@query}" end
 
 		begin
 			respons, @answer = @server.get(@query)
@@ -675,13 +675,13 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 
 	def requestDisc # ask for matches on cd, if there are multiple, interaction with user is possible
 		if @answer[0..2] == '200'  #There was only one hit found
-			if @verbose : puts "One hit found; parsing" end
+			if @verbose ; puts "One hit found; parsing" end
 			temp, @category, @discid = @answer.split()
 			freedbChoice()
 		elsif @answer[0..2] == '211' || @answer[0..2] == '210' #Multiple hits were found
 			multipleHits()
 			@choices.each{|choice| puts "choice #{choice}"}
-			if (@alwaysFirstChoice || @choices.length < 3) : freedbChoice(0) #Always choose the first one
+			if (@alwaysFirstChoice || @choices.length < 3) ; freedbChoice(0) #Always choose the first one
 			else @gui.update("cddb_hit", @choices) #Let the user choose
 			end
 		elsif @answer[0..2] == '202'
@@ -716,7 +716,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 	def rawResponse #Retrieve all usefull metadata into @rawResponse
 		@query = @url.path + "?cmd=cddb+read+" + CGI.escape("#{@category} #{@discid}") + "&hello=" + 
 			CGI.escape("#{@freedbSettings['username']} #{@freedbSettings['hostname']} rubyripper #{$rr_version}") + "&proto=6"
-		if @verbose : puts "Created fetch string: #{@query}" end
+		if @verbose ; puts "Created fetch string: #{@query}" end
 		
 		response, answer = @server.get(@query)
 		answers = answer.split("\n")
@@ -768,15 +768,15 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 			if line =~ /DTITLE=/
 				if @artist == _('Unknown') #first time we look at a DTITLE field (can have two lines at maximum)
 					(@artist, @album) = $'.split(/\s+\/\s+/) # Remove the '/' with spaces around it, example DTITLE= Judas Priest     /     Sin After Sin
-					if @artist == nil: @artist = _('Unknown') end
-					if @album == nil: @album = _('Unknown') end
+					if @artist == nil; @artist = _('Unknown') end
+					if @album == nil; @album = _('Unknown') end
 				elsif $' != nil # 2nd line with DTITLE, assume the second line is the continuation of the album name
 					@album = "#{@album}#{$'}"
 				end
 			elsif line =~ /DYEAR=/
-				@year = $' ; if @year == nil : @year = 0 end
+				@year = $' ; if @year == nil ; @year = 0 end
 			elsif line =~ /DGENRE=/
-				@genre = $' ; if @genre == nil : @genre = _('Unknown') end
+				@genre = $' ; if @genre == nil ; @genre = _('Unknown') end
 			elsif line =~ /TTITLE\d*=/
 				trackname = $' # may also include variable artist
 				line =~ /\d+/ ; tracknumber = $&.to_i #ruby magic, $& == the just matched regular expression
@@ -810,7 +810,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 					break
 				end
 			end
-			if varArtist == sep : break end
+			if varArtist == sep ; break end
 		end
 
 		if varArtist != false
@@ -941,8 +941,8 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# (re)attempt creation of the dirs, when succesfull create the filenames
 	def attemptDirCreation
-		if not checkDirRights : return false end
-		if not checkDirExistence() : return false end
+		if not checkDirRights ; return false end
+		if not checkDirExistence() ; return false end
 		createDir()
 		createTempDir()
 		setMetadata()
@@ -969,7 +969,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@dir.values.each do |directory|
 			dir = directory
 			# search for the first existing directory
-			while not File.directory?(dir) : dir = File.dirname(dir) end
+			while not File.directory?(dir) ; dir = File.dirname(dir) end
 			
 			if not File.writable?(dir)
 				@settings['instance'].update("error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir])
@@ -1031,10 +1031,10 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		end
 
 		# other codec has the extension already in the command
-		if codec == 'flac' : file += '.flac'
-		elsif codec == 'vorbis' : file += '.ogg'
-		elsif codec == 'mp3' : file += '.mp3'
-		elsif codec == 'wav' : file += '.wav'
+		if codec == 'flac' ; file += '.flac'
+		elsif codec == 'vorbis' ; file += '.ogg'
+		elsif codec == 'mp3' ; file += '.mp3'
+		elsif codec == 'wav' ; file += '.wav'
 		end
 		
 		filename = fileFilter(file)
@@ -1070,8 +1070,8 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
  		
 		allFilter(var)
 
-		if @settings['noSpaces'] : var.gsub!(" ", "_") end
- 		if @settings['noCapitals'] : var.downcase! end
+		if @settings['noSpaces'] ; var.gsub!(" ", "_") end
+ 		if @settings['noCapitals'] ; var.downcase! end
 		return var.strip
 	end
 
@@ -1091,7 +1091,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		
 		# replace any underscores with spaces, some freedb info got 
 		# underscores instead of spaces
-		if not @settings['noSpaces'] : var.gsub!('_', ' ') end
+		if not @settings['noSpaces'] ; var.gsub!('_', ' ') end
 
 		# replace utf-8 single quotes with latin single quote 
 		var.gsub!(/\342\200\230|\342\200\231/, "'") 
@@ -1205,7 +1205,7 @@ class SecureRip
 		@progress = 0.0 #for the progressbar
 		@sizeExpected = 0
 		
-		if @settings['maxThreads'] == 0 : ripTracks() else Thread.new{ripTracks()} end
+		if @settings['maxThreads'] == 0 ; ripTracks() else Thread.new{ripTracks()} end
 	end
 
 	def ripTracks
@@ -1224,9 +1224,9 @@ class SecureRip
 			@trial = 0
 
 			# first check if there's enough size available in the output dir
-			if not sizeTest(track) : break end
+			if not sizeTest(track) ; break end
 
-			if main(track) : @encoding.addTrack(track) else return false end #ready to encode
+			if main(track) ; @encoding.addTrack(track) else return false end #ready to encode
 		end
 		
 		eject(@settings['cd'].cdrom) if @settings['eject'] 
@@ -1252,7 +1252,7 @@ class SecureRip
 	end
 	
 	def main(track)
-		@reqMatchesAll.times{if not doNewTrial(track) : return false end} # The amount of matches all sectors should match
+		@reqMatchesAll.times{if not doNewTrial(track) ; return false end} # The amount of matches all sectors should match
 		analyzeFiles(track) #If there are differences, save them in the @errors hash
 				
 		while @errors.size > 0
@@ -1282,8 +1282,8 @@ class SecureRip
 		while true
 			@trial += 1
 			rip(track)
-			if not fileCreated(track) : return false end
-			if not testFileSize(track) : redo end
+			if not fileCreated(track) ; return false end
+			if not testFileSize(track) ; redo end
 			break
 		end
 		return true
@@ -1412,17 +1412,17 @@ class SecureRip
 			@settings['log'].add(_("Starting to rip track %s, trial \#%s\n") % [track, @trial])
 		end
 		command = "cdparanoia"
-		if @settings['rippersettings'].size != 0 : command += " #{@settings['rippersettings']}" end 
+		if @settings['rippersettings'].size != 0 ; command += " #{@settings['rippersettings']}" end 
 		if @settings['image'] # This means we're ripping the whole CD, set the command line parameters accordingly
 			command += " [.0]-[.#{@settings['cd'].totalSectors - 1}]" #startsector is inclusive, so 1 correction
 		else
 			command += " [.#{@settings['cd'].startSector[track-1] - @settings['cd'].pregap[track-1]}]-" #start of track, prepend pregap
 			command += "[.#{@settings['cd'].lengthSector[track-1] - 1 + @settings['cd'].pregap[track-1]}]" #end of track, length + pregap
 		end
-		if @settings['cd'].multipleDriveSupport : command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
+		if @settings['cd'].multipleDriveSupport ; command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
 		command += " -O #{@settings['offset']}"
 		command += " \"#{@settings['Out'].getTempFile(track, @trial)}\""
-		unless @settings['verbose'] : command += " 2>&1" end # hide the output of cdparanoia output
+		unless @settings['verbose'] ; command += " 2>&1" end # hide the output of cdparanoia output
 		puts command if @settings['debug']
 		`#{command}` #Launch the cdparanoia command
 	end
@@ -1479,9 +1479,9 @@ class Encode < Monitor
 			normalize(track)
 		end
 		
-		if track == @settings['tracksToRip'][0] : @settings['log'].encPerc(0.0) end # set it to 0% for the first track, so the gui shows it's started.
-		if track == @settings['tracksToRip'][-1] : @lasttrack = true end
-		if @ready == true : handleThreads() end
+		if track == @settings['tracksToRip'][0] ; @settings['log'].encPerc(0.0) end # set it to 0% for the first track, so the gui shows it's started.
+		if track == @settings['tracksToRip'][-1] ; @lasttrack = true end
+		if @ready == true ; handleThreads() end
 	end
 	
 	def handleThreads
@@ -1497,16 +1497,16 @@ class Encode < Monitor
 					thread = Thread.new{ encodeTrack(track, codec) }
 				end
 			end
-			if @settings['maxThreads'] > @threads || @settings['maxThreads'] == 0 : @ready = true else @ready = false end
+			if @settings['maxThreads'] > @threads || @settings['maxThreads'] == 0 ; @ready = true else @ready = false end
 		end
 	end
 	
 	def encodeTrack(track, codec)
-		if codec == 'flac' : doFlac(track)
-		elsif codec == 'vorbis' : doVorbis(track)
-		elsif codec == 'mp3' : doMp3(track)
-		elsif codec == 'wav' : doWav(track)
-		elsif codec == 'other' : doOther(track)
+		if codec == 'flac' ; doFlac(track)
+		elsif codec == 'vorbis' ; doVorbis(track)
+		elsif codec == 'mp3' ; doMp3(track)
+		elsif codec == 'wav' ; doWav(track)
+		elsif codec == 'other' ; doOther(track)
 		end
 		
 		if @settings['debug']
@@ -1541,7 +1541,7 @@ class Encode < Monitor
 		puts "Inside the finished function" if @settings['debug']
 		@progress = 1.0 ; @settings['log'].encPerc(@progress)
 		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
-		if @settings['no_log']  : @settings['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
+		if @settings['no_log'] ; @settings['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
 		@out.cleanTempDir()
 		@settings['instance'].update("finished")
 	end
@@ -1565,20 +1565,20 @@ class Encode < Monitor
 		if @settings['normalize'] == "replaygain"
 			if @settings['gain'] == "album" && @settings['tracksToRip'][-1] == track ||@settings['gain']=="track"
 				if codec == 'flac'
-					if not installed('metaflac') : puts "WARNING: Metaflac is not installed. Cannot replaygain files." ; return false end
-					command = "metaflac --add-replay-gain \"#{if @settings['gain'] =="track" : filename else File.dirname(filename) + "\"/*.flac" end}"
+					if not installed('metaflac') ; puts "WARNING: Metaflac is not installed. Cannot replaygain files." ; return false end
+					command = "metaflac --add-replay-gain \"#{if @settings['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
 					`#{command}`
 				elsif codec == 'vorbis'
-					if not installed('vorbisgain') : puts "WARNING: Vorbisgain is not installed. Cannot replaygain files." ; return false end
-					command = "vorbisgain #{if @settings['gain'] =="track" : "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
+					if not installed('vorbisgain') ; puts "WARNING: Vorbisgain is not installed. Cannot replaygain files." ; return false end
+					command = "vorbisgain #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
 					`#{command}`
 				elsif codec == 'mp3'
-					if not installed('mp3gain') : puts "WARNING: Mp3gain is not installed. Cannot replaygain files." ; return false end
-					command = "mp3gain -c #{if @settings['gain'] =="track" : "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
+					if not installed('mp3gain') ; puts "WARNING: Mp3gain is not installed. Cannot replaygain files." ; return false end
+					command = "mp3gain -c #{if @settings['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
 					`#{command}`
 				elsif codec == 'wav'
-					if not installed('wavegain') : puts "WARNING: Wavegain is not installed. Cannot replaygain files." ; return false end
-					command = "wavegain #{if @settings['gain'] =="track" : "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
+					if not installed('wavegain') ; puts "WARNING: Wavegain is not installed. Cannot replaygain files." ; return false end
+					command = "wavegain #{if @settings['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
 					`#{command}`
 				end
 			end
@@ -1587,14 +1587,14 @@ class Encode < Monitor
 
 	def doFlac(track)
 		filename = @out.getFile(track, 'flac')
-		if !@settings['flacsettings'] : @settings['flacsettings'] = '--best' end
+		if !@settings['flacsettings'] ; @settings['flacsettings'] = '--best' end
 		flac(filename, track)
 		replaygain(filename, 'flac', track)
 	end
 		
 	def doVorbis(track)
 		filename = @out.getFile(track, 'vorbis')
-		if !@settings['vorbissettings'] : @settings['vorbissettings'] = '-q 6' end
+		if !@settings['vorbissettings'] ; @settings['vorbissettings'] = '-q 6' end
 		vorbis(filename, track)
 		replaygain(filename, 'vorbis', track)
 	end
@@ -1613,7 +1613,7 @@ class Encode < Monitor
 'SOUNDTRACK', 'SOUTHERN ROCK', 'SPACE', 'SPEECH', 'SWING', 'SYMPHONIC ROCK', 'SYMPHONY', 'SYNTHPOP', 'TANGO', 'TECHNO', 'TECHNO-INDUSTRIAL', 'TERROR', 'THRASH METAL', \
 'TOP 40', 'TRAILER', 'TRANCE', 'TRIBAL', 'TRIP-HOP', 'VOCAL']
 		filename = @out.getFile(track, 'mp3')
-		if !@settings['mp3settings'] : @settings['mp3settings'] = "--preset fast standard" end
+		if !@settings['mp3settings'] ; @settings['mp3settings'] = "--preset fast standard" end
 		
 		# lame versions before 3.98 didn't support other genre tags than the 
 		# ones defined above, so change it to 'other' to prevent crashes
@@ -1780,8 +1780,8 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 	end
 	
 	def settingsOk
-		if not checkConfig() : return false end
-		if not testDeps() : return false end
+		if not checkConfig() ; return false end
+		if not testDeps() ; return false end
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
 		return @settings['Out'].status
@@ -1827,9 +1827,9 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 			return false
  		end
 
-		if @settings['other'] : checkOtherSettings() end
+		if @settings['other'] ; checkOtherSettings() end
  		
- 		if @settings['req_matches_all'] > @settings['req_matches_errors'] : @settings['req_matches_errors'] = @settings['req_matches_all'] end
+ 		if @settings['req_matches_all'] > @settings['req_matches_errors'] ; @settings['req_matches_errors'] = @settings['req_matches_all'] end
 		return true
 	end
 
@@ -1882,16 +1882,16 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 	def updateGui
 		@settings['log'].add(_("Cdrom player used to rip:\n%s\n") % [@settings['cd'].devicename])
 		@settings['log'].add(_("Cdrom offset used: %s\n\n") % [@settings['offset']])
-		@settings['log'].add(_("Ripper used: cdparanoia %s\n") % [if @settings['rippersettings'] : @settings['rippersettings'] else _('default settings') end])
+		@settings['log'].add(_("Ripper used: cdparanoia %s\n") % [if @settings['rippersettings'] ; @settings['rippersettings'] else _('default settings') end])
 		@settings['log'].add(_("Matches required for all chunks: %s\n") % [@settings['req_matches_all']])
 		@settings['log'].add(_("Matches required for erroneous chunks: %s\n\n") % [@settings['req_matches_errors']])
 		
 		@settings['log'].add(_("Codec(s) used:\n"))
-		if @settings['flac']: @settings['log'].add(_("-flac \t-> %s (%s)\n") % [@settings['flacsettings'], `flac --version`.strip]) end
-		if @settings['vorbis']: @settings['log'].add(_("-vorbis\t-> %s (%s)\n") % [@settings['vorbissettings'], `oggenc --version`.strip]) end
-		if @settings['mp3']: @settings['log'].add(_("-mp3\t-> %s\n(%s\n") % [@settings['mp3settings'], `lame --version`.split("\n")[0]]) end
-		if @settings['wav']: @settings['log'].add(_("-wav\n")) end
-		if @settings['other'] : @settings['log'].add(_("-other\t-> %s\n") % [@settings['othersettings']]) end
+		if @settings['flac']; @settings['log'].add(_("-flac \t-> %s (%s)\n") % [@settings['flacsettings'], `flac --version`.strip]) end
+		if @settings['vorbis']; @settings['log'].add(_("-vorbis\t-> %s (%s)\n") % [@settings['vorbissettings'], `oggenc --version`.strip]) end
+		if @settings['mp3']; @settings['log'].add(_("-mp3\t-> %s\n(%s\n") % [@settings['mp3settings'], `lame --version`.split("\n")[0]]) end
+		if @settings['wav']; @settings['log'].add(_("-wav\n")) end
+		if @settings['other'] ; @settings['log'].add(_("-other\t-> %s\n") % [@settings['othersettings']]) end
 		@settings['log'].add(_("\nCDDB INFO\n"))
 		@settings['log'].add(_("\nArtist\t= ") + @settings['cd'].md.artist)
 		@settings['log'].add(_("\nAlbum\t= ") + @settings['cd'].md.album)
