@@ -1,0 +1,1422 @@
+# Russian translation of RubyRipper.
+# Copyright (C) 2009 Alexander Kuzmenkov <rc.4096@gmail.com>
+# This file is distributed under the same license as the RubyRipper package.
+# Alexander Kuzmenkov <rc.4096@gmail.com>, 2007, 2008, 2009.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Rubyripper 0.5.5\n"
+"POT-Creation-Date: 2009-01-20 19:59+0300\n"
+"PO-Revision-Date: 2009-01-20 19:56+0300\n"
+"Last-Translator: Alexander Kuzmenkov <rc.4096@gmail.com>\n"
+"Language-Team: Russian <rc.4096@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: rubyripper_cli.rb:62
+msgid "Show current version of rubyripper."
+msgstr "Текуща версия на rubyripper."
+
+#: rubyripper_cli.rb:66
+msgid "Load configuration settings from file <FILE>."
+msgstr "Използване на настройки от файл <FILE>."
+
+#: rubyripper_cli.rb:69
+msgid "Display verbose output."
+msgstr "Показване на подробности."
+
+#: rubyripper_cli.rb:72
+msgid "Change configuration settings."
+msgstr "Промяна на настройки."
+
+#: rubyripper_cli.rb:75
+msgid "Rip all tracks. Skip any questions about track selection."
+msgstr "Извличане на всички песни. Скриване на всички въпроси за селекцията."
+
+#: rubyripper_cli.rb:78
+msgid "Show this usage statement."
+msgstr "Показване на подсещане."
+
+#: rubyripper_cli.rb:93
+msgid "Verbose output specified."
+msgstr "Избрано е показване на подробности."
+
+#: rubyripper_cli.rb:94
+msgid "Configure option specified."
+msgstr "Избрана е опция на конфигурация."
+
+#: rubyripper_cli.rb:95
+msgid "Rip all tracks specified."
+msgstr "Извличане на всички песни."
+
+#: rubyripper_cli.rb:96
+msgid "Use config file "
+msgstr "Използване на конфигурационен файл "
+
+#: rubyripper_cli.rb:100
+msgid "*** RUBYRIPPER SETTINGS ***"
+msgstr "*** НАСТРОЙКИ НА ПРОГРАМАТА ***"
+
+#: rubyripper_cli.rb:102
+msgid "** ENCODING **"
+msgstr "** КОМПРЕСИЯ **"
+
+#: rubyripper_cli.rb:103
+msgid "1)  flac [%s] , settings: %s"
+msgstr "1)  flac [%s] , настройки: %s"
+
+#: rubyripper_cli.rb:104
+msgid "2)  vorbis [%s] , settings: %s"
+msgstr "2)  vorbis [%s] , настройки: %s"
+
+#: rubyripper_cli.rb:105
+msgid "3)  mp3 [%s] , settings: %s"
+msgstr "3)  mp3 [%s] , настройки: %s"
+
+#: rubyripper_cli.rb:106
+msgid "4)  wav [%s]"
+msgstr "4)  wav [%s]"
+
+#: rubyripper_cli.rb:107
+msgid "5)  other [%s], settings: %s"
+msgstr "5)  другой [%s], настройки: %s"
+
+#: rubyripper_cli.rb:108
+msgid "6)  playlist support [%s]"
+msgstr "6)  пдръжка на плейлиста [%s]"
+
+#: rubyripper_cli.rb:109
+msgid "7)  encode while ripping [%s]"
+msgstr "7)  компресия по време на изличане [%s]"
+
+#: rubyripper_cli.rb:111
+msgid "** RIPPING **"
+msgstr "** ИЗВЛИЧАНЕ **"
+
+#: rubyripper_cli.rb:112
+msgid "8)  cdrom : %s with offset %s"
+msgstr "8)  cd устройство: %s с офест %s"
+
+#: rubyripper_cli.rb:113
+msgid ""
+"   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Your drive model is shown in the logfile."
+msgstr ""
+"   **Намерете своето cd устройство в <http://www.accuraterip.com/"
+"driveoffsets.htm.\n"
+"   **Модела на вашето cd се отразява в лога.\n"
+
+#: rubyripper_cli.rb:114
+msgid "9)  passing extra cdparanoia parameters : %s"
+msgstr "9)  допълнителни параметри cdparanoia: %s"
+
+#: rubyripper_cli.rb:115
+msgid "10) match all chunks : %s"
+msgstr "10) брой опити извличане на всички песни: %s"
+
+#: rubyripper_cli.rb:116
+msgid "11) match erroneous chunks : %s"
+msgstr "11) брой опити извличане на всички песни с грешки: %s"
+
+#: rubyripper_cli.rb:117
+msgid "12) maximum trials : %s"
+msgstr "12) максимален брой опити: %s"
+
+#: rubyripper_cli.rb:118
+msgid "13) eject disc after ripping [%s]"
+msgstr "13) изваждане на диска след извличане [%s]"
+
+#: rubyripper_cli.rb:120
+msgid "** NAMING SCHEME **"
+msgstr "** СХЕМА НА ИМЕНАТА **"
+
+#: rubyripper_cli.rb:121
+msgid "14) base directory : %s"
+msgstr "14) изходна диеректория: %s"
+
+#: rubyripper_cli.rb:122
+msgid "15) standard scheme: %s"
+msgstr "15) стандартна схема: %s"
+
+#: rubyripper_cli.rb:123
+msgid "16) various artist scheme: %s"
+msgstr "16) схема за компилации (различни изпълнители (V.A.)): %s"
+
+#: rubyripper_cli.rb:125
+msgid "** FREEDB  **"
+msgstr "** FREEDB  **"
+
+#: rubyripper_cli.rb:126
+msgid "17) fetch cd info with freedb [%s]"
+msgstr "17) попълванена данните с помоща на freedb [%s]"
+
+#: rubyripper_cli.rb:127
+msgid "18) always use first hit [%s]"
+msgstr "18) използване на първото съвпадение [%s]"
+
+#: rubyripper_cli.rb:128
+msgid "19) site = %s"
+msgstr "19) сайт = %s"
+
+#: rubyripper_cli.rb:129
+msgid "20) username = %s"
+msgstr "20) потребител = %s"
+
+#: rubyripper_cli.rb:130
+msgid "21) hostname = %s"
+msgstr "21) име на хоста = %s"
+
+#: rubyripper_cli.rb:132
+msgid "88) config file = %s"
+msgstr "88) конфигуразионен файл = %s"
+
+#: rubyripper_cli.rb:133
+msgid "99) Don't change any setting"
+msgstr "99) Не променяй настройките"
+
+#: rubyripper_cli.rb:139
+msgid "Please type the number of the setting you wish to change : "
+msgstr "Задайте номер на настройка която желаете да промените: "
+
+#: rubyripper_cli.rb:143
+msgid "wav disabled"
+msgstr "wav разрешен"
+
+#: rubyripper_cli.rb:143
+msgid "wav enabled"
+msgstr "wav забранен"
+
+#: rubyripper_cli.rb:145
+msgid "playlist disabled"
+msgstr "плейлиста разрешена"
+
+#: rubyripper_cli.rb:145
+msgid "playlist enabled"
+msgstr "плейлиста забранена"
+
+#: rubyripper_cli.rb:146
+msgid "How many encoding threads would you like? : "
+msgstr "Колко броя потоци за кодиране да се използват? : "
+
+#: rubyripper_cli.rb:148
+msgid "Which options to pass to cdparanoia? : "
+msgstr "Какви параметри на cdparanoia да се подават? : "
+
+#: rubyripper_cli.rb:149
+msgid "How many times must all chunks be matched? : "
+msgstr "Колко пъти да се извличат всички части (песни)? : "
+
+#: rubyripper_cli.rb:150
+msgid "How many times must erroneous chunks be matched? : "
+msgstr "Колко пъти да се извличат частите (песните) с грешки? : "
+
+#: rubyripper_cli.rb:151
+msgid "What should be the maximum number of tries? : "
+msgstr "Какво трябва да бъде максималното число опити за извличане на част (песен)? "
+
+#: rubyripper_cli.rb:152
+msgid "eject disabled"
+msgstr "изваждане разрешено"
+
+#: rubyripper_cli.rb:152
+msgid "eject enabled"
+msgstr "изваждане забранено"
+
+#: rubyripper_cli.rb:153
+msgid "Please enter your directory for your encodings: "
+msgstr "Изберета диеректория за компресираните файлове: "
+
+#: rubyripper_cli.rb:156
+msgid "freedb disabled"
+msgstr "freedb разрешен (препоръчително)"
+
+#: rubyripper_cli.rb:156
+msgid "freedb enabled"
+msgstr "freedb заранен"
+
+#: rubyripper_cli.rb:157
+msgid "first hit disabled"
+msgstr "първи опит разрешен"
+
+#: rubyripper_cli.rb:157
+msgid "first hit enabled"
+msgstr "първи опит забранен"
+
+#: rubyripper_cli.rb:158
+msgid "Freedb mirror: "
+msgstr "Огледало на FreeDB: "
+
+#: rubyripper_cli.rb:159
+msgid "Username : "
+msgstr "Потребител: "
+
+#: rubyripper_cli.rb:160
+msgid "Hostname : "
+msgstr "Име на хост: "
+
+#: rubyripper_cli.rb:161
+msgid "Config file : "
+msgstr "Конфигурационный файл: "
+
+#: rubyripper_cli.rb:162
+msgid ""
+"Number %s is not an option!\n"
+"Please try again."
+msgstr ""
+"Число %s не е настройка!\n"
+"Опитайте отново."
+
+#: rubyripper_cli.rb:168
+msgid "Do you want to continue with the program now? (y/n) : "
+msgstr "Продължаване на работа с програмата? (д/н) "
+
+#: rubyripper_cli.rb:168 rubyripper_cli.rb:172 rubyripper_cli.rb:239
+#: rubyripper_cli.rb:244 rubyripper_cli.rb:435 rubyripper_cli.rb:450
+msgid "y"
+msgstr "д"
+
+#: rubyripper_cli.rb:174
+msgid "Do you want to change the encoding parameters for %s? (y/n) : "
+msgstr "Желаете ли да промените стойностите на компресия %s? (д/н) "
+
+#: rubyripper_cli.rb:174 rubyripper_cli.rb:239 rubyripper_cli.rb:473
+msgid "n"
+msgstr "н"
+
+#: rubyripper_cli.rb:175
+msgid ""
+"%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
+"tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
+msgstr ""
+"%a = изпълнител, %b = албум, %g = жанр, %y = година, %t = име на песен,\n"
+"%n = номер на песен, %i = входящ файл, %o = изходен файл (не забравяйте за разширението)"
+
+#: rubyripper_cli.rb:176
+msgid "Encoding paramaters for %s : "
+msgstr "Параметри на компрезия за %s: "
+
+#: rubyripper_cli.rb:182
+msgid "Cdrom device : "
+msgstr "Cd устройство: "
+
+#: rubyripper_cli.rb:183
+msgid "Offset for drive : "
+msgstr "Офест за cd устройството: "
+
+#: rubyripper_cli.rb:188 rubyripper_cli.rb:191
+msgid ""
+"\n"
+"Current naming scheme: %s"
+msgstr ""
+"\n"
+"Текуща схема за имената: %s"
+
+#: rubyripper_cli.rb:195
+msgid ""
+"\n"
+"%a = Artist\t\n"
+"%b = Album\n"
+"%g = Genre\n"
+"%y = Year\n"
+"%f = Codec\n"
+"%n = Tracknumber\n"
+"%t = Trackname\n"
+"%va = Various Artist\n"
+msgstr ""
+"\n"
+"%a = Изпълнител\n"
+"%b = Албум\n"
+"%g = Жанр\n"
+"%y = Година\n"
+"%f = Кодек\n"
+"%n = Номер на песен\n"
+"%t = Име на песен\n"
+"%va = Различни изпълнители (V.A.)\n"
+
+#: rubyripper_cli.rb:196
+msgid "New %s naming scheme (q to quit) : "
+msgstr "Нова %s схема (q за изход): "
+
+#: rubyripper_cli.rb:197
+msgid "q"
+msgstr "q"
+
+#: rubyripper_cli.rb:199 rubyripper_cli.rb:202
+msgid ""
+"An example filename is now:\n"
+"\n"
+"\t%s"
+msgstr ""
+"Имета на файла ще изглежда така:\n"
+"\n"
+"\t%s"
+
+#: rubyripper_cli.rb:239 rubyripper_cli.rb:244
+msgid "yes"
+msgstr "да"
+
+#: rubyripper_cli.rb:239
+msgid "no"
+msgstr "не"
+
+#: rubyripper_cli.rb:245
+msgid "Please answer yes or no"
+msgstr "Отговорете \"да\" или \"не\""
+
+#: rubyripper_cli.rb:254
+msgid "We should never get here"
+msgstr "Никога не трябва да се получава така"
+
+#: rubyripper_cli.rb:254
+msgid "answer = %s, question = %s (error)"
+msgstr "отговор = %s, въпрос = %s (грешка)"
+
+#: rubyripper_cli.rb:262
+msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
+msgstr "Открит е аудио диск, брой песни: %s, продължителност: %s"
+
+#: rubyripper_cli.rb:264
+msgid "Fetching freedb info..."
+msgstr "Получаване на информация от freedb..."
+
+#: rubyripper_cli.rb:276
+msgid "Freedb reported multiple possibilities."
+msgstr "За този диск са намерени няколко записа в freedb."
+
+#: rubyripper_cli.rb:278
+msgid "Please type the number of the one you prefer? : "
+msgstr "Изберете правилният запис: "
+
+#: rubyripper_cli.rb:284
+msgid ""
+"FREEDB INFO\n"
+"\n"
+msgstr ""
+"ИНФОРМАЦИЯ ОТ FREEDB\n"
+"\n"
+
+#: rubyripper_cli.rb:285
+msgid "DISC INFO"
+msgstr "ИНФОРМАЦИЯ ЗА ДИСКА"
+
+#: rubyripper_cli.rb:286 rubyripper_cli.rb:327 rubyripper_gtk2.rb:348
+msgid "Artist:"
+msgstr "Изпълнител:"
+
+#: rubyripper_cli.rb:287 rubyripper_cli.rb:328 rubyripper_gtk2.rb:349
+msgid "Album:"
+msgstr "Албум:"
+
+#: rubyripper_cli.rb:288 rubyripper_cli.rb:329 rubyripper_gtk2.rb:350
+msgid "Genre:"
+msgstr "Жанр:"
+
+#: rubyripper_cli.rb:289 rubyripper_cli.rb:330 rubyripper_gtk2.rb:351
+msgid "Year:"
+msgstr "Година:"
+
+#: rubyripper_cli.rb:291
+msgid "TRACK INFO"
+msgstr "ПЕСЕН ИНФО"
+
+#: rubyripper_cli.rb:310
+msgid "What would you like to do?"
+msgstr "Какво ще правим?"
+
+#: rubyripper_cli.rb:312
+msgid "1) Select the tracks to rip"
+msgstr "1) Изберете песни за извличане"
+
+#: rubyripper_cli.rb:313
+msgid "2) Edit the disc info"
+msgstr "2) Редактиране на информацията за диска"
+
+#: rubyripper_cli.rb:314
+msgid "3) Edit the track info"
+msgstr "3) Редактиране на информацията за диска"
+
+#: rubyripper_cli.rb:315
+msgid "4) Cancel the rip and eject the disc"
+msgstr "4) Нищо да не се прави, извждане на диска"
+
+#: rubyripper_cli.rb:318 rubyripper_cli.rb:408
+msgid "Please enter the number of your choice: "
+msgstr "Въведете избраният номер: "
+
+#: rubyripper_cli.rb:333 rubyripper_gtk2.rb:352
+msgid "Mark disc as various artist"
+msgstr "Маркирай като различни изпълнители (V.A.)"
+
+#: rubyripper_cli.rb:335
+msgid "Mark disc as single artist"
+msgstr "Един изпълнител"
+
+#: rubyripper_cli.rb:338
+msgid ""
+"Finished editing disc info\n"
+"\n"
+msgstr ""
+"\n"
+"Редактирането на информацията за диска е завършено\n"
+
+#: rubyripper_cli.rb:341 rubyripper_cli.rb:372
+msgid "Please enter the number you'd like to edit: "
+msgstr "Въведете избраният номер за редакция: "
+
+#: rubyripper_cli.rb:342
+msgid "Artist : "
+msgstr "Изпълнител: "
+
+#: rubyripper_cli.rb:343
+msgid "Album : "
+msgstr "Албум: "
+
+#: rubyripper_cli.rb:344
+msgid "Genre : "
+msgstr "Жанр: "
+
+#: rubyripper_cli.rb:345
+msgid "Year : "
+msgstr "Година: "
+
+#: rubyripper_cli.rb:357 rubyripper_gtk2.rb:439 rr_lib.rb:617 rr_lib.rb:618
+#: rr_lib.rb:619 rr_lib.rb:802 rr_lib.rb:804 rr_lib.rb:805 rr_lib.rb:812
+msgid "Unknown"
+msgstr "Неизвестен"
+
+#: rubyripper_cli.rb:369
+msgid ""
+"Finished editing track info\n"
+"\n"
+msgstr ""
+"\n"
+"Редактирането на информацията за песните е завършено\n"
+
+#: rubyripper_cli.rb:381
+msgid "This is not a valid number. Try again"
+msgstr "Грешен номер. Опитайте отново."
+
+#: rubyripper_cli.rb:389
+msgid "Rip is canceled, exiting..."
+msgstr "Извличането е отменено, излизане..."
+
+#: rubyripper_cli.rb:401
+msgid "The output directory already exists. What would you like to do?"
+msgstr "Диеректорията вече съществува. Какво да правя?"
+
+#: rubyripper_cli.rb:403
+msgid "1) Auto rename the output directory"
+msgstr "1) Автоматично преименуване на диеректория"
+
+#: rubyripper_cli.rb:404
+msgid "2) Overwrite the existing directory"
+msgstr "2) Подмяна на диеректория"
+
+#: rubyripper_cli.rb:405
+msgid "3) Cancel the rip and eject the disc"
+msgstr "3) Отмяна и извличане на диск"
+
+#: rubyripper_cli.rb:435
+msgid "Do you want to change your settings? (y/n) : "
+msgstr "Желаете ли да промените настройките? (д/н) "
+
+#: rubyripper_cli.rb:450
+msgid ""
+"\n"
+"Should all tracks be ripped ? (y/n) "
+msgstr ""
+"\n"
+"Извличане на всички песни? (д/н) "
+
+#: rubyripper_cli.rb:451
+msgid "Tracks to rip are %s"
+msgstr "Песни които ще бъдат извлечени от диска: %s"
+
+#: rubyripper_cli.rb:455 rubyripper_cli.rb:472
+msgid "Current selection of tracks : %s"
+msgstr "Текущ подбор на песни: %s"
+
+#: rubyripper_cli.rb:456
+msgid ""
+"Enter 1 for entering the tracknumbers you want to remove.\n"
+"Enter 2 for entering the tracks you want to keep.\n"
+"Your choice: "
+msgstr ""
+"Въведете 1 за избор на песен, която желаете да изтриете.\n"
+"Въведете 2 за избор на песен,, която желаете да запазите.\n"
+"Вашият избор: "
+
+#: rubyripper_cli.rb:458
+msgid ""
+"Type the numbers of the tracks you want to remove and separate them with a "
+"space: "
+msgstr ""
+"Въведете номерата на песните които желаете да премахнете, разделяйте ги с интервал (Space):\n"
+
+#: rubyripper_cli.rb:463
+msgid ""
+"Type the numbers of the tracks you want to keep and separate them with a "
+"space: "
+msgstr ""
+"Въведете номерата на песните които желаете да запазите, разделяйте ги с интервал (Space):\n"
+
+#: rubyripper_cli.rb:469
+msgid "%s is not a valid number! Please enter 1 or 2!\n"
+msgstr "%s - Неправилно число! Въведете 1 или 2!\n"
+
+#: rubyripper_cli.rb:473
+msgid "Do you want to make any changes? (y/n) : "
+msgstr "Желаете ли да промените нещо? (д/н) "
+
+#: rubyripper_gtk2.rb:65 rubyripper_gtk2.rb:94
+msgid "Preferences"
+msgstr "Настройки"
+
+#: rubyripper_gtk2.rb:65
+msgid "Scan drive"
+msgstr "Сканиране на устройството"
+
+#: rubyripper_gtk2.rb:65 rubyripper_gtk2.rb:168 rubyripper_gtk2.rb:169
+#: rubyripper_gtk2.rb:190 rubyripper_gtk2.rb:203
+msgid "Open tray"
+msgstr "Отвори трей"
+
+#: rubyripper_gtk2.rb:65
+msgid "Rip cd now!"
+msgstr "Извличане! (Гаааз)"
+
+#: rubyripper_gtk2.rb:65
+msgid "Exit"
+msgstr "Изход"
+
+#: rubyripper_gtk2.rb:146
+msgid "Disc info"
+msgstr "Информация за диска"
+
+#: rubyripper_gtk2.rb:195 rubyripper_gtk2.rb:274
+msgid "Close tray"
+msgstr "Затваряне на трей"
+
+#: rubyripper_gtk2.rb:278
+msgid "Ehh.. There shouldn't be anything else. WTF?"
+msgstr "Чшшш... това пък каква глупост е?"
+
+#: rubyripper_gtk2.rb:279
+msgid "Secret modus = %s"
+msgstr "Секретен начин = %s"
+
+#: rubyripper_gtk2.rb:288
+msgid "Encoding progress %s %"
+msgstr "Компресия %s %"
+
+#: rubyripper_gtk2.rb:291
+msgid "Ripping progress %s %"
+msgstr "Извличане %s %"
+
+#: rubyripper_gtk2.rb:302
+msgid ""
+"Welcome to rubyripper %s.\n"
+"Scanning drive %s for an audio disc..."
+msgstr ""
+"Добре дошли в Рибурипер %s.\n"
+"Сканиране за аудио диск в устройството %s..."
+
+#: rubyripper_gtk2.rb:306
+msgid ""
+"No disc found in %s!\n"
+"Please insert a disc and push 'Scan drive'.\n"
+"\n"
+"The cdrom drive can be set in 'Preferences'."
+msgstr ""
+"В CD/DVD устройството %s аудиодиск не е открит.\n"
+"Поставете го и \"натиснете сканиране\".\n"
+"\n"
+"CD/DVD устройство може да се укаже в \"Настройки\""
+
+#: rubyripper_gtk2.rb:310
+msgid "Opening tray of drive %s"
+msgstr "Отваряне на трея %s"
+
+#: rubyripper_gtk2.rb:314
+msgid ""
+"Closing tray of drive %s. \n"
+"\n"
+"The drive will be scanned for an audio disc..."
+msgstr ""
+"Затваряне на трея %s.\n"
+"\n"
+"Ще бъде сканирано за аудио диск..."
+
+#: rubyripper_gtk2.rb:318
+msgid ""
+"Insert an audio-disc and press 'Close tray'.\n"
+"The drive will automatically be scanned for a disc.\n"
+"\n"
+"If the tray is already closed, press 'Scan drive'"
+msgstr ""
+"Поставете аудио диск и натиснете \"Затваряне на трей\".\n"
+"Търсене на аудио диск ще бъде автоматично.\n"
+"\n"
+"Ако трея не е затворен натиснете \"Сканиране\"."
+
+#: rubyripper_gtk2.rb:322
+msgid "The eject utility is not found on your system!"
+msgstr "Не е намерено устройство на вашата система!"
+
+#: rubyripper_gtk2.rb:379
+msgid "All"
+msgstr "Всички"
+
+#: rubyripper_gtk2.rb:389
+msgid "Tracknames (%s tracks)"
+msgstr "Имена на песните (%s)"
+
+#: rubyripper_gtk2.rb:391
+msgid "Length (%s)"
+msgstr "Продължителност (%s)"
+
+#: rubyripper_gtk2.rb:406
+msgid "<b>Disc info</b>"
+msgstr "<b>Информация за диска</b>"
+
+#: rubyripper_gtk2.rb:418
+msgid "<b>Track selection</b>"
+msgstr "<b>Избор на песни</b>"
+
+#: rubyripper_gtk2.rb:441
+msgid "Artist"
+msgstr "Изпълнител"
+
+#: rubyripper_gtk2.rb:619
+msgid "Cdrom device:"
+msgstr "CD/DCD устройство:"
+
+#: rubyripper_gtk2.rb:620
+msgid "Cdrom offset:"
+msgstr "Офест на устройството:"
+
+#: rubyripper_gtk2.rb:623
+msgid "List with offsets"
+msgstr "Списък на офесите"
+
+#: rubyripper_gtk2.rb:624
+msgid ""
+"A website which lists the offset for most drives.\n"
+"Your drivename can be found in each logfile."
+msgstr ""
+"\n"
+"Уеб страница за офесите на повечето CD/DVD устройства.\n"
+"Имета на вашето устройство, може да намери във всеки лог-файл."
+
+#: rubyripper_gtk2.rb:634
+msgid "Cdrom device"
+msgstr "CD/DVD устройство:"
+
+#: rubyripper_gtk2.rb:646
+msgid "Match all chunks:"
+msgstr "Извличане на всички песни:"
+
+#: rubyripper_gtk2.rb:647
+msgid "Match erroneous chunks:"
+msgstr "Извличане на песни с грешки:"
+
+#: rubyripper_gtk2.rb:648
+msgid "Maximum trials (0 = unlimited):"
+msgstr "Максимално число на опити (0 - нет):"
+
+#: rubyripper_gtk2.rb:652 rubyripper_gtk2.rb:653 rubyripper_gtk2.rb:654
+msgid "times"
+msgstr "пъти"
+
+#: rubyripper_gtk2.rb:668
+msgid "Ripping options"
+msgstr "Настройки на извличането"
+
+#: rubyripper_gtk2.rb:680
+msgid "Pass cdparanoia options:"
+msgstr "Допълнителни настройки cdparanioa:"
+
+#: rubyripper_gtk2.rb:681
+msgid "Eject cd when finished"
+msgstr "Изваждане след завършване"
+
+#: rubyripper_gtk2.rb:682
+msgid "Only keep logfile if correction is needed"
+msgstr "Да се запази лог-а само ако са нужни корекции"
+
+#: rubyripper_gtk2.rb:683
+msgid "Create cuesheet"
+msgstr "Създай *.cue"
+
+#: rubyripper_gtk2.rb:684
+msgid "Rip CD to single file"
+msgstr "Извличане на имидж (Един файл)"
+
+#: rubyripper_gtk2.rb:694
+msgid "Ripping related"
+msgstr "Изличане"
+
+#: rubyripper_gtk2.rb:701
+msgid "Secure Ripping"
+msgstr "Точно извличане"
+
+#: rubyripper_gtk2.rb:711
+msgid "Flac"
+msgstr ""
+
+#: rubyripper_gtk2.rb:712
+msgid "Vorbis"
+msgstr ""
+
+#: rubyripper_gtk2.rb:713
+msgid "Lame Mp3"
+msgstr ""
+
+#: rubyripper_gtk2.rb:714
+msgid "Wav"
+msgstr ""
+
+#: rubyripper_gtk2.rb:715 rubyripper_gtk2.rb:925
+msgid "Other"
+msgstr "Други"
+
+#: rubyripper_gtk2.rb:716
+msgid "Show options for \"Other\""
+msgstr "Настройки за \"други\""
+
+#: rubyripper_gtk2.rb:723
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist\n"
+"%o = outputfile   %i = inputfile"
+msgstr ""
+"%a=Изпълнител %g=жанр %t=име на песен %f=кодек\n"
+"%b=албум %y=година %n=номер на песен %va=различни изпълнители (V.A.)\n"
+"%о = изходен файл  %i = входящ файл"
+
+#: rubyripper_gtk2.rb:737
+msgid "Select audio codecs"
+msgstr "Изберете кодек"
+
+#: rubyripper_gtk2.rb:749
+msgid "Create m3u playlist"
+msgstr "Създаване на плейлиста m3u"
+
+#: rubyripper_gtk2.rb:757
+msgid "Codec related"
+msgstr "Кодек"
+
+#: rubyripper_gtk2.rb:770
+msgid "Don't standardize volume"
+msgstr "Не променяй силата на звука"
+
+#: rubyripper_gtk2.rb:771
+msgid "Use replaygain on audio files"
+msgstr "Използване на replaygain"
+
+#: rubyripper_gtk2.rb:772
+msgid "Use normalize on wav files"
+msgstr "Нормализиране wav-файлов (Не се препоръчва)"
+
+#: rubyripper_gtk2.rb:775
+msgid "Album / Audiophile modus"
+msgstr "Албум / Аудиофилски модел"
+
+#: rubyripper_gtk2.rb:776
+msgid "Track modus"
+msgstr "По песни - модел"
+
+#: rubyripper_gtk2.rb:784
+msgid "Normalize to standard volume"
+msgstr "Нормализиране до стандартна сила на звука"
+
+#: rubyripper_gtk2.rb:791
+msgid "Codecs"
+msgstr "Кодеци"
+
+#: rubyripper_gtk2.rb:801
+msgid "Enable freedb metadata fetching"
+msgstr "Получаване на данни от freedb"
+
+#: rubyripper_gtk2.rb:802
+msgid "Always use first freedb hit"
+msgstr "Винаги да се използва първото съвпадение"
+
+#: rubyripper_gtk2.rb:803
+msgid "Freedb server:"
+msgstr "Сървър freedb: "
+
+#: rubyripper_gtk2.rb:804
+msgid "Username:"
+msgstr "Юзър:"
+
+#: rubyripper_gtk2.rb:805
+msgid "Hostname:"
+msgstr "Име на хост:"
+
+#: rubyripper_gtk2.rb:819
+msgid "Freedb options"
+msgstr "Настройки freedb:"
+
+#: rubyripper_gtk2.rb:826
+msgid "Freedb"
+msgstr "Freedb"
+
+#: rubyripper_gtk2.rb:836
+msgid "Base directory:"
+msgstr "Диеректория:"
+
+#: rubyripper_gtk2.rb:837
+msgid "Standard:"
+msgstr "Стандартна схема:"
+
+#: rubyripper_gtk2.rb:838
+msgid "Various artists:"
+msgstr "Схема за конпилация (V.A.):"
+
+#: rubyripper_gtk2.rb:839
+msgid "Single file image:"
+msgstr "Имидж файл:"
+
+#: rubyripper_gtk2.rb:841
+msgid "Show options for \"Filenaming scheme\""
+msgstr "Показване на опции за схемата на имената"
+
+#: rubyripper_gtk2.rb:844
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist"
+msgstr ""
+"%a=изпълнител  %g=жанр  %t=име на песен  %f=кодек\n"
+"%b=албум   %y=година    %n=номер на песен   %va=различни изпълнители (V.A.)"
+
+#: rubyripper_gtk2.rb:872
+msgid "Filenaming scheme"
+msgstr "Схема имената на файловете"
+
+#: rubyripper_gtk2.rb:887
+msgid "Log file viewer: "
+msgstr "Програма за преглед на лога: "
+
+#: rubyripper_gtk2.rb:888
+msgid "File manager: "
+msgstr "Файл-менажер: "
+
+#: rubyripper_gtk2.rb:897
+msgid "Programs of choice"
+msgstr "Програми"
+
+#: rubyripper_gtk2.rb:911
+msgid "Verbose mode"
+msgstr "Подробен режим"
+
+#: rubyripper_gtk2.rb:912
+msgid "Debug mode"
+msgstr "Debug режим"
+
+#: rubyripper_gtk2.rb:916
+msgid "Debug options"
+msgstr "Настройки на Debug"
+
+#: rubyripper_gtk2.rb:959
+msgid "<b>Ripping status</b>"
+msgstr "<b>Статус на извличането</b>"
+
+#: rubyripper_gtk2.rb:975 rubyripper_gtk2.rb:976
+msgid "Not yet started (0%)"
+msgstr "Не е започнало (0%)"
+
+#: rubyripper_gtk2.rb:987
+msgid ""
+"The directory %s\n"
+"already exist. What do you want rubyripper to do?"
+msgstr ""
+"Диеректорията %s вече съществува.\n"
+"Какво да правя?"
+
+#: rubyripper_gtk2.rb:996
+msgid "Cancel rip"
+msgstr ""
+"Спиране на\n"
+"извличането"
+
+#: rubyripper_gtk2.rb:996
+msgid ""
+"Overwrite\n"
+"directory"
+msgstr ""
+"Презаписване на\n"
+"диеректорията"
+
+#: rubyripper_gtk2.rb:996
+msgid ""
+"Auto rename\n"
+"directory"
+msgstr ""
+"Преименуване на\n"
+"диеректорията"
+
+#: rubyripper_gtk2.rb:1016
+msgid "Dir already exists..."
+msgstr "Диеректорията съществува..."
+
+#: rubyripper_gtk2.rb:1027
+msgid ""
+"The freedb server reports multiple hits.\n"
+"Which one would you prefer?"
+msgstr ""
+"Сървъра freedb представи няколко съвпадения.\n"
+"Кое да се избере?"
+
+#: rubyripper_gtk2.rb:1039
+msgid "Ok"
+msgstr "Ок"
+
+#: rubyripper_gtk2.rb:1051
+msgid "Multiple hits found..."
+msgstr "Намерени са няколко съвпадения..."
+
+#: rubyripper_gtk2.rb:1068
+msgid ""
+"Rubyripper is finished with ripping the cd.\n"
+"A short summary is shown below."
+msgstr ""
+"Rubyripper зърши извличането на данните.\n"
+"Резюме е показано по-доло."
+
+#: rubyripper_gtk2.rb:1084
+msgid "Open log file"
+msgstr "Отваряне на лог-файла"
+
+#: rubyripper_gtk2.rb:1089 rubyripper_gtk2.rb:1097
+msgid "%s is not found on your system!"
+msgstr "%s не е енамерен на вашата система!"
+
+#: rubyripper_gtk2.rb:1092
+msgid "Open directory"
+msgstr "Отваряне на диеректорията"
+
+#: rubyripper_gtk2.rb:1108
+msgid "Ripping and encoding is finished"
+msgstr "Извличането и компресията са завършени"
+
+#: rr_lib.rb:131 rr_lib.rb:139
+msgid "Example filename: %s.ext"
+msgstr "Името на файла ще изглежда така: %s.ext"
+
+#: rr_lib.rb:179
+msgid "No eject utility found!"
+msgstr "Шаш и паника бе пич!"
+
+#: rr_lib.rb:197
+msgid ""
+"Artist : %s\n"
+"Album: %s\n"
+msgstr ""
+"Изпълнител: %s\n"
+"Албум: %s\n"
+
+#: rr_lib.rb:198
+msgid "This log is created by Rubyripper, version %s\n"
+msgstr "Този лог е генериран от RubyRipper версия %s\n"
+
+#: rr_lib.rb:199
+msgid ""
+"Website: http://code.google.com/p/rubyripper\n"
+"\n"
+msgstr ""
+"Сайт: http://code.google.com/p/rubyripper\n"
+"\n"
+
+#: rr_lib.rb:243
+msgid ""
+"\n"
+"WARNING: ENCODING ERRORS WERE DETECTED\n"
+msgstr "ВНИМАНИЕ: ОТКРИТИ СА ГРИШКИ ПРИ КОМПРЕСИЯТА\n"
+
+#: rr_lib.rb:244
+msgid ""
+"\n"
+"RIPPING SUMMARY\n"
+"\n"
+msgstr ""
+"\n"
+"ИЗВЛИЧАНЕ - ОБОБЩЕНИЕ\n"
+"\n"
+
+#: rr_lib.rb:246
+msgid "All chunks were tried to match at least %s times.\n"
+msgstr "Всички песни били извличани най-малко %s пъти.\n"
+
+#: rr_lib.rb:247
+msgid ""
+"Chunks that differed after %s trials,\n"
+"were tried to match %s times.\n"
+msgstr ""
+"Песните в които са открити разлики след %s опити,\n"
+"извлечени %s пъти.\n"
+
+#: rr_lib.rb:250
+msgid "None of the tracks gave any problems\n"
+msgstr "Грешки при четене не са намерени.\n"
+
+#: rr_lib.rb:252
+msgid ""
+"Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr ""
+"Някой от песните е НЕВЪЗМОЖНО да се излекат в оригинален вид след\n"
+"максималният брой опити\n"
+
+
+#: rr_lib.rb:254
+msgid "Track %s could NOT be corrected completely\n"
+msgstr "Песента %s НЕ може напълно да се извлече\n"
+
+#: rr_lib.rb:257
+msgid ""
+"Some track(s) needed correction,but could\n"
+"be corrected within the maximum amount of trials\n"
+msgstr ""
+"Някой от песните се нуждаеха от възтановяване, но бяха\n"
+"успешно възтановени след на повторно четене\n"
+
+
+#: rr_lib.rb:262
+msgid ""
+"The exact positions of the suspicious chunks\n"
+"can be found in the ripping log\n"
+msgstr ""
+"точната позиция на подозрителните файлове\n"
+"може да се види в лога\n"
+
+#: rr_lib.rb:268
+msgid ""
+"\n"
+"SUSPICION POSITION ANALYSIS\n"
+"\n"
+msgstr ""
+"\n"
+"АНАЛИЗ НА ПОДОЗРИТЕЛНИ ЧАСТИ\n"
+"\n"
+
+#: rr_lib.rb:269
+msgid "Since there are 75 chunks per second, after making the notion of the\n"
+msgstr "В една секунда са повече от 75 части, въз основа на това може\n"
+
+#: rr_lib.rb:270
+msgid ""
+"suspicion position, the amount of initially mismatched chunks for that "
+"position is shown.\n"
+"\n"
+msgstr ""
+"да се получи представа, къде е разминаването.\n"
+"\n"
+
+#: rr_lib.rb:272
+msgid "TRACK %s\n"
+msgstr "Песен %s\n"
+
+#: rr_lib.rb:277
+msgid "\tSuspicion position : %s:%s (%s x) (CORRECTED at trial %s\n"
+msgstr ""
+"\tПодозрителна част: %s:${seconds} (%sx) (КОРИГИРАНА на\n"
+"%s опит\n"
+
+#: rr_lib.rb:279
+msgid "\tSuspicion position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
+msgstr ""
+"\tПодозрителна част: %s:${seconds} (%sx)\n"
+"(НЕ Е ВЪЗМОЖНА КОРЕКЦИЯ)"
+
+#: rr_lib.rb:403
+msgid "Unknown drive"
+msgstr "Неизвестно у-во"
+
+#: rr_lib.rb:433
+msgid ""
+"No disc found in drive %s.\n"
+"\n"
+"Please put an audio disc in first..."
+msgstr ""
+"В CD/DVD устройството диск %s не е открит.\n"
+"Поставете диск."
+
+#: rr_lib.rb:440
+msgid ""
+"Perhaps cdparanoia doesn't support the drive parameter.\n"
+" Will retry with default drive"
+msgstr ""
+"Диск не е намерин или вашата версия на cdparanoia не открива такива стойности.\n"
+"Повтаряне с настройки по подразбиране"
+
+#: rr_lib.rb:463
+msgid ""
+"Cdrom drive %s does not exist on your system!\n"
+"Please configure your cdrom drive first."
+msgstr ""
+"DC/DVD устройство %s отсъства в системата!\n"
+"Моля, конфигурайте отново."
+
+#: rr_lib.rb:470 rr_lib.rb:500
+msgid ""
+"You don't have read and write permission\n"
+"for device %s on your system! These permissions are\n"
+"necessary for cdparanoia to scan your drive.\n"
+"\n"
+"%s\n"
+"You might want to add yourself to the necessary group in /etc/group"
+msgstr ""
+"Нямате права за четене и запис за CD/DVD у-во\n"
+"%s! Тези права са необходими за правилната работа\n"
+"cdparanoia.\n"
+"\n"
+"%s\n"
+"Може би е неоходимо да бъдете добавен в съответната група."
+
+#: rr_lib.rb:539
+msgid ""
+"warning: discid or cd-discid isn't found on your system! Using fallback..."
+msgstr "discid или cd-discid не е намерен. Преминаване в авариен режим..."
+
+#: rr_lib.rb:542
+msgid "freedb string = %s"
+msgstr "Авариен режим... freedb стринг= %s"
+
+#: rr_lib.rb:622
+msgid "Track %s"
+msgstr "Песен %s"
+
+#: rr_lib.rb:636
+msgid "No audio disc found in %s"
+msgstr "Аудиодиск в CD/DVD у-во %s не е намерен"
+
+#: rr_lib.rb:703
+msgid ""
+"Couldn't connect to freedb server. Network down?\n"
+"\n"
+"Default values will be shown..."
+msgstr ""
+"Неуспех при свързването със сървара на freedb. Мрежата ли падна?\n"
+"\n"
+"Вам придётся вручную заполнить имена дорожек..."
+
+#: rr_lib.rb:721
+msgid "No match in Freedb database. Default values are used."
+msgstr "
+Не е открито съвпадение в базата Freedb. Попълнете имената ръчно."
+
+#: rr_lib.rb:724
+msgid "cddb_query return code = %s. Return code not supported."
+msgstr "cddb_query върна код %s. Върнатият код не се подържа."
+
+#: rr_lib.rb:732
+msgid "Keep defaults / don't use freedb"
+msgstr "Имената по подразбиране (без използване на freedb)"
+
+#: rr_lib.rb:899
+msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
+msgstr ""
+"Беше достигнато максималното число на четения (%s). Число на частите,\n"
+"които не са били възтановени: %s.\n"
+
+#: rr_lib.rb:900
+msgid "Will continue with the file we've got so far\n"
+msgstr "Продължаваме с файловете получени до момента\n"
+
+#: rr_lib.rb:933
+msgid ""
+"Cdparanoia doesn't output wav files.\n"
+"Check your settings please."
+msgstr ""
+"Cdparanoia не изкарва wav-файлове.\n"
+"Проверете настройките си."
+
+#: rr_lib.rb:955
+msgid "Filesize is not correct! Trying another time\n"
+msgstr ""
+"След %s опитите не се получи файл с еднакъв размер. Да опитаме отново\n"
+
+#: rr_lib.rb:962
+msgid "Analyzing files for mismatching chunks\n"
+msgstr "Анализ на файловете с несъвпадащи парчета\n"
+
+#: rr_lib.rb:983
+msgid "Every chunk matched %s times :)\n"
+msgstr "Всяка съвпадаща част е извлечена %s пъти :)\n"
+
+#: rr_lib.rb:986 rr_lib.rb:1023
+msgid "%s chunk(s) didn't match %s times.\n"
+msgstr "%s Парчетата не съвпаднаха за %s опити извличания.\n"
+
+#: rr_lib.rb:1020
+msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
+msgstr ""
+"Грешките са оправени, всяка съвпадаща част е била извлечена %s Пъти :)\n"
+
+#: rr_lib.rb:1029
+msgid "Starting to rip CD image, trial #%s\n"
+msgstr "Извличане на имидж на компактдиска, опит №%s\n"
+
+#: rr_lib.rb:1031
+msgid "Starting to rip track %s, trial #%s\n"
+msgstr "Стартиране на извличането %s, опит №%s\n"
+
+#: rr_lib.rb:1057
+msgid ""
+"MD5 sum: %s\n"
+"\n"
+msgstr ""
+"Хаш MD5: %s\n"
+"\n"
+
+#: rr_lib.rb:1330
+msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
+msgstr "ВНИМАНИЕ: Кодек %s върна грешка при обработката на песента %s!\n"
+
+#: rr_lib.rb:1366
+msgid "The device %s doesn't exist on your system!"
+msgstr "Устройство %s във вашата система не съществува!"
+
+#: rr_lib.rb:1371
+msgid "Please select at least one track."
+msgstr "Изберете поне една песен."
+
+#: rr_lib.rb:1377
+msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
+msgstr "Интерфейса не разпознава поставеният диск. Натиснете \"Детектиране\"."
+
+#: rr_lib.rb:1382
+msgid "No codecs are selected!"
+msgstr "Кодек не е избран!"
+
+#: rr_lib.rb:1416
+msgid "%s not found on your system!"
+msgstr "Кодек %s не е намерен във вашата система!"
+
+#: rr_lib.rb:1456
+msgid ""
+"Can't create output directory!\n"
+"You have no writing acces in dir %s"
+msgstr ""
+"Невъзможно е да се създаде диеректорията!\n"
+"Вие нямате права да запишете в %s"
+
+#: rr_lib.rb:1490
+msgid ""
+"Cdrom player used to rip:\n"
+"%s\n"
+msgstr ""
+"CD/DVD устройство, използвано за извличането:\n"
+"%s\n"
+
+#: rr_lib.rb:1491
+msgid ""
+"Cdrom offset used: %s\n"
+"\n"
+msgstr ""
+"Офсет на устройството: %s\n"
+"\n"
+
+#: rr_lib.rb:1492
+msgid "Ripper used: cdparanoia %s\n"
+msgstr "Програма за извличане: cdparanoia %s\n"
+
+#: rr_lib.rb:1492
+msgid "default settings"
+msgstr "Настройки по подразбиране"
+
+#: rr_lib.rb:1493
+msgid "Matches required for all chunks: %s\n"
+msgstr "Число на опити за всички песни: %s\n"
+
+#: rr_lib.rb:1494
+msgid ""
+"Matches required for erroneous chunks: %s\n"
+"\n"
+msgstr "Число на опити за песни с грешки: %s\n"
+
+#: rr_lib.rb:1496
+msgid "Codec(s) used:\n"
+msgstr "Използван кодек:\n"
+
+#: rr_lib.rb:1497
+msgid "-flac \t-> %s (%s)\n"
+msgstr ""
+
+#: rr_lib.rb:1498
+msgid "-vorbis\t-> %s (%s)\n"
+msgstr ""
+
+#: rr_lib.rb:1499
+msgid ""
+"-mp3\t-> %s\n"
+"(%s\n"
+msgstr ""
+
+#: rr_lib.rb:1500
+msgid "-wav\n"
+msgstr ""
+
+#: rr_lib.rb:1501
+msgid "-other\t-> %s\n"
+msgstr "-други\t-> %s\n"
+
+#: rr_lib.rb:1502
+msgid ""
+"\n"
+"CDDB INFO\n"
+msgstr ""
+"\n"
+"ИНФОРМАЦИЯ ОТ CDDB\n"
+
+#: rr_lib.rb:1503
+msgid ""
+"\n"
+"Artist\t= "
+msgstr ""
+"\n"
+"Испълнител\t= "
+
+#: rr_lib.rb:1504
+msgid ""
+"\n"
+"Album\t= "
+msgstr ""
+"\n"
+"Албум\t\t= "
+
+#: rr_lib.rb:1505
+msgid ""
+"\n"
+"Year\t= "
+msgstr ""
+"\n"
+"Година\t\t\t= "
+
+#: rr_lib.rb:1506
+msgid ""
+"\n"
+"Genre\t= "
+msgstr ""
+"\n"
+"Жанр\t\t= "
+
+#: rr_lib.rb:1507
+msgid ""
+"\n"
+"Tracks\t= "
+msgstr ""
+"\n"
+"Песни\t= "
+
+#: rr_lib.rb:1511
+msgid ""
+"\n"
+"STATUS\n"
+"\n"
+msgstr ""
+"\n"
+"СТАТУС\n"
+"\n"

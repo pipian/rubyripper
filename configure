@@ -44,7 +44,7 @@ end
 $GTK2 = false
 $CLI = false
 $LANG = []
-$LANG_SUPPORT = ["nl", "de", "fr", "hu", "ru", "es", "se"]
+$LANG_SUPPORT = ["nl", "de", "fr", "hu", "ru", "es", "se", "bg"]
 
 require './rr_lib.rb'
 begin
