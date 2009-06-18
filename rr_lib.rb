@@ -993,14 +993,14 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# create the output dirs
 	def createDir
-		require 'ftools'
-		@dir.values.each{|dir| File.makedirs(dir)}
+		require 'fileutils'
+		@dir.values.each{|dir| FileUtils.mkdir_p(dir)}
 	end
 
 	# create the temp dir
 	def createTempDir
 		if not File.directory?(getTempDir)
-			File.makedirs(getTempDir)
+			FileUtils.mkdir_p(getTempDir)
 		end
 	end
 
