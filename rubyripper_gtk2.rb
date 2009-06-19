@@ -255,7 +255,7 @@ attr_reader :change_display, :instances, :update
 				change_display(@instances['GtkMetadata'])
 				@buttons.each{|button| button.sensitive = true}
 			elsif modus == "cddb_hit" && !value
-				@instances['GtkMetadata'].update()
+				@instances['GtkMetadata'].updateMetadata()
 				if @current_instance != 'GtkMetadata' ; change_display(@instances['GtkMetadata']) end
 			elsif modus == "cddb_hit" && value
 				@instances['MultipleFreedbHits'] = MultipleFreedbHits.new(value, @settings['cd'], self)
@@ -330,14 +330,14 @@ attr_reader :display, :no_disc_found, :open_tray, :close_tray, :ask_for_disc, :n
 end
 
 class GtkMetadata
-attr_reader :update, :display, :save_updates, :tracks_to_rip
+attr_reader :updateMetadata, :display, :save_updates, :tracks_to_rip
 
 	def initialize(cdinfo)
 		@cd = cdinfo
 		@tracks_to_rip = Array.new
 		discinfo_objects() #create all necessary objects for displaying the discinfo
 		trackselection_objects() #create all necessary objects for displaying the trackselection
-		update()
+		updateMetadata()
 		pack_both() #pack them together so we can show this beauty to the world :)
 	end
 
@@ -409,7 +409,7 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 
 	def setDiscSignals()
 		@varCheckbox.signal_connect("toggled") do
-			@varCheckbox.active? ? set_var_artist_in_table() : unset_var_artist_in_table()
+			@varCheckbox.active? ? setVarArtist() : unsetVarArtist()
 		end
 
 		@freezeCheckbox.signal_connect("toggled") do
@@ -437,12 +437,14 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 		@table20 = Gtk::Table.new(@cd.audiotracks + 1, 4, false) if !update
 
 		@allTracksButton = Gtk::CheckButton.new(_('All'))
+		@varArtistLabel = Gtk::Label.new(_('Artist'))
 		@tracknameLabel = Gtk::Label.new(_("Tracknames \(%s tracks\)") % [@cd.audiotracks])
 		@lengthLabel = Gtk::Label.new(_("Length \(%s\)") % [@cd.playtime])
 		
-		@checkTrackArray = Array.new ; @trackEntryArray = Array.new ; @lengthLabelArray = Array.new
+		@checkTrackArray = Array.new ; @varArtistEntryArray = Array.new ; @trackEntryArray = Array.new ; @lengthLabelArray = Array.new
 		@cd.audiotracks.times do |track|
 			@checkTrackArray << Gtk::CheckButton.new((track + 1).to_s)
+			@varArtistEntryArray << Gtk::Entry.new()
 			@trackEntryArray << Gtk::Entry.new()
 			@lengthLabelArray << Gtk::Label.new(@cd.lengthText[track])
 		end
@@ -465,15 +467,29 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 		end
 	end
 
-	def packTrackObjects()
+	# pack with or without support for various artists
+	def packTrackObjects(varArtist = false)
 		@table20.attach(@allTracksButton, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 1st row
-		@table20.attach(@tracknameLabel, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd + 3rd column (to later on allow various artist + trackname), 1st row
 		@table20.attach(@lengthLabel, 3, 4, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #4th column, 1st row
+
+		if varArtist == true
+			@table20.attach(@varArtistLabel, 1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 1st row
+			@table20.attach(@tracknameLabel, 2, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #3rd column, 1st row
+		else
+			@table20.attach(@tracknameLabel, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0)
+		end
 		
 		@cd.audiotracks.times do |index|
 			@table20.attach(@checkTrackArray[index], 0, 1, 1 + index, 2 + index, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 2nd row till end
-			@table20.attach(@trackEntryArray[index],1, 3, 1 + index, 2 + index, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd + 3rd column, 2nd row till end
 			@table20.attach(@lengthLabelArray[index],3, 4, 1 + index, 2 + index, Gtk::FILL, Gtk::SHRINK, 0, 0) #4th column, 2nd row till end
+			
+			if varArtist == true
+				@table20.attach(@varArtistEntryArray[index], 1, 2, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+				@table20.attach(@trackEntryArray[index], 2, 3, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+			else
+				@table20.attach(@trackEntryArray[index],1, 3, 1 + index, 2 + index, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd + 3rd column, 2nd row till end
+			end
+			
 		end
 	end
 
@@ -534,49 +550,39 @@ attr_reader :update, :display, :save_updates, :tracks_to_rip
 		@table20.show_all()
 	end
 	
-	def update() # Update gui with freedb info
-		if not @freezeCheckbox.active?
+	def updateMetadata
+		if @freezeCheckbox.active? == false
 			if not @cd.md.varArtists.empty? ; @varCheckbox.active = true end
 			@artistEntry.text = @cd.md.artist ; @albumEntry.text = @cd.md.album
 			@yearEntry.text = @cd.md.year ; @genreEntry.text = @cd.md.genre
 		end
 		@cd.audiotracks.times{|index| @trackEntryArray[index].text = @cd.md.tracklist[index]}
-		unless @cd.md.varArtists.empty? ; set_var_artist_in_table() end
+		unless @cd.md.varArtists.empty? ; setVarArtist() end
 	end
 
-# 	def set_var_artist_in_table
-# 		@cd.audiotracks.times{|time| if @cd.md.varArtists[time] == nil;  @cd.md.varArtists[time] = _('Unknown') end} #Fill with unknown if the artistfield is not there
-# 		if @table20.children.include?(@var_artist_label) ; @table20.remove(@var_artist_label) ; @var_artist_array.each{|object| @table20.remove(object)} end #remove the previous 
-# 		@var_artist_label = Gtk::Label.new(_('Artist'))
-# 		@var_artist_array = Array.new ; @cd.audiotracks.times{|index| @var_artist_array << Gtk::Entry.new}
-# 		@cd.audiotracks.times{|index| @var_artist_array[index].text = @cd.md.varArtists[index]}
-# 		#remove current tracknames from array, as we're repacking them
-# 		@table20.remove(@trackname_label) ; @track_entry_array.each{|object| @table20.remove(object)}
-# 		#repack into @table20
-# 		@table20.attach(@var_artist_label, 1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 1st row
-# 		@table20.attach(@trackname_label, 2, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #3rd column, 1st row
-# 		@cd.audiotracks.times do |index|
-# 			@table20.attach(@var_artist_array[index], 1, 2, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-# 			@table20.attach(@track_entry_array[index], 2, 3, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-# 		end
-# 		@table20.show_all()
-# 	end
-# 
-# 	def unset_var_artist_in_table
-# 		@cd.md.undoVarArtist() #sets the names back
-# 		if @table20.children.include?(@var_artist_label)
-# 			@table20.remove(@var_artist_label)
-# 			@var_artist_array.each{|object| @table20.remove(object)}
-# 		end
-# 		@table20.remove(@trackname_label) ; @track_entry_array.each{|object| @table20.remove(object)}
-# 
-# 		@table20.attach(@trackname_label, 1, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #3rd column, 1st row
-# 		@cd.audiotracks.times do |index|
-# 			@table20.attach(@track_entry_array[index], 1, 3, index + 1, index + 2, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0)
-# 		end
-# 		update() #get the updated info before displaying
-# 		@table20.show_all()
-# 	end
+	def setVarArtist()
+		# make sure each track has an artist name
+		@cd.audiotracks.times{|time| if @cd.md.varArtists[time] == nil;  @cd.md.varArtists[time] = _('Unknown') end}
+		# now fill the array
+		@cd.audiotracks.times{|index| @varArtistEntryArray[index].text = @cd.md.varArtists[index]}
+		# remove all current objects from array, as we're repacking them
+		@table20.each{|child| @table20.remove(child)}
+		# repack into table20
+		packTrackObjects(varArtist = true)
+		# show all updates
+		@table20.show_all()
+	end
+
+	def unsetVarArtist()
+		# giving the backend the signal to revert last actions
+		@cd.md.undoVarArtist()
+		# remove all current objects from array, as we're repacking them
+		@table20.each{|child| @table20.remove(child)}
+		# repack into table20
+		packTrackObjects(varArtist = false)
+		#show all updates
+		@table20.show_all()
+	end
 	
 	def save_updates(image=false) # save all updated info from the user
 		@cd.md.artist = @artistEntry.text
