@@ -1662,6 +1662,7 @@ class Encode < Monitor
 		tags += "--tag DATE=\"#{@out.year}\" "
 		tags += "--tag GENRE=\"#{@out.genre}\" "
 		tags += "--tag DISCID=\"#{@settings['cd'].discId}\" "
+		tags += "--tag DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
 		
 		 # Handle tags for single file images differently
 		if @settings['image']
@@ -1694,6 +1695,7 @@ class Encode < Monitor
 		tags += "-c DATE=\"#{@out.year}\" "
 		tags += "-c GENRE=\"#{@out.genre}\" "
 		tags += "-c DISCID=\"#{@settings['cd'].discId}\" "
+		tags += "-c DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
 
 		 # Handle tags for single file images differently
 		if @settings['image']
@@ -1722,6 +1724,8 @@ class Encode < Monitor
 		tags = "--tl \"#{@out.album}\" "
 		tags += "--ty \"#{@out.year}\" "
 		tags += "--tg \"#{@out.genre}\" "
+		tags += "--tv DISCID=\"#{@settings['cd'].discId}\" "
+		tags += "--tv DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
 
 		 # Handle tags for single file images differently
 		if @settings['image']
