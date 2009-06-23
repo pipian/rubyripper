@@ -168,13 +168,17 @@ attr_reader :change_display, :instances, :update
 					@buttontext[2].set_text('_'+_("Open tray"),true)
 					@buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
 				end	
-				@instances['GtkMetadata'] = GtkMetadata.new(@settings['cd']) #build the cdinfo for the gui
+				
+				if @instances['GtkMetadata'] != false
+					@instances['GtkMetadata'].refreshDisc(@settings['cd'])
+				else
+					@instances['GtkMetadata'] = GtkMetadata.new(@settings['cd']) #build the cdinfo for the gui
+				end
 				change_display(@instances['GtkMetadata']) #show this info on the display
 				
 				if @settings['freedb'] ; @settings['cd'].md.freedb(@settings, @settings['first_hit']) end #Fetch the cddb info if user wants to
 				@buttons.each{|button| button.sensitive = true}
 			else
-				@instances['GtkMetadata'] = false
 				@instances['ShortMessage'].show_message(@settings['cd'].error)
 				change_display(@instances['ShortMessage'])
 				@buttons[0..2].each{|button| button.sensitive = true} ; @buttons[4].sensitive = true
@@ -330,7 +334,7 @@ attr_reader :display, :no_disc_found, :open_tray, :close_tray, :ask_for_disc, :n
 end
 
 class GtkMetadata
-attr_reader :updateMetadata, :display, :save_updates, :tracks_to_rip
+attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_rip
 
 	def initialize(cdinfo)
 		@cd = cdinfo
@@ -547,6 +551,7 @@ attr_reader :updateMetadata, :display, :save_updates, :tracks_to_rip
 		setTrackValues(update = true) #rebuild the new track objects
 		configTrackValues(update = true) # configure the new ones
 		setTrackSignals() # reset the signals
+		packTrackObjects() # pack the objects into the table
 		@table20.show_all()
 	end
 	
