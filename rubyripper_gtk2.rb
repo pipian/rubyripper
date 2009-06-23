@@ -594,6 +594,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 		@cd.md.album = @albumEntry.text
 		@cd.md.genre = @genreEntry.text
 		@cd.md.year = @yearEntry.text if @yearEntry.text.to_i != 0
+		@cd.md.discNumber = @discNumberSpin.value.to_i if @freezeCheckbox.active?
 		
 		@tracks_to_rip = Array.new #reset the array
 		

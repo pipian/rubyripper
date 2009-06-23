@@ -569,7 +569,7 @@ end
 
 class Metadata
 attr_reader :freedb, :rawResponse, :freedbChoice, :saveChanges, :undoVarArtist
-attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
+attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumber
 	
 	def initialize(disc, gui, verbose=false)
 		@disc = disc
@@ -583,6 +583,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists
 		@album = _('Unknown')
 		@genre = _('Unknown')
 		@year = '0'
+		@discNumber = false
 		@tracklist = Array.new
 		@disc.audiotracks.times{|number| @tracklist << _("Track %s") % [number + 1]}
 		@rawResponse = Array.new
@@ -934,6 +935,10 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
 		'%y' => @md.year}.each do |key, value|
 			dirName.gsub!(key, value)
+		end
+
+		if @md.discNumber != false
+			dirName = File.join(dirName, "CD #{sprintf("%02d", @md.discNumber)}")
 		end
 		
 		return fileFilter(File.expand_path(dirName), true)
