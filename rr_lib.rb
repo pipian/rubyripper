@@ -299,7 +299,7 @@ class Cuesheet
 			@disc.audiotracks.times{|track| trackinfo(track)}
 		else
 			@disc.audiotracks.times do |track|
-				@cuesheet << "FILE \"#{@out.getFile(track + 1, @codec)}\" #{@filetype[@codec]}"
+				@cuesheet << "FILE \"#{File.basename(@out.getFile(track + 1, @codec))}\" #{@filetype[@codec]}"
 				trackinfo(track)
 			end
 		end
@@ -1126,6 +1126,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
     # clean a directory, starting with the files in it
 	def cleanDir(dir)
 		Dir.foreach(dir) do |file|
+			if File.directory?(file) && file[0..0] != '.' ; cleanDir(File.join(dir, file)) end
 			filename = File.join(dir, file)
 			File.delete(filename) if File.file?(filename)
 		end
