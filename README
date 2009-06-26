@@ -104,6 +104,17 @@ but it may not work on audio-cd's with a data track.
 
 
 4. CHANGELOG
+---------0.5.6 RELEASE------
+* implement "abort" button while ripping
+* add Bulgarian translation
+* support for multiple-disc albums
+* some ruby-1.9 syntax fixes
+* fix various artist field for other codec
+* don't convert to ISO-8859-1 for lame if the character isn't supported
+* add an option to replace spaces with underscores
+* add an option to lowercase all filenames.
+* remove the hardcoded --id3v2only tag
+
 ---------0.5.5 RELEASE------
 * Set lower priority to encoding processes
 * Fix image rips crash

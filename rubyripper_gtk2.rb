@@ -900,7 +900,7 @@ attr_reader :display, :save
 #creating objects
 		@playlist = Gtk::CheckButton.new(_("Create m3u playlist"))
 		@noSpaces = Gtk::CheckButton.new(_("Replace spaces with underscores in filenames"))
-		@noCapitals = Gtk::CheckButton.new(_("Replace all capital letters in filenames"))
+		@noCapitals = Gtk::CheckButton.new(_("Downsize all capital letters in filenames"))
 		#@maxThreads = Gtk::SpinButton.new(0.0, 10.0, 1.0)
 		#@maxThreadsLabel = Gtk::Label.new(_("Number of extra encoding threads"))
 #packing objects
