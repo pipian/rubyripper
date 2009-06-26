@@ -86,9 +86,21 @@ attr_reader :change_display, :instances, :update
 		@buttons[1].signal_connect("clicked") {savePreferences(); scan_drive()}
 		@buttons[2].signal_connect("clicked") {savePreferences(); handle_tray()}
 		@buttons[3].signal_connect("clicked") {savePreferences(); start_rip()}
-		@buttons[4].signal_connect("clicked") {savePreferences(); exit()}
+		@buttons[4].signal_connect("clicked") {exitButton()}
 	end
 	
+	def exitButton
+		if @buttontext[4].text == _("Exit")
+			savePreferences(); exit()
+		else
+			@rubyripperThread.exit()
+			@rubyripper = nil
+			`killall cdparanoia 2>&1`
+			@buttons.each{|button| button.sensitive = true}
+			change_display(@instances['GtkMetadata'])
+		end
+	end
+
 	def savePreferences
 		if @current_instance == 'Preferences'
 			@buttontext[0].set_text('_'+_('Preferences'),true)
@@ -103,12 +115,25 @@ attr_reader :change_display, :instances, :update
 	end
 
 	def change_display(object) #help function to manage the dynamic part of the window, the object is a class with a variable 'display' which contains everything
+		# reset exit button
+		if @current_instance == "RipStatus"
+			@buttontext[4].set_text('_' + _("Exit"), true)
+			@buttonicons[4].stock = Gtk::Stock::QUIT
+		end
+
 		unless @current_instance == false
 			@hbox1.remove(@hbox1.children[-1])
 		end
 		
 		@current_instance = object.class.to_s #the name of the instance type
 		@hbox1.add(object.display)
+		
+		# update the Exit button to Abort button
+		if @current_instance == "RipStatus"
+			@buttontext[4].set_text('_' + _("Abort"), true)
+			@buttonicons[4].stock = Gtk::Stock::CANCEL
+		end
+
 		object.display.show_all()
 	end
 	
@@ -229,7 +254,7 @@ attr_reader :change_display, :instances, :update
 	end
 	
 	def do_rip
-		Thread.new do
+		@rubyripperThread = Thread.new do
 			@buttons[0..3].each{|button| button.sensitive = false}
  			if @instances['RipStatus'] == false
 				@instances['RipStatus'] = RipStatus.new()
