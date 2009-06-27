@@ -932,7 +932,11 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	def giveDir(codec)
 		dirName = @dirName.dup
 
-		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
+		# no forward slashes allowed in dir names
+		@artistFile = @md.artist.gsub('/', '')
+		@albumFile = @md.artist.gsub('/', '')
+
+		{'%a' => @artistFile, '%b' => @albumFile, '%f' => codec, '%g' => @md.genre,
 		'%y' => @md.year}.each do |key, value|
 			dirName.gsub!(key, value)
 		end
@@ -1066,7 +1070,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	# characters that will be changed for filenames
 	def fileFilter(var, isDir=false)
 		if not isDir
-			var.gsub!('/', ' ') #no slashes allowed in filenames
+			var.gsub!('/', '') #no slashes allowed in filenames
 		end
 		var.gsub!('\\', '') #the \\ means a normal \
  		var.gsub!('[', '(') 
@@ -1136,7 +1140,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	# create Playlist for each codec
 	def createPlaylist(codec)
 		playlist = File.new(File.join(@dir[codec], 
-			"#{@artist} - #{@album} (#{codec}).m3u"), 'w')
+			"#{@artistFile} - #{@albumFile} (#{codec}).m3u"), 'w')
 		
 		@settings['tracksToRip'].each do |track|
 			playlist.puts @file[codec][track]
@@ -1171,7 +1175,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# return the full filename of the cuesheet
 	def getCueFile(codec)
-		return File.join(@dir[codec], "#{@artist} - #{@album} (#{codec}).cue")
+		return File.join(@dir[codec], "#{@artistFile} - #{@albumFile} (#{codec}).cue")
 	end
 
 	def getTempFile(track, trial)
