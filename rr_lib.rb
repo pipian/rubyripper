@@ -1424,10 +1424,12 @@ class SecureRip
 		command = "cdparanoia"
 		if @settings['rippersettings'].size != 0 ; command += " #{@settings['rippersettings']}" end 
 		if @settings['image'] # This means we're ripping the whole CD, set the command line parameters accordingly
-			command += " [.0]-[.#{@settings['cd'].totalSectors - 1}]" #startsector is inclusive, so 1 correction
+			command += " [.0]-" #rip from sector 0 to the end of the disc
 		else
 			command += " [.#{@settings['cd'].startSector[track-1] - @settings['cd'].pregap[track-1]}]-" #start of track, prepend pregap
-			command += "[.#{@settings['cd'].lengthSector[track-1] - 1 + @settings['cd'].pregap[track-1]}]" #end of track, length + pregap
+			if track != @settings['cd'].audiotracks #some drives don't work nicely with cdparanoia sector mode with last track.
+				command += "[.#{@settings['cd'].lengthSector[track-1] - 1 + @settings['cd'].pregap[track-1]}]" #end of track, length + pregap
+			end
 		end
 		if @settings['cd'].multipleDriveSupport ; command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
 		command += " -O #{@settings['offset']}"
