@@ -105,6 +105,7 @@ but it may not work on audio-cd's with a data track.
 
 4. CHANGELOG
 ---------0.5.6 RELEASE------
+* fix a problem with cdparanoia and last track on some drives
 * implement "abort" button while ripping
 * add Bulgarian translation
 * support for multiple-disc albums
