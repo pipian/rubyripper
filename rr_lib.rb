@@ -1307,7 +1307,10 @@ class SecureRip
 	def testFileSize(track) #check if wavfile is of correct size
 		sizeRip = File.size(@settings['Out'].getTempFile(track, @trial))
 		
-		if sizeRip != @sizeExpected 
+		# at the end the disc may differ 1 sector on some drives (2352 bytes)
+		if track == @settings['cd'].audiotracks && (@sizeExpected - sizeRip) == 2352
+			puts "You have a buggy cdrom drive, last sector is skipped."
+		elsif sizeRip != @sizeExpected 
 			if @settings['debug']
 				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
 				puts "Filesize should be : #{@sizeExpected}"
