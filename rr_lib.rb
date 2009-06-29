@@ -568,7 +568,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 end
 
 class Metadata
-attr_reader :freedb, :rawResponse, :freedbChoice, :saveChanges, :undoVarArtist
+attr_reader :freedb, :rawResponse, :freedbChoice, :saveChanges, :undoVarArtist, :status
 attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumber
 	
 	def initialize(disc, gui, verbose=false)
@@ -590,6 +590,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		@choices = Array.new
 		@varArtists = Array.new
 		@varTracklist = Array.new
+		@status = false
 	end
 
 	def freedb(freedbSettings, alwaysFirstChoice=true)
@@ -599,7 +600,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		if not @disc.freedbString.empty? #no disc found
 			searchMetadata()
 		else
- 			@gui.update("error", _("No audio disc found in %s") % [@cdrom])
+			@status = ["noAudioDisc", _("No audio disc found in %s") % [@cdrom]]
  		end
 	end
 
@@ -619,7 +620,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 				end
 				@tracklist.clear()
 				handleResponse()
-				@gui.update("cddb_hit", false) # Give the signal that we're finished
+				@status = true # Give the signal that we're finished
 				return true
 			end
 		end
@@ -668,9 +669,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 			requestDisc()
 		rescue
 			puts "Exception thrown: #{$!}"
-			@gui.update("error", _("Couldn't connect to freedb server. Network down?\n\nDefault values will be shown..."))
-			sleep(3) #give some time to read the message
-			@gui.update("cddb_hit", false) # Give the signal that we're finished
+			@status = ["networkDown", _("Couldn't connect to freedb server. Network down?\n\nDefault values will be shown...")]
 		end
 	end	
 
@@ -683,14 +682,12 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 			multipleHits()
 			@choices.each{|choice| puts "choice #{choice}"}
 			if (@alwaysFirstChoice || @choices.length < 3) ; freedbChoice(0) #Always choose the first one
-			else @gui.update("cddb_hit", @choices) #Let the user choose
+			else @status = ["choices", @choices] #Let the user choose
 			end
 		elsif @answer[0..2] == '202'
-			@gui.update("error", _("No match in Freedb database. Default values are used."))
-			@gui.update("cddb_hit", false)
+			@status = ["noMatches", _("No match in Freedb database. Default values are used.")]
 		else
-			@gui.update("error", _("cddb_query return code = %s. Return code not supported.") % [@answer[0..2]])
-			@gui.update("cddb_hit", false)
+			@status = ["unknownReturnCode", _("cddb_query return code = %s. Return code not supported.") % [@answer[0..2]]]
 		end
 	end
 	
@@ -703,7 +700,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	def freedbChoice(choice=false)
 		if choice != false
 			if choice == @choices.size - 1 # keep defaults?
-				@gui.update("cddb_hit", false)
+				@status = true
 				return true
 			end
 			@category, @discid = @choices[choice].split
@@ -711,7 +708,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		rawResponse()
 		@tracklist.clear() #Now fill it with the real tracknames
 		handleResponse()
-		@gui.update("cddb_hit", false) # Give the signal that we're finished
+		@status = true
 	end
 
 	def rawResponse #Retrieve all usefull metadata into @rawResponse

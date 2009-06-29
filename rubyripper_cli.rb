@@ -261,7 +261,7 @@ class Gui_CLI
 			puts _("Audio-disc found, number of tracks : %s, total playlength : %s") % [@settings['cd'].audiotracks, @settings['cd'].playtime]
 			if @settings['freedb'] #freedb enabled?
 				puts _("Fetching freedb info...")
-				@settings['cd'].md.freedb(@settings, @settings['first_hit'])
+				handleFreedb()
 			else
 				freedb_finished()
 			end
@@ -271,11 +271,32 @@ class Gui_CLI
 		end
 	end
 
-	def choose_freedb(choices) #callback function initiated by rr_lib.rb via our update function
+	#Fetch the cddb info if user wants to
+	def handleFreedb(choice = false)
+		if choice == false
+			@settings['cd'].md.freedb(@settings, @settings['first_hit'])
+		else
+			@settings['cd'].md.freedbChoice(choice)
+		end
+
+		status = @settings['cd'].md.status
+		
+		if status == true #success
+			showFreedb()
+		elsif status[0] == "choices"
+			chooseFreedb(status[1])
+		elsif status[0] == "networkDown" || status[0] == "noMatches" || status[0] == "unknownReturnCode" || status[0] == "NoAudioDisc"
+			update("error", status[1])
+		else
+			puts "Unknown error with Metadata class."
+		end
+	end
+
+	def chooseFreedb(choices)
 		puts _("Freedb reported multiple possibilities.")
 		choices.each_index{|index| puts "#{index + 1}) #{choices[index]}"}
 		choice = get_answer(_("Please type the number of the one you prefer? : "), "number", 1)
-		@settings['cd'].md.freedbChoice(choice - 1)
+		handleFreedb(choice - 1)
 	end
 
 	def showFreedb()
@@ -438,10 +459,6 @@ class Gui_CLI
 			print value
 			print "\n"
 			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y")) ; edit_settings() end
-		elsif modus == "cddb_hit" && value == false #final values freedb
-			showFreedb()
-		elsif modus == "cddb_hit" && value != false #multiple freedb hits
-			choose_freedb(value)
 		elsif modus == "dir_exists"
 			dir_exists()
 		elsif modus == "finished"

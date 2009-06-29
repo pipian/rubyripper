@@ -201,13 +201,40 @@ attr_reader :change_display, :instances, :update
 				end
 				change_display(@instances['GtkMetadata']) #show this info on the display
 				
-				if @settings['freedb'] ; @settings['cd'].md.freedb(@settings, @settings['first_hit']) end #Fetch the cddb info if user wants to
+				if @settings['freedb'] ; handleFreedb() end
 				@buttons.each{|button| button.sensitive = true}
 			else
 				@instances['ShortMessage'].show_message(@settings['cd'].error)
 				change_display(@instances['ShortMessage'])
 				@buttons[0..2].each{|button| button.sensitive = true} ; @buttons[4].sensitive = true
 			end
+		end
+	end
+
+#Fetch the cddb info if user wants to
+	def handleFreedb(choice = false)
+		if choice == false
+			@settings['cd'].md.freedb(@settings, @settings['first_hit'])
+		elsif choice == -1
+			@settings['cd'].md.freedbChoice(0)
+		else
+			@settings['cd'].md.freedbChoice(choice)
+		end
+
+		status = @settings['cd'].md.status
+		
+		if status == true #success
+			@instances['GtkMetadata'].updateMetadata()
+			if @current_instance != 'GtkMetadata'
+				change_display(@instances['GtkMetadata'])
+			end
+		elsif status[0] == "choices"
+			@instances['MultipleFreedbHits'] = MultipleFreedbHits.new(status[1], self)
+			change_display(@instances['MultipleFreedbHits'])
+		elsif status[0] == "networkDown" || status[0] == "noMatches" || status[0] == "unknownReturnCode" || status[0] == "NoAudioDisc"
+			update("error", status[1])
+		else
+			puts "Unknown error with Metadata class."
 		end
 	end
 	
@@ -286,12 +313,6 @@ attr_reader :change_display, :instances, :update
 				sleep(5)
 				change_display(@instances['GtkMetadata'])
 				@buttons.each{|button| button.sensitive = true}
-			elsif modus == "cddb_hit" && !value
-				@instances['GtkMetadata'].updateMetadata()
-				if @current_instance != 'GtkMetadata' ; change_display(@instances['GtkMetadata']) end
-			elsif modus == "cddb_hit" && value
-				@instances['MultipleFreedbHits'] = MultipleFreedbHits.new(value, @settings['cd'], self)
-				change_display(@instances['MultipleFreedbHits'])
 			elsif modus == "ripping_progress"
 				updateProgress('ripping', value)
 			elsif modus == "encoding_progress"
@@ -1182,7 +1203,7 @@ end
 class MultipleFreedbHits
 attr_reader :display
 
-	def initialize(value, cd, main_instance)
+	def initialize(value, main_instance)
 		@label1 = Gtk::Label.new(_("The freedb server reports multiple hits.\nWhich one would you prefer?"))
 		@image1 = Gtk::Image.new(Gtk::Stock::DIALOG_QUESTION, Gtk::IconSize::DIALOG)
 		@hbox1 = Gtk::HBox.new
@@ -1214,7 +1235,7 @@ attr_reader :display
 		@button1.signal_connect("released") do
 			Thread.new do
 				main_instance.change_display(main_instance.instances['GtkMetadata'])
-				if @combobox.active == -1 ; cd.md.freedbChoice(0) else cd.md.freedbChoice(@combobox.active) end
+				main_instance.handleFreedb(@combobox.active)
 			end
 		end
 	end
