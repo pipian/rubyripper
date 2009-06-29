@@ -657,7 +657,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 		end
 		
 		unless @cd.md.varArtists.empty?
-			@cd.audiotracks.times{|index| @cd.md.varArtists[index] = @varArtistArray[index].text}
+			@cd.audiotracks.times{|index| @cd.md.varArtists[index] = @varArtistEntryArray[index].text}
 		end
 	end
 end
