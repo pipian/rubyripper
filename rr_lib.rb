@@ -981,7 +981,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 			while not File.directory?(dir) ; dir = File.dirname(dir) end
 			
 			if not File.writable?(dir)
-				@settings['instance'].update("error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir])
+				@status = ["error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir]]
  				return false
  			end
 		end
@@ -993,7 +993,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@dir.values.each do |dir|
 			puts dir if @settings['debug']
 			if File.directory?(dir)
-				@settings['instance'].update("dir_exists", dir)
+				@status = ["dir_exists", dir]
 				return false			
 			end
 		end

@@ -246,10 +246,13 @@ attr_reader :change_display, :instances, :update
 		@settings['tracksToRip'] = @instances['GtkMetadata'].tracks_to_rip
 
 		@rubyripper = Rubyripper.new(@settings, self) # start a new instance, keep it out the Thread for later callbacks (yet_to_implement)
-		if @rubyripper.settingsOk # configuration check
+		
+		status = @rubyripper.settingsOk
+		if status == true
 			do_rip()
 		else
 			@buttons[0..3].each{|button| button.sensitive = true}
+			update(status[0], status[1])
 		end
 	end
 	

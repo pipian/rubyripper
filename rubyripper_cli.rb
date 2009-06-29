@@ -393,7 +393,13 @@ class Gui_CLI
 	def prepareRip()
 		tracklist() # Which tracks should be ripped?
 		@rubyripper = Rubyripper.new(@settings, self) # starts some check if the settings are sane
-		if @rubyripper.settingsOk ; start() end
+		
+		status = @rubyripper.settingsOk
+		if status == true
+			start()
+		else
+			update(status[0], status[1])
+		end
 	end
 	
 	def dir_exists
