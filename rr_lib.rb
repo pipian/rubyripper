@@ -1181,7 +1181,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	#return the temporary dir
 	def getTempDir
-		return File.join(File.dirname(@dir.values[0]), 'temp/')
+		return File.join(File.dirname(@dir.values[0]), "temp_#{@settings['cd'].discId}/")
 	end
 
 	#return the trackname for the metadata
