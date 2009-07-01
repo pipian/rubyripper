@@ -2,13 +2,13 @@
 # Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Rubyripper package.
 #  <h-m.w@gmx.de>, 2007.
-# 
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.6\n"
-"POT-Creation-Date: 2009-06-30 17:56+0200\n"
-"PO-Revision-Date: 2009-02-08 21:08+0100\n"
-"Last-Translator: Jan Buecken <jb.faq@gmx.de>\n"
+"POT-Creation-Date: 2009-07-01 23:12+0200\n"
+"PO-Revision-Date: 2009-07-01 13:19+0100\n"
+"Last-Translator: Heinz-Martin Weigand <h-m.w@gmx.de>\n"
 "Language-Team: German <h-m.w@gmx.de>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -592,7 +592,7 @@ msgstr "Schließen"
 
 #: rubyripper_gtk2.rb:133
 msgid "Abort"
-msgstr ""
+msgstr "Abbrechen"
 
 #: rubyripper_gtk2.rb:170
 msgid "Disc info"
@@ -670,19 +670,21 @@ msgid "The eject utility is not found on your system!"
 msgstr "Das Auswerf-Hilfsprogramm wurde auf diesem Computer nicht gefunden!"
 
 #: rubyripper_gtk2.rb:433
-#, fuzzy
 msgid "Freeze disc info"
-msgstr "Diskinfo"
+msgstr "Diskinfo einfrieren"
 
 #: rubyripper_gtk2.rb:434
 msgid "Disc:"
-msgstr ""
+msgstr "CD:"
 
 #: rubyripper_gtk2.rb:456
 msgid ""
 "Use this option to keep the disc info\n"
 "for albums that span multiple discs"
 msgstr ""
+"Diese Option benutzen, um die Disk-Info\n"
+"für alle CD's einens mehrteiligen Albums\n"
+"beizubehalten"
 
 #: rubyripper_gtk2.rb:492
 msgid "All"
@@ -824,11 +826,11 @@ msgstr "m3u Playlist generieren"
 
 #: rubyripper_gtk2.rb:926
 msgid "Replace spaces with underscores in filenames"
-msgstr ""
+msgstr "Lehrzeichen in Dateinamen durch Unterstriche ersetzen"
 
 #: rubyripper_gtk2.rb:927
 msgid "Downsize all capital letters in filenames"
-msgstr ""
+msgstr "Großbuchstaben in Dateinamen in Kleinbuchstaben umwandeln"
 
 #: rubyripper_gtk2.rb:937
 msgid "Codec related"
@@ -1116,7 +1118,6 @@ msgstr ""
 "können in der Logdatei nachgesehen werden\n"
 
 #: rr_lib.rb:231
-#, fuzzy
 msgid ""
 "\n"
 "SUSPICIOUS POSITION ANALYSIS\n"
@@ -1132,14 +1133,13 @@ msgstr ""
 "Da 75 Abschnitte pro Sekunde vorhanden sind, nachdem die verdächtigen\n"
 
 #: rr_lib.rb:233
-#, fuzzy
 msgid ""
 "suspicious position, the amount of initially mismatched chunks for\n"
 "that position is shown.\n"
 "\n"
 msgstr ""
-"Positionen markiert wurden, wird die Anzahl der ursprünglich nicht "
-"deckungsgleichen Abschnitte angezeigt.\n"
+"verdächtige Position, die Anzahl der ursprünglich nicht deckungsgleichen "
+"Abschnitte wird angezeigt.\n"
 "\n"
 
 #: rr_lib.rb:235
@@ -1147,12 +1147,10 @@ msgid "TRACK %s\n"
 msgstr "TRACK %s\n"
 
 #: rr_lib.rb:240
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)n"
 msgstr "\tVerdächtige Position:%s:%s (%sx) (KORRIGIERT bei Versuch %s\n"
 
 #: rr_lib.rb:242
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
 msgstr ""
 "\tVerdächtige Position : %s:%s (%sx) (KONNTE NICHT KORRIGIERT  WERDEN)\n"
@@ -1252,7 +1250,7 @@ msgstr ""
 
 #: rr_lib.rb:1254
 msgid "Not enough disk space left! Rip aborted"
-msgstr ""
+msgstr "Nicht genügend Speicherplatz! Rippen abgebrochen"
 
 #: rr_lib.rb:1267
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
