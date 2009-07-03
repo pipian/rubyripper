@@ -615,10 +615,14 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 	end
 
 	def setVarArtist()
+		# restore the old info when available
+		@cd.md.redoVarArtist()
 		# make sure each track has an artist name
 		@cd.audiotracks.times{|time| if @cd.md.varArtists[time] == nil;  @cd.md.varArtists[time] = _('Unknown') end}
 		# now fill the array
 		@cd.audiotracks.times{|index| @varArtistEntryArray[index].text = @cd.md.varArtists[index]}
+		#reset the tracknames (no artist will be included)
+		@cd.audiotracks.times{|index| @trackEntryArray[index].text = @cd.md.tracklist[index]}
 		# remove all current objects from array, as we're repacking them
 		@table20.each{|child| @table20.remove(child)}
 		# repack into table20
@@ -630,6 +634,8 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 	def unsetVarArtist()
 		# giving the backend the signal to revert last actions
 		@cd.md.undoVarArtist()
+		# reset the Trackname fields (give full trackname, including detected artists)
+		@cd.audiotracks.times{|index| @trackEntryArray[index].text = @cd.md.tracklist[index]}
 		# remove all current objects from array, as we're repacking them
 		@table20.each{|child| @table20.remove(child)}
 		# repack into table20

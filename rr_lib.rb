@@ -568,7 +568,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 end
 
 class Metadata
-attr_reader :freedb, :rawResponse, :freedbChoice, :saveChanges, :undoVarArtist, :status
+attr_reader :freedb, :rawResponse, :freedbChoice, :saveChanges, :undoVarArtist, :redoVarArtist, :status
 attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumber
 	
 	def initialize(disc, gui, verbose=false)
@@ -589,7 +589,8 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		@rawResponse = Array.new
 		@choices = Array.new
 		@varArtists = Array.new
-		@varTracklist = Array.new
+		@varArtistsBackup = Array.new
+		@backupTracklist = Array.new
 		@status = false
 	end
 
@@ -812,15 +813,29 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		end
 
 		if varArtist != false
-			@varTracklist = @tracklist.dup() #backup before overwrite with new values
+			@backupTracklist = @tracklist.dup() #backup before overwrite with new values
 			@tracklist.each_index{|index| @varArtists[index], @tracklist[index] = @tracklist[index].split(/\s*#{sep}\s*/)} #remove any spaces (\s) around sep
 		end
 	end
 	
 	def undoVarArtist
+		# first backup in case we want to revert back
+		@varArtistsBackup = @varArtists.dup()
+		@varTracklistBackup = @tracklist.dup()
+
+		# reset original values
 		@varArtists = Array.new
-		@tracklist = @varTracklist.dup
-		@varTracklist = Array.new
+
+		# restore the tracklist
+		@tracklist = @backupTracklist.dup
+	end
+
+#reset to various artists when originally detected as such and made undone
+	def redoVarArtist
+		if !@backupTracklist.empty? && !@varArtistsBackup.empty?
+			@tracklist = @varTracklistBackup
+			@varArtists = @varArtistsBackup
+		end
 	end
 end
 
