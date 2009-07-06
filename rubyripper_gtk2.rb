@@ -592,6 +592,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 		else
 			@discNumberSpin.value += 1.0
 		end
+		if @cd.md.varArtists.empty? : @varCheckbox.active = false end
 	end
 
 	def updateTracks()

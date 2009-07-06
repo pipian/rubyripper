@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.5.6\n"
-"POT-Creation-Date: 2009-07-01 23:12+0200\n"
-"PO-Revision-Date: 2008-12-20 09:04+0100\n"
+"POT-Creation-Date: 2009-07-05 22:01+0200\n"
+"PO-Revision-Date: 2009-07-05 22:01+0100\n"
 "Last-Translator: Rodolphe RIDEL <rodolphe.ridel@gmail.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -40,7 +40,7 @@ msgstr ""
 
 #: rubyripper_cli.rb:78
 msgid "Show this usage statement."
-msgstr ""
+msgstr "Afficher la licence d'utilisation."
 
 #: rubyripper_cli.rb:93
 msgid "Verbose output specified."
@@ -371,7 +371,7 @@ msgstr "Veuillez répondre par oui ou par non"
 
 #: rubyripper_cli.rb:253
 msgid "We should never get here"
-msgstr ""
+msgstr "Ouups, on ne devrait pas être ici!"
 
 #: rubyripper_cli.rb:253
 msgid "answer = %s, question = %s (error)"
@@ -485,8 +485,8 @@ msgstr "Genre :"
 msgid "Year : "
 msgstr "Année :"
 
-#: rubyripper_cli.rb:377 rubyripper_gtk2.rb:619 rr_lib.rb:582 rr_lib.rb:583
-#: rr_lib.rb:584 rr_lib.rb:767 rr_lib.rb:769 rr_lib.rb:770 rr_lib.rb:777
+#: rubyripper_cli.rb:377 rubyripper_gtk2.rb:621 rr_lib.rb:582 rr_lib.rb:583
+#: rr_lib.rb:584 rr_lib.rb:768 rr_lib.rb:770 rr_lib.rb:771 rr_lib.rb:778
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -599,7 +599,7 @@ msgstr "Quitter"
 
 #: rubyripper_gtk2.rb:133
 msgid "Abort"
-msgstr ""
+msgstr "Annuler"
 
 #: rubyripper_gtk2.rb:170
 msgid "Disc info"
@@ -678,17 +678,17 @@ msgstr "L'utilitaire d'éjection est absent de votre système!"
 #: rubyripper_gtk2.rb:433
 #, fuzzy
 msgid "Freeze disc info"
-msgstr "Informations du disque"
+msgstr "Garder les informations du disque"
 
 #: rubyripper_gtk2.rb:434
 msgid "Disc:"
-msgstr ""
+msgstr "Disque:"
 
 #: rubyripper_gtk2.rb:456
 msgid ""
 "Use this option to keep the disc info\n"
 "for albums that span multiple discs"
-msgstr ""
+msgstr "Garder les informations pour les albums à disques multiples"
 
 #: rubyripper_gtk2.rb:492
 msgid "All"
@@ -714,19 +714,19 @@ msgstr "<b>Informations du disque</b>"
 msgid "<b>Track selection</b>"
 msgstr "<b>Selection des pistes</b>"
 
-#: rubyripper_gtk2.rb:795
+#: rubyripper_gtk2.rb:801
 msgid "Cdrom device:"
 msgstr "Lecteur cdrom"
 
-#: rubyripper_gtk2.rb:796
+#: rubyripper_gtk2.rb:802
 msgid "Cdrom offset:"
 msgstr "Correction du lecteur cdrom"
 
-#: rubyripper_gtk2.rb:799
+#: rubyripper_gtk2.rb:805
 msgid "List with offsets"
 msgstr "Liste des corrections (Accuraterip)"
 
-#: rubyripper_gtk2.rb:800
+#: rubyripper_gtk2.rb:806
 msgid ""
 "A website which lists the offset for most drives.\n"
 "Your drivename can be found in each logfile."
@@ -734,83 +734,83 @@ msgstr ""
 "Un site web qui liste les corrections pour la plupart des lecteurs.\n"
 "Le modèle de votre lecteur est indiqué dans le journal."
 
-#: rubyripper_gtk2.rb:810
+#: rubyripper_gtk2.rb:816
 msgid "Cdrom device"
 msgstr "Lecteur cdrom"
 
-#: rubyripper_gtk2.rb:822
+#: rubyripper_gtk2.rb:828
 msgid "Match all chunks:"
 msgstr "Vérifier tous les échantillons:"
 
-#: rubyripper_gtk2.rb:823
+#: rubyripper_gtk2.rb:829
 msgid "Match erroneous chunks:"
 msgstr "Vérifier tous les échantillons erronés:"
 
-#: rubyripper_gtk2.rb:824
+#: rubyripper_gtk2.rb:830
 msgid "Maximum trials (0 = unlimited):"
 msgstr "Essais maximum (0=illimités):"
 
-#: rubyripper_gtk2.rb:828 rubyripper_gtk2.rb:829 rubyripper_gtk2.rb:830
+#: rubyripper_gtk2.rb:834 rubyripper_gtk2.rb:835 rubyripper_gtk2.rb:836
 msgid "times"
 msgstr "fois"
 
-#: rubyripper_gtk2.rb:844
+#: rubyripper_gtk2.rb:850
 msgid "Ripping options"
 msgstr "Préférences pour l'extraction"
 
-#: rubyripper_gtk2.rb:856
+#: rubyripper_gtk2.rb:862
 msgid "Pass cdparanoia options:"
 msgstr "Options pour cdparanoia"
 
-#: rubyripper_gtk2.rb:857
+#: rubyripper_gtk2.rb:863
 msgid "Eject cd when finished"
 msgstr "Ejecter le CD quand terminé"
 
-#: rubyripper_gtk2.rb:858
+#: rubyripper_gtk2.rb:864
 msgid "Only keep logfile if correction is needed"
 msgstr "Ne garder le journal que si une correction fut nécéssaire"
 
-#: rubyripper_gtk2.rb:859
+#: rubyripper_gtk2.rb:865
 msgid "Create cuesheet"
 msgstr "Créer un cuesheet"
 
-#: rubyripper_gtk2.rb:860
+#: rubyripper_gtk2.rb:866
 msgid "Rip CD to single file"
 msgstr "Extraire le CD vers un fichier unique"
 
-#: rubyripper_gtk2.rb:870
+#: rubyripper_gtk2.rb:876
 msgid "Ripping related"
 msgstr "Options supplémentaires"
 
-#: rubyripper_gtk2.rb:877
+#: rubyripper_gtk2.rb:883
 msgid "Secure Ripping"
 msgstr "Extraction"
 
-#: rubyripper_gtk2.rb:887
+#: rubyripper_gtk2.rb:893
 msgid "Flac"
 msgstr "Flac"
 
-#: rubyripper_gtk2.rb:888
+#: rubyripper_gtk2.rb:894
 msgid "Vorbis"
 msgstr "Vorbis"
 
-#: rubyripper_gtk2.rb:889
+#: rubyripper_gtk2.rb:895
 msgid "Lame Mp3"
 msgstr "Lame Mp3"
 
-#: rubyripper_gtk2.rb:890
+#: rubyripper_gtk2.rb:896
 msgid "Wav"
 msgstr "Wav"
 
-#: rubyripper_gtk2.rb:891 rubyripper_gtk2.rb:1105
+#: rubyripper_gtk2.rb:897 rubyripper_gtk2.rb:1111
 msgid "Other"
 msgstr "Autres"
 
-#: rubyripper_gtk2.rb:892
+#: rubyripper_gtk2.rb:898
 msgid "Show options for \"Other\""
 msgstr "Options pour \"Autres codecs\""
 
-#: rubyripper_gtk2.rb:899
+#: rubyripper_gtk2.rb:905
 msgid ""
 "%a=artist   %g=genre   %t=trackname   %f=codec\n"
 "%b=album   %y=year   %n=track   %va=various artist\n"
@@ -820,103 +820,104 @@ msgstr ""
 "%b=album   %y=année   %n=numéro de la piste   %va=artistes divers\n"
 "%o = fichier de sortie   %i = fichier d'entrée"
 
-#: rubyripper_gtk2.rb:913
+#: rubyripper_gtk2.rb:919
 msgid "Select audio codecs"
 msgstr "Sélection des codecs"
 
-#: rubyripper_gtk2.rb:925
+#: rubyripper_gtk2.rb:931
 msgid "Create m3u playlist"
 msgstr "Créer une liste de lecture m3u"
 
-#: rubyripper_gtk2.rb:926
+#: rubyripper_gtk2.rb:932
 msgid "Replace spaces with underscores in filenames"
-msgstr ""
+msgstr "Remplacer less espaces par des underscores dans les noms de fichiers"
 
-#: rubyripper_gtk2.rb:927
+#: rubyripper_gtk2.rb:933
 msgid "Downsize all capital letters in filenames"
 msgstr ""
+"Mettre en minuscule toutes les lettres majuscules dans les noms de fichiers"
 
-#: rubyripper_gtk2.rb:937
+#: rubyripper_gtk2.rb:943
 msgid "Codec related"
 msgstr "Options associées"
 
-#: rubyripper_gtk2.rb:950
+#: rubyripper_gtk2.rb:956
 msgid "Don't standardize volume"
 msgstr "Ne pas utiliser"
 
-#: rubyripper_gtk2.rb:951
+#: rubyripper_gtk2.rb:957
 msgid "Use replaygain on audio files"
 msgstr "Utiliser replaygain"
 
-#: rubyripper_gtk2.rb:952
+#: rubyripper_gtk2.rb:958
 msgid "Use normalize on wav files"
 msgstr "Normaliser les fichiers wav"
 
-#: rubyripper_gtk2.rb:955
+#: rubyripper_gtk2.rb:961
 msgid "Album / Audiophile modus"
 msgstr "Mode Album / Audiophile"
 
-#: rubyripper_gtk2.rb:956
+#: rubyripper_gtk2.rb:962
 msgid "Track modus"
 msgstr "Mode Piste"
 
-#: rubyripper_gtk2.rb:964
+#: rubyripper_gtk2.rb:970
 msgid "Normalize to standard volume"
 msgstr "Normalisation"
 
-#: rubyripper_gtk2.rb:971
+#: rubyripper_gtk2.rb:977
 msgid "Codecs"
 msgstr "Codecs"
 
-#: rubyripper_gtk2.rb:981
+#: rubyripper_gtk2.rb:987
 msgid "Enable freedb metadata fetching"
 msgstr "Activer la récupération des données Freedb"
 
-#: rubyripper_gtk2.rb:982
+#: rubyripper_gtk2.rb:988
 msgid "Always use first freedb hit"
 msgstr "Toujours utiliser le premier résultat Freedb"
 
-#: rubyripper_gtk2.rb:983
+#: rubyripper_gtk2.rb:989
 msgid "Freedb server:"
 msgstr "Serveur Freedb:"
 
-#: rubyripper_gtk2.rb:984
+#: rubyripper_gtk2.rb:990
 msgid "Username:"
 msgstr "Utilisateur:"
 
-#: rubyripper_gtk2.rb:985
+#: rubyripper_gtk2.rb:991
 msgid "Hostname:"
 msgstr "Domaine:"
 
-#: rubyripper_gtk2.rb:999
+#: rubyripper_gtk2.rb:1005
 msgid "Freedb options"
 msgstr "Préférences Freedb"
 
-#: rubyripper_gtk2.rb:1006
+#: rubyripper_gtk2.rb:1012
 msgid "Freedb"
 msgstr "Freedb"
 
-#: rubyripper_gtk2.rb:1016
+#: rubyripper_gtk2.rb:1022
 msgid "Base directory:"
 msgstr "Dossier de destination:"
 
-#: rubyripper_gtk2.rb:1017
+#: rubyripper_gtk2.rb:1023
 msgid "Standard:"
 msgstr "Standard:"
 
-#: rubyripper_gtk2.rb:1018
+#: rubyripper_gtk2.rb:1024
 msgid "Various artists:"
 msgstr "Artistes Divers:"
 
-#: rubyripper_gtk2.rb:1019
+#: rubyripper_gtk2.rb:1025
 msgid "Single file image:"
 msgstr "Fichier unique:"
 
-#: rubyripper_gtk2.rb:1021
+#: rubyripper_gtk2.rb:1027
 msgid "Show options for \"Filenaming scheme\""
 msgstr "Options pour \"Schéma de renommage\""
 
-#: rubyripper_gtk2.rb:1024
+#: rubyripper_gtk2.rb:1030
 msgid ""
 "%a=artist   %g=genre   %t=trackname   %f=codec\n"
 "%b=album   %y=year   %n=track   %va=various artist"
@@ -924,43 +925,43 @@ msgstr ""
 "%a=artiste   %g=genre   %t=nom de la piste   %f=codec\n"
 "%b=album   %y=année   %n=numéro de piste   %va=artistes divers"
 
-#: rubyripper_gtk2.rb:1052
+#: rubyripper_gtk2.rb:1058
 msgid "Filenaming scheme"
 msgstr "Schéma de renommage"
 
-#: rubyripper_gtk2.rb:1067
+#: rubyripper_gtk2.rb:1073
 msgid "Log file viewer: "
 msgstr "Visionneur de journal"
 
-#: rubyripper_gtk2.rb:1068
+#: rubyripper_gtk2.rb:1074
 msgid "File manager: "
 msgstr "Gestionnaire de fichiers:"
 
-#: rubyripper_gtk2.rb:1077
+#: rubyripper_gtk2.rb:1083
 msgid "Programs of choice"
 msgstr "Programmes externes"
 
-#: rubyripper_gtk2.rb:1091
+#: rubyripper_gtk2.rb:1097
 msgid "Verbose mode"
 msgstr "Mode verbeux"
 
-#: rubyripper_gtk2.rb:1092
+#: rubyripper_gtk2.rb:1098
 msgid "Debug mode"
 msgstr "Mode de débugage"
 
-#: rubyripper_gtk2.rb:1096
+#: rubyripper_gtk2.rb:1102
 msgid "Debug options"
 msgstr "Préférences de débugage"
 
-#: rubyripper_gtk2.rb:1139
+#: rubyripper_gtk2.rb:1145
 msgid "<b>Ripping status</b>"
 msgstr "<b>Status de l'extraction</b>"
 
-#: rubyripper_gtk2.rb:1155 rubyripper_gtk2.rb:1156
+#: rubyripper_gtk2.rb:1161 rubyripper_gtk2.rb:1162
 msgid "Not yet started (0%)"
 msgstr "Non commencé (0%)"
 
-#: rubyripper_gtk2.rb:1167
+#: rubyripper_gtk2.rb:1173
 msgid ""
 "The directory %s\n"
 "already exist. What do you want rubyripper to do?"
@@ -968,11 +969,11 @@ msgstr ""
 "Le dossier %s\n"
 "existe déjà. Quelle action voulez-vous que Rubyripper effectue?"
 
-#: rubyripper_gtk2.rb:1176
+#: rubyripper_gtk2.rb:1182
 msgid "Cancel rip"
 msgstr "Abandonner l'extraction"
 
-#: rubyripper_gtk2.rb:1176
+#: rubyripper_gtk2.rb:1182
 msgid ""
 "Overwrite\n"
 "directory"
@@ -980,7 +981,7 @@ msgstr ""
 "Effacement\n"
 "du dossier"
 
-#: rubyripper_gtk2.rb:1176
+#: rubyripper_gtk2.rb:1182
 msgid ""
 "Auto rename\n"
 "directory"
@@ -988,11 +989,11 @@ msgstr ""
 "Renommage automatique\n"
 "du dossier"
 
-#: rubyripper_gtk2.rb:1196
+#: rubyripper_gtk2.rb:1202
 msgid "Dir already exists..."
 msgstr "Le dossier existe déjà..."
 
-#: rubyripper_gtk2.rb:1207
+#: rubyripper_gtk2.rb:1213
 msgid ""
 "The freedb server reports multiple hits.\n"
 "Which one would you prefer?"
@@ -1000,15 +1001,15 @@ msgstr ""
 "Plusieurs résultats ont été trouvés sur le serveur Freedb.\n"
 "Lequel voulez-vous utiliser?"
 
-#: rubyripper_gtk2.rb:1219
+#: rubyripper_gtk2.rb:1225
 msgid "Ok"
 msgstr "Ok"
 
-#: rubyripper_gtk2.rb:1231
+#: rubyripper_gtk2.rb:1237
 msgid "Multiple hits found..."
 msgstr "Plusieurs résultats trouvés..."
 
-#: rubyripper_gtk2.rb:1248
+#: rubyripper_gtk2.rb:1254
 msgid ""
 "Rubyripper is finished with ripping the cd.\n"
 "A short summary is shown below."
@@ -1016,19 +1017,19 @@ msgstr ""
 "Rubyripper a terminé l'extraction du CD.\n"
 "Un résumé est disponible ci-dessous."
 
-#: rubyripper_gtk2.rb:1264
+#: rubyripper_gtk2.rb:1270
 msgid "Open log file"
 msgstr "Ouvrir le journal"
 
-#: rubyripper_gtk2.rb:1269 rubyripper_gtk2.rb:1277
+#: rubyripper_gtk2.rb:1275 rubyripper_gtk2.rb:1283
 msgid "%s is not found on your system!"
 msgstr "%s est introuvable sur votre système!"
 
-#: rubyripper_gtk2.rb:1272
+#: rubyripper_gtk2.rb:1278
 msgid "Open directory"
 msgstr "Ouvrir le dossier"
 
-#: rubyripper_gtk2.rb:1288
+#: rubyripper_gtk2.rb:1294
 msgid "Ripping and encoding is finished"
 msgstr "L'extraction et l'encodage sont terminés"
 
@@ -1087,6 +1088,8 @@ msgid ""
 "Chunks that differed after %s trials,\n"
 "were tried to match %s times.\n"
 msgstr ""
+"Les échantillons qui ne correspondaient pas après %s essais\n"
+"ont été vérifiés %s fois.\n"
 
 #: rr_lib.rb:213
 msgid "None of the tracks gave any problems\n"
@@ -1121,7 +1124,6 @@ msgstr ""
 "se trouve dans le journal d'extraction\n"
 
 #: rr_lib.rb:231
-#, fuzzy
 msgid ""
 "\n"
 "SUSPICIOUS POSITION ANALYSIS\n"
@@ -1132,11 +1134,12 @@ msgstr ""
 "\n"
 
 #: rr_lib.rb:232
+#, fuzzy
 msgid "Since there are 75 chunks per second, after making the notion of the\n"
 msgstr ""
+"Bien qu''il y ait 75 échantillons par seconde suite à la notification de\n"
 
 #: rr_lib.rb:233
-#, fuzzy
 msgid ""
 "suspicious position, the amount of initially mismatched chunks for\n"
 "that position is shown.\n"
@@ -1151,14 +1154,12 @@ msgid "TRACK %s\n"
 msgstr "PISTE %s\n"
 
 #: rr_lib.rb:240
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)n"
-msgstr "\tPosition suspecte : %s:%s (%s x) (CORRIGÉE pendant l'essai %s)\n"
+msgstr "\tPosition suspecte : %s:%s (%s x) (CORRIGÉE pendant l'essai %s)n"
 
 #: rr_lib.rb:242
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
-msgstr "\tPosition suspecte : %s:%s (%sx) (NE PEUT PAS ETRE CORRIGÉE)\n"
+msgstr "\tPosition suspecte : %s:%s (%sx) (NE PEUT PAS ÊTRE CORRIGÉE)\n"
 
 #: rr_lib.rb:366
 msgid "Unknown drive"
@@ -1219,11 +1220,11 @@ msgstr "chaine Freedb = %s"
 msgid "Track %s"
 msgstr "Piste %s"
 
-#: rr_lib.rb:603
+#: rr_lib.rb:604
 msgid "No audio disc found in %s"
 msgstr "Aucun disque audio détecté dans %s"
 
-#: rr_lib.rb:672
+#: rr_lib.rb:673
 msgid ""
 "Couldn't connect to freedb server. Network down?\n"
 "\n"
@@ -1233,19 +1234,19 @@ msgstr ""
 "\n"
 "Valeurs par défaut utilisées..."
 
-#: rr_lib.rb:688
+#: rr_lib.rb:689
 msgid "No match in Freedb database. Default values are used."
 msgstr "Pas de résultat Freedb; Valeurs par défaut utilisées."
 
-#: rr_lib.rb:690
+#: rr_lib.rb:691
 msgid "cddb_query return code = %s. Return code not supported."
 msgstr "Le code de retour cddb_query est %s. Ce code n'est pas supporté."
 
-#: rr_lib.rb:697
+#: rr_lib.rb:698
 msgid "Keep defaults / don't use freedb"
 msgstr "Valeurs par défaut / ne pas utiliser Freedb"
 
-#: rr_lib.rb:981
+#: rr_lib.rb:996
 msgid ""
 "Can't create output directory!\n"
 "You have no writing acces in dir %s"
@@ -1253,21 +1254,21 @@ msgstr ""
 "Impossibe de créer le dossier de destination!\n"
 "Vous n'avez pas les droits en écriture sur le dossier %s"
 
-#: rr_lib.rb:1254
+#: rr_lib.rb:1269
 msgid "Not enough disk space left! Rip aborted"
-msgstr ""
+msgstr "Plus suffisamment d'espace disque! Extraction annulée"
 
-#: rr_lib.rb:1267
+#: rr_lib.rb:1282
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
 msgstr ""
 "Nombre d'essais maximum atteint. %s échantillon(s) ne correspond(ent) pas "
 "après les %s vérifications\n"
 
-#: rr_lib.rb:1268
+#: rr_lib.rb:1283
 msgid "Will continue with the file we've got so far\n"
 msgstr "On continue avec les fichiers qui nous restent\n"
 
-#: rr_lib.rb:1301
+#: rr_lib.rb:1316
 msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
@@ -1275,38 +1276,38 @@ msgstr ""
 "Cdparanoia n'a pas généré de fichiers wav.\n"
 "Vérifiez vos préférences."
 
-#: rr_lib.rb:1320
+#: rr_lib.rb:1335
 msgid "Filesize is not correct! Trying another time\n"
 msgstr "La taille du fichier n'est pas correcte! Nouvel essai\n"
 
-#: rr_lib.rb:1327
+#: rr_lib.rb:1342
 msgid "Analyzing files for mismatching chunks\n"
 msgstr ""
 "Analyse des fichiers pour trouver des échantillons ne correspondant pas\n"
 
-#: rr_lib.rb:1351
+#: rr_lib.rb:1366
 msgid "Every chunk matched %s times :)\n"
 msgstr "Vérification des échantillons effectuée %s fois. Aucune anomalie :)\n"
 
-#: rr_lib.rb:1354 rr_lib.rb:1414
+#: rr_lib.rb:1369 rr_lib.rb:1429
 msgid "%s chunk(s) didn't match %s times.\n"
 msgstr "%s échantillon(s) ne correspond(ent) pas. %s anomalies.\n"
 
-#: rr_lib.rb:1411
+#: rr_lib.rb:1426
 msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 msgstr ""
 "Erreur(s) corrigée(s) avec succès, %s correspondances trouvées pour chaque "
 "échantillon :)\n"
 
-#: rr_lib.rb:1420
+#: rr_lib.rb:1435
 msgid "Starting to rip CD image, trial #%s\n"
-msgstr ""
+msgstr "Début de l'extraction de l'image disque, essai #%s\n"
 
-#: rr_lib.rb:1422
+#: rr_lib.rb:1437
 msgid "Starting to rip track %s, trial #%s\n"
-msgstr ""
+msgstr "Début de l'extraction de la piste %s, essai #%s\n"
 
-#: rr_lib.rb:1451
+#: rr_lib.rb:1466
 msgid ""
 "MD5 sum: %s\n"
 "\n"
@@ -1314,34 +1315,34 @@ msgstr ""
 "MD5 sum: %s\n"
 "\n"
 
-#: rr_lib.rb:1782
+#: rr_lib.rb:1797
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
 msgstr ""
 "ATTENTION: L'encodage de %s s'est terminé avec une erreur sur la piste %s!\n"
 
-#: rr_lib.rb:1826
+#: rr_lib.rb:1841
 msgid "The device %s doesn't exist on your system!"
 msgstr "Le périphérique %s n'exise pas sur votre système!"
 
-#: rr_lib.rb:1831
+#: rr_lib.rb:1846
 msgid "Please select at least one track."
 msgstr "Veuillez sélectionner au moins une piste."
 
-#: rr_lib.rb:1837
+#: rr_lib.rb:1852
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
 msgstr ""
 "L'affichage ne correspond pas au CD inséré. Appuyez sur 'Analyse' pour une "
 "nouvelle détection."
 
-#: rr_lib.rb:1842
+#: rr_lib.rb:1857
 msgid "No codecs are selected!"
 msgstr "Aucun codec sélectionné!"
 
-#: rr_lib.rb:1879
+#: rr_lib.rb:1894
 msgid "%s not found on your system!"
 msgstr "%s introuvable sur votre système!"
 
-#: rr_lib.rb:1899
+#: rr_lib.rb:1914
 msgid ""
 "Cdrom player used to rip:\n"
 "%s\n"
@@ -1349,7 +1350,7 @@ msgstr ""
 "Lecteur de cdrom utilisé pour l'extraction:\n"
 "%s\n"
 
-#: rr_lib.rb:1900
+#: rr_lib.rb:1915
 msgid ""
 "Cdrom offset used: %s\n"
 "\n"
@@ -1357,19 +1358,19 @@ msgstr ""
 "Correction de lecteur utilisée: %s\n"
 "\n"
 
-#: rr_lib.rb:1901
+#: rr_lib.rb:1916
 msgid "Ripper used: cdparanoia %s\n"
 msgstr "Extracteur utilisé: cdparanoia %s\n"
 
-#: rr_lib.rb:1901
+#: rr_lib.rb:1916
 msgid "default settings"
 msgstr "Paramètres par défaut"
 
-#: rr_lib.rb:1902
+#: rr_lib.rb:1917
 msgid "Matches required for all chunks: %s\n"
 msgstr "Vérifications requises pour tous les échantillons: %s\n"
 
-#: rr_lib.rb:1903
+#: rr_lib.rb:1918
 msgid ""
 "Matches required for erroneous chunks: %s\n"
 "\n"
@@ -1377,19 +1378,19 @@ msgstr ""
 "Vérifications requises pour les échantillons erronés: %s\n"
 "\n"
 
-#: rr_lib.rb:1905
+#: rr_lib.rb:1920
 msgid "Codec(s) used:\n"
 msgstr "Codec(s) utilisé(s):\n"
 
-#: rr_lib.rb:1906
+#: rr_lib.rb:1921
 msgid "-flac \t-> %s (%s)\n"
 msgstr "-flac \t-> %s (%s)\n"
 
-#: rr_lib.rb:1907
+#: rr_lib.rb:1922
 msgid "-vorbis\t-> %s (%s)\n"
 msgstr "-vorbis\t-> %s (%s)\n"
 
-#: rr_lib.rb:1908
+#: rr_lib.rb:1923
 msgid ""
 "-mp3\t-> %s\n"
 "(%s\n"
@@ -1397,15 +1398,15 @@ msgstr ""
 "-mp3\t-> %s\n"
 "(%s\n"
 
-#: rr_lib.rb:1909
+#: rr_lib.rb:1924
 msgid "-wav\n"
 msgstr "-wav\n"
 
-#: rr_lib.rb:1910
+#: rr_lib.rb:1925
 msgid "-other\t-> %s\n"
 msgstr "-autres\t-> %s\n"
 
-#: rr_lib.rb:1911
+#: rr_lib.rb:1926
 msgid ""
 "\n"
 "CDDB INFO\n"
@@ -1413,7 +1414,7 @@ msgstr ""
 "\n"
 "INFORMATIONS CDDB\n"
 
-#: rr_lib.rb:1912
+#: rr_lib.rb:1927
 msgid ""
 "\n"
 "Artist\t= "
@@ -1421,7 +1422,7 @@ msgstr ""
 "\n"
 "Artiste\t="
 
-#: rr_lib.rb:1913
+#: rr_lib.rb:1928
 msgid ""
 "\n"
 "Album\t= "
@@ -1429,7 +1430,7 @@ msgstr ""
 "\n"
 "Album\t="
 
-#: rr_lib.rb:1914
+#: rr_lib.rb:1929
 msgid ""
 "\n"
 "Year\t= "
@@ -1437,7 +1438,7 @@ msgstr ""
 "\n"
 "Année\t="
 
-#: rr_lib.rb:1915
+#: rr_lib.rb:1930
 msgid ""
 "\n"
 "Genre\t= "
@@ -1445,7 +1446,7 @@ msgstr ""
 "\n"
 "Genre\t="
 
-#: rr_lib.rb:1916
+#: rr_lib.rb:1931
 msgid ""
 "\n"
 "Tracks\t= "
@@ -1453,7 +1454,7 @@ msgstr ""
 "\n"
 "Pistes\t="
 
-#: rr_lib.rb:1920
+#: rr_lib.rb:1935
 msgid ""
 "\n"
 "STATUS\n"
