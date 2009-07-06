@@ -154,7 +154,6 @@ attr_reader :change_display, :instances, :update
 			end
 			file.close()
 		end
-		@settings['maxThreads'] = 0 # Temporary, so the segfaults are gone
 		if @settings['debug'] ; Thread.abort_on_exception = true end
 	end
 	
@@ -714,7 +713,7 @@ attr_reader :display, :save
 		@playlist.active = @settings['playlist']
 		@noSpaces.active = @settings['noSpaces']
 		@noCapitals.active = @settings['noCapitals']
-		#@maxThreads.value = @settings['maxThreads'].to_f
+		@maxThreads.value = @settings['maxThreads'].to_f
 		@normalize.active = if @settings['normalize'] == false ; 0 elsif @settings['normalize'] == "replaygain" ; 1 else 2 end
 		@modus.active = if @settings['gain'] == "album" ; 0 else 1 end
 #freedb
@@ -759,7 +758,7 @@ attr_reader :display, :save
 		@settings['playlist'] = @playlist.active?
 		@settings['noSpaces'] = @noSpaces.active?
 		@settings['noCapitals'] = @noCapitals.active?
-		#@settings['maxThreads'] = @maxThreads.value.to_i
+		@settings['maxThreads'] = @maxThreads.value.to_i
 		@settings['normalize'] = if @normalize.active == 0 ; false elsif @normalize.active == 1 ; "replaygain" else "normalize" end
 		@settings['gain'] = if @modus.active ==0 ; "album" else "track" end
 #freedb
@@ -924,7 +923,7 @@ attr_reader :display, :save
 	end
 	
 	def codecobjects_frame2 #Encoding related frame
-		@table80 = Gtk::Table.new(3,1,false)
+		@table80 = Gtk::Table.new(4,2,false)
 		@table80.column_spacings = 5
 		@table80.row_spacings = 4
 		@table80.border_width = 7
@@ -932,14 +931,15 @@ attr_reader :display, :save
 		@playlist = Gtk::CheckButton.new(_("Create m3u playlist"))
 		@noSpaces = Gtk::CheckButton.new(_("Replace spaces with underscores in filenames"))
 		@noCapitals = Gtk::CheckButton.new(_("Downsize all capital letters in filenames"))
-		#@maxThreads = Gtk::SpinButton.new(0.0, 10.0, 1.0)
-		#@maxThreadsLabel = Gtk::Label.new(_("Number of extra encoding threads"))
+		@maxThreads = Gtk::SpinButton.new(0.0, 10.0, 1.0)
+		@maxThreadsLabel = Gtk::Label.new(_("Number of extra encoding threads"))
 #packing objects
-		@table80.attach(@playlist, 0, 1, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
-		@table80.attach(@noSpaces, 0, 1, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0)
-		@table80.attach(@noCapitals, 0, 1, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0)
-		#@table80.attach(@maxThreadsLabel, 0, 1, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0)
-		#@table80.attach(@maxThreads, 1, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0)
+		@table80.attach(@maxThreadsLabel, 0, 1, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
+		@table80.attach(@maxThreads, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
+		@table80.attach(@playlist, 0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0)
+		@table80.attach(@noSpaces, 0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0)
+		@table80.attach(@noCapitals, 0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0)
+		
 #create frame
 		@frame80 = Gtk::Frame.new(_("Codec related"))
 		@frame80.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
