@@ -946,7 +946,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 		# no forward slashes allowed in dir names
 		@artistFile = @md.artist.gsub('/', '')
-		@albumFile = @md.artist.gsub('/', '')
+		@albumFile = @md.album.gsub('/', '')
 
 		{'%a' => @artistFile, '%b' => @albumFile, '%f' => codec, '%g' => @md.genre,
 		'%y' => @md.year}.each do |key, value|
