@@ -1085,8 +1085,6 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 			var.gsub!('/', '') #no slashes allowed in filenames
 		end
 		var.gsub!('\\', '') #the \\ means a normal \
- 		var.gsub!('[', '(') 
- 		var.gsub!(']', ')') 
  		var.gsub!('"', '')
  		
 		allFilter(var)
