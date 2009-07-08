@@ -237,7 +237,7 @@ attr_writer :encodingErrors
 				minutes = length / 60 # ruby math -> 70 / 60 = 1 (how many times does 60 fit in 70)
 				seconds = length % 60 # ruby math -> 70 % 60 = 10 (leftover)
 				if @problem_tracks[track][length][1] != 0
-					addLog(_("\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s\)n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
+					addLog(_("\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
 				else # Position could not be corrected
 					addLog(_("\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n") % [ sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0]])
 				end
