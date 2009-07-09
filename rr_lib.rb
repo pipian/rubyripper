@@ -455,7 +455,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 			return true
 		end
 		
-		unless (File.chardev?(device) && File.readable?(device) && File.writable?(device))
+		unless ((File.chardev?(device) || File.blockdev?(device)) && File.readable?(device) && File.writable?(device))
 			permission = nil
 			if File.chardev?(device) && installed('ls')
 				permission = `ls -l #{device}`
