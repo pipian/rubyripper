@@ -1806,11 +1806,12 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@directory = false
 		@settings['log'] = false
 		@settings['instance'] = gui
+		@error = false
 	end
 	
 	def settingsOk
-		if not checkConfig() ; return false end
-		if not testDeps() ; return false end
+		if not checkConfig() ; return @error end
+		if not testDeps() ; return @error end
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
 		return @settings['Out'].status
@@ -1836,23 +1837,23 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 
 	def checkConfig
 		unless File.symlink?(@settings['cdrom']) || File.blockdev?(@settings['cdrom'])
-			@settings['instance'].update("error", _("The device %s doesn't exist on your system!") % [@settings['cdrom']])
+			@error = ["error", _("The device %s doesn't exist on your system!") % [@settings['cdrom']]]
 			return false
 		end
 
 		if @settings['tracksToRip'].size == 0
-			@settings['instance'].update("error", _("Please select at least one track."))
+			@error = ["error", _("Please select at least one track.")]
 			return false
 		end
 		
 		temp = Disc.new(@settings['cdrom'], @settings['freedb'], @settings['instance'])
 		if @settings['cd'].freedbString != temp.freedbString || @settings['cd'].playtime != temp.playtime
-			@settings['instance'].update("error", _("The Gui doesn't match inserted cd. Please press Scan Drive first."))
+			@error = ["error", _("The Gui doesn't match inserted cd. Please press Scan Drive first.")]
  			return false
 		end
 		
 		unless @settings['flac'] || @settings['vorbis'] || @settings['mp3'] || @settings['wav'] || @settings['other']
-			@settings['instance'].update("error", _("No codecs are selected!"))
+			@error = ["error", _("No codecs are selected!")]
 			return false
  		end
 
@@ -1889,7 +1890,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 	def testDeps
 		{"ripper" => "cdparanoia", "flac" => "flac", "vorbis" => "oggenc", "mp3" => "lame"}.each do |setting, binary|
 			if @settings[setting] && !installed(binary)
-				@settings['instance'].update("error", _("%s not found on your system!") % [binary.capitalize])
+				@error = ["error", _("%s not found on your system!") % [binary.capitalize]]
 				return false
 			end
 		end
