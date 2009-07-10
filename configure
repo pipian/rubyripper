@@ -15,7 +15,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-if ENV['PWD'] == nil ; puts "Don't run configure with sudo" ; exit() end
+if ENV['PWD'] == nil
+	puts "Your current working directory cannot be determined."
+	puts "There are two possible reasons for this:"
+	puts "1) You run configure with sudo (you shouldn't)."
+	puts "2) Your shell needs to export the $PWD variable."
+	exit()
+end
 
 $PREFIX='/usr/local'
 $BINDIR='/bin'

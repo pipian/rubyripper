@@ -50,7 +50,9 @@ end
 def cdrom_drive #default values for cdrom drives under differenty os'es
 	drive = 'Unknown!'
 	system = RUBY_PLATFORM
-	if system.include?('linux') || system.include?('bsd')
+	if system.include?('openbsd')
+		drive = '/dev/cd0c' # as provided in issue 324
+	elsif system.include?('linux') || system.include?('bsd')
 		drive = '/dev/cdrom'
 	elsif system.include?('darwin')
 		drive = '/dev/disk1'
