@@ -1263,7 +1263,7 @@ class SecureRip
 		puts "Expected filesize for track #{track} is #{@sizeExpected} bytes." if @settings['debug'] 
 
 		if installed('df')				
-			freeDiskSpace = `df \"#{@settings['Out'].getDir()}\"`.split()[10].to_i
+			freeDiskSpace = `LANG=C df \"#{@settings['Out'].getDir()}\"`.split()[10].to_i
 			puts "Free disk space is #{freeDiskSpace} MB" if @settings['debug']
 			if @sizeExpected > freeDiskSpace*1000
 				@settings['log'].add(_("Not enough disk space left! Rip aborted"))
