@@ -104,6 +104,16 @@ but it may not work on audio-cd's with a data track.
 
 
 4. CHANGELOG
+
+---------0.5.7 RELEASE------
+* a fix for discs that start with a data track
+* a fix for checking the available space for some languages
+* a few fixes for the OpenBSD platform
+* fix a typo in the logfile when errors were corrected
+* don't replace bracquets in filenames -> []
+* fix a typo which resulted in a directory not containing the album name
+* allow multiple encoding threads once again :)
+
 ---------0.5.6 RELEASE------
 * fix a problem with cdparanoia and last track on some drives
 * implement "abort" button while ripping
