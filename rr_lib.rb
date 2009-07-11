@@ -368,6 +368,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 		@devicename = _("Unknown drive")
 		@playtime = '00:00'
 
+		@firstAudioTrack = 1 # some discs (games for instance) start with a data part
 		@datatrack = false
 		@freedbString = ''
 		@discId = ''
@@ -480,6 +481,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 			if line[0,5] =~ /\s+\d+\./
 				@audiotracks += 1
 				tracknumber, lengthSector, lengthText, startSector = line.split
+				@firstAudioTrack = tracknumber[0..-2].to_i if @audiotracks == 1
 				@lengthSector << lengthSector.to_i
 				@startSector << startSector.to_i
 				@lengthText << lengthText[1,5]
@@ -554,7 +556,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 	end
 
 	def analyzeTOC
-		@pregap << @startSector[0]
+		@pregap << (@firstAudioTrack == 1 ? @startSector[0] : 0)
 
 		(@audiotracks - 1).times do |track|
 			@pregap << (@startSector[track+1] - (@startSector[track] + @lengthSector[track]))
