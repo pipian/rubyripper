@@ -1106,8 +1106,8 @@ msgid ""
 "Some track(s) needed correction,but could\n"
 "be corrected within the maximum amount of trials\n"
 msgstr ""
-"Einige Tracks sollten korrigiert werden, konnten aber\n"
-"mit der maximalen Anzahl von Versuchen nicht korrigiert werden\n"
+"Einige Tracks bedurften einer Korrektur und konnten erfolgreich\n"
+"innerhalb der maximalen Anzahl von Versuchen korrigiert werden\n"
 
 #: rr_lib.rb:225
 msgid ""
