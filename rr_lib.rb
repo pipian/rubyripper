@@ -269,7 +269,7 @@ class AdvancedTOC
 		@discType = "CD_DA" #only audio
 		@hiddenTrack = false
 		@dataTracks = Array.new
-		@preEmphasis = Array.new
+		@preEmphasis = Hash.new
 		@preGap = Hash.new
 		@silence = 0 #amount of sectors at the start that can't be read by cdparanoia
 		
@@ -313,6 +313,9 @@ class AdvancedTOC
 			elsif toc[index].include?('TRACK DATA')
 				@dataTracks << tracknumber
 				puts "Track #{tracknumber} is marked as a DATA track" if @settings['debug']
+			elsif toc[index] == 'PRE_EMPHASIS'
+				@preEmphasis[tracknumber] = true
+				puts "Pre_emphasis detected on track #{tracknumber}" if @settings['debug']
 			elsif toc[index].include?('START')
 				sectorMinutes = 75 * toc[index][9..10].to_i
 				@pregap[tracknumber] = sectorMinutes + toc[index][12..13].to_i
