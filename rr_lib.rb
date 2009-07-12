@@ -298,8 +298,7 @@ class AdvancedTOC
 			end
 			index += 1
 		end
-		puts @cdText if cd_text && @settings['debug']
-
+		
 		parseTocTrack(toc, index)
 	end
 
