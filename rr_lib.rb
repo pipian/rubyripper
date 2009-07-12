@@ -255,6 +255,80 @@ attr_writer :encodingErrors
 	end
 end
 
+class AdvancedTOC
+	def initialize(settings)
+		@settings = settings
+		# scan the disc for pregaps
+		`cdrdao read-toc --device #{@settings['cdrom']} #{File.join(@out.getTempDir(), 'output.toc')}`
+		setVariables()
+		parseTOC()
+	end
+	
+	# initialize all variables
+	def setVariables
+		@discType = "CD_DA" #only audio
+		@hiddenTrack = false
+		@dataTracks = Array.new
+		@preEmphasis = Array.new
+		@preGap = Hash.new
+		@silence = 0 #amount of sectors at the start that can't be read by cdparanoia
+		
+		@artist = String.new
+		@album = String.new
+		@tracknames = Array.new
+	end
+
+	# parse the disc info
+	def parseTocDisc
+		# read the output file, splitted by each newline, in an array
+		toc = File.read(File.join(@out.getTempDir(), 'output.toc')).split("\n")
+		
+		# read the disc info
+		@discType = @toc[0]
+		
+		# continue reading the disc until the track info starts
+		index = 1
+		while !toc[index].include?('//')
+			if toc[index].include?('CD_TEXT')
+				puts "Found cd_text for disc" if @settings['debug']
+			elsif toc[index].include?('TITLE')
+				@artist, @album = @toc[index].split(/\s\s+/)
+				puts "Found artist for disc: #{@artist}" if @settings['debug']
+				puts "Found album for disc: #{@album}" if @settings['debug']
+			end
+			index += 1
+		end
+		puts @cdText if cd_text && @settings['debug']
+
+		parseTocTrack(toc, index)
+	end
+
+	# read the track info
+	def parseTocTrack(toc, index)
+		tracknumber = 0
+		while (index + 1) != toc.size
+			if toc[index].include?('//')
+				tracknumber += 1
+				puts "Found info of tracknumber #{tracknumber}" if @settings['debug']
+			elsif toc[index].include?('TRACK DATA')
+				@dataTracks << tracknumber
+				puts "Track #{tracknumber} is marked as a DATA track" if @settings['debug']
+			elsif toc[index].include?('START')
+				sectorMinutes = 75 * toc[index][9..10].to_i
+				@pregap[tracknumber] = sectorMinutes + toc[index][12..13].to_i
+				puts "Pregap detected for track #{tracknumber} : #{@pregap[tracknumber]} sectors}" if @settings['debug']
+			elsif toc[index].include?('SILENCE')
+				sectorMinutes = 75 * toc[index][11..12].to_i
+				@silence = sectorMinutes + toc[index][14..15].to_i
+				puts "Silence detected for track #{tracknumber} : #{@silence} sectors}" if @settings['debug']
+			elsif toc[index].include?('TITLE')
+				toc[index] =~ /".*"/ #ruby's  magical regular expressions
+				@tracknames << $&[1..-2] #don't need the quotes
+			end
+		end
+	end
+end
+
 class Cuesheet
 
 # INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
