@@ -275,7 +275,7 @@ class AdvancedTOC
 		
 		@artist = String.new
 		@album = String.new
-		@tracknames = Array.new
+		@tracknames = Hash.new
 	end
 
 	# parse the disc info
@@ -326,7 +326,8 @@ class AdvancedTOC
 				puts "Silence detected for track #{tracknumber} : #{@silence} sectors}" if @settings['debug']
 			elsif toc[index].include?('TITLE')
 				toc[index] =~ /".*"/ #ruby's  magical regular expressions
-				@tracknames << $&[1..-2] #don't need the quotes
+				@tracknames[tracknumber] = $&[1..-2] #don't need the quotes
+				puts "CD-text found: Title = #{@tracknames[tracknumber]}" if @settings['debug']
 			end
 		end
 	end
