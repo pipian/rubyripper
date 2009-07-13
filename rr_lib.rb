@@ -106,7 +106,18 @@ def browser
 	end
 end
 
-$rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, "vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3 --id3v2-only", "wav" => false, "other" => false, "othersettings" => '', "playlist" => true, "cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 2, "rippersettings" => '', "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)', "verbose" => false, "debug" => true, "instance" => self, "eject" => true, "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => false, "image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false}
+$rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, 
+"vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3 --id3v2-only", 
+"wav" => false, "other" => false, "othersettings" => '', "playlist" => true,
+"cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 2, "rippersettings" => '', 
+"max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 
+'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)',
+"verbose" => false, "debug" => true, "instance" => self, "eject" => true, 
+"req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", 
+"username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, 
+"editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => false, 
+"image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false,
+'advancedToc' => true}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)
@@ -255,79 +266,92 @@ attr_writer :encodingErrors
 	end
 end
 
-class AdvancedTOC
+class AdvancedToc
 	def initialize(settings)
 		@settings = settings
-		# scan the disc for pregaps
-		`cdrdao read-toc --device #{@settings['cdrom']} #{File.join(@out.getTempDir(), 'output.toc')}`
 		setVariables()
 		parseTOC()
 	end
 	
 	# initialize all variables
 	def setVariables
-		@discType = "CD_DA" #only audio
-		@hiddenTrack = false
+		@discType = "unknown"
 		@dataTracks = Array.new
 		@preEmphasis = Hash.new
-		@preGap = Hash.new
-		@silence = 0 #amount of sectors at the start that can't be read by cdparanoia
+		@pregap = Hash.new
+		@silence = 0 #amount of sectors before the 1st track
 		
 		@artist = String.new
 		@album = String.new
 		@tracknames = Hash.new
+
+		@index = 0
+		@toc = Array.new
+	end
+
+	# translate the file of cdrdao to a ruby array and interpret each line
+	def parseTOC
+		@settings['log'].add(_("ADVANCED TOC ANALYSIS (with cdrdao).\n\n"))
+
+		puts "Scanning disc with cdrdao" if @settings['debug']
+		`cdrdao read-toc --device #{@settings['cdrom']} \"#{@settings['Out'].getTocFile()}\" #{"2>&1" if !@settings['verbose']}`
+		puts "Loading file: #{@settings['Out'].getTocFile()}" if @settings['debug']
+		@toc = File.read(@settings['Out'].getTocFile()).split("\n")
+		readDiscInfo()
+		readTrackInfo()
+
+		#set an extra whiteline before starting to rip
+		@settings['log'].add(_("\n"))
 	end
 
 	# parse the disc info
-	def parseTocDisc
-		# read the output file, splitted by each newline, in an array
-		toc = File.read(File.join(@out.getTempDir(), 'output.toc')).split("\n")
-		
-		# read the disc info
+	def readDiscInfo
 		@discType = @toc[0]
+		puts "Disc type = #{@discType}" if @settings['debug']
 		
 		# continue reading the disc until the track info starts
-		index = 1
-		while !toc[index].include?('//')
-			if toc[index].include?('CD_TEXT')
+		@index = 1
+		while !@toc[@index].include?('//')
+			if @toc[@index].include?('CD_TEXT')
 				puts "Found cd_text for disc" if @settings['debug']
-			elsif toc[index].include?('TITLE')
-				@artist, @album = @toc[index].split(/\s\s+/)
+			elsif @toc[@index].include?('TITLE')
+				@artist, @album = @toc[@index].split(/\s\s+/)
 				puts "Found artist for disc: #{@artist}" if @settings['debug']
 				puts "Found album for disc: #{@album}" if @settings['debug']
 			end
-			index += 1
+			@index += 1
 		end
-		
-		parseTocTrack(toc, index)
 	end
 
-	# read the track info
-	def parseTocTrack(toc, index)
+	# parse the track info
+	def readTrackInfo
 		tracknumber = 0
-		while (index + 1) != toc.size
-			if toc[index].include?('//')
+		while (@index + 1) != @toc.size
+			if @toc[@index].include?('//')
 				tracknumber += 1
 				puts "Found info of tracknumber #{tracknumber}" if @settings['debug']
-			elsif toc[index].include?('TRACK DATA')
+			elsif @toc[@index].include?('TRACK DATA')
 				@dataTracks << tracknumber
-				puts "Track #{tracknumber} is marked as a DATA track" if @settings['debug']
-			elsif toc[index] == 'PRE_EMPHASIS'
+				@settings['log'].add(_("Track %s is marked as a DATA track\n") % [tracknumber])
+			elsif @toc[@index] == 'PRE_EMPHASIS'
 				@preEmphasis[tracknumber] = true
-				puts "Pre_emphasis detected on track #{tracknumber}" if @settings['debug']
-			elsif toc[index].include?('START')
-				sectorMinutes = 75 * toc[index][9..10].to_i
-				@pregap[tracknumber] = sectorMinutes + toc[index][12..13].to_i
-				puts "Pregap detected for track #{tracknumber} : #{@pregap[tracknumber]} sectors}" if @settings['debug']
-			elsif toc[index].include?('SILENCE')
-				sectorMinutes = 75 * toc[index][11..12].to_i
-				@silence = sectorMinutes + toc[index][14..15].to_i
-				puts "Silence detected for track #{tracknumber} : #{@silence} sectors}" if @settings['debug']
-			elsif toc[index].include?('TITLE')
-				toc[index] =~ /".*"/ #ruby's  magical regular expressions
+				@settings['log'].add(_("Pre_emphasis detected on track %s\n") % [tracknumber])
+			elsif @toc[@index].include?('START')
+				sectorMinutes = 60 * 75 * @toc[@index][6..7].to_i
+				sectorSeconds = 75 * @toc[@index][9..10].to_i
+				@pregap[tracknumber] = sectorMinutes + sectorSeconds + @toc[@index][12..13].to_i
+				@settings['log'].add(_("Pregap detected for track %s : %s sectors\n") % [tracknumber, @pregap[tracknumber]])
+			elsif @toc[@index].include?('SILENCE')
+				sectorMinutes = 60 * 75 * @toc[@index][9..10].to_i
+				sectorSeconds = 75 * @toc[@index][11..12].to_i
+				@silence = sectorMinutes + sectorSeconds + @toc[@index][14..15].to_i
+				@settings['log'].add(_("Silence detected for track %s : %s sectors\n") % [tracknumber, @silence]) 
+			elsif @toc[@index].include?('TITLE')
+				@toc[@index] =~ /".*"/ #ruby's  magical regular expressions
 				@tracknames[tracknumber] = $&[1..-2] #don't need the quotes
 				puts "CD-text found: Title = #{@tracknames[tracknumber]}" if @settings['debug']
 			end
+			@index += 1
 		end
 	end
 end
@@ -1259,6 +1283,11 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		end	
 	end
 
+	# return the toc file of AdvancedToc class
+	def getTocFile
+		return File.join(getTempDir(), "#{@artistFile} - #{@albumFile}.toc")
+	end
+
 	# return the full filename of the log
 	def getLogFile(codec)
 		return File.join(@dir[codec], 'ripping.log')
@@ -1275,7 +1304,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	#return the temporary dir
 	def getTempDir
-		return File.join(File.dirname(@dir.values[0]), "temp_#{@settings['cd'].discId}/")
+		return File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@settings['cd'].cdrom)}/")
 	end
 
 	#return the trackname for the metadata
@@ -1886,6 +1915,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings = settings.dup
 		@directory = false
 		@settings['log'] = false
+		@settings['toc'] = false
 		@settings['instance'] = gui
 		@error = false
 	end
@@ -1902,6 +1932,9 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings['log'] = Gui_support.new(@settings)
 		@outputDir = @settings['Out'].getDir()
 		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
+		
+		# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
+		@settings['toc'] = AdvancedToc.new(@settings) if @settings['advancedToc'] 
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@settings) #Create an instance for encoding
