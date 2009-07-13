@@ -1934,7 +1934,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
 		
 		# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
-		@settings['toc'] = AdvancedToc.new(@settings) if @settings['advancedToc'] 
+		@settings['toc'] = AdvancedToc.new(@settings) if @settings['advancedToc'] && installed('cdrdao') 
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@settings) #Create an instance for encoding
