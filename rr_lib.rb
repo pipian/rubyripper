@@ -1945,6 +1945,8 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 			puts "Cdrdao not found. Advanced TOC analysis is skipped."
 			@settings['advancedToc'] = false # for further assumptions later on
 		end
+
+		@settings['log'].add(_("\nSTATUS\n\n"))
 		
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
@@ -2056,7 +2058,6 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings['cd'].audiotracks.times do |track|
 			@settings['log'].add("#{sprintf("%02d", track + 1)} - #{@settings['cd'].md.tracklist[track]}\n")
 		end
-		@settings['log'].add(_("\nSTATUS\n\n"))
 	end
 	
 	def computePercentage
