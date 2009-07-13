@@ -1935,6 +1935,10 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		
 		# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
 		@settings['toc'] = AdvancedToc.new(@settings) if @settings['advancedToc'] && installed('cdrdao') 
+		if @settings['advancedToc'] && !installed('cdrdao')
+			puts "Cdrdao not found. Advanced TOC analysis is skipped."
+		end
+		
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@settings) #Create an instance for encoding
