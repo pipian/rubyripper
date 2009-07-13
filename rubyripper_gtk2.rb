@@ -882,7 +882,7 @@ attr_reader :display, :save
 	end
 	
 	def gapObjectsFrame1
-		@tableToc1 = Gtk::Table.new(2,1,false)
+		@tableToc1 = Gtk::Table.new(3,2,false)
 		@tableToc1.column_spacings = 5
 		@tableToc1.row_spacings = 4
 		@tableToc1.border_width = 7
@@ -891,10 +891,17 @@ attr_reader :display, :save
 		@create_single_file = Gtk::CheckButton.new(_('Rip CD to single file'))
 		@create_single_file.sensitive = false
 #pack objects
-		@tableToc1.attach(@create_cue, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc1.attach(@create_single_file, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-#set signals
-		@create_cue.signal_connect("clicked") {setGapFeatures(@create_cue.active?)}
+		@cdrdao = Gtk::Label.new(_('Cdrdao installed?'))
+		if installed('cdrdao')
+			@cdrdaoImage = Gtk::Image.new(Gtk::Stock::APPLY, Gtk::IconSize::BUTTON)
+		else
+			@cdrdaoImage = Gtk::Image.new(Gtk::Stock::CANCEL, Gtk::IconSize::BUTTON)
+			@create_cue.sensitive = false
+		end
+		@tableToc1.attach(@cdrdao, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc1.attach(@cdrdaoImage, 1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc1.attach(@create_cue, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc1.attach(@create_single_file, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
 #create frame
 		@frameToc1 = Gtk::Frame.new(_('Advanced Toc analysis'))
 		@frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
@@ -905,10 +912,6 @@ attr_reader :display, :save
 		[@frameToc1].each{|frame| @pageToc.pack_start(frame,false,false)}
 		@pageTocLabel = Gtk::Label.new(_("TOC analysis"))
 		@display.append_page(@pageToc, @pageTocLabel)
-	end
-
-	def setGapFeatures(active)
-		@create_single_file.sensitive = active
 	end
 
 	def codecobjects_frame1 # Select audio codecs frame
@@ -1137,7 +1140,19 @@ attr_reader :display, :save
 		@page4 = Gtk::VBox.new()
 		[@frame100, @frame110, @frame120].each{|frame| @page4.pack_start(frame,false,false)}
 		@page4_label = Gtk::Label.new(_("Other"))
-		@display.signal_connect("switch_page"){|a, b, page| if page == 3; @example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text) end}
+		@display.signal_connect("switch_page") do |a, b, page|
+			if page == 1
+				if installed('cdrdao')
+					@cdrdaoImage.stock = Gtk::Stock::APPLY
+					@create_single_file.sensitive = @create_cue.sensitive = true
+				else
+					@cdrdaoImage.stock = Gtk::Stock::CANCEL
+					@create_single_file.sensitive = @create_cue.sensitive = false
+				end
+			elsif page == 4
+				@example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text)
+			end
+		end
 		@display.append_page(@page4, @page4_label)
 	end
 end
