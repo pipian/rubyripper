@@ -291,7 +291,8 @@ class AdvancedToc
 
 	# translate the file of cdrdao to a ruby array and interpret each line
 	def parseTOC
-		@settings['log'].add(_("ADVANCED TOC ANALYSIS (with cdrdao).\n\n"))
+		@settings['log'].add(_("ADVANCED TOC ANALYSIS (with cdrdao)\n"))
+		@settings['log'].add(_("...please be patient, this may take a while\n\n"))
 
 		puts "Scanning disc with cdrdao" if @settings['debug']
 		`cdrdao read-toc --device #{@settings['cdrom']} \"#{@settings['Out'].getTocFile()}\" #{"2>&1" if !@settings['verbose']}`
@@ -299,6 +300,11 @@ class AdvancedToc
 		@toc = File.read(@settings['Out'].getTocFile()).split("\n")
 		readDiscInfo()
 		readTrackInfo()
+
+		# give a message when no strange things are found
+		if @preEmphasis.empty? && @pregap.empty? && @silence == 0
+			@settings['log'].add(_("No pregaps, silences or pre-emphasis detected\n"))
+		end
 
 		#set an extra whiteline before starting to rip
 		@settings['log'].add(_("\n"))
@@ -1937,6 +1943,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings['toc'] = AdvancedToc.new(@settings) if @settings['advancedToc'] && installed('cdrdao') 
 		if @settings['advancedToc'] && !installed('cdrdao')
 			puts "Cdrdao not found. Advanced TOC analysis is skipped."
+			@settings['advancedToc'] = false # for further assumptions later on
 		end
 		
 		computePercentage() # Do some pre-work to get the progress updater working later on
