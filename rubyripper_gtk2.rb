@@ -677,6 +677,7 @@ attr_reader :display, :save
 		ripobjects_frame1()
 		ripobjects_frame2()
 		ripobjects_frame3()
+		gapObjectsFrame1()
 		codecobjects_frame1()
 		codecobjects_frame2()
 		codecobjects_frame3()
@@ -854,7 +855,7 @@ attr_reader :display, :save
 	end
 	
 	def ripobjects_frame3 #Ripping related frame
-		@table60 = Gtk::Table.new(4,3,false)
+		@table60 = Gtk::Table.new(2,3,false)
 		@table60.column_spacings = 5
 		@table60.row_spacings = 4
 		@table60.border_width = 7
@@ -862,16 +863,12 @@ attr_reader :display, :save
 		@rip_label = Gtk::Label.new(_("Pass cdparanoia options:")) ; @rip_label.set_alignment(0.0, 0.5)
 		@eject= Gtk::CheckButton.new(_('Eject cd when finished'))
 		@no_log = Gtk::CheckButton.new(_('Only keep logfile if correction is needed'))
-		@create_cue = Gtk::CheckButton.new(_('Create cuesheet'))
-		@create_single_file = Gtk::CheckButton.new(_('Rip CD to single file'))
 		@rip_entry= Gtk::Entry.new ; @rip_entry.width_request = 120
 #pack objects
 		@table60.attach(@rip_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table60.attach(@eject, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table60.attach(@rip_entry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
+		@table60.attach(@eject, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table60.attach(@no_log, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-		@table60.attach(@create_cue, 0, 2, 3, 4, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-		@table60.attach(@create_single_file, 0, 2, 4, 5, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
 #create frame
 		@frame60 = Gtk::Frame.new(_('Ripping related'))
 		@frame60.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
@@ -884,6 +881,36 @@ attr_reader :display, :save
 		@display.append_page(@page1, @page1_label)
 	end
 	
+	def gapObjectsFrame1
+		@tableToc1 = Gtk::Table.new(2,1,false)
+		@tableToc1.column_spacings = 5
+		@tableToc1.row_spacings = 4
+		@tableToc1.border_width = 7
+		#create objects
+		@create_cue = Gtk::CheckButton.new(_('Create cuesheet'))
+		@create_single_file = Gtk::CheckButton.new(_('Rip CD to single file'))
+		@create_single_file.sensitive = false
+#pack objects
+		@tableToc1.attach(@create_cue, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc1.attach(@create_single_file, 0, 1, 1, 2, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
+#set signals
+		@create_cue.signal_connect("clicked") {setGapFeatures(@create_cue.active?)}
+#create frame
+		@frameToc1 = Gtk::Frame.new(_('Advanced Toc analysis'))
+		@frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+		@frameToc1.border_width = 5
+		@frameToc1.add(@tableToc1)
+#pack all frames into a single page
+		@pageToc = Gtk::VBox.new #One VBox to rule them all
+		[@frameToc1].each{|frame| @pageToc.pack_start(frame,false,false)}
+		@pageTocLabel = Gtk::Label.new(_("TOC analysis"))
+		@display.append_page(@pageToc, @pageTocLabel)
+	end
+
+	def setGapFeatures(active)
+		@create_single_file.sensitive = active
+	end
+
 	def codecobjects_frame1 # Select audio codecs frame
 		@table70 = Gtk::Table.new(6,2,false)
 		@table70.column_spacings = 5
