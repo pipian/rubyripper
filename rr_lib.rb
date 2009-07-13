@@ -115,9 +115,8 @@ $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" 
 "verbose" => false, "debug" => true, "instance" => self, "eject" => true, 
 "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", 
 "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, 
-"editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => false, 
-"image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false,
-'advancedToc' => true}
+"editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => true, 
+"image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)
@@ -266,6 +265,15 @@ attr_writer :encodingErrors
 	end
 end
 
+# AdvancedToc is a class which helps detecting all special audio-cd
+# features as hidden tracks, pregaps, etcetera. It does so by 
+# analyzing the output of cdrdao's TOC output. The class is only
+# opened when the user has the cuesheet enabled. This is so because
+# there is not much of an advantage of detecting pregaps when
+# they're just added to the file anyway. You want to detect
+# the gaps so you can reproduce the original disc exactly. The
+# cuesheet is necessary to store the gap info.
+
 class AdvancedToc
 	def initialize(settings)
 		@settings = settings
@@ -308,6 +316,11 @@ class AdvancedToc
 
 		#set an extra whiteline before starting to rip
 		@settings['log'].add(_("\n"))
+
+		#create the cuesheet
+		Cuesheet.new(@settings)
+		
+		#might wanna fill the tags when otherwise Unknown is used
 	end
 
 	# parse the disc info
@@ -321,7 +334,8 @@ class AdvancedToc
 			if @toc[@index].include?('CD_TEXT')
 				puts "Found cd_text for disc" if @settings['debug']
 			elsif @toc[@index].include?('TITLE')
-				@artist, @album = @toc[@index].split(/\s\s+/)
+				@artist, @album = @toc[@index].strip().split(/\s\s+/)
+				@artist = @artist[6..-1] #remove TITLE
 				puts "Found artist for disc: #{@artist}" if @settings['debug']
 				puts "Found album for disc: #{@album}" if @settings['debug']
 			end
@@ -367,9 +381,9 @@ class Cuesheet
 # INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
 # INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
 
-	def initialize(settings, out)
+	def initialize(settings)
 		@settings = settings
-		@out = out
+		@out = @settings['Out']
 		@disc = settings['cd']
 		@image = settings['image']
 		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
@@ -1089,10 +1103,6 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 			if @settings[codec] && @settings['playlist'] && !@settings['image']
 				createPlaylist(codec)
 			end
-		end
-		
-		if @settings['create_cue']
-			Cuesheet.new(@settings, self)
 		end
 	end
 
@@ -1940,10 +1950,10 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
 		
 		# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
-		@settings['toc'] = AdvancedToc.new(@settings) if @settings['advancedToc'] && installed('cdrdao') 
-		if @settings['advancedToc'] && !installed('cdrdao')
-			puts "Cdrdao not found. Advanced TOC analysis is skipped."
-			@settings['advancedToc'] = false # for further assumptions later on
+		@settings['toc'] = AdvancedToc.new(@settings) if @settings['create_cue'] && installed('cdrdao') 
+		if @settings['create_cue'] && !installed('cdrdao')
+			puts "Cdrdao not found. Advanced TOC analysis / cuesheet is skipped."
+			@settings['create_cue'] = false # for further assumptions later on
 		end
 
 		@settings['log'].add(_("\nSTATUS\n\n"))
