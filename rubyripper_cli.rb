@@ -263,7 +263,7 @@ class Gui_CLI
 				puts _("Fetching freedb info...")
 				handleFreedb()
 			else
-				freedb_finished()
+				showFreedb()
 			end
 		else 
 			puts @settings['cd'].error
