@@ -995,7 +995,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@year = String.new
 		@genre = String.new
 		@tracklist = Hash.new
-		@varArtists = Array.new
+		@varArtists = Hash.new
 		
 		splitDirFile()
 		checkNames()
@@ -1195,7 +1195,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		end
 		if not @md.varArtists.empty?
 			@settings['cd'].audiotracks.times do |track|
-				@varArtists << tagFilter(@md.varArtists[track])
+				@varArtists[track+1] << tagFilter(@md.varArtists[track])
 			end
 		end
 	end
@@ -1334,10 +1334,10 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	#return the artist for the metadata
 	def getVarArtist(track)
-		if @varArtists[track -1] == nil
+		if @varArtists[track] == nil
 			return ''
 		else
-			return @varArtists[track - 1]
+			return @varArtists[track]
 		end
 	end
 end
