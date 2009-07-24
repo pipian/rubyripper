@@ -975,7 +975,8 @@ end
 class Output
 attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
-:cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist
+:cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist,
+:setHiddenTrack
 	
 	def initialize(settings)
 		@settings = settings
@@ -1191,13 +1192,20 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@genre = tagFilter(@md.genre)
 		@year = tagFilter(@md.year)
 		@settings['cd'].audiotracks.times do |track|
-			@tracklist[track+1] << tagFilter(@md.tracklist[track])
+			@tracklist[track+1] = tagFilter(@md.tracklist[track])
 		end
 		if not @md.varArtists.empty?
 			@settings['cd'].audiotracks.times do |track|
-				@varArtists[track+1] << tagFilter(@md.varArtists[track])
+				@varArtists[track+1] = tagFilter(@md.varArtists[track])
 			end
 		end
+	end
+
+	# Fill the metadata for the hidden track
+	def setHiddenTrack
+		@tracklist[0] = tagfilter(_("Hidden Track"))
+		@varArtists[0] = tagFilter(_("Unknown Artist")) if not @md.varArtists.empty?
+		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, track)}
 	end
 
 	# characters that will be changed for filenames
