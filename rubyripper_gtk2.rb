@@ -760,6 +760,15 @@ attr_reader :display, :save
 		@settings['noSpaces'] = @noSpaces.active?
 		@settings['noCapitals'] = @noCapitals.active?
 		@settings['maxThreads'] = @maxThreads.value.to_i
+
+		# The gtk2 interface gets crazy on older versions of the bindings and threads
+		if Gtk::BINDING_VERSION[1] < 18 && @settings['maxThreads'] > 0
+			@settings['maxThreads'] = 0
+			puts "WARNING: Threads are not supported on ruby gtk2-bindings"
+			puts "that are older than 0.18.0. Setting them to zero."
+			puts "Please upgrade your bindings if you want threads."
+		end
+		
 		@settings['normalize'] = if @normalize.active == 0 ; false elsif @normalize.active == 1 ; "replaygain" else "normalize" end
 		@settings['gain'] = if @modus.active ==0 ; "album" else "track" end
 #freedb
