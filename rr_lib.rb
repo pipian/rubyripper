@@ -109,7 +109,7 @@ end
 $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, 
 "vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3 --id3v2-only", 
 "wav" => false, "other" => false, "othersettings" => '', "playlist" => true,
-"cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 2, "rippersettings" => '', 
+"cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', 
 "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 
 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)',
 "verbose" => false, "debug" => true, "instance" => self, "eject" => true, 
