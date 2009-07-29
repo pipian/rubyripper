@@ -1800,7 +1800,7 @@ class Encode < Monitor
 
 		command.gsub!('%n', sprintf("%02d", track))
 		command.gsub!('%f', 'other')
-		command.gsub!('%a', @out,artist)
+		command.gsub!('%a', @out.artist)
 		command.gsub!('%b', @out.album)
 		command.gsub!('%g', @out.genre)
 		command.gsub!('%y', @out.year)
