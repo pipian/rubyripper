@@ -442,10 +442,10 @@ class Gui_CLI
 
 	def start
 		@rubyripper.startRip()
-	#	while @finished == false
-	#		sleep(1) #loop until the finished signal is given.
+		while @finished == false
+			sleep(1) #loop until the finished signal is given.
 			#This is not ideal, but apparently the program gets terminated otherwise.
-	#	end
+		end
 	end
 
 	def update(modus, value=false)
