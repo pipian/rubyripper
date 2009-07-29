@@ -248,8 +248,10 @@ class Gui_CLI
 				if input == '' ; return default else return input end
 			elsif answer == "number"
 				STDOUT.print(question + " [#{default}] ")
-				input = STDIN.gets.strip.to_i #convert the answer to an integer value, if input is a text it will be 0.
-				if input == 0 ; return default else return input end
+				input = STDIN.gets.strip
+				#convert the answer to an integer value, if input is a text it will be 0.
+				#make sure that the valid answer of 0 is respected though
+				if input.to_i == 0 && input != "0" ; return default else return input.to_i end
 			else puts _("We should never get here") ; puts _("answer = %s, question = %s (error)") % [answer, question]
  			end
 		end
