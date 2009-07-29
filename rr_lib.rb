@@ -1796,7 +1796,7 @@ class Encode < Monitor
 
 	def doOther(track)
 		filename = @out.getFile(track, 'other')
-		command = @settings['other_settings'].dup
+		command = @settings['othersettings'].dup
 
 		command.gsub!('%n', sprintf("%02d", track))
 		command.gsub!('%f', 'other')
