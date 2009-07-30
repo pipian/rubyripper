@@ -676,8 +676,21 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 		@freedbString = "#{discid} #{audiotracks} #{freedbOffsets}#{(totalSectors + 150) / 75}" # MSF offset = 150
 	end
 
+	# When a data track is the first track on a disc, cdparanoia is acting strange:
+	# In the query it is showing as a start for 1s track the offset of the data track
+	# When ripping this offset isn't used however !! To allow a correct rip of this disc
+	# all startSectors have to be corrected. See also issue 196.
+	def offsetFirstDataTrack
+		if @firstAudioTrack != 1
+			dataOffset = @startSector[0]
+			@startSector.each_index{|index| @startSector[index] = @startSector[index] - dataOffset }
+		end
+	end
+
 	def analyzeTOC
-		@pregap << (@firstAudioTrack == 1 ? @startSector[0] : 0)
+		offsetFirstDataTrack()
+
+		@pregap << 0
 
 		(@audiotracks - 1).times do |track|
 			@pregap << (@startSector[track+1] - (@startSector[track] + @lengthSector[track]))
