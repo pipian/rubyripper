@@ -460,10 +460,9 @@ class Cuesheet
 end
 
 class Disc
-attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector, 
-:startSector, :lengthText, :devicename, :playtime, :freedbString, 
-:oldFreedbString, :pregap, :postgap, :totalSectors, :md, :error, :fileSizeWav,
-:fileSizeDisc, :discId
+attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
+:playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
+:discId, :getFileSize,:getStartSector, :getLengthSector
 
 	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
 		@cdrom = cdrom
@@ -483,9 +482,8 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 		@multipleDriveSupport = true #not always the case on MacOS's cdparanoia
 		
 		@audiotracks = 0
-		@lengthSector = Array.new
-		@startSector = Array.new
-		@lengthText = Array.new
+		@lengthSector = Hash.new
+		@startSector = Hash.new
 		@devicename = _("Unknown drive")
 		@playtime = '00:00'
 
@@ -494,9 +492,8 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 		@freedbString = ''
 		@discId = ''
 
-		@pregap = Array.new
 		@totalSectors = 0
-		@fileSizeWav = Array.new
+		@fileSizeWav = Hash.new
 		@fileSizeDisc = 0
 		
 		@error = '' #set to the error messsage
@@ -603,9 +600,8 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 				@audiotracks += 1
 				tracknumber, lengthSector, lengthText, startSector = line.split
 				@firstAudioTrack = tracknumber[0..-2].to_i if @audiotracks == 1
-				@lengthSector << lengthSector.to_i
-				@startSector << startSector.to_i
-				@lengthText << lengthText[1,5]
+				@lengthSector[@audiotracks] = lengthSector.to_i
+				@startSector[@audiotracks] = startSector.to_i
 			elsif line =~ /CDROM\D*:/
 				@devicename = $'.strip()
 			elsif line[0,5] == "TOTAL"
@@ -680,28 +676,52 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 	# In the query it is showing as a start for 1s track the offset of the data track
 	# When ripping this offset isn't used however !! To allow a correct rip of this disc
 	# all startSectors have to be corrected. See also issue 196.
-	def offsetFirstDataTrack
-		if @firstAudioTrack != 1
-			dataOffset = @startSector[0]
-			@startSector.each_index{|index| @startSector[index] = @startSector[index] - dataOffset }
+	
+	# If there is no data track at the start, but we do have an offset this means some
+	# hidden audio part. This part is marked as track 0. You can only assess this on
+	# a cd-player by rewinding from 1st track on.
+
+	def checkOffsetFirstTrack
+		if @firstAudioTrack != 1 # a disc that starts with data
+			dataOffset = @startSector[1]
+			@startSector.each_key{|track| @startSector[track] = @startSector[track] - dataOffset}
+		elsif @startSector[1] != 0 # a disc with a hidden audio part
+			@startSector[0] = 0
+			@lengthSector[0] = @startSector[1]
 		end
 	end
 
 	def analyzeTOC
-		offsetFirstDataTrack()
+		checkOffsetFirstTrack()
 
-		@pregap << @startSector[0]
-
-		(@audiotracks - 1).times do |track|
-			@pregap << (@startSector[track+1] - (@startSector[track] + @lengthSector[track]))
-		end
-
-		@lengthSector.each{|track| @totalSectors += track}
-		@pregap.each{|track| @totalSectors += track}
+		@lengthSector.each_value{|track| @totalSectors += track}
 		
 		# filesize = 44 bytes wav overhead + 2352 bytes per sector
-		@audiotracks.times{|track| @fileSizeWav[track] = 44 + (@pregap[track] + @lengthSector[track]) * 2352}
+		@audiotracks.times{|track| @fileSizeWav[track + 1] = 44 + (@lengthSector[track + 1]) * 2352}
 		@fileSizeDisc = @totalSectors * 2352 + 44
+	end
+
+	# return the startSector, example for track 1 getStartSector(1)
+	def getStartSector(track)
+		if track == false
+			return 0
+		else
+			return @startSector[track]
+		end
+	end
+
+	# return the sectors of the track, example for track 1 getLengthSector(1)
+	def getLengthSector(track)
+		return @lengthSector[track]
+	end
+
+	# return the length of the track, example for track 1 getFileSize(1)
+	def getFileSize(track)
+		if track == false
+			return @fileSizeDisc
+		else
+			return @fileSizeWav[track]
+		end
 	end
 end
 
@@ -988,8 +1008,7 @@ end
 class Output
 attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 :getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
-:cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist,
-:setHiddenTrack
+:cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist
 	
 	def initialize(settings)
 		@settings = settings
@@ -1174,6 +1193,10 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 				end
 			end
 		end
+
+		if @settings['cd'].getStartSector(1) > 0
+			setHiddenTrack()
+		end
 	end
 
 	# give the filename for given codec and track
@@ -1336,7 +1359,11 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	end
 
 	def getTempFile(track, trial)
-		return File.join(getTempDir(), "track#{track}_#{trial}.wav")
+		if track == false
+			return File.join(getTempDir(), "image_#{trial}.wav")
+		else
+			return File.join(getTempDir(), "track#{track}_#{trial}.wav")
+		end
 	end
 
 	#return the temporary dir
@@ -1378,39 +1405,52 @@ class SecureRip
 	def ripTracks
 		@settings['log'].ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
 
-		@settings['tracksToRip'].each do |track|
-			puts "Ripping track #{track}" if @settings['debug']
-		
-			if @settings['offset'] != 0 && track == @settings['cd'].audiotracks && @settings['rippersettings'].include?('-Z') #workaround for bug in cdparanoia
-				@settings['rippersettings'].gsub!(/-Z\s?/, '') #replace the -Z setting (and one space if it is there) with nothing. See issue nr. 13.
+		if @settings['image']
+			puts "Ripping image" if @settings['debug']
+			ripTrack(false)
+		else
+			@settings['tracksToRip'].each do |track|
+				puts "Ripping track #{track}" if @settings['debug']
+				ripTrack(track)
 			end
-			
-			#reset next three variables for each track
-			@errors = Hash.new()
-			@filesizes = Array.new
-			@trial = 0
-
-			# first check if there's enough size available in the output dir
-			if not sizeTest(track) ; break end
-
-			if main(track) ; @encoding.addTrack(track) else return false end #ready to encode
 		end
 		
 		eject(@settings['cd'].cdrom) if @settings['eject'] 
 	end
 
-	def sizeTest(track)
-		if @settings['image']
-			@sizeExpected = @settings['cd'].fileSizeDisc
-		else
-			@sizeExpected = @settings['cd'].fileSizeWav[track-1]
+	
+	# Due to a bug in cdparanoia the -Z setting has to be replaced for last track.
+	# This is only needed when an offset is set. See issue nr. 13.
+	def checkParanoiaSettings(track)
+		if @settings['rippersettings'].include?('-Z') && @settings['offset'] != 0
+			if track == false || track == @settings['cd'].audiotracks
+				@settings['rippersettings'].gsub!(/-Z\s?/, '')
+			end
 		end
-		puts "Expected filesize for track #{track} is #{@sizeExpected} bytes." if @settings['debug'] 
+	end
+
+	# rip one output file
+	def ripTrack(track)
+		checkParanoiaSettings(track)
+
+		#reset next three variables for each track
+		@errors = Hash.new()
+		@filesizes = Array.new
+		@trial = 0
+
+		# first check if there's enough size available in the output dir
+		if not sizeTest(track) ; break end #WHAT EXACTLY IS IT BREAKING?
+		if main(track) ; @encoding.addTrack(track) else return false end #ready to encode
+	end
+
+	def sizeTest(track)
+		puts "Expected filesize for #{if track ; "track #{track}" else "image" end}\
+		is #{@settings['cd'].getFileSize(track)} bytes." if @settings['debug'] 
 
 		if installed('df')				
 			freeDiskSpace = `LANG=C df \"#{@settings['Out'].getDir()}\"`.split()[10].to_i
 			puts "Free disk space is #{freeDiskSpace} MB" if @settings['debug']
-			if @sizeExpected > freeDiskSpace*1000
+			if @settings['cd'].getFileSize(track) > freeDiskSpace*1000
 				@settings['log'].add(_("Not enough disk space left! Rip aborted"))
 				return false
 			end
@@ -1426,7 +1466,7 @@ class SecureRip
 			if @trial > @settings['max_tries'] && @settings['max_tries'] != 0 # We would like to respect our users settings, wouldn't we?
 				@settings['log'].add(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
 				@settings['log'].add(_("Will continue with the file we've got so far\n"))
-				@settings['log'].mismatch(track, 0, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track - 1]) # zero means it is never solved.
+				@settings['log'].mismatch(track, 0, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].getLengthSector(track)) # zero means it is never solved.
 				break # break out loop and continue using trial1
 			end
 			
@@ -1586,9 +1626,11 @@ class SecureRip
 		if @settings['image'] # This means we're ripping the whole CD, set the command line parameters accordingly
 			command += " [.0]-" #rip from sector 0 to the end of the disc
 		else
-			command += " [.#{@settings['cd'].startSector[track-1] - @settings['cd'].pregap[track-1]}]-" #start of track, prepend pregap
-			if track != @settings['cd'].audiotracks #some drives don't work nicely with cdparanoia sector mode with last track.
-				command += "[.#{@settings['cd'].lengthSector[track-1] - 1 + @settings['cd'].pregap[track-1]}]" #end of track, length + pregap
+			command += " [.#{@settings['cd'].getStartSector(track)}]-"
+
+			#some drives don't work nicely with cdparanoia sector mode with last track.
+			if track != @settings['cd'].audiotracks
+				command += "[.#{@settings['cd'].lengthSector(track) - 1}]"
 			end
 		end
 		if @settings['cd'].multipleDriveSupport ; command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
