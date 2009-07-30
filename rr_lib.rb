@@ -690,7 +690,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :lengthSector,
 	def analyzeTOC
 		offsetFirstDataTrack()
 
-		@pregap << 0
+		@pregap << @startSector[0]
 
 		(@audiotracks - 1).times do |track|
 			@pregap << (@startSector[track+1] - (@startSector[track] + @lengthSector[track]))
