@@ -418,7 +418,7 @@ class Cuesheet
 		@cuesheet << "TITLE \"#{@disc.md.album}\""
 
 		if @image == true
-			@cuesheet << "FILE \"#{@out.getFile('1', @codec)}\" #{@filetype[@codec]}"
+			@cuesheet << "FILE \"#{@out.getFile('image', @codec)}\" #{@filetype[@codec]}"
 			@disc.audiotracks.times{|track| trackinfo(track)}
 		else
 			@disc.audiotracks.times do |track|
