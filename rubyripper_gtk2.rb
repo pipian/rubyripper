@@ -498,7 +498,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 			@checkTrackArray << Gtk::CheckButton.new((track + 1).to_s)
 			@varArtistEntryArray << Gtk::Entry.new()
 			@trackEntryArray << Gtk::Entry.new()
-			@lengthLabelArray << Gtk::Label.new(@cd.lengthText[track])
+			@lengthLabelArray << Gtk::Label.new(@cd.getLengthText[track + 1])
 		end
 	end
 
