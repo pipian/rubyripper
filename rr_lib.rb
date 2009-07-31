@@ -1548,7 +1548,7 @@ class SecureRip
 				
 		(@reqMatchesAll - 1).times do |time|
 			index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
-			while index + 44 < @settings['cd'].fileSizeWav[track-1]
+			while index + 44 < @settings['cd'].getFileSize(track)
 				if !@errors.key?(index) && files[0].read(2352) != files[time + 1].read(2352) # Does this sector matches the previous ones? and isn't the position already known?
 					files.each{|file| file.pos = index + 44} # Reset each read position of the files
 					@errors[index] = Array.new
