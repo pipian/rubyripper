@@ -1340,7 +1340,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# return the full filename of the track (starting with 1) or image
 	def getFile(track, codec)
-		if @settings['image']
+		if track == "image"
 			return File.join(@dir[codec], @image[codec])		
 		else
 			return File.join(@dir[codec], @file[codec][track])
@@ -1698,17 +1698,43 @@ class Encode < Monitor
 			end
 		end
 		
-		if @settings['normalize'] == 'normalize' && @settings['gain'] == 'album' && @settings['tracksToRip'][-1] != track
-			return false # normalize in album mode prevents encoding untill the last wav file is ripped
-		elsif @settings['normalize'] == 'normalize' && @settings['gain'] == 'album' && @settings['tracksToRip'][-1] == track
-			normalize() # last track has been ripped, so normalize and continue encoding
-		elsif @settings['normalize'] == 'normalize' && @settings['gain'] == 'track'
-			normalize(track)
-		end
+		# normalize in album mode prevents encoding untill the last wav file is ripped
+		if normalize(track) == false ; return false end
 		
-		if track == @settings['tracksToRip'][0] ; @settings['log'].encPerc(0.0) end # set it to 0% for the first track, so the gui shows it's started.
-		if track == @settings['tracksToRip'][-1] ; @lasttrack = true end
+		# show progress is started
+		if track == @settings['tracksToRip'][0] || track == "image"
+			@settings['log'].encPerc(0.0)
+		end
+
+		# set the last track setting so we can check if we're finished later on
+		if track == @settings['tracksToRip'][-1] || track == "image"
+			@lasttrack = true
+		end
+
 		if @ready == true ; handleThreads() end
+	end
+
+	# respect the normalize setting
+	def normalize(track)
+		if not installed('normalize')
+			puts "WARNING: Normalize is not installed. Cannot normalize files"
+			return true
+		end
+
+		if @settings['normalize'] == 'normalize'
+			if @settings['gain'] == 'album'
+				if track != "image" && @settings['tracksToRip'][-1] != track
+					return false
+				else
+					command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
+					`#{command}`
+				end
+			else
+				command = "normalize \"#{@out.getTempFile(track, 1)}\""
+				`#{command}`
+			end
+		end
+		return true
 	end
 	
 	def handleThreads
@@ -1773,24 +1799,9 @@ class Encode < Monitor
 		@settings['instance'].update("finished")
 	end
 	
-	def normalize(track = false)
-		if not installed('normalize')
-			puts "WARNING: Normalize is not installed. Cannot normalize files"
-			return false
-		end
-		
-		if track == false #album mode
-			command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
-			`#{command}`
-		else
-			command = "normalize \"#{@out.getTempFile(track, 1)}\""
-			`#{command}`
-		end
-	end
-	
 	def replaygain(filename, codec, track)
 		if @settings['normalize'] == "replaygain"
-			if @settings['gain'] == "album" && @settings['tracksToRip'][-1] == track ||@settings['gain']=="track"
+			if @settings['gain'] == "album" && (@settings['tracksToRip'][-1] == track || track == "image") || @settings['gain']=="track"
 				if codec == 'flac'
 					if not installed('metaflac') ; puts "WARNING: Metaflac is not installed. Cannot replaygain files." ; return false end
 					command = "metaflac --add-replay-gain \"#{if @settings['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
@@ -2151,5 +2162,6 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
 		@settings['tracksToRip'].each{|track| totalSectors += @settings['cd'].lengthSector[track - 1]} #update totalSectors
 		@settings['tracksToRip'].each{|track| @settings['percentages'][track] = @settings['cd'].lengthSector[track-1] / totalSectors}
+		@settings['tracksToRip']['image'] = 100.0
 	end
 end
