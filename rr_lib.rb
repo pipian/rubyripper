@@ -2166,9 +2166,12 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 	
 	def computePercentage
 		@settings['percentages'] = Hash.new() #progress for each track
-		totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
-		@settings['tracksToRip'].each{|track| totalSectors += @settings['cd'].lengthSector[track - 1]} #update totalSectors
-		@settings['tracksToRip'].each{|track| @settings['percentages'][track] = @settings['cd'].lengthSector[track-1] / totalSectors}
-		@settings['tracksToRip']['image'] = 100.0
+		if @settings['image']
+			@settings['percentages']['image'] = 100.0
+		else
+			totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
+			@settings['tracksToRip'].each{|track| totalSectors += @settings['cd'].getLengthSector(track)} #update totalSectors
+			@settings['tracksToRip'].each{|track| @settings['percentages'][track] = @settings['cd'].getLengthSector(track) / totalSectors}
+		end
 	end
 end
