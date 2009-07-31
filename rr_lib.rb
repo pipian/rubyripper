@@ -599,7 +599,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 				@firstAudioTrack = tracknumber[0..-2].to_i if @audiotracks == 1
 				@lengthSector[@audiotracks] = lengthSector.to_i
 				@startSector[@audiotracks] = startSector.to_i
-				@lenghtText[@audiotracks] = lengthText
+				@lengthText[@audiotracks] = lengthText
 			elsif line =~ /CDROM\D*:/
 				@devicename = $'.strip()
 			elsif line[0,5] == "TOTAL"
