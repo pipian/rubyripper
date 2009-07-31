@@ -703,7 +703,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 
 	# return the startSector, example for track 1 getStartSector(1)
 	def getStartSector(track)
-		if track == false
+		if track == "image"
 			return 0
 		else
 			return @startSector[track]
@@ -712,12 +712,16 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 
 	# return the sectors of the track, example for track 1 getLengthSector(1)
 	def getLengthSector(track)
-		return @lengthSector[track]
+		if track == "image"
+			return @totalSectors
+		else
+			return @lengthSector[track]
+		end
 	end
 
 	# return the length of the track, example for track 1 getFileSize(1)
 	def getFileSize(track)
-		if track == false
+		if track == "image"
 			return @fileSizeDisc
 		else
 			return @fileSizeWav[track]
@@ -1359,7 +1363,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	end
 
 	def getTempFile(track, trial)
-		if track == false
+		if track == "image"
 			return File.join(getTempDir(), "image_#{trial}.wav")
 		else
 			return File.join(getTempDir(), "track#{track}_#{trial}.wav")
@@ -1407,7 +1411,7 @@ class SecureRip
 
 		if @settings['image']
 			puts "Ripping image" if @settings['debug']
-			ripTrack(false)
+			ripTrack("image")
 		else
 			@settings['tracksToRip'].each do |track|
 				puts "Ripping track #{track}" if @settings['debug']
@@ -1423,7 +1427,7 @@ class SecureRip
 	# This is only needed when an offset is set. See issue nr. 13.
 	def checkParanoiaSettings(track)
 		if @settings['rippersettings'].include?('-Z') && @settings['offset'] != 0
-			if track == false || track == @settings['cd'].audiotracks
+			if track == "image" || track == @settings['cd'].audiotracks
 				@settings['rippersettings'].gsub!(/-Z\s?/, '')
 			end
 		end
@@ -1444,7 +1448,7 @@ class SecureRip
 	end
 
 	def sizeTest(track)
-		puts "Expected filesize for #{if track ; "track #{track}" else "image" end}\
+		puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end}\
 		is #{@settings['cd'].getFileSize(track)} bytes." if @settings['debug'] 
 
 		if installed('df')				
@@ -1466,7 +1470,7 @@ class SecureRip
 			if @trial > @settings['max_tries'] && @settings['max_tries'] != 0 # We would like to respect our users settings, wouldn't we?
 				@settings['log'].add(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
 				@settings['log'].add(_("Will continue with the file we've got so far\n"))
-				@settings['log'].mismatch(track, 0, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].getLengthSector(track)) # zero means it is never solved.
+				@settings['log'].mismatch(track, 0, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) # zero means it is never solved.
 				break # break out loop and continue using trial1
 			end
 			
@@ -1505,21 +1509,19 @@ class SecureRip
 	end
 	
 	def testFileSize(track) #check if wavfile is of correct size
-		sizeRip = File.size(@settings['Out'].getTempFile(track, @trial))
-		
-		sizeDiff = @sizeExpected - sizeRip
+		sizeDiff = @sizeExpected - File.size(@settings['Out'].getTempFile(track, @trial))
 
 		# at the end the disc may differ 1 sector on some drives (2352 bytes)
 		if sizeDiff == 0
 			puts "Expected size matches exactly" if @settings['debug']
-		elsif track == @settings['cd'].audiotracks && sizeDiff % 2352 == 0
+		elsif (track == "image" || track == @settings['cd'].audiotracks) && sizeDiff % 2352 == 0
 			sectors = sizeDiff / 2352
-			@settings['log'].add(_("You cdrom drive can not read last sector(s)\n"))
+			@settings['log'].add(_("Your cdrom drive can not read last sector(s)\n"))
 			@settings['log'].add(_("Amount of sectors missing: %s.\n") % [sectors])
 			@settings['log'].add(_("Notice that each sector is 1/75 second.\n"))
 		else
 			if @settings['debug']
-				puts "Wrong filesize reported for track #{track} : #{sizeRip}"
+				puts "Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
 				puts "Filesize should be : #{@sizeExpected}"
 			end
 			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
@@ -1557,7 +1559,7 @@ class SecureRip
 		if @errors.size == 0
 			@settings['log'].add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
 		else
-			@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) # report for later position analysis
+			@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) # report for later position analysis
 			@settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
 		end
 	end
@@ -1580,7 +1582,7 @@ class SecureRip
 		File.delete(@settings['Out'].getTempFile(track, @trial))
 
 		# Give an update for the trials for later analysis
-		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) 
+		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) 
 	end
 	
 	# Let the errors 'wave' out. For each sector that isn't unique across
@@ -1617,30 +1619,34 @@ class SecureRip
 		if @errors.size == 0
 			@settings['log'].add(_("Error(s) succesfully corrected, %s matches found for each chunk :)\n") % [@reqMatchesErrors])
 		else
-			@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].fileSizeWav[track-1], @settings['cd'].lengthSector[track-1]) # report for later position analysis
+			@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) # report for later position analysis
 			@settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesErrors])
 		end
 	end
 	
 	def rip(track) # set cdparanoia command + parameters
-		if @settings['image']
+		if track == "image"
 			@settings['log'].add(_("Starting to rip CD image, trial \#%s\n") % [@trial])
 		else
 			@settings['log'].add(_("Starting to rip track %s, trial \#%s\n") % [track, @trial])
 		end
-		command = "cdparanoia"
-		if @settings['rippersettings'].size != 0 ; command += " #{@settings['rippersettings']}" end 
-		if @settings['image'] # This means we're ripping the whole CD, set the command line parameters accordingly
-			command += " [.0]-" #rip from sector 0 to the end of the disc
-		else
-			command += " [.#{@settings['cd'].getStartSector(track)}]-"
 
-			#some drives don't work nicely with cdparanoia sector mode with last track.
-			if track != @settings['cd'].audiotracks
-				command += "[.#{@settings['cd'].lengthSector(track) - 1}]"
-			end
+		command = "cdparanoia"
+		
+		if @settings['rippersettings'].size != 0
+			command += " #{@settings['rippersettings']}"
+		end 
+		
+		command += " [.#{@settings['cd'].getStartSector(track)}]-"
+
+		# for the last track tell cdparanoia to rip till end to prevent problems on some drives
+		if track != "image" && track != @settings['cd'].audiotracks
+			command += "[.#{@settings['cd'].getLengthSector(track) - 1}]"
 		end
-		if @settings['cd'].multipleDriveSupport ; command += " -d #{@settings['cdrom']}" end # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
+
+		 # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
+		if @settings['cd'].multipleDriveSupport ; command += " -d #{@settings['cdrom']}" end
+
 		command += " -O #{@settings['offset']}"
 		command += " \"#{@settings['Out'].getTempFile(track, @trial)}\""
 		unless @settings['verbose'] ; command += " 2>&1" end # hide the output of cdparanoia output
@@ -1652,7 +1658,7 @@ class SecureRip
 		digest = Digest::MD5.new()
 		file = File.open(@settings['Out'].getTempFile(track, 1), 'r')
 		index = 0
-		while (index < @settings['cd'].fileSizeWav[track-1])
+		while (index < @settings['cd'].getFileSize(track))
 			digest << file.read(100000)
 			index += 100000
 		end
