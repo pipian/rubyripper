@@ -1516,7 +1516,7 @@ class SecureRip
 	end
 	
 	def testFileSize(track) #check if wavfile is of correct size
-		sizeDiff = @sizeExpected - File.size(@settings['Out'].getTempFile(track, @trial))
+		sizeDiff = @settings['cd'].getFileSize(track) - File.size(@settings['Out'].getTempFile(track, @trial))
 
 		# at the end the disc may differ 1 sector on some drives (2352 bytes)
 		if sizeDiff == 0
@@ -1529,7 +1529,7 @@ class SecureRip
 		else
 			if @settings['debug']
 				puts "Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
-				puts "Filesize should be : #{@sizeExpected}"
+				puts "Filesize should be : #{@settings['cd'].getFileSize(track)}"
 			end
 			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
