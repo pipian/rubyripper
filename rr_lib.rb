@@ -299,7 +299,7 @@ class AdvancedToc
 
 	# translate the file of cdrdao to a ruby array and interpret each line
 	def parseTOC
-		@settings['log'].add(_("ADVANCED TOC ANALYSIS (with cdrdao)\n"))
+		@settings['log'].add(_("\nADVANCED TOC ANALYSIS (with cdrdao)\n"))
 		@settings['log'].add(_("...please be patient, this may take a while\n\n"))
 
 		puts "Scanning disc with cdrdao" if @settings['debug']
