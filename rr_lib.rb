@@ -437,16 +437,12 @@ class Cuesheet
 			@cuesheet << "    PERFORMER \"#{@disc.md.varArtists[track]}\""
 		end
 
-		if @disc.pregap[track] != 0 && @image
-			@cuesheet << "    INDEX 00 #{time(@disc.startSector[track] - @disc.pregap[track])}"
-		elsif @disc.pregap[track] != 0
-			@cuesheet << "    INDEX 00 00:00:00"
+		if @disc.getStartSector(1) != 0 && @image
+			@cuesheet << "    INDEX 00 #{time(@disc.getStartSector(track))}"
 		end
 
 		if @image
-			@cuesheet << "    INDEX 01 #{time(@disc.startSector[track])}"
-		else
-			@cuesheet << "    INDEX 01 #{time(@disc.pregap[track])}"
+			@cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track + 1))}"
 		end
 	end
 
