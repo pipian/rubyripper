@@ -458,7 +458,7 @@ end
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
-:discId, :getFileSize,:getStartSector, :getLengthSector
+:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText
 
 	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
 		@cdrom = cdrom
@@ -480,6 +480,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@audiotracks = 0
 		@lengthSector = Hash.new
 		@startSector = Hash.new
+		@lengthText = Hash.new
 		@devicename = _("Unknown drive")
 		@playtime = '00:00'
 
@@ -598,6 +599,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 				@firstAudioTrack = tracknumber[0..-2].to_i if @audiotracks == 1
 				@lengthSector[@audiotracks] = lengthSector.to_i
 				@startSector[@audiotracks] = startSector.to_i
+				@lenghtText[@audiotracks] = lengthText
 			elsif line =~ /CDROM\D*:/
 				@devicename = $'.strip()
 			elsif line[0,5] == "TOTAL"
@@ -712,6 +714,15 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 			return @totalSectors
 		else
 			return @lengthSector[track]
+		end
+	end
+
+	# return the length of the track in text, example for track 1 getLengthSector(1)
+	def getLengthText(track)
+		if track == "image"
+			return @playtime
+		else
+			return @lengthText[track]
 		end
 	end
 
