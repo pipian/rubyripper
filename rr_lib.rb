@@ -275,6 +275,8 @@ end
 # cuesheet is necessary to store the gap info.
 
 class AdvancedToc
+attr_reader :getPregap
+
 	def initialize(settings)
 		@settings = settings
 		setVariables()
@@ -374,6 +376,15 @@ class AdvancedToc
 			@index += 1
 		end
 	end
+
+	# return the pregap if found, otherwise return 0
+	def getPregap(track)
+		if @pregap.key?(track)
+			return @pregap[track] 
+		else
+			return 0
+		end
+	end
 end
 
 class Cuesheet
@@ -458,8 +469,7 @@ end
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
-:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText,
-:updateTOC
+:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText
 
 	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
 		@cdrom = cdrom
@@ -493,9 +503,6 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@totalSectors = 0
 		@fileSizeWav = Hash.new
 		@fileSizeDisc = 0
-
-		# later filled by AdvancedToc class
-		@pregap = Hash.new
 		
 		@error = '' #set to the error messsage
 	end
@@ -739,18 +746,12 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		end
 	end
 
-	# update the TOC information with the info of the Advanced Toc class
-	def updateTOC(settings, pregap)
-		@settings = settings
-		@pregap = pregap
-	end
-
 	# return the pregap, when nothing is found return 0
 	def getPregap(track)
 		if track == "image"
-			return @pregap[1] if @pregap[1]
+			return @settings['toc'].getPregap(1) if @settings['toc']
 		else
-			return @pregap[track] if @pregap[track]
+			return @settings['toc'].getPregap(track) if @settings['toc']
 		end
 		return 0
 	end
