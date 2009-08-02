@@ -458,7 +458,8 @@ end
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
-:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText
+:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText,
+:updateTOC
 
 	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
 		@cdrom = cdrom
@@ -492,6 +493,9 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@totalSectors = 0
 		@fileSizeWav = Hash.new
 		@fileSizeDisc = 0
+
+		# later filled by AdvancedToc class
+		@pregap = Hash.new
 		
 		@error = '' #set to the error messsage
 	end
@@ -733,6 +737,22 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		else
 			return @fileSizeWav[track]
 		end
+	end
+
+	# update the TOC information with the info of the Advanced Toc class
+	def updateTOC(settings, pregap)
+		@settings = settings
+		@pregap = pregap
+	end
+
+	# return the pregap, when nothing is found return 0
+	def getPregap(track)
+		if track == "image"
+			return @pregap[1] if @pregap[1]
+		else
+			return @pregap[track] if @pregap[track]
+		end
+		return 0
 	end
 end
 
