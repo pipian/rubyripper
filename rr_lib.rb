@@ -1250,9 +1250,9 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# Fill the metadata for the hidden track
 	def setHiddenTrack
-		@tracklist[0] = tagfilter(_("Hidden Track"))
+		@tracklist[0] = tagFilter(_("Hidden Track"))
 		@varArtists[0] = tagFilter(_("Unknown Artist")) if not @md.varArtists.empty?
-		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1)}
+		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @settings[codec]}
 	end
 
 	# characters that will be changed for filenames
