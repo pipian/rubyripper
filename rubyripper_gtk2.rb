@@ -654,7 +654,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 		@tracks_to_rip = Array.new #reset the array
 		
 		if image
-		    @tracks_to_rip = [0]
+		    @tracks_to_rip = ["image"]
 		else
 		    @cd.audiotracks.times do |index|
 			@cd.md.tracklist[index] = @trackEntryArray[index].text

@@ -471,7 +471,9 @@ class Gui_CLI
 	def tracklist # Fill @settings['tracksToRip']
 		@settings['tracksToRip'] = Array.new
 		@settings['cd'].audiotracks.times{|number| @settings['tracksToRip'] << number + 1} # Start with all tracks selected
-		if @options.all || get_answer(_("\nShould all tracks be ripped ? (y/n) "), "yes", _('y'))
+		if @settings['image']
+			@settings['tracksToRip'] << "image"
+		elsif @options.all || get_answer(_("\nShould all tracks be ripped ? (y/n) "), "yes", _('y'))
 			puts _("Tracks to rip are %s") % [@settings['tracksToRip'].join(" ")]
 		else
 			succes = false

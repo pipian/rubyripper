@@ -275,10 +275,11 @@ end
 # cuesheet is necessary to store the gap info.
 
 class AdvancedToc
-attr_reader :getPregap
+attr_reader :getPregapToc
 
 	def initialize(settings)
 		@settings = settings
+		
 		setVariables()
 		parseTOC()
 	end
@@ -320,8 +321,8 @@ attr_reader :getPregap
 		@settings['log'].add(_("\n"))
 
 		#create the cuesheet
-		Cuesheet.new(@settings)
-		
+		Cuesheet.new(@settings, self)
+
 		#might wanna fill the tags when otherwise Unknown is used
 	end
 
@@ -378,7 +379,7 @@ attr_reader :getPregap
 	end
 
 	# return the pregap if found, otherwise return 0
-	def getPregap(track)
+	def getPregapToc(track)
 		if @pregap.key?(track)
 			return @pregap[track] 
 		else
@@ -392,11 +393,9 @@ class Cuesheet
 # INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
 # INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
 
-	def initialize(settings)
+	def initialize(settings, toc)
 		@settings = settings
-		@out = @settings['Out']
-		@disc = settings['cd']
-		@image = settings['image']
+		@toc = toc
 		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
 		allCodecs()
 	end
@@ -420,45 +419,48 @@ class Cuesheet
 	end
 
 	def createCuesheet
-		@cuesheet << "REM GENRE #{@disc.md.genre}"
-		@cuesheet << "REM DATE #{@disc.md.year}"
+		@cuesheet << "REM GENRE #{@settings['Out'].genre}"
+		@cuesheet << "REM DATE #{@settings['Out'].year}"
 		@cuesheet << "REM COMMENT \"Rubyripper #{$rr_version}\""
-		@cuesheet << "REM DISCID #{@disc.discId}"
-		@cuesheet << "REM FREEDB_QUERY \"#{@disc.freedbString.chomp}\""
-		@cuesheet << "PERFORMER \"#{@disc.md.artist}\""
-		@cuesheet << "TITLE \"#{@disc.md.album}\""
+		@cuesheet << "REM DISCID #{@settings['cd'].discId}"
+		@cuesheet << "REM FREEDB_QUERY \"#{@settings['cd'].freedbString.chomp}\""
+		@cuesheet << "PERFORMER \"#{@settings['Out'].artist}\""
+		@cuesheet << "TITLE \"#{@settings['Out'].album}\""
 
-		if @image == true
-			@cuesheet << "FILE \"#{@out.getFile('image', @codec)}\" #{@filetype[@codec]}"
-			@disc.audiotracks.times{|track| trackinfo(track)}
-		else
-			@disc.audiotracks.times do |track|
-				@cuesheet << "FILE \"#{File.basename(@out.getFile(track + 1, @codec))}\" #{@filetype[@codec]}"
+		# image rips should handle all info of the tracks at once
+		@settings['tracksToRip'].each do |track|
+			@cuesheet << "FILE \"#{File.basename(@settings['Out'].getFile(track, @codec))}\" #{@filetype[@codec]}"
+			if track == "image"
+				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
+			else
 				trackinfo(track)
 			end
 		end
 	end
 
+	# write the info for a single track
 	def trackinfo(track)
-		@cuesheet << "  TRACK #{sprintf("%02d", track + 1)} AUDIO"
-		@cuesheet << "    TITLE \"#{@disc.md.tracklist[track]}\""
-		if @disc.md.varArtists.empty?
-			@cuesheet << "    PERFORMER \"#{@disc.md.artist}\""
+		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
+		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
+		if @settings['Out'].getVarArtist(track) == ''
+			@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
 		else
-			@cuesheet << "    PERFORMER \"#{@disc.md.varArtists[track]}\""
+			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
 		end
 
-		if @disc.getStartSector(1) != 0 && @image
-			@cuesheet << "    INDEX 00 #{time(@disc.getStartSector(track))}"
-		end
-
-		if @image
-			@cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track + 1))}"
-		end
+		# fix the trackbased ripping later on
+		# fix the hidden audio track later on
+		if @settings['image'] && @toc.getPregapToc(track) != 0
+			# cdparanoia starts a track after the pregap, so correct this
+			startSector = @settings['cd'].getStartSector(track) - @toc.getPregapToc(track)
+			@cuesheet << "    INDEX 00 #{time(startSector)}"
+		end	
+		
+		@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
 	end
 
 	def saveCuesheet
-		file = File.new(@out.getCueFile(@codec), 'w')
+		file = File.new(@settings['Out'].getCueFile(@codec), 'w')
 		@cuesheet.each do |line|
 			file.puts(line)
 		end
@@ -746,15 +748,16 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		end
 	end
 
+	# first need to pass the instance the AdvancedToc class to the Disc class
 	# return the pregap, when nothing is found return 0
-	def getPregap(track)
-		if track == "image"
-			return @settings['toc'].getPregap(1) if @settings['toc']
-		else
-			return @settings['toc'].getPregap(track) if @settings['toc']
-		end
-		return 0
-	end
+	#def getPregap(track)
+	#	if track == "image"
+	#		return @settings['cd'].getPregap(1)
+	#	else
+	#		return @settings['cd'].getPregap(track)
+	#	end
+	#	return 0
+	#end
 end
 
 class Metadata
@@ -1436,15 +1439,11 @@ class SecureRip
 
 	def ripTracks
 		@settings['log'].ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
-
-		if @settings['image']
-			puts "Ripping image" if @settings['debug']
-			ripTrack("image")
-		else
-			@settings['tracksToRip'].each do |track|
-				puts "Ripping track #{track}" if @settings['debug']
-				ripTrack(track)
-			end
+		
+		@settings['tracksToRip'].each do |track|
+			puts "Ripping track #{track}" if @settings['debug'] && track == 'image'
+			puts "Ripping image" if @settings['debug'] && track != 'image'
+			ripTrack(track)
 		end
 		
 		eject(@settings['cd'].cdrom) if @settings['eject'] 
@@ -1730,12 +1729,12 @@ class Encode < Monitor
 		if normalize(track) == false ; return false end
 		
 		# show progress is started
-		if track == @settings['tracksToRip'][0] || track == "image"
+		if track == @settings['tracksToRip'][0]
 			@settings['log'].encPerc(0.0)
 		end
 
 		# set the last track setting so we can check if we're finished later on
-		if track == @settings['tracksToRip'][-1] || track == "image"
+		if track == @settings['tracksToRip'][-1]
 			@lasttrack = true
 		end
 
@@ -1751,7 +1750,7 @@ class Encode < Monitor
 
 		if @settings['normalize'] == 'normalize'
 			if @settings['gain'] == 'album'
-				if track != "image" && @settings['tracksToRip'][-1] != track
+				if @settings['tracksToRip'][-1] != track
 					return false
 				else
 					command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
@@ -1829,7 +1828,7 @@ class Encode < Monitor
 	
 	def replaygain(filename, codec, track)
 		if @settings['normalize'] == "replaygain"
-			if @settings['gain'] == "album" && (@settings['tracksToRip'][-1] == track || track == "image") || @settings['gain']=="track"
+			if @settings['gain'] == "album" && @settings['tracksToRip'][-1] == track || @settings['gain']=="track"
 				if codec == 'flac'
 					if not installed('metaflac') ; puts "WARNING: Metaflac is not installed. Cannot replaygain files." ; return false end
 					command = "metaflac --add-replay-gain \"#{if @settings['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
@@ -2187,12 +2186,8 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 	
 	def computePercentage
 		@settings['percentages'] = Hash.new() #progress for each track
-		if @settings['image']
-			@settings['percentages']['image'] = 100.0
-		else
-			totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
-			@settings['tracksToRip'].each{|track| totalSectors += @settings['cd'].getLengthSector(track)} #update totalSectors
-			@settings['tracksToRip'].each{|track| @settings['percentages'][track] = @settings['cd'].getLengthSector(track) / totalSectors}
-		end
+		totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
+		@settings['tracksToRip'].each{|track| totalSectors += @settings['cd'].getLengthSector(track)} #update totalSectors
+		@settings['tracksToRip'].each{|track| @settings['percentages'][track] = @settings['cd'].getLengthSector(track) / totalSectors}
 	end
 end
