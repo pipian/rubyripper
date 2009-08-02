@@ -349,7 +349,7 @@ attr_reader :getPregapToc
 	# parse the track info
 	def readTrackInfo
 		tracknumber = 0
-		while (@index + 1) != @toc.size
+		while @index != @toc.size
 			if @toc[@index].include?('//')
 				tracknumber += 1
 				puts "Found info of tracknumber #{tracknumber}" if @settings['debug']
