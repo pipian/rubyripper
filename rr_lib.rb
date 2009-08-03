@@ -112,7 +112,7 @@ $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" 
 "cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', 
 "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 
 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)',
-"verbose" => false, "debug" => true, "instance" => self, "eject" => true, 
+"verbose" => false, "debug" => true, "eject" => true, 
 "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", 
 "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, 
 "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => true, 
@@ -265,225 +265,26 @@ attr_writer :encodingErrors
 	end
 end
 
-# AdvancedToc is a class which helps detecting all special audio-cd
-# features as hidden tracks, pregaps, etcetera. It does so by 
-# analyzing the output of cdrdao's TOC output. The class is only
-# opened when the user has the cuesheet enabled. This is so because
-# there is not much of an advantage of detecting pregaps when
-# they're just added to the file anyway. You want to detect
-# the gaps so you can reproduce the original disc exactly. The
-# cuesheet is necessary to store the gap info.
-
-class AdvancedToc
-attr_reader :getPregapToc
-
-	def initialize(settings)
-		@settings = settings
-		
-		setVariables()
-		parseTOC()
-	end
-	
-	# initialize all variables
-	def setVariables
-		@discType = "unknown"
-		@dataTracks = Array.new
-		@preEmphasis = Hash.new
-		@pregap = Hash.new
-		@silence = 0 #amount of sectors before the 1st track
-		
-		@artist = String.new
-		@album = String.new
-		@tracknames = Hash.new
-
-		@index = 0
-		@toc = Array.new
-	end
-
-	# translate the file of cdrdao to a ruby array and interpret each line
-	def parseTOC
-		@settings['log'].add(_("\nADVANCED TOC ANALYSIS (with cdrdao)\n"))
-		@settings['log'].add(_("...please be patient, this may take a while\n\n"))
-
-		puts "Scanning disc with cdrdao" if @settings['debug']
-		`cdrdao read-toc --device #{@settings['cdrom']} \"#{@settings['Out'].getTocFile()}\" #{"2>&1" if !@settings['verbose']}`
-		puts "Loading file: #{@settings['Out'].getTocFile()}" if @settings['debug']
-		@toc = File.read(@settings['Out'].getTocFile()).split("\n")
-		readDiscInfo()
-		readTrackInfo()
-
-		# give a message when no strange things are found
-		if @preEmphasis.empty? && @pregap.empty? && @silence == 0
-			@settings['log'].add(_("No pregaps, silences or pre-emphasis detected\n"))
-		end
-
-		#set an extra whiteline before starting to rip
-		@settings['log'].add(_("\n"))
-
-		#create the cuesheet
-		Cuesheet.new(@settings, self)
-
-		#might wanna fill the tags when otherwise Unknown is used
-	end
-
-	# parse the disc info
-	def readDiscInfo
-		@discType = @toc[0]
-		puts "Disc type = #{@discType}" if @settings['debug']
-		
-		# continue reading the disc until the track info starts
-		@index = 1
-		while !@toc[@index].include?('//')
-			if @toc[@index].include?('CD_TEXT')
-				puts "Found cd_text for disc" if @settings['debug']
-			elsif @toc[@index].include?('TITLE')
-				@artist, @album = @toc[@index].strip().split(/\s\s+/)
-				@artist = @artist[6..-1] #remove TITLE
-				puts "Found artist for disc: #{@artist}" if @settings['debug']
-				puts "Found album for disc: #{@album}" if @settings['debug']
-			end
-			@index += 1
-		end
-	end
-
-	# parse the track info
-	def readTrackInfo
-		tracknumber = 0
-		while @index != @toc.size
-			if @toc[@index].include?('//')
-				tracknumber += 1
-				puts "Found info of tracknumber #{tracknumber}" if @settings['debug']
-			elsif @toc[@index].include?('TRACK DATA')
-				@dataTracks << tracknumber
-				@settings['log'].add(_("Track %s is marked as a DATA track\n") % [tracknumber])
-			elsif @toc[@index] == 'PRE_EMPHASIS'
-				@preEmphasis[tracknumber] = true
-				@settings['log'].add(_("Pre_emphasis detected on track %s\n") % [tracknumber])
-			elsif @toc[@index].include?('START')
-				sectorMinutes = 60 * 75 * @toc[@index][6..7].to_i
-				sectorSeconds = 75 * @toc[@index][9..10].to_i
-				@pregap[tracknumber] = sectorMinutes + sectorSeconds + @toc[@index][12..13].to_i
-				@settings['log'].add(_("Pregap detected for track %s : %s sectors\n") % [tracknumber, @pregap[tracknumber]])
-			elsif @toc[@index].include?('SILENCE')
-				sectorMinutes = 60 * 75 * @toc[@index][9..10].to_i
-				sectorSeconds = 75 * @toc[@index][11..12].to_i
-				@silence = sectorMinutes + sectorSeconds + @toc[@index][14..15].to_i
-				@settings['log'].add(_("Silence detected for track %s : %s sectors\n") % [tracknumber, @silence]) 
-			elsif @toc[@index].include?('TITLE')
-				@toc[@index] =~ /".*"/ #ruby's  magical regular expressions
-				@tracknames[tracknumber] = $&[1..-2] #don't need the quotes
-				puts "CD-text found: Title = #{@tracknames[tracknumber]}" if @settings['debug']
-			end
-			@index += 1
-		end
-	end
-
-	# return the pregap if found, otherwise return 0
-	def getPregapToc(track)
-		if @pregap.key?(track)
-			return @pregap[track] 
-		else
-			return 0
-		end
-	end
-end
-
-class Cuesheet
-
-# INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
-# INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
-
-	def initialize(settings, toc)
-		@settings = settings
-		@toc = toc
-		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
-		allCodecs()
-	end
-
-	def allCodecs
-		['flac','vorbis','mp3','wav','other'].each do |codec|
-			if @settings[codec]
-				@cuesheet = Array.new
-				@codec = codec
-				createCuesheet()
-				saveCuesheet()
-			end
-		end
-	end
-
-	def time(sector) # minutes:seconds:leftover frames
-		minutes = sector / 4500 # 75 frames/second * 60 seconds/minute
-		seconds = (sector % 4500) / 75
-		frames = sector % 75 # leftover
-		return "#{sprintf("%02d", minutes)}:#{sprintf("%02d", seconds)}:#{sprintf("%02d", frames)}"
-	end
-
-	def createCuesheet
-		@cuesheet << "REM GENRE #{@settings['Out'].genre}"
-		@cuesheet << "REM DATE #{@settings['Out'].year}"
-		@cuesheet << "REM COMMENT \"Rubyripper #{$rr_version}\""
-		@cuesheet << "REM DISCID #{@settings['cd'].discId}"
-		@cuesheet << "REM FREEDB_QUERY \"#{@settings['cd'].freedbString.chomp}\""
-		@cuesheet << "PERFORMER \"#{@settings['Out'].artist}\""
-		@cuesheet << "TITLE \"#{@settings['Out'].album}\""
-
-		# image rips should handle all info of the tracks at once
-		@settings['tracksToRip'].each do |track|
-			@cuesheet << "FILE \"#{File.basename(@settings['Out'].getFile(track, @codec))}\" #{@filetype[@codec]}"
-			if track == "image"
-				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
-			else
-				trackinfo(track)
-			end
-		end
-	end
-
-	# write the info for a single track
-	def trackinfo(track)
-		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
-		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
-		if @settings['Out'].getVarArtist(track) == ''
-			@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
-		else
-			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
-		end
-
-		# fix the trackbased ripping later on
-		# fix the hidden audio track later on
-		if @settings['image'] && @toc.getPregapToc(track) != 0
-			# cdparanoia starts a track after the pregap, so correct this
-			startSector = @settings['cd'].getStartSector(track) - @toc.getPregapToc(track)
-			@cuesheet << "    INDEX 00 #{time(startSector)}"
-		end	
-		
-		@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
-	end
-
-	def saveCuesheet
-		file = File.new(@settings['Out'].getCueFile(@codec), 'w')
-		@cuesheet.each do |line|
-			file.puts(line)
-		end
-		file.close()
-	end
-end
-
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
-:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText
+:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText,
+:updateSettings, :tocFinished, :toc
 
-	def initialize(cdrom='/dev/cdrom', freedb = true, gui=false, verbose=false, oldFreedbString = '')
-		@cdrom = cdrom
-		@freedb = freedb
+	def initialize(settings, gui=false, oldFreedbString = '', test = false)
+		@settings = settings
+		@cdrom = @settings['cdrom']
+		@freedb = @settings['freedb']
+		@verbose = @settings['verbose']
+		@gui = @settings['instance']
+
 		@oldFreedbString = oldFreedbString #if new disc is the same, later on force a connection with the freedb server
-		@gui = gui
-		@verbose = verbose
 		setVariables()
 		if audioDisc()
 			getDiscInfo()
 			analyzeTOC() #table of contents
-			@md = Metadata.new(self, @gui, @verbose)
+			@md = Metadata.new(self, @gui, @verbose) unless test == true
+			prepareToc() unless test == true # use help of cdrdao to get info about pregaps etcetera
 		end
 	end
 
@@ -501,14 +302,47 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@datatrack = false
 		@freedbString = ''
 		@discId = ''
-
+		
 		@totalSectors = 0
 		@fileSizeWav = Hash.new
 		@fileSizeDisc = 0
 		
 		@error = '' #set to the error messsage
+
+		@toc = nil # instance of the AdvancedToc class
+		@tocFinished = true #status of the AdvancedToc class
+		@cue = nil # instance of the Cuesheet class
 	end
 
+	# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
+	def prepareToc(thread = true)
+		if @settings['create_cue'] && installed('cdrdao')
+			@tocFinished = false
+			thread ? Thread.new{advancedToc()} : advancedToc()
+		end
+
+		if @settings['create_cue'] && !installed('cdrdao')
+			puts "Cdrdao not found. Advanced TOC analysis / cuesheet is skipped."
+			@settings['create_cue'] = false # for further assumptions later on
+		end
+	end
+
+	# start the Advanced toc instance
+	def advancedToc
+		@toc = AdvancedToc.new(@settings)
+		@tocFinished = true
+	end
+
+	# update the Disc class with actual settings and make a cuesheet
+	def updateSettings(settings)
+		@settings = settings
+		
+		# user may have enabled cuesheet after the disc was scanned
+		prepareToc(false) if @toc == nil 
+			
+		# only make a cuesheet when the toc class is there
+		@cue = Cuesheet.new(@settings, @toc) if @toc != nil
+	end
 
 	def audioDisc
 		unless checkDevice() #check if the cdrom device is real and has permissions right
@@ -747,17 +581,212 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 			return @fileSizeWav[track]
 		end
 	end
+end
 
-	# first need to pass the instance the AdvancedToc class to the Disc class
-	# return the pregap, when nothing is found return 0
-	#def getPregap(track)
-	#	if track == "image"
-	#		return @settings['cd'].getPregap(1)
-	#	else
-	#		return @settings['cd'].getPregap(track)
-	#	end
-	#	return 0
-	#end
+
+# AdvancedToc is a class which helps detecting all special audio-cd
+# features as hidden tracks, pregaps, etcetera. It does so by 
+# analyzing the output of cdrdao's TOC output. The class is only
+# opened when the user has the cuesheet enabled. This is so because
+# there is not much of an advantage of detecting pregaps when
+# they're just added to the file anyway. You want to detect
+# the gaps so you can reproduce the original disc exactly. The
+# cuesheet is necessary to store the gap info.
+
+class AdvancedToc
+attr_reader :getPregapToc, :log
+
+	def initialize(settings)
+		@settings = settings
+		
+		setVariables()
+		parseTOC()
+	end
+	
+	# initialize all variables
+	def setVariables
+		@discType = "unknown"
+		@dataTracks = Array.new
+		@preEmphasis = Hash.new
+		@pregap = Hash.new
+		@silence = 0 #amount of sectors before the 1st track
+		
+		@artist = String.new
+		@album = String.new
+		@tracknames = Hash.new
+
+		@index = 0
+		@toc = Array.new
+		@log = Array.new # saving the log messages
+
+		require 'tmpdir'
+	end
+
+	# get an output location for the temporary Toc file
+	def tocFile
+		return File.join(Dir.tmpdir, "temp_#{File.basename(@settings['cdrom'])}.toc") 
+	end
+
+	# translate the file of cdrdao to a ruby array and interpret each line
+	def parseTOC
+		puts "Scanning disc with cdrdao" if @settings['debug']
+		`cdrdao read-toc --device #{@settings['cdrom']} \"#{tocFile()}\" #{"2>&1" if !@settings['verbose']}`
+		puts "Loading file: #{tocFile()}" if @settings['debug']
+		@toc = File.read(tocFile()).split("\n")
+		readDiscInfo()
+		readTrackInfo()
+
+		# give a message when no strange things are found
+		if @preEmphasis.empty? && @pregap.empty? && @silence == 0
+			@log << _("No pregaps, silences or pre-emphasis detected\n")
+		end
+
+		#set an extra whiteline before starting to rip
+		@log << "\n"
+
+		#might wanna fill the tags when otherwise Unknown is used
+	end
+
+	# parse the disc info
+	def readDiscInfo
+		@discType = @toc[0]
+		puts "Disc type = #{@discType}" if @settings['debug']
+		
+		# continue reading the disc until the track info starts
+		@index = 1
+		while !@toc[@index].include?('//')
+			if @toc[@index].include?('CD_TEXT')
+				puts "Found cd_text for disc" if @settings['debug']
+			elsif @toc[@index].include?('TITLE')
+				@artist, @album = @toc[@index].strip().split(/\s\s+/)
+				@artist = @artist[6..-1] #remove TITLE
+				puts "Found artist for disc: #{@artist}" if @settings['debug']
+				puts "Found album for disc: #{@album}" if @settings['debug']
+			end
+			@index += 1
+		end
+	end
+
+	# parse the track info
+	def readTrackInfo
+		tracknumber = 0
+		while @index != @toc.size
+			if @toc[@index].include?('//')
+				tracknumber += 1
+				puts "Found info of tracknumber #{tracknumber}" if @settings['debug']
+			elsif @toc[@index].include?('TRACK DATA')
+				@dataTracks << tracknumber
+				@log << _("Track %s is marked as a DATA track\n") % [tracknumber]
+			elsif @toc[@index] == 'PRE_EMPHASIS'
+				@preEmphasis[tracknumber] = true
+				@log << _("Pre_emphasis detected on track %s\n") % [tracknumber]
+			elsif @toc[@index].include?('START')
+				sectorMinutes = 60 * 75 * @toc[@index][6..7].to_i
+				sectorSeconds = 75 * @toc[@index][9..10].to_i
+				@pregap[tracknumber] = sectorMinutes + sectorSeconds + @toc[@index][12..13].to_i
+				@log << _("Pregap detected for track %s : %s sectors\n") % [tracknumber, @pregap[tracknumber]]
+			elsif @toc[@index].include?('SILENCE')
+				sectorMinutes = 60 * 75 * @toc[@index][9..10].to_i
+				sectorSeconds = 75 * @toc[@index][11..12].to_i
+				@silence = sectorMinutes + sectorSeconds + @toc[@index][14..15].to_i
+				@log << _("Silence detected for track %s : %s sectors\n") % [tracknumber, @silence] 
+			elsif @toc[@index].include?('TITLE')
+				@toc[@index] =~ /".*"/ #ruby's  magical regular expressions
+				@tracknames[tracknumber] = $&[1..-2] #don't need the quotes
+				puts "CD-text found: Title = #{@tracknames[tracknumber]}" if @settings['debug']
+			end
+			@index += 1
+		end
+	end
+
+	# return the pregap if found, otherwise return 0
+	def getPregapToc(track)
+		if @pregap.key?(track)
+			return @pregap[track] 
+		else
+			return 0
+		end
+	end
+end
+
+class Cuesheet
+
+# INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
+# INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
+
+	def initialize(settings, toc)
+		@settings = settings
+		@toc = toc
+		@filetype = {'flac' => 'WAVE', 'wav' => 'WAVE', 'mp3' => 'MP3', 'vorbis' => 'WAVE', 'other' => 'WAVE'}
+		allCodecs()
+	end
+
+	def allCodecs
+		['flac','vorbis','mp3','wav','other'].each do |codec|
+			if @settings[codec]
+				@cuesheet = Array.new
+				@codec = codec
+				createCuesheet()
+				saveCuesheet()
+			end
+		end
+	end
+
+	def time(sector) # minutes:seconds:leftover frames
+		minutes = sector / 4500 # 75 frames/second * 60 seconds/minute
+		seconds = (sector % 4500) / 75
+		frames = sector % 75 # leftover
+		return "#{sprintf("%02d", minutes)}:#{sprintf("%02d", seconds)}:#{sprintf("%02d", frames)}"
+	end
+
+	def createCuesheet
+		@cuesheet << "REM GENRE #{@settings['Out'].genre}"
+		@cuesheet << "REM DATE #{@settings['Out'].year}"
+		@cuesheet << "REM COMMENT \"Rubyripper #{$rr_version}\""
+		@cuesheet << "REM DISCID #{@settings['cd'].discId}"
+		@cuesheet << "REM FREEDB_QUERY \"#{@settings['cd'].freedbString.chomp}\""
+		@cuesheet << "PERFORMER \"#{@settings['Out'].artist}\""
+		@cuesheet << "TITLE \"#{@settings['Out'].album}\""
+
+		# image rips should handle all info of the tracks at once
+		@settings['tracksToRip'].each do |track|
+			@cuesheet << "FILE \"#{File.basename(@settings['Out'].getFile(track, @codec))}\" #{@filetype[@codec]}"
+			if track == "image"
+				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
+			else
+				trackinfo(track)
+			end
+		end
+	end
+
+	# write the info for a single track
+	def trackinfo(track)
+		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
+		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
+		if @settings['Out'].getVarArtist(track) == ''
+			@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
+		else
+			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
+		end
+
+		# fix the trackbased ripping later on
+		# fix the hidden audio track later on
+		if @settings['image'] && @toc.getPregapToc(track) != 0
+			# cdparanoia starts a track after the pregap, so correct this
+			startSector = @settings['cd'].getStartSector(track) - @toc.getPregapToc(track)
+			@cuesheet << "    INDEX 00 #{time(startSector)}"
+		end	
+		
+		@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
+	end
+
+	def saveCuesheet
+		file = File.new(@settings['Out'].getCueFile(@codec), 'w')
+		@cuesheet.each do |line|
+			file.puts(line)
+		end
+		file.close()
+	end
 end
 
 class Metadata
@@ -2063,13 +2092,8 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings['log'] = Gui_support.new(@settings)
 		@outputDir = @settings['Out'].getDir()
 		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
-		
-		# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
-		@settings['toc'] = AdvancedToc.new(@settings) if @settings['create_cue'] && installed('cdrdao') 
-		if @settings['create_cue'] && !installed('cdrdao')
-			puts "Cdrdao not found. Advanced TOC analysis / cuesheet is skipped."
-			@settings['create_cue'] = false # for further assumptions later on
-		end
+
+		waitForToc()
 
 		@settings['log'].add(_("\nSTATUS\n\n"))
 		
@@ -2077,6 +2101,25 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@settings) #Create an instance for encoding
 		@ripping = SecureRip.new(@settings, @encoding) #create an instance for ripping
+	end
+
+	# wait for the Advanced Toc class to finish
+	# cdrdao takes a while to finish reading the disc
+	def waitForToc
+		if @settings['create_cue'] && installed('cdrdao')
+			@settings['log'].add(_("\nADVANCED TOC ANALYSIS (with cdrdao)\n"))
+			@settings['log'].add(_("...please be patient, this may take a while\n\n"))
+		
+			@settings['cd'].updateSettings(@settings) # update the rip settings
+
+			while @settings['cd'].tocFinished == false
+				sleep(1)
+			end
+			
+			@settings['cd'].toc.log.each do |message|
+				@settings['log'].add(message)
+			end
+		end
 	end
 	
 	# check the configuration of the user.
@@ -2098,7 +2141,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 			return false
 		end
 		
-		temp = Disc.new(@settings['cdrom'], @settings['freedb'], @settings['instance'])
+		temp = Disc.new(@settings, @settings['instance'], '', true)
 		if @settings['cd'].freedbString != temp.freedbString || @settings['cd'].playtime != temp.playtime
 			@error = ["error", _("The Gui doesn't match inserted cd. Please press Scan Drive first.")]
  			return false

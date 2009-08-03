@@ -258,7 +258,7 @@ class Gui_CLI
 	end
 
 	def get_cd_info
-		@settings['cd'] = Disc.new(@settings['cdrom'], @settings['freedb'], self, @settings['verbose']) # Analyze the TOC of disc in drive
+		@settings['cd'] = Disc.new(@settings, self) # Analyze the TOC of disc in drive
 		if @settings['cd'].audiotracks != 0 # a disc is found
 			puts _("Audio-disc found, number of tracks : %s, total playlength : %s") % [@settings['cd'].audiotracks, @settings['cd'].playtime]
 			if @settings['freedb'] #freedb enabled?

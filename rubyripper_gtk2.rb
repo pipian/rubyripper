@@ -185,7 +185,7 @@ attr_reader :change_display, :instances, :update
 		@buttons.each{|button| button.sensitive = false}
 		Thread.new do
 			# Analyze audio-cd, don't look at freedb yet. If the current freedb string is the same don't use yaml for metadata
-			@settings['cd'] = Disc.new(@settings['cdrom'], @settings['freedb'], self, @settings['verbose'], @settings.key?('cd') ? @settings['cd'].freedbString : '')
+			@settings['cd'] = Disc.new(@settings, self, @settings.key?('cd') ? @settings['cd'].freedbString : '')
 
 			if @settings['cd'].audiotracks != 0 # if true, a cd is found
 				if @buttontext[2].text != _("Open tray") # We know there's a cd inside so make sure that eject is shown instead of close tray
@@ -274,6 +274,7 @@ attr_reader :change_display, :instances, :update
 		@rubyripper = Rubyripper.new(@settings, self) # start a new instance, keep it out the Thread for later callbacks (yet_to_implement)
 		
 		status = @rubyripper.settingsOk
+		puts "status = #{status}" if @settings['debug']
 		if status == true
 			do_rip()
 		else
