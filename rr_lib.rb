@@ -668,18 +668,18 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		startSector = @startSector ; if @datatrack ;  startSector << @datatrack[0] end
 		lengthSector = @lengthSector ; if @datatrack ; lengthSector << @datatrack[1] end
 
-		audiotracks.times do |track|
+		(1..audiotracks).each do |track|
 			checksum = 0
 			seconds = (startSector[track] + 150) / 75 # MSF offset = 150
 			seconds.to_s.split(/\s*/).each{|s| checksum += s.to_i} # for example cddb sum of 338 seconds = 3+3+8=14
 			totalChecksum += checksum
 		end
 
-		totalSectors = (startSector[-1] - startSector[0]) + lengthSector[-1]
+		totalSectors = (startSector[audiotracks] - startSector[1]) + lengthSector[audiotracks]
 		seconds = totalSectors / 75
 
 		discid =  ((totalChecksum % 0xff) << 24 | seconds << 8 | audiotracks).to_s(16)
-		startSector.each{|sector| freedbOffsets << (sector + 150).to_s + ' '}
+		startSector.keys.sort.each{|track| freedbOffsets << (startSector[track] + 150).to_s + ' '}
 		@freedbString = "#{discid} #{audiotracks} #{freedbOffsets}#{(totalSectors + 150) / 75}" # MSF offset = 150
 	end
 
