@@ -1541,10 +1541,11 @@ class SecureRip
 		# at the end the disc may differ 1 sector on some drives (2352 bytes)
 		if sizeDiff == 0
 			puts "Expected size matches exactly" if @settings['debug']
+		elsif sizeDiff < 0
+			puts "More sectors ripped than expected: #{sizeDiff / 2352} sector(s)" if @settings['debug']
 		elsif (track == "image" || track == @settings['cd'].audiotracks) && sizeDiff % 2352 == 0
-			sectors = sizeDiff / 2352
 			@settings['log'].add(_("Your cdrom drive can not read last sector(s)\n"))
-			@settings['log'].add(_("Amount of sectors missing: %s.\n") % [sectors])
+			@settings['log'].add(_("Amount of sectors missing: %s.\n") % [sizeDiff / 2352])
 			@settings['log'].add(_("Notice that each sector is 1/75 second.\n"))
 		else
 			if @settings['debug']
