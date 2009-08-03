@@ -54,6 +54,7 @@ attr_reader :change_display, :instances, :update
 		welcome_message()
 		
 		@lock = Monitor.new()
+		@updateThread = nil
 		@gtk_window.show_all() #The user interface is up, now load the library
 		scan_drive()
 	end
@@ -305,8 +306,9 @@ attr_reader :change_display, :instances, :update
 		@rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
 	end
 	
-	def update(modus, value=false) #Threading here is not really necessary, because none of these are cpu intensive.
-		Thread.new do
+	def update(modus, value=false)
+		@updateThread.join if @updateThread != nil # one gui update at a time please
+		@updateThread = Thread.new do
 			if modus == "error"
 				@instances['ShortMessage'].show_message(value)
 				change_display(@instances['ShortMessage'])
