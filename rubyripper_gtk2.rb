@@ -286,7 +286,7 @@ attr_reader :change_display, :instances, :update
 	def do_rip
 		@rubyripperThread = Thread.new do
 			@buttons[0..3].each{|button| button.sensitive = false}
- 			if @instances['RipStatus'] == false
+			if @instances['RipStatus'] == false
 				@instances['RipStatus'] = RipStatus.new()
 			else
 				@instances['RipStatus'].reset

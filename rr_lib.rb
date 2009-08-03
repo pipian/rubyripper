@@ -269,7 +269,7 @@ class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
 :discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText,
-:updateSettings, :tocFinished, :toc
+:updateSettings, :toc
 
 	def initialize(settings, gui=false, oldFreedbString = '', test = false)
 		@settings = settings
@@ -310,15 +310,16 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@error = '' #set to the error messsage
 
 		@toc = nil # instance of the AdvancedToc class
-		@tocFinished = true #status of the AdvancedToc class
+		@tocStarted = false # keeps track if the toc class is ever created
+		@cdrdaoThread = nil # to later synchronize
 		@cue = nil # instance of the Cuesheet class
 	end
 
 	# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
-	def prepareToc(thread = true)
+	def prepareToc
 		if @settings['create_cue'] && installed('cdrdao')
 			@tocFinished = false
-			thread ? Thread.new{advancedToc()} : advancedToc()
+			@cdrdaoThread = Thread.new{advancedToc()}
 		end
 
 		if @settings['create_cue'] && !installed('cdrdao')
@@ -329,8 +330,8 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 
 	# start the Advanced toc instance
 	def advancedToc
+		@tocStarted = true
 		@toc = AdvancedToc.new(@settings)
-		@tocFinished = true
 	end
 
 	# update the Disc class with actual settings and make a cuesheet
@@ -338,8 +339,12 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@settings = settings
 		
 		# user may have enabled cuesheet after the disc was scanned
-		prepareToc(false) if @toc == nil 
-			
+		# @toc is still nil because the class isn't finished yet
+		prepareToc() if @tocStarted == false
+		
+		# if the scanning thread is still active, wait for it to finish
+		@cdrdaoThread.join() if @cdrdaoThread != nil
+		
 		# only make a cuesheet when the toc class is there
 		@cue = Cuesheet.new(@settings, @toc) if @toc != nil
 	end
@@ -623,12 +628,13 @@ attr_reader :getPregapToc, :log
 	end
 
 	# get an output location for the temporary Toc file
-	def tocFile
+	def tocFile()
 		return File.join(Dir.tmpdir, "temp_#{File.basename(@settings['cdrom'])}.toc") 
 	end
 
 	# translate the file of cdrdao to a ruby array and interpret each line
 	def parseTOC
+		File.delete(tocFile()) if File.exist?(tocFile())  
 		puts "Scanning disc with cdrdao" if @settings['debug']
 		`cdrdao read-toc --device #{@settings['cdrom']} \"#{tocFile()}\" #{"2>&1" if !@settings['verbose']}`
 		puts "Loading file: #{tocFile()}" if @settings['debug']
@@ -2075,7 +2081,6 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings = settings.dup
 		@directory = false
 		@settings['log'] = false
-		@settings['toc'] = false
 		@settings['instance'] = gui
 		@error = false
 	end
@@ -2111,10 +2116,6 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 			@settings['log'].add(_("...please be patient, this may take a while\n\n"))
 		
 			@settings['cd'].updateSettings(@settings) # update the rip settings
-
-			while @settings['cd'].tocFinished == false
-				sleep(1)
-			end
 			
 			@settings['cd'].toc.log.each do |message|
 				@settings['log'].add(message)
