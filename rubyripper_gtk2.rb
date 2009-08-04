@@ -687,6 +687,8 @@ attr_reader :display, :save
 		ripobjects_frame2()
 		ripobjects_frame3()
 		gapObjectsFrame1()
+		gapObjectsFrame2()
+		gapObjectsFrame3()
 		codecobjects_frame1()
 		codecobjects_frame2()
 		codecobjects_frame3()
@@ -925,9 +927,55 @@ attr_reader :display, :save
 		@frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@frameToc1.border_width = 5
 		@frameToc1.add(@tableToc1)
+	end
+
+	def gapObjectsFrame2
+		@tableToc2 = Gtk::Table.new(3,3,false)
+		@tableToc2.column_spacings = 5
+		@tableToc2.row_spacings = 4
+		@tableToc2.border_width = 7
+#create objects
+		@ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors before track 1'))
+		@markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when bigger than'))
+		@markHiddenTrackLabel2 = Gtk::Label.new(_('seconds'))
+		@markHiddenTrackSpin = Gtk::SpinButton.new(0, 30, 1)
+		@markHiddenTrackSpin.value = 2.0
+		@ripHiddenAudio.tooltip_text = _("Uncheck this if cdparanoia crashes with your ripping drive.")
+		text = _("A hidden track will rip to a seperate file if used in track modus.\nIf it's smaller the sectors will be prepended to the first track.")
+		@markHiddenTrackSpin.tooltip_text = text
+		@markHiddenTrackLabel1.tooltip_text = text
+		@markHiddenTrackLabel2.tooltip_text = text
+#pack objects
+		@tableToc2.attach(@ripHiddenAudio, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc2.attach(@markHiddenTrackLabel1, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc2.attach(@markHiddenTrackSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc2.attach(@markHiddenTrackLabel2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+#create frame
+		@frameToc2 = Gtk::Frame.new(_('Audio sectors before track 1'))
+		@frameToc2.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+		@frameToc2.border_width = 5
+		@frameToc2.add(@tableToc2)
+	end
+	
+	def gapObjectsFrame3
+		@tableToc3 = Gtk::Table.new(3,3,false)
+		@tableToc3.column_spacings = 5
+		@tableToc3.row_spacings = 4
+		@tableToc3.border_width = 7
+#create objects
+		@appendPregaps = Gtk::RadioButton.new(_('Append pregap to the previous track'))
+		@prependPregaps = Gtk::RadioButton.new(@appendPregaps, _('Prepend pregaps to the track'))
+#pack objects
+		@tableToc3.attach(@appendPregaps, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc3.attach(@prependPregaps, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+#create frame
+		@frameToc3 = Gtk::Frame.new(_('Handling pregaps other than track 1'))
+		@frameToc3.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+		@frameToc3.border_width = 5
+		@frameToc3.add(@tableToc3)
 #pack all frames into a single page
 		@pageToc = Gtk::VBox.new #One VBox to rule them all
-		[@frameToc1].each{|frame| @pageToc.pack_start(frame,false,false)}
+		[@frameToc1, @frameToc2, @frameToc3].each{|frame| @pageToc.pack_start(frame,false,false)}
 		@pageTocLabel = Gtk::Label.new(_("TOC analysis"))
 		@display.append_page(@pageToc, @pageTocLabel)
 	end
