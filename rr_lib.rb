@@ -604,8 +604,12 @@ attr_reader :getPregapToc, :log
 	def initialize(settings)
 		@settings = settings
 		
-		setVariables()
-		parseTOC()
+		begin
+			setVariables()
+			parseTOC()
+		rescue
+			puts "cdrdao killed"
+		end
 	end
 	
 	# initialize all variables

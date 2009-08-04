@@ -96,10 +96,15 @@ attr_reader :change_display, :instances, :update
 		else
 			@rubyripperThread.exit()
 			@rubyripper = nil
+			cancelTocScan()
 			`killall cdparanoia 2>&1`
 			@buttons.each{|button| button.sensitive = true}
 			change_display(@instances['GtkMetadata'])
 		end
+	end
+
+	def cancelTocScan
+		`killall cdrdao 2>&1`
 	end
 
 	def savePreferences
@@ -246,6 +251,7 @@ attr_reader :change_display, :instances, :update
 					@instances['GtkMetadata'] = false
 					@instances['ShortMessage'].open_tray(@settings['cdrom'])
 					change_display(@instances['ShortMessage'])
+					cancelTocScan()
 					`eject #{@settings['cdrom']}` # spit the cd out
 					@buttontext[2].set_text('_'+_("Close tray"),true)
 					@buttonicons[2].stock = Gtk::Stock::GOTO_TOP
