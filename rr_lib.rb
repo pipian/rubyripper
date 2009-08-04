@@ -604,12 +604,8 @@ attr_reader :getPregapToc, :log
 	def initialize(settings)
 		@settings = settings
 		
-		begin
-			setVariables()
-			parseTOC()
-		rescue
-			puts "cdrdao killed"
-		end
+		setVariables()
+		readTOC()
 	end
 	
 	# initialize all variables
@@ -636,11 +632,20 @@ attr_reader :getPregapToc, :log
 		return File.join(Dir.tmpdir, "temp_#{File.basename(@settings['cdrom'])}.toc") 
 	end
 
-	# translate the file of cdrdao to a ruby array and interpret each line
-	def parseTOC
+	# fire the command to read the disc
+	def readTOC()
 		File.delete(tocFile()) if File.exist?(tocFile())  
 		puts "Scanning disc with cdrdao" if @settings['debug']
 		`cdrdao read-toc --device #{@settings['cdrom']} \"#{tocFile()}\" #{"2>&1" if !@settings['verbose']}`
+		if $?.success?
+			parseTOC()
+		else
+			"cdrdao is killed."
+		end
+	end
+
+	# translate the file of cdrdao to a ruby array and interpret each line
+	def parseTOC
 		puts "Loading file: #{tocFile()}" if @settings['debug']
 		@toc = File.read(tocFile()).split("\n")
 		readDiscInfo()
