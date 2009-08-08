@@ -1108,6 +1108,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@genre = String.new
 		@tracklist = Hash.new
 		@varArtists = Hash.new
+		@otherExtension = String.new
 		
 		splitDirFile()
 		checkNames()
@@ -1204,9 +1205,18 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		createDir()
 		createTempDir()
 		setMetadata()
+		findExtensionOther()
 		setFileNames()
 		createFiles()
 		@status = true
+	end
+	
+	def findExtensionOther
+		if @settings['other']
+			@settings['othersettings'] =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
+			@otherExtension = $&[4..-1]
+			@settings['othersettings'].sub!(@otherExtension, '') # remove any references to the ext in the settings
+		end
 	end
 
 	# create playlist + cuesheet files
@@ -1293,6 +1303,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		elsif codec == 'vorbis' ; file += '.ogg'
 		elsif codec == 'mp3' ; file += '.mp3'
 		elsif codec == 'wav' ; file += '.wav'
+		elsif codec == 'other' ; file += @otherExtension
 		end
 		
 		filename = fileFilter(file)
