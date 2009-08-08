@@ -1949,7 +1949,7 @@ class Encode < Monitor
 		filename = @out.getFile(track, 'other')
 		command = @settings['othersettings'].dup
 
-		command.gsub!('%n', sprintf("%02d", track))
+		command.gsub!('%n', sprintf("%02d", track)) if track != "image"
 		command.gsub!('%f', 'other')
 		command.gsub!('%a', @out.artist)
 		command.gsub!('%b', @out.album)
