@@ -689,6 +689,7 @@ attr_reader :display, :save
 		gapObjectsFrame1()
 		gapObjectsFrame2()
 		gapObjectsFrame3()
+		gapObjectsFrame4()
 		codecobjects_frame1()
 		codecobjects_frame2()
 		codecobjects_frame3()
@@ -973,9 +974,27 @@ attr_reader :display, :save
 		@frameToc3.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@frameToc3.border_width = 5
 		@frameToc3.add(@tableToc3)
+	end
+
+	def gapObjectsFrame4
+		@tableToc4 = Gtk::Table.new(3,3,false)
+		@tableToc4.column_spacings = 5
+		@tableToc4.row_spacings = 4
+		@tableToc4.border_width = 7
+#create objects
+		@correctPreEmphasis = Gtk::RadioButton.new(_('Correct pre-emphasis tracks with sox'))
+		@doNotCorrectPreEmphasis = Gtk::RadioButton.new(@correctPreEmphasis, _("Save the pre-emphasis tag in the cuesheet."))
+#pack objects
+		@tableToc4.attach(@correctPreEmphasis, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@tableToc4.attach(@doNotCorrectPreEmphasis, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+#create frame
+		@frameToc4 = Gtk::Frame.new(_('Handling tracks with pre-emphasis'))
+		@frameToc4.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+		@frameToc4.border_width = 5
+		@frameToc4.add(@tableToc4)
 #pack all frames into a single page
 		@pageToc = Gtk::VBox.new #One VBox to rule them all
-		[@frameToc1, @frameToc2, @frameToc3].each{|frame| @pageToc.pack_start(frame,false,false)}
+		[@frameToc1, @frameToc2, @frameToc3, @frameToc4].each{|frame| @pageToc.pack_start(frame,false,false)}
 		@pageTocLabel = Gtk::Label.new(_("TOC analysis"))
 		@display.append_page(@pageToc, @pageTocLabel)
 	end
