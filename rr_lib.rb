@@ -1215,7 +1215,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		if @settings['other']
 			@settings['othersettings'] =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
 			@otherExtension = $&[4..-1]
-			@settings['othersettings'].sub!(@otherExtension, '') # remove any references to the ext in the settings
+			@settings['othersettings'].gsub!(@otherExtension, '') # remove any references to the ext in the settings
 		end
 	end
 
