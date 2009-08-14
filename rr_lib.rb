@@ -536,26 +536,27 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		if @firstAudioTrack != 1 # a disc that starts with data
 			dataOffset = @startSector[1]
 			@startSector.each_key{|track| @startSector[track] = @startSector[track] - dataOffset}
-		elsif @startSector[1] != 0 # a disc with a hidden audio part
+		elsif @settings['ripHiddenAudio'] == false
+			#do nothing extra when hidden audio shouldn't be ripped
+			#in the cuesheet this part will be marked as a pregap (silence).
+		elsif @startSector[1] != 0 && @startSector[1] / 75.0 > @settings['minLengthHiddenTrack']
 			@startSector[0] = 0
 			@lengthSector[0] = @startSector[1]
+		elsif @startSector[1] != 0 # prepend the audio because it's not marked as a hidden track
+			@lenghtSector[1] = @lengthSector[1] + @startSector[1]
+			@startSector[1] = 0
 		end
 	end
 
 	def analyzeTOC
 		checkOffsetFirstTrack()
-
 		@lengthSector.each_value{|track| @totalSectors += track}
-		
-		# filesize = 44 bytes wav overhead + 2352 bytes per sector
-		@audiotracks.times{|track| @fileSizeWav[track + 1] = 44 + (@lengthSector[track + 1]) * 2352}
-		@fileSizeDisc = @totalSectors * 2352 + 44
 	end
 
 	# return the startSector, example for track 1 getStartSector(1)
 	def getStartSector(track)
 		if track == "image"
-			return 0
+			@startSector.key?(0) ? @startSector[0] : @startSector[1]
 		else
 			return @startSector[track]
 		end
@@ -579,12 +580,12 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		end
 	end
 
-	# return the length of the track, example for track 1 getFileSize(1)
+	# return the length in bytes of the track, example for track 1 getFileSize(1)
 	def getFileSize(track)
 		if track == "image"
-			return @fileSizeDisc
+			return 44 + @totalSectors * 2352
 		else
-			return @fileSizeWav[track]
+			return 44 + @lengthSector[track] * 2352
 		end
 	end
 end
