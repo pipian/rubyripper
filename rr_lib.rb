@@ -19,7 +19,7 @@
 LOCALE=[ENV['PWD'] + "/locale", "/usr/local/share/locale"]
 LOCALE.each{|dir| if File.directory?(dir) ; ENV['GETTEXT_PATH'] = dir ; break end}
 
-$rr_version = '0.5.7' #application wide setting
+$rr_version = '0.6.0a1' #application wide setting
 
 begin
 	require 'gettext'
@@ -112,11 +112,12 @@ $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" 
 "cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', 
 "max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 
 'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)',
-"verbose" => false, "debug" => true, "eject" => true, 
+"verbose" => false, "debug" => true, "eject" => true, 'ripHiddenAudio' => true, 'minLengthHiddenTrack' => 2,
 "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", 
 "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, 
 "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => true, 
-"image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false}
+"image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false,
+'pregaps' => "prepend", 'preEmphasis' => 'cue'}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)

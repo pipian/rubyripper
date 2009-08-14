@@ -711,8 +711,15 @@ attr_reader :display, :save
 		@rip_entry.text = @settings['rippersettings']
 		@eject.active = @settings['eject']
 		@no_log.active = @settings['no_log']
+#toc settings
 		@create_cue.active = @settings['create_cue']
 		@create_single_file.active = @settings['image']
+		@ripHiddenAudio.active = @settings['ripHiddenAudio']
+		@markHiddenTrackSpin.value = @settings['minLengthHiddenTrack'].to_f
+		@appendPregaps.active = @settings['pregaps'] == 'append'
+		@prependPregaps.active = @settings['pregaps'] == 'prepend'
+		@correctPreEmphasis.active = @settings['preEmphasis'] == 'sox'
+		@doNotCorrectPreEmphasis.active = @settings['preEmphasis'] == 'cue'
 #codec settings
 		@flac.active = @settings['flac']
 		@vorbis.active = @settings['vorbis']
@@ -756,8 +763,13 @@ attr_reader :display, :save
 		@settings['rippersettings'] = @rip_entry.text
 		@settings['eject'] = @eject.active?
 		@settings['no_log'] = @no_log.active?
+#toc settings
 		@settings['create_cue'] = @create_cue.active?
 		@settings['image'] = @create_single_file.active?
+		@settings['ripHiddenAudio'] = @ripHiddenAudio.active?
+		@settings['minLengthHiddenTrack'] = @markHiddenTrackSpin.value.to_i
+		@settings['pregaps'] = @appendPregaps.active? ? 'append' : 'prepend'
+		@settings['preEmphasis'] = @correctPreEmphasis.active? ? 'sox' : 'cue'
 #codec settings
 		@settings['flac'] = @flac.active?
 		@settings['vorbis'] = @vorbis.active?
@@ -936,7 +948,7 @@ attr_reader :display, :save
 		@tableToc2.row_spacings = 4
 		@tableToc2.border_width = 7
 #create objects
-		@ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors before track 1'))
+		@ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors'))
 		@markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when bigger than'))
 		@markHiddenTrackLabel2 = Gtk::Label.new(_('seconds'))
 		@markHiddenTrackSpin = Gtk::SpinButton.new(0, 30, 1)
