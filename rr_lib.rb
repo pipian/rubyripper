@@ -305,8 +305,6 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@discId = ''
 		
 		@totalSectors = 0
-		@fileSizeWav = Hash.new
-		@fileSizeDisc = 0
 		
 		@error = '' #set to the error messsage
 
