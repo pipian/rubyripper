@@ -345,7 +345,8 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		@cdrdaoThread.join() if @cdrdaoThread != nil
 		
 		# update the length of the sectors + the start of the tracks if we're prepending the gaps
-		if @settings['pregaps'] == "prepend" && @settings['image'] == false
+		# also for the image since this is more easy with the cuesheet handling
+		if @settings['pregaps'] == "prepend" || @settings['image']
 			prependGaps()
 		end
 		
@@ -803,12 +804,15 @@ class Cuesheet
 				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
 			else
 				trackinfo(track)
+				if @settings['pregap'] == "append" && @toc.getPregap(track + 1) > 0
+					trackinfo(track, true)
+				end
 			end
 		end
 	end
 
 	# write the info for a single track
-	def trackinfo(track)
+	def trackinfo(track, append = false)
 		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
 		
 		if track == 1 && @settings['ripHiddenAudio'] == false && @settings['cd'].getStartSector(1) > 0
@@ -821,16 +825,41 @@ class Cuesheet
 		else
 			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
 		end
-
-		# fix the trackbased ripping later on
-		# fix the hidden audio track later on
-		if @settings['image'] && @toc.getPregapToc(track) != 0
-			# cdparanoia starts a track after the pregap, so correct this
-			startSector = @settings['cd'].getStartSector(track) - @toc.getPregapToc(track)
-			@cuesheet << "    INDEX 00 #{time(startSector)}"
-		end	
 		
-		@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
+		if append == false
+			trackindex(track)
+		else
+			appendPregap(track)
+		end
+	end
+	
+	def appendPregap(track)
+		@cuesheet << "    INDEX 00 #{time(@settings['cd'].getLengthSector(track) - @toc.getPregap(track+1))}"
+	end
+	
+	def trackindex(track)
+		if @settings['image']
+			# There is a different handling for track 1 and the rest
+			if track == 1 && @settings['cd'].getStartSector(1) > 0
+				@cuesheet << "    INDEX 00 #{time(0)}"
+				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
+			elsif @toc.getPregap(track) > 0 
+				@cuesheet << "    INDEX 00 #{time(@settings['cd'].getStartSector(track))}"
+				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track) + @toc.getPregap(track))}"
+			else # no pregap
+				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
+			end
+		else
+			# There is a different handling for track 1 and the rest
+			# If no hidden audio track or modus is prepending
+			if (track == 1 && @settings['cd'].getStartSector(1) > 0 && !@settings['cd'].getStartSector(0)) ||
+			(@toc.getPregap(track) > 0 && @settings['prepend'])
+				@cuesheet << "    INDEX 00 #{time(0)}"
+				@cuesheet << "    INDEX 01 #{time(@toc.getPreGap(track))}"
+			else # no pregap or appended to previous which means it starts at 0
+				@cuesheet << "    INDEX 01 #{time(0)}"
+			end
+		end
 	end
 
 	def saveCuesheet
