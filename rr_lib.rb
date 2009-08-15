@@ -2201,6 +2201,11 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
  		end
 
 		if @settings['other'] ; checkOtherSettings() end
+			
+		# update the ripping settings for a hidden audio track if track 1 is selected
+		if @settings['cd'].getStartSector(0) && @settings['tracksToRip'][0] == 1
+			@settings['tracksToRip'].unshift(0)
+		end
  		
  		if @settings['req_matches_all'] > @settings['req_matches_errors'] ; @settings['req_matches_errors'] = @settings['req_matches_all'] end
 		return true
