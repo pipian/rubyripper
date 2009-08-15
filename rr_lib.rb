@@ -821,7 +821,8 @@ class Cuesheet
 			@cuesheet << "  PREGAP #{time(@settings['cd'].getStartSector(1))}"
 		end
 		
-		if @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 && track != 1 && append == false
+		if !@settings['image'] && @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 &&
+				track != 1 && append == false
 			# do not print the info again as it's already done for previous track
 		else
 			@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
