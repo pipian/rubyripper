@@ -578,7 +578,11 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		if track == "image"
 			@startSector.key?(0) ? @startSector[0] : @startSector[1]
 		else
-			return @startSector[track]
+			if @startSector.key?(track)
+				return @startSector[track]
+			else
+				return false
+			end
 		end
 	end
 
@@ -1305,7 +1309,8 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 			end
 		end
 
-		if @settings['cd'].getStartSector(1) > 0
+		#if no hidden track is detected, getStartSector will return false
+		if @settings['cd'].getStartSector(0)
 			setHiddenTrack()
 		end
 	end
