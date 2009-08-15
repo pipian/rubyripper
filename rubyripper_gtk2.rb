@@ -188,6 +188,7 @@ attr_reader :change_display, :instances, :update
 	end
 	
 	def scan_drive
+		cancelTocScan()
 		@buttons.each{|button| button.sensitive = false}
 		Thread.new do
 			# Analyze audio-cd, don't look at freedb yet. If the current freedb string is the same don't use yaml for metadata
