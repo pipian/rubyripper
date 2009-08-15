@@ -366,9 +366,9 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 			             
 		if @settings['debug']
 			puts "Debug info: gaps are now prepended"
-			puts "Startsector/tLengthsector"
+			puts "Startsector\tLengthsector"
 			(1..@audiotracks).each do |track|
-				puts "#{@startSector[track]}/t#{@lengthSector[track]}"
+				puts "#{@startSector[track]}\t#{@lengthSector[track]}"
 			end
 		end             
 	end
