@@ -361,13 +361,15 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 			pregap = @toc.getPregap(track)
 			@lengthSector[track - 1] -= pregap
 			@startSector[track] -= pregap
-			@lenghtSector[track] += pregap
+			@lengthSector[track] += pregap
 		end
 			             
 		if @settings['debug']
 			puts "Debug info: gaps are now prepended"
-			puts "startSector: #{@startSector.values.sort.join(',')}"
-			puts "lengthSector: #{@lengthSector.keys.sort.each{|key| puts @lengthSector[key]}}"
+			puts "Startsector/tLengthsector"
+			(1..@audiotracks).each do |track|
+				puts "#{@startSector[track]}/t#{@lengthSector[track]}"
+			end
 		end             
 	end
 
@@ -626,7 +628,7 @@ end
 # cuesheet is necessary to store the gap info.
 
 class AdvancedToc
-attr_reader :getPregapToc, :log
+attr_reader :getPregap, :log
 
 	def initialize(settings)
 		@settings = settings
@@ -742,7 +744,7 @@ attr_reader :getPregapToc, :log
 	end
 
 	# return the pregap if found, otherwise return 0
-	def getPregapToc(track)
+	def getPregap(track)
 		if @pregap.key?(track)
 			return @pregap[track] 
 		else
@@ -804,7 +806,7 @@ class Cuesheet
 				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
 			else
 				trackinfo(track)
-				if @settings['pregap'] == "append" && @toc.getPregap(track + 1) > 0
+				if @settings['pregaps'] == "append" && @toc.getPregap(track + 1) > 0
 					trackinfo(track, true)
 				end
 			end
@@ -852,10 +854,12 @@ class Cuesheet
 		else
 			# There is a different handling for track 1 and the rest
 			# If no hidden audio track or modus is prepending
-			if (track == 1 && @settings['cd'].getStartSector(1) > 0 && !@settings['cd'].getStartSector(0)) ||
-			(@toc.getPregap(track) > 0 && @settings['prepend'])
+			if track == 1 && @settings['cd'].getStartSector(1) > 0 && !@settings['cd'].getStartSector(0)
 				@cuesheet << "    INDEX 00 #{time(0)}"
-				@cuesheet << "    INDEX 01 #{time(@toc.getPreGap(track))}"
+				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
+			elsif @settings['pregaps'] == "prepend" && @toc.getPregap(track) > 0 
+				@cuesheet << "    INDEX 00 #{time(0)}"
+				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
 			else # no pregap or appended to previous which means it starts at 0
 				@cuesheet << "    INDEX 01 #{time(0)}"
 			end
@@ -1564,8 +1568,8 @@ class SecureRip
 		@settings['log'].ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
 		
 		@settings['tracksToRip'].each do |track|
-			puts "Ripping track #{track}" if @settings['debug'] && track == 'image'
-			puts "Ripping image" if @settings['debug'] && track != 'image'
+			puts "Ripping track #{track}" if @settings['debug'] && track != 'image'
+			puts "Ripping image" if @settings['debug'] && track == 'image'
 			ripTrack(track)
 		end
 		
