@@ -750,11 +750,18 @@ attr_reader :getPregapToc, :log
 	end
 end
 
-class Cuesheet
-
+#The Cuesheet class is there to provide a Cuesheet. It is
+#called from the Disc class after the toc scanning has
+#finished. There are several variants for building a cuesheet.
+#It at least needs a reference to all files. Single file is
+#the most simple, since the prepend / append discussion isn't
+#relevant here.
+#
+# NOTE Currently Data tracks are totally ignored for the cuesheet.
 # INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
 # INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
 
+class Cuesheet
 	def initialize(settings, toc)
 		@settings = settings
 		@toc = toc
@@ -803,6 +810,11 @@ class Cuesheet
 	# write the info for a single track
 	def trackinfo(track)
 		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
+		
+		if track == 1 && @settings['ripHiddenAudio'] == false && @settings['cd'].getStartSector(1) > 0
+			@cuesheet << "  PREGAP #{time(@settings['cd'].getStartSector(1))}"
+		end
+		
 		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
 		if @settings['Out'].getVarArtist(track) == ''
 			@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
