@@ -344,8 +344,30 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		# if the scanning thread is still active, wait for it to finish
 		@cdrdaoThread.join() if @cdrdaoThread != nil
 		
+		# update the length of the sectors + the start of the tracks if we're prepending the gaps
+		if @settings['pregaps'] == "prepend" && @settings['image'] == false
+			prependGaps()
+		end
+		
 		# only make a cuesheet when the toc class is there
 		@cue = Cuesheet.new(@settings, @toc) if @toc != nil
+	end
+
+	# prepend the gaps, so rewrite the toc info
+	# notice that cdparanoia appends by default
+	def prependGaps
+		(2..@audiotracks).each do |track|
+			pregap = @toc.getPregap(track)
+			@lengthSector[track - 1] -= pregap
+			@startSector[track] -= pregap
+			@lenghtSector[track] += pregap
+		end
+			             
+		if @settings['debug']
+			puts "Debug info: gaps are now prepended"
+			puts "startSector: #{@startSector.join(',')}"
+			puts "lengthSector: #{@lengthSector.join(',')}"
+		end             
 	end
 
 	def audioDisc
