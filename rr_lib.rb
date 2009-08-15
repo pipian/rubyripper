@@ -807,7 +807,7 @@ class Cuesheet
 			else
 				trackinfo(track)
 				if @settings['pregaps'] == "append" && @toc.getPregap(track + 1) > 0
-					trackinfo(track, true)
+					trackinfo(track + 1, true)
 				end
 			end
 		end
@@ -821,11 +821,15 @@ class Cuesheet
 			@cuesheet << "  PREGAP #{time(@settings['cd'].getStartSector(1))}"
 		end
 		
-		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
-		if @settings['Out'].getVarArtist(track) == ''
-			@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
+		if @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 && track != 1 && append == false
+			# do not print the info again as it's already done for previous track
 		else
-			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
+			@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
+			if @settings['Out'].getVarArtist(track) == ''
+				@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
+			else
+				@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
+			end
 		end
 		
 		if append == false
