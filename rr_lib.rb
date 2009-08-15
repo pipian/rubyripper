@@ -19,7 +19,7 @@
 LOCALE=[ENV['PWD'] + "/locale", "/usr/local/share/locale"]
 LOCALE.each{|dir| if File.directory?(dir) ; ENV['GETTEXT_PATH'] = dir ; break end}
 
-$rr_version = '0.6.0a1' #application wide setting
+$rr_version = '0.6.0b1' #application wide setting
 
 begin
 	require 'gettext'
@@ -628,7 +628,7 @@ end
 # cuesheet is necessary to store the gap info.
 
 class AdvancedToc
-attr_reader :getPregap, :log
+attr_reader :getPregap, :hasPreEmph, :log
 
 	def initialize(settings)
 		@settings = settings
@@ -751,6 +751,15 @@ attr_reader :getPregap, :log
 			return 0
 		end
 	end
+	
+	# return if a track has pre-emphasis
+	def hasPreEmph(track)
+		if @preEmphasis.key?(track)
+			return true
+		else
+			return false
+		end
+	end
 end
 
 #The Cuesheet class is there to provide a Cuesheet. It is
@@ -805,6 +814,10 @@ class Cuesheet
 			if track == "image"
 				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
 			else
+				if @toc.hasPreEmph(track) && (@settings['preEmphasis'] == 'cue' || !installed('sox'))
+					@cuesheet << "FLAGS PRE"
+					puts "Added PRE(emphasis) flag for track #{track}." if @settings['debug']
+				end
 				trackinfo(track)
 				if @settings['pregaps'] == "append" && @toc.getPregap(track + 1) > 0
 					trackinfo(track + 1, true)
@@ -1603,7 +1616,27 @@ class SecureRip
 
 		# first check if there's enough size available in the output dir
 		if not sizeTest(track) ; break end #WHAT EXACTLY IS IT BREAKING?
-		if main(track) ; @encoding.addTrack(track) else return false end #ready to encode
+		if main(track)
+			deEmphasize(track)
+			@encoding.addTrack(track)
+		else 
+			return false
+		end #ready to encode
+	end
+	
+	# check if the track needs to be corrected
+	# the de-emphasized file needs another name
+	# when sox is finished move it back to the original name
+	def deEmphasize(track)
+		if @settings['create_cue'] && @settings['preEmphasis'] == "sox" &&
+			@settings['cd'].toc.hasPreEmph(track) && installed(sox)
+			`sox #{@settings['Out'].getTempFile(track, 1)} #{@settings['Out'].getTempFile(track, 2)}`
+			if $?.success?
+				FileUtils.mv(@settings['Out'].getTempFile(track, 2), @settings['Out'].getTempFile(track, 1))
+			else
+				puts "sox failed somehow."
+			end
+		end
 	end
 
 	def sizeTest(track)
