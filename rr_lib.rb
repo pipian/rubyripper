@@ -365,8 +365,8 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 			             
 		if @settings['debug']
 			puts "Debug info: gaps are now prepended"
-			puts "startSector: #{@startSector.join(',')}"
-			puts "lengthSector: #{@lengthSector.join(',')}"
+			puts "startSector: #{@startSector.values.sort.join(',')}"
+			puts "lengthSector: #{@lengthSector.keys.sort.each{|key| puts @lengthSector[key]}}"
 		end             
 	end
 
