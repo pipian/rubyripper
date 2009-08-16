@@ -824,9 +824,6 @@ class Cuesheet
 				end
 				
 				trackinfo(track)
-				#if @settings['pregaps'] == "append" && @toc.getPregap(track + 1) > 0
-				#	trackinfo(track + 1, true)
-				#end
 			end
 		end
 	end
@@ -843,11 +840,6 @@ class Cuesheet
 		if track == 1 && @settings['ripHiddenAudio'] == false && @settings['cd'].getStartSector(1) > 0
 			@cuesheet << "  PREGAP #{time(@settings['cd'].getStartSector(1))}"
 		end
-		
-		#if !@settings['image'] && @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 &&
-		#		track != 1 && append == false
-		#	# do not print the info again as it's already done for previous track
-		#else
 
 		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
 		if @settings['Out'].getVarArtist(track) == ''
@@ -857,16 +849,7 @@ class Cuesheet
 		end
 		
 		trackindex(track)
-		#if append == false
-		#	trackindex(track)
-		#else
-		#appendPregap(track)
-		#end
 	end
-	
-	#def appendPregap(track)
-	#	
-	#end
 	
 	def trackindex(track)
 		if @settings['image']
