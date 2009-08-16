@@ -810,52 +810,63 @@ class Cuesheet
 
 		# image rips should handle all info of the tracks at once
 		@settings['tracksToRip'].each do |track|
-			@cuesheet << "FILE \"#{File.basename(@settings['Out'].getFile(track, @codec))}\" #{@filetype[@codec]}"
 			if track == "image"
+				writeFileLine(track)
 				(1..@settings['cd'].audiotracks).each{|audiotrack| trackinfo(audiotrack)}
 			else
 				if @toc.hasPreEmph(track) && (@settings['preEmphasis'] == 'cue' || !installed('sox'))
 					@cuesheet << "FLAGS PRE"
 					puts "Added PRE(emphasis) flag for track #{track}." if @settings['debug']
 				end
-				trackinfo(track)
-				if @settings['pregaps'] == "append" && @toc.getPregap(track + 1) > 0
-					trackinfo(track + 1, true)
+				
+				if @settings['pregaps'] == "prepend" || @toc.getPregap(track) == 0 || track == 1
+					writeFileLine(track)
 				end
+				
+				trackinfo(track)
+				#if @settings['pregaps'] == "append" && @toc.getPregap(track + 1) > 0
+				#	trackinfo(track + 1, true)
+				#end
 			end
 		end
 	end
 
+	#writes the location of the file in the Cue
+	def writeFileLine(track)
+		@cuesheet << "FILE \"#{File.basename(@settings['Out'].getFile(track, @codec))}\" #{@filetype[@codec]}"
+	end
+	
 	# write the info for a single track
-	def trackinfo(track, append = false)
+	def trackinfo(track)
 		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
 		
 		if track == 1 && @settings['ripHiddenAudio'] == false && @settings['cd'].getStartSector(1) > 0
 			@cuesheet << "  PREGAP #{time(@settings['cd'].getStartSector(1))}"
 		end
 		
-		if !@settings['image'] && @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 &&
-				track != 1 && append == false
-			# do not print the info again as it's already done for previous track
+		#if !@settings['image'] && @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 &&
+		#		track != 1 && append == false
+		#	# do not print the info again as it's already done for previous track
+		#else
+
+		@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
+		if @settings['Out'].getVarArtist(track) == ''
+			@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
 		else
-			@cuesheet << "    TITLE \"#{@settings['Out'].getTrackname(track)}\""
-			if @settings['Out'].getVarArtist(track) == ''
-				@cuesheet << "    PERFORMER \"#{@settings['Out'].artist}\""
-			else
-				@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
-			end
+			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
 		end
 		
-		if append == false
-			trackindex(track)
-		else
-			appendPregap(track)
-		end
+		trackindex(track)
+		#if append == false
+		#	trackindex(track)
+		#else
+		#appendPregap(track)
+		#end
 	end
 	
-	def appendPregap(track)
-		@cuesheet << "    INDEX 00 #{time(@settings['cd'].getLengthSector(track) - @toc.getPregap(track+1))}"
-	end
+	#def appendPregap(track)
+	#	
+	#end
 	
 	def trackindex(track)
 		if @settings['image']
@@ -869,6 +880,10 @@ class Cuesheet
 			else # no pregap
 				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
 			end
+		elsif @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 && track != 1
+			@cuesheet << "    INDEX 00 #{time(@settings['cd'].getLengthSector(track) - @toc.getPregap(track+1))}"
+			writeFileLine(track)
+			@cuesheet << "    INDEX 01 #{time(0)}"
 		else
 			# There is a different handling for track 1 and the rest
 			# If no hidden audio track or modus is prepending
