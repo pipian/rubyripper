@@ -864,7 +864,7 @@ class Cuesheet
 				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
 			end
 		elsif @settings['pregaps'] == "append" && @toc.getPregap(track) > 0 && track != 1
-			@cuesheet << "    INDEX 00 #{time(@settings['cd'].getLengthSector(track) - @toc.getPregap(track+1))}"
+			@cuesheet << "    INDEX 00 #{time(@settings['cd'].getLengthSector(track-1) - @toc.getPregap(track))}"
 			writeFileLine(track)
 			@cuesheet << "    INDEX 01 #{time(0)}"
 		else
