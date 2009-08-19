@@ -104,6 +104,15 @@ but it may not work on audio-cd's with a data track.
 
 
 4. CHANGELOG
+---------0.6.0 RELEASE------
+* get advanced toc scanning with help of cdrdao
+* support for hidden tracks before track 1
+* optionally set how many seconds a hidden track at least must be
+* optionally not rip sectors before track 1 (prevent crashes for some drives)
+* option to either append / prepend pregaps
+* option for pre-emphasis handling
+* fix rips with discs that start with a data track once again
+* all new options result in a correct cuesheet (like EAC)
 
 ---------0.5.7 RELEASE------
 * a fix for discs that start with a data track
