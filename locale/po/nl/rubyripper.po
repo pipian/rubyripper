@@ -6,8 +6,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.6.0b2\n"
-"POT-Creation-Date: 2009-08-20 21:08+0200\n"
-"PO-Revision-Date: 2009-06-30 17:56+0100\n"
+"POT-Creation-Date: 2009-08-20 21:23+0200\n"
+"PO-Revision-Date: 2009-08-20 21:21+0100\n"
 "Last-Translator: Bouke Woudstra <rubyripperdev@gmail.com>\n"
 "Language-Team: Dutch\n"
 "MIME-Version: 1.0\n"
@@ -776,29 +776,32 @@ msgstr "Veilig rippen"
 
 #: rubyripper_gtk2.rb:924
 msgid "Rip hidden audio sectors"
-msgstr ""
+msgstr "Rip verborgen audio deel"
 
 #: rubyripper_gtk2.rb:925
 msgid "Mark as a hidden track when bigger than"
-msgstr ""
+msgstr "Markeer als verborgen track wanneer langer dan"
 
 #: rubyripper_gtk2.rb:926
 msgid "seconds"
-msgstr ""
+msgstr "seconden"
 
 #: rubyripper_gtk2.rb:929
 msgid "Uncheck this if cdparanoia crashes with your ripping drive."
 msgstr ""
+"Schakel deze optie uit als cdparanoia problemen geeft met uw cdrom drive"
 
 #: rubyripper_gtk2.rb:930
 msgid ""
 "A hidden track will rip to a seperate file if used in track modus.\n"
 "If it's smaller the sectors will be prepended to the first track."
 msgstr ""
+"Een verborgen track wordt een apart bestand in track modus.\n"
+"Als het te smal is wordt de audio voor de eerste track gezet."
 
 #: rubyripper_gtk2.rb:940
 msgid "Audio sectors before track 1"
-msgstr ""
+msgstr "Audio delen vóór track 1"
 
 #: rubyripper_gtk2.rb:952
 msgid "Create cuesheet"
@@ -810,39 +813,39 @@ msgstr "Rip de cd naar een enkel bestand"
 
 #: rubyripper_gtk2.rb:958
 msgid "Advanced Toc analysis"
-msgstr ""
+msgstr "Geavanceerde Toc analyse"
 
 #: rubyripper_gtk2.rb:966
 msgid "Cdrdao installed?"
-msgstr ""
+msgstr "Cdrdao geïnstalleerd?"
 
 #: rubyripper_gtk2.rb:978
 msgid "Append pregap to the previous track"
-msgstr ""
+msgstr "Voeg pregap toe aan het eind van vorige track"
 
 #: rubyripper_gtk2.rb:979
 msgid "Prepend pregaps to the track"
-msgstr ""
+msgstr "Begin een track met de pregap"
 
 #: rubyripper_gtk2.rb:984
 msgid "Handling pregaps other than track 1"
-msgstr ""
+msgstr "Pregaps anders dan track 1"
 
 #: rubyripper_gtk2.rb:997
 msgid "Correct pre-emphasis tracks with sox"
-msgstr ""
+msgstr "Corrigeer pre-emphasis met sox"
 
 #: rubyripper_gtk2.rb:998
 msgid "Save the pre-emphasis tag in the cuesheet."
-msgstr ""
+msgstr "Bewaar de pre-emphasis tag in de cuesheet."
 
 #: rubyripper_gtk2.rb:1003
 msgid "Handling tracks with pre-emphasis"
-msgstr ""
+msgstr "Tracks met pre-emphasis"
 
 #: rubyripper_gtk2.rb:1012
 msgid "TOC analysis"
-msgstr ""
+msgstr "TOC analyse"
 
 #: rubyripper_gtk2.rb:1058
 msgid "Flac"
@@ -896,7 +899,7 @@ msgstr "Alleen kleine letters in bestandsnamen"
 
 #: rubyripper_gtk2.rb:1100
 msgid "Number of extra encoding threads"
-msgstr ""
+msgstr "Aantal extra encoding processen"
 
 #: rubyripper_gtk2.rb:1109
 msgid "Codec related"
@@ -1214,9 +1217,8 @@ msgid "TRACK %s\n"
 msgstr "TRACK %s\n"
 
 #: rr_lib.rb:253
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n"
-msgstr "\tGecorrigeerde positie : %s:%s (%sx) (GECORRIGEERD in poging %s)\n"
+msgstr "\tGecorrigeerde positie : %s:%s (%s x) (GECORRIGEERD in poging %s)\n"
 
 #: rr_lib.rb:255
 msgid "\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
@@ -1279,23 +1281,23 @@ msgstr "freedb string = %s"
 
 #: rr_lib.rb:685
 msgid "No pregaps, silences or pre-emphasis detected\n"
-msgstr ""
+msgstr "Geen pregaps, stiltes of pre-emphasis gevonden\n"
 
 #: rr_lib.rb:723
 msgid "Track %s is marked as a DATA track\n"
-msgstr ""
+msgstr "Track %s is gemarkeerd als DATA track\n"
 
 #: rr_lib.rb:726
 msgid "Pre_emphasis detected on track %s\n"
-msgstr ""
+msgstr "Pre_emphasis gevonden voor track %s\n"
 
 #: rr_lib.rb:731
 msgid "Pregap detected for track %s : %s sectors\n"
-msgstr ""
+msgstr "Pregap gevonden voor track %s : %s sectoren\n"
 
 #: rr_lib.rb:736
 msgid "Silence detected for track %s : %s sectors\n"
-msgstr ""
+msgstr "Stilte gevonden voor track %s: %s sectoren\n"
 
 #: rr_lib.rb:912
 msgid "Track %s"
@@ -1339,12 +1341,11 @@ msgstr ""
 
 #: rr_lib.rb:1420
 msgid "Hidden Track"
-msgstr ""
+msgstr "Verborgen track"
 
 #: rr_lib.rb:1421
-#, fuzzy
 msgid "Unknown Artist"
-msgstr "Onbekende drive"
+msgstr "Onbekende Artiest"
 
 #: rr_lib.rb:1648
 msgid "Not enough disk space left! Rip aborted"
@@ -1370,15 +1371,15 @@ msgstr ""
 
 #: rr_lib.rb:1710
 msgid "Your cdrom drive can not read last sector(s)\n"
-msgstr ""
+msgstr "Uw cdrom speler kan de laatste sectoren niet lezen\n"
 
 #: rr_lib.rb:1711
 msgid "Amount of sectors missing: %s.\n"
-msgstr ""
+msgstr "Aantal vermiste sectoren: %s.\n"
 
 #: rr_lib.rb:1712
 msgid "Notice that each sector is 1/75 second.\n"
-msgstr ""
+msgstr "Merk op dat elke sector gelijk staat aan 1/75 seconde.\n"
 
 #: rr_lib.rb:1720
 msgid "Filesize is not correct! Trying another time\n"
@@ -1437,12 +1438,16 @@ msgid ""
 "\n"
 "ADVANCED TOC ANALYSIS (with cdrdao)\n"
 msgstr ""
+"\n"
+"GEAVANCEERDE TOC ANALYSE (met cdrdao)\n"
 
 #: rr_lib.rb:2244
 msgid ""
 "...please be patient, this may take a while\n"
 "\n"
 msgstr ""
+"...even geduld aub, dit kan even duren\n"
+"\n"
 
 #: rr_lib.rb:2264
 msgid "The device %s doesn't exist on your system!"

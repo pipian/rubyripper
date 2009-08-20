@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.6.0b2\n"
-"POT-Creation-Date: 2009-08-20 21:08+0200\n"
+"POT-Creation-Date: 2009-08-20 21:23+0200\n"
 "PO-Revision-Date: 2009-07-01 13:19+0100\n"
 "Last-Translator: Heinz-Martin Weigand <h-m.w@gmx.de>\n"
 "Language-Team: German <h-m.w@gmx.de>\n"
