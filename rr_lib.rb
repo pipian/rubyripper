@@ -566,7 +566,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 			@startSector[0] = 0
 			@lengthSector[0] = @startSector[1]
 		elsif @startSector[1] != 0 # prepend the audio because it's not marked as a hidden track
-			@lenghtSector[1] = @lengthSector[1] + @startSector[1]
+			@lengthSector[1] = @lengthSector[1] + @startSector[1]
 			@startSector[1] = 0
 		end
 	end
