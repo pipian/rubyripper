@@ -43,7 +43,7 @@ attr_reader :change_display, :instances, :update
 		@current_instance = false
 		@gtk_window = Gtk::Window.new('Rubyripper')
 		ICONDIR.each{|dir| if File.exist?(file = File.join(dir, 'rubyripper.png')) ; @gtk_window.icon = Gdk::Pixbuf.new(file) ; break end }
-		@gtk_window.set_default_size(520, 400) #width, height
+		@gtk_window.set_default_size(530, 440) #width, height
 		
 		@hbox1 = Gtk::HBox.new(false,5)
 
