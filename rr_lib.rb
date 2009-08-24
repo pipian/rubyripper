@@ -819,11 +819,23 @@ class Cuesheet
 					puts "Added PRE(emphasis) flag for track #{track}." if @settings['debug']
 				end
 				
-				if @settings['pregaps'] == "prepend" || @toc.getPregap(track) == 0 || track == 1
+				# do not put Track 00 AUDIO, but instead only mention the filename
+				if track == 0
 					writeFileLine(track)
+				# when a hidden track exists first enter the trackinfo, then the file
+				elsif track == 1 && @settings['cd'].getStartSector(0)
+					trackinfo(track)
+					writeFileLine(track)
+				# when no hidden track exists write the file and then the trackinfo
+				elsif track == 1 && !@settings['cd'].getStartSector(0)
+					writeFileLine(track)
+					trackinfo(track)
+				elsif @settings['pregaps'] == "prepend" || @toc.getPregap(track) == 0
+					writeFileLine(track)
+					trackinfo(track)
+				else
+					trackinfo(track)	
 				end
-				
-				trackinfo(track)
 			end
 		end
 	end
@@ -873,6 +885,8 @@ class Cuesheet
 			if track == 1 && @settings['cd'].getStartSector(1) > 0 && !@settings['cd'].getStartSector(0)
 				@cuesheet << "    INDEX 00 #{time(0)}"
 				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
+			elsif track == 1 && @settings['cd'].getStartSector(0)
+				@cuesheet << "    INDEX 01 #{time(0)}"
 			elsif @settings['pregaps'] == "prepend" && @toc.getPregap(track) > 0 
 				@cuesheet << "    INDEX 00 #{time(0)}"
 				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
