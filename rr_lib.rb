@@ -1627,13 +1627,14 @@ class SecureRip
 		@trial = 0
 
 		# first check if there's enough size available in the output dir
-		if not sizeTest(track) ; break end #WHAT EXACTLY IS IT BREAKING?
-		if main(track)
-			deEmphasize(track)
-			@encoding.addTrack(track)
-		else 
-			return false
-		end #ready to encode
+		if sizeTest(track)
+			if main(track)
+				deEmphasize(track)
+				@encoding.addTrack(track)
+			else 
+				return false
+			end #ready to encode
+		end
 	end
 	
 	# check if the track needs to be corrected
