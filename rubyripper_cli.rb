@@ -313,7 +313,11 @@ class Gui_CLI
 		puts _("TRACK INFO")
 		
 		showTracks()
-		showFreedbOptions()
+		if @options.all
+			prepareRip()
+		else
+			showFreedbOptions()
+		end
 	end
 
 	def showTracks()
