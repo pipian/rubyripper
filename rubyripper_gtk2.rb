@@ -645,7 +645,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 
 	def unsetVarArtist()
 		# giving the backend the signal to revert last actions
-		@cd.md.undoVarArtist()
+		@cd.md.undoVarArtist() if !@cd.md.varArtists.empty?
 		# reset the Trackname fields (give full trackname, including detected artists)
 		@cd.audiotracks.times{|index| @trackEntryArray[index].text = @cd.md.tracklist[index]}
 		# remove all current objects from array, as we're repacking them
