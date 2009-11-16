@@ -2198,7 +2198,11 @@ class Encode < Monitor
 	
 	def wav(filename, track)
 		require 'fileutils'
-		FileUtils.cp(@out.getTempFile(track, 1), filename)
+		begin
+			FileUtils.cp(@out.getTempFile(track, 1), filename)
+		rescue
+			"Warning: wav file #{@out.getTempFile(track,1)} not found!"
+		end
 	end
 	
 	def checkCommand(command, track, codec)
