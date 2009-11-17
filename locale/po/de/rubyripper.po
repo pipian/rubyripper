@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Rubyripper 0.6.0b2\n"
 "POT-Creation-Date: 2009-08-20 21:23+0200\n"
 "PO-Revision-Date: 2009-07-01 13:19+0100\n"
-"Last-Translator: Heinz-Martin Weigand <h-m.w@gmx.de>\n"
+"Last-Translator: Wieland Hoffmann <the_mineo@web.de>\n"
 "Language-Team: German <h-m.w@gmx.de>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -104,7 +104,7 @@ msgid ""
 "   **Your drive model is shown in the logfile."
 msgstr ""
 "** Finde den Offset auf http://www.accuraterip.com/driveoffsets.htm.\n"
-"** Das Model des Laufwerks steht im Logfile."
+"** Das Modell des Laufwerks steht im Logfile."
 
 #: rubyripper_cli.rb:114
 msgid "9)  passing extra cdparanoia parameters : %s"
@@ -212,7 +212,7 @@ msgstr "Wie oft müssen fehlerhafte Teilstücke übereinstimmen? :"
 
 #: rubyripper_cli.rb:151
 msgid "What should be the maximum number of tries? : "
-msgstr "Maximale Anzahl von Versuchen? :"
+msgstr "Maximale Anzahl an Versuchen? :"
 
 #: rubyripper_cli.rb:152
 msgid "eject disabled"
@@ -692,7 +692,7 @@ msgstr "Alle"
 
 #: rubyripper_gtk2.rb:502
 msgid "Artist"
-msgstr "Interpret"
+msgstr "Künstler"
 
 #: rubyripper_gtk2.rb:503
 msgid "Tracknames (%s tracks)"
@@ -748,7 +748,7 @@ msgstr "Maximale Anzahl von Versuchen (0=unendlich)"
 
 #: rubyripper_gtk2.rb:869 rubyripper_gtk2.rb:870 rubyripper_gtk2.rb:871
 msgid "times"
-msgstr "mal"
+msgstr "Mal"
 
 #: rubyripper_gtk2.rb:885
 msgid "Ripping options"
@@ -776,15 +776,15 @@ msgstr "Sicheres Auslesen"
 
 #: rubyripper_gtk2.rb:924
 msgid "Rip hidden audio sectors"
-msgstr ""
+msgstr "Lies versteckte Audio-Sektoren aus"
 
 #: rubyripper_gtk2.rb:925
 msgid "Mark as a hidden track when bigger than"
-msgstr ""
+msgstr "Markiere als versteckten Track, wenn länger als"
 
 #: rubyripper_gtk2.rb:926
 msgid "seconds"
-msgstr ""
+msgstr "Sekunden"
 
 #: rubyripper_gtk2.rb:929
 msgid "Uncheck this if cdparanoia crashes with your ripping drive."
@@ -798,7 +798,7 @@ msgstr ""
 
 #: rubyripper_gtk2.rb:940
 msgid "Audio sectors before track 1"
-msgstr ""
+msgstr "Audio-Sektoren vor Track 1"
 
 #: rubyripper_gtk2.rb:952
 msgid "Create cuesheet"
@@ -810,23 +810,23 @@ msgstr "Rippe die CD als eine Datei"
 
 #: rubyripper_gtk2.rb:958
 msgid "Advanced Toc analysis"
-msgstr ""
+msgstr "Erweiterte TOC Analyse"
 
 #: rubyripper_gtk2.rb:966
 msgid "Cdrdao installed?"
-msgstr ""
+msgstr "Ist Cdrdao installiert?"
 
 #: rubyripper_gtk2.rb:978
 msgid "Append pregap to the previous track"
-msgstr ""
+msgstr "Hänge Pausen an den vorherigen Track an"
 
 #: rubyripper_gtk2.rb:979
 msgid "Prepend pregaps to the track"
-msgstr ""
+msgstr "Füge Pausen am Anfang des Tracks ein"
 
 #: rubyripper_gtk2.rb:984
 msgid "Handling pregaps other than track 1"
-msgstr ""
+msgstr "Verarbeiten von Pausen vor Track 1"
 
 #: rubyripper_gtk2.rb:997
 msgid "Correct pre-emphasis tracks with sox"
@@ -842,7 +842,7 @@ msgstr ""
 
 #: rubyripper_gtk2.rb:1012
 msgid "TOC analysis"
-msgstr ""
+msgstr "TOC Analyse"
 
 #: rubyripper_gtk2.rb:1058
 msgid "Flac"
@@ -874,7 +874,7 @@ msgid ""
 "%b=album   %y=year   %n=track   %va=various artist\n"
 "%o = outputfile   %i = inputfile"
 msgstr ""
-"%a=Interpret   %g=Genre   %t=Titel   %f=Codec\n"
+"%a=Künstler   %g=Genre   %t=Titel   %f=Codec\n"
 "%b=Album   %y=Jahr   %n=Titelnummer   %va=Verschiedene Künstler\n"
 "%o=Eingabedatei   %i=Ausgabedatei"
 
@@ -896,7 +896,7 @@ msgstr "Großbuchstaben in Dateinamen in Kleinbuchstaben umwandeln"
 
 #: rubyripper_gtk2.rb:1100
 msgid "Number of extra encoding threads"
-msgstr ""
+msgstr "Anzahl zusätzlicher Encoding-Threads"
 
 #: rubyripper_gtk2.rb:1109
 msgid "Codec related"
@@ -984,7 +984,7 @@ msgid ""
 "%a=artist   %g=genre   %t=trackname   %f=codec\n"
 "%b=album   %y=year   %n=track   %va=various artist"
 msgstr ""
-"%a=Interpret   %g=Genre   %t=Titel   %f=Codec\n"
+"%a=Künstler   %g=Genre   %t=Titel   %f=Codec\n"
 "%b=Album   %y=Jahr   %n=Titelnummer   %va=Verschiedene Künstler"
 
 #: rubyripper_gtk2.rb:1224
@@ -1283,7 +1283,7 @@ msgstr ""
 
 #: rr_lib.rb:723
 msgid "Track %s is marked as a DATA track\n"
-msgstr ""
+msgstr "Track %s ist als DATA Track markiert\n"
 
 #: rr_lib.rb:726
 msgid "Pre_emphasis detected on track %s\n"
@@ -1295,7 +1295,7 @@ msgstr ""
 
 #: rr_lib.rb:736
 msgid "Silence detected for track %s : %s sectors\n"
-msgstr ""
+msgstr "Stille in Track %s gefunden: %s Sektoren\n"
 
 #: rr_lib.rb:912
 msgid "Track %s"
@@ -1337,12 +1337,12 @@ msgstr ""
 
 #: rr_lib.rb:1420
 msgid "Hidden Track"
-msgstr ""
+msgstr "Versteckter Track"
 
 #: rr_lib.rb:1421
 #, fuzzy
 msgid "Unknown Artist"
-msgstr "Unbekannt"
+msgstr "Unbekannter Künstler"
 
 #: rr_lib.rb:1648
 msgid "Not enough disk space left! Rip aborted"
@@ -1417,7 +1417,7 @@ msgstr ""
 
 #: rr_lib.rb:2199
 msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
-msgstr "WARNUNG: Encouding zu %s mit Fehler in Track %s beendet!\n"
+msgstr "WARNUNG: Encoding zu %s mit Fehler in Track %s beendet!\n"
 
 #: rr_lib.rb:2231
 msgid ""
@@ -1434,12 +1434,16 @@ msgid ""
 "\n"
 "ADVANCED TOC ANALYSIS (with cdrdao)\n"
 msgstr ""
+"\n"
+"Erweiterte TOC Analyse (mit cdrdao)\n"
 
 #: rr_lib.rb:2244
 msgid ""
 "...please be patient, this may take a while\n"
 "\n"
 msgstr ""
+"...bitte etwas Geduld, dies kann dauern\n"
+"\n"
 
 #: rr_lib.rb:2264
 msgid "The device %s doesn't exist on your system!"
@@ -1453,11 +1457,11 @@ msgstr "Bitte mindestens einen Track auswählen."
 msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
 msgstr ""
 "Die angezeigten Angaben stimmen nicht mit der eingelegten CD überein. Bitte "
-"auf 'Laufwerk abfragen' klicken."
+"auf 'CD jetzt auslesen!' klicken."
 
 #: rr_lib.rb:2280
 msgid "No codecs are selected!"
-msgstr "Keine Kodecs ausgewählt!"
+msgstr "Keine Codecs ausgewählt!"
 
 #: rr_lib.rb:2322
 msgid "%s not found on your system!"
@@ -1499,7 +1503,7 @@ msgstr "Benötigte Übereinstimmungen für fehlerhafte Abschnitte: %s\n"
 
 #: rr_lib.rb:2348
 msgid "Codec(s) used:\n"
-msgstr "Benutzte(r) Kodec(s):\n"
+msgstr "Benutzte(r) Codec(s):\n"
 
 #: rr_lib.rb:2349
 msgid "-flac \t-> %s (%s)\n"
@@ -1539,7 +1543,7 @@ msgid ""
 "Artist\t= "
 msgstr ""
 "\n"
-"Interpret="
+"Künstler="
 
 #: rr_lib.rb:2356
 msgid ""
