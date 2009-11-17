@@ -2224,11 +2224,12 @@ class Encode < Monitor
 	end
 	
 	def checkCommand(command, track, codec)
+		puts "command = #{command}" if @settings['debug']
+
 		exec = IO.popen("nice -n 6 " + command) #execute command
 		exec.readlines() #get all the output
 		
 		if @settings['debug']
-			puts "command = #{command}" 
 			puts "Check exitstatus track #{track}, pid = #{exec.pid}"
 		end
 		
