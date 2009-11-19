@@ -1469,11 +1469,22 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		# underscores instead of spaces
 		if not @settings['noSpaces'] ; var.gsub!('_', ' ') end
 
+		if var.response_to?(:encoding)
+			# prepare for byte substitutions
+			enc = var.encoding
+			var.force_encoding("ASCII-8BIT")
+		end
+
 		# replace utf-8 single quotes with latin single quote 
 		var.gsub!(/\342\200\230|\342\200\231/, "'") 
 		
 		# replace utf-8 double quotes with latin double quote
 		var.gsub!(/\342\200\234|\342\200\235/, '"') 
+
+		if var.response_to?(:encoding)
+			# restore the old encoding
+			var.force_encoding(enc)
+		end
 	end
 
 	# add the first free number as a postfix to the output dir
