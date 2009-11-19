@@ -2196,6 +2196,12 @@ class Encode < Monitor
 		begin
 			require 'iconv'
 			tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
+			if filename.respond_to?(:force_encoding)
+				# make both strings binary in ruby 1.9
+				# in order to concatenate them
+				tags.force_encoding("ASCII-8BIT")
+				filename.force_encoding("ASCII-8BIT")
+			end
 		rescue
 			puts "couldn't convert to ISO-8859-1 succesfully"
 		end
