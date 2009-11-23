@@ -2218,7 +2218,8 @@ class Encode < Monitor
 		begin
 			FileUtils.cp(@out.getTempFile(track, 1), filename)
 		rescue
-			"Warning: wav file #{@out.getTempFile(track,1)} not found!"
+			puts "Warning: wav file #{@out.getTempFile(track,1)} not found!"
+			puts "If this is not the case, you might have a shortage of disk space.."
 		end
 	end
 	
