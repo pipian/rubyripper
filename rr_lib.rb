@@ -1469,7 +1469,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		# underscores instead of spaces
 		if not @settings['noSpaces'] ; var.gsub!('_', ' ') end
 
-		if var.response_to?(:encoding)
+		if var.respond_to?(:encoding)
 			# prepare for byte substitutions
 			enc = var.encoding
 			var.force_encoding("ASCII-8BIT")
@@ -1481,7 +1481,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		# replace utf-8 double quotes with latin double quote
 		var.gsub!(/\342\200\234|\342\200\235/, '"') 
 
-		if var.response_to?(:encoding)
+		if var.respond_to?(:encoding)
 			# restore the old encoding
 			var.force_encoding(enc)
 		end
