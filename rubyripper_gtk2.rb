@@ -1344,7 +1344,7 @@ class DirExists
 attr_reader :display
 
 	def initialize(gui, rubyripper, dirname)
-		@label = Gtk::Label.new(_("The directory %s\nalready exist. What do you want rubyripper to do?") % [dirname])
+		@label = Gtk::Label.new(_("The directory %s already exist.\n\nWhat do you want rubyripper to do?") % [dirname])
 		@label.wrap = true
 		@image = Gtk::Image.new(Gtk::Stock::DIALOG_QUESTION, Gtk::IconSize::DIALOG)
 		
@@ -1353,7 +1353,7 @@ attr_reader :display
 		@separator = Gtk::HSeparator.new
 
 		@buttons = [Gtk::Button.new, Gtk::Button.new, Gtk::Button.new]
-		@labels = [Gtk::Label.new(_("Cancel rip")), Gtk::Label.new(_("Overwrite\ndirectory")), Gtk::Label.new(_("Auto rename\ndirectory"))]
+		@labels = [Gtk::Label.new(_("Cancel rip")), Gtk::Label.new(_("Delete existing\ndirectory")), Gtk::Label.new(_("Auto rename\ndirectory"))]
 		@images = [Gtk::Image.new(Gtk::Stock::CANCEL, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::CLEAR, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::OK, Gtk::IconSize::LARGE_TOOLBAR)]
 		@hboxes = [Gtk::HBox.new, Gtk::HBox.new, Gtk::HBox.new]
 		@buttonbox = Gtk::HBox.new
