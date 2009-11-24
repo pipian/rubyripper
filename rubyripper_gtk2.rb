@@ -1344,7 +1344,7 @@ class DirExists
 attr_reader :display
 
 	def initialize(gui, rubyripper, dirname)
-		@label = Gtk::Label.new(_("The directory %s already exist.\n\nWhat do you want rubyripper to do?") % [dirname])
+		@label = Gtk::Label.new(_("The directory %s already exists.\n\nWhat do you want rubyripper to do?") % [dirname])
 		@label.wrap = true
 		@image = Gtk::Image.new(Gtk::Stock::DIALOG_QUESTION, Gtk::IconSize::DIALOG)
 		
