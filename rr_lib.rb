@@ -116,7 +116,8 @@ $rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" 
 "req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", 
 "username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, 
 "editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => true, 
-"image" => false, 'normalize' => false, 'gain' => "album", 'noSpaces' => false, 'noCapitals' => false,
+"image" => false, 'normalize' => false, 'gain' => "album", 'gainTagsOnly' => false,
+'noSpaces' => false, 'noCapitals' => false,
 'pregaps' => "prepend", 'preEmphasis' => 'cue'}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
@@ -1429,8 +1430,8 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# Fill the metadata for the hidden track
 	def setHiddenTrack
-		@tracklist[0] = tagFilter(_("Hidden Track"))
-		@varArtists[0] = tagFilter(_("Unknown Artist")) if not @md.varArtists.empty?
+		@tracklist[0] = tagFilter(_("Hidden Track").dup)
+		@varArtists[0] = tagFilter(_("Unknown Artist").dup) if not @md.varArtists.empty?
 		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @settings[codec]}
 	end
 
@@ -2027,12 +2028,20 @@ class Encode < Monitor
 					`#{command}`
 				elsif codec == 'mp3'
 					if not installed('mp3gain') ; puts "WARNING: Mp3gain is not installed. Cannot replaygain files." ; return false end
-					command = "mp3gain -c #{if @settings['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
+					if @settings['gainTagsOnly']
+						command = "mp3gain -c #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
+					else
+						command = "mp3gain -c #{if @settings['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
+					end
 					`#{command}`
 				elsif codec == 'wav'
-					if not installed('wavegain') ; puts "WARNING: Wavegain is not installed. Cannot replaygain files." ; return false end
-					command = "wavegain #{if @settings['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
-					`#{command}`
+					if @settings['gainTagsOnly']
+						puts "No replay gain tags possible for wav codec."
+					else
+						if not installed('wavegain') ; puts "WARNING: Wavegain is not installed. Cannot replaygain files." ; return false end
+						command = "wavegain #{if @settings['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
+						`#{command}`
+					end
 				end
 			end
 		end
@@ -2222,11 +2231,12 @@ class Encode < Monitor
 	end
 	
 	def checkCommand(command, track, codec)
+		puts "command = #{command}" if @settings['debug']
+
 		exec = IO.popen("nice -n 6 " + command) #execute command
 		exec.readlines() #get all the output
 		
 		if @settings['debug']
-			puts "command = #{command}" 
 			puts "Check exitstatus track #{track}, pid = #{exec.pid}"
 		end
 		
