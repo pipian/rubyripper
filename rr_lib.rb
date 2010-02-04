@@ -1101,7 +1101,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	end
 	
 	def handleResponse #Make some usefull variables from the raw_response.
-		@rawResponse.each do |line|
+		@rawResponse.split('\n').each do |line|
 			line.strip! #remove any newline characters
 			if line =~ /DTITLE=/
 				if @artist == _('Unknown') #first time we look at a DTITLE field (can have two lines at maximum)
