@@ -1975,7 +1975,7 @@ class Encode < Monitor
 		elsif codec == 'vorbis' ; doVorbis(track)
 		elsif codec == 'mp3' ; doMp3(track)
 		elsif codec == 'wav' ; doWav(track)
-		elsif codec == 'other' ; doOther(track)
+		elsif codec == 'other' && @settings['othersettings'] != nil ; doOther(track)
 		end
 		
 		if @settings['debug']
