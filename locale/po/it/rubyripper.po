@@ -49,7 +49,7 @@ msgstr "Estrae le tracce specificate."
 
 #: rubyripper_cli.rb:96
 msgid "Use config file "
-msgstr "File di configurazione "
+msgstr "File di configurazione usato "
 
 #: rubyripper_cli.rb:100
 msgid "*** RUBYRIPPER SETTINGS ***"
@@ -85,7 +85,7 @@ msgstr "6)  supporto alla playlist [%s]"
 
 #: rubyripper_cli.rb:109
 msgid "7)  encode while ripping [%s]"
-msgstr "7)  codifica durante l'estrazione [%s]"
+msgstr "7)  numero di thread simultanei [%s]"
 
 #: rubyripper_cli.rb:111
 msgid "** RIPPING **"
@@ -109,11 +109,11 @@ msgstr "9)  comandi extra passati a cdparanoia : %s"
 
 #: rubyripper_cli.rb:115
 msgid "10) match all chunks : %s"
-msgstr "10) verifica tutti i chunk : %s"
+msgstr "10) verifiche per tutti i chunk : %s"
 
 #: rubyripper_cli.rb:116
 msgid "11) match erroneous chunks : %s"
-msgstr "11) verifica i chunk errati : %s"
+msgstr "11) verifiche per i chunk errati : %s"
 
 #: rubyripper_cli.rb:117
 msgid "12) maximum trials : %s"
@@ -288,7 +288,7 @@ msgstr "n"
 
 #: rubyripper_cli.rb:175
 msgid "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
-msgstr "%a = artista, %b = album, %g = genere, %y = anno, %t = nome traccia, %n = n°traccia, %i = file di input, %o = file di output (non dimenticare l'estensione)"
+msgstr "%a = artista, %b = album, %g = genere, %y = anno, %t = nome traccia, %n = numero traccia, %i = file di input, %o = file di output (non dimenticare l'estensione)"
 
 #: rubyripper_cli.rb:176
 msgid "Encoding paramaters for %s : "
@@ -435,7 +435,7 @@ msgstr "Scegliere un'opzione: "
 
 #: rubyripper_cli.rb:334
 msgid "1) Select the tracks to rip"
-msgstr "1) Seleziona una traccia da estrarre"
+msgstr "1) Seleziona una o più tracce da estrarre"
 
 #: rubyripper_cli.rb:335
 msgid "2) Edit the disc info"
@@ -461,7 +461,7 @@ msgstr "Marca il disco come di artisti vari"
 
 #: rubyripper_cli.rb:357
 msgid "Mark disc as single artist"
-msgstr "Marca il disco come singolo artista"
+msgstr "Marca il disco come di artista singolo"
 
 #: rubyripper_cli.rb:360
 msgid ""
@@ -1358,7 +1358,7 @@ msgstr "Artista Sconosciuto"
 
 #: rr_lib.rb:1648
 msgid "Not enough disk space left! Rip aborted"
-msgstr "Spazio su disco insufficiente. Estrazione annullata"
+msgstr "Spazio su disco insufficiente. Estrazione annullata."
 
 #: rr_lib.rb:1661
 msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
