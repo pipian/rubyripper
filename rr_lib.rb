@@ -1133,26 +1133,24 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 #Most common notation is ARTIST / TITLE
 #Next to that is ARTIST - TITLE
 #Then we got "TITLE" by ARTIST
+# Some albums use a mixture of these schemes
 
 	def checkVarArtist
 		sep = ''
-		varArtist = true
-		separators = ['/', '-', 'by']
-		separators.each do |sep|
-			varArtist = sep
-			@disc.audiotracks.times do |tracknumber|
-				#if the separator is not found, search for the next separator
-				if !@tracklist[tracknumber] || !@tracklist[tracknumber].include?(sep) 
-					varArtist = false
-					break
-				end
+		varArtist = false
+		@disc.audiotracks.times do |tracknumber|
+			if @tracklist[tracknumber] && @tracklist[tracknumber] =~ /[-\/]|\sby\s/
+				varArtist = true
+			else
+				varArtist = false 	# one of the tracks does not conform to VA schema
+				break  					# consider the whole album as not VA
 			end
-			if varArtist == sep ; break end
+
 		end
 
-		if varArtist != false
+		if varArtist == true
 			@backupTracklist = @tracklist.dup() #backup before overwrite with new values
-			@tracklist.each_index{|index| @varArtists[index], @tracklist[index] = @tracklist[index].split(/\s*#{varArtist}\s*/)} #remove any spaces (\s) around sep
+			@tracklist.each_index{|index| @varArtists[index], @tracklist[index] = @tracklist[index].split(/\s*[-\/]|(\sby\s)\s*/)} #remove any spaces (\s) around sep
 		end
 	end
 	
