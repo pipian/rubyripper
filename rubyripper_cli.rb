@@ -287,7 +287,10 @@ class Gui_CLI
 			showFreedb()
 		elsif status[0] == "choices"
 			chooseFreedb(status[1])
-		elsif status[0] == "networkDown" || status[0] == "noMatches" || status[0] == "unknownReturnCode" || status[0] == "NoAudioDisc"
+		elsif status[0] == "noMatches"
+			update("error", status[1]) # display the warning, but continue anyway
+			showFreedb()
+		elsif status[0] == "networkDown" || status[0] == "unknownReturnCode" || status[0] == "NoAudioDisc"
 			update("error", status[1])
 		else
 			puts "Unknown error with Metadata class."
