@@ -2104,12 +2104,18 @@ class Encode < Monitor
 
 		command.gsub!('%n', sprintf("%02d", track)) if track != "image"
 		command.gsub!('%f', 'other')
-		command.gsub!('%a', @out.artist)
+
+		if @out.getVarArtist(track) != ''
+			command.gsub!('%a', @out.getVarArtist(track))
+			command.gsub!('%va', @out.artist)
+		else
+			command.gsub!('%a', @out.artist)
+		end
+
 		command.gsub!('%b', @out.album)
 		command.gsub!('%g', @out.genre)
 		command.gsub!('%y', @out.year)
 		command.gsub!('%t', @out.getTrackname(track))
-		command.gsub!('%va', @out.getVarArtist(track))
 		command.gsub!('%i', @out.getTempFile(track, 1))
 		command.gsub!('%o', @out.getFile(track, 'other'))
 		checkCommand(command, track, 'other')
