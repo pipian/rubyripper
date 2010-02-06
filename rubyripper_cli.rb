@@ -61,7 +61,7 @@ class Gui_CLI
 		opts = OptionParser.new(banner = nil, width = 20, indent = ' ' * 2) do |opts|
 			opts.on("-V", "--version", _("Show current version of rubyripper.")) do
 				puts "Rubyripper version #{$rr_version}."
-				exit()
+				@options.version = true
 			end
 			opts.on("-f", "--file <FILE>", _("Load configuration settings from file <FILE>.")) do |f|
 				@options.file = f
@@ -88,7 +88,7 @@ class Gui_CLI
 			exit
 		end
 
-		if @options.help; exit end
+		if @options.help || @options.version; exit end
 
 		puts _("Verbose output specified.") if @options.verbose
 		puts _("Configure option specified.") if @options.configure
