@@ -976,7 +976,8 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 				Dir.foreach(File.join(dir, subdir)) do |file|
 					if file == @disc.freedbString[0,8]
 						puts "Local file found #{File.join(dir, subdir, file)}"
-						@rawResponse = File.read(File.join(dir, subdir, file))
+						# convert the string to an array, since ruby-1.9 handles these differently
+						@rawResponse = File.read(File.join(dir, subdir, file)).split("\n")
 						return true
 					end
 				end
@@ -1101,7 +1102,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	end
 	
 	def handleResponse #Make some usefull variables from the raw_response.
-		@rawResponse.split('\n').each do |line|
+		@rawResponse.each do |line|
 			line.strip! #remove any newline characters
 			if line =~ /DTITLE=/
 				if @artist == _('Unknown') #first time we look at a DTITLE field (can have two lines at maximum)
