@@ -1601,6 +1601,7 @@ class SecureRip
 		@reqMatchesErrors = @settings['req_matches_errors'] # Matches needed for chunks that didn't match immediately
 		@progress = 0.0 #for the progressbar
 		@sizeExpected = 0
+		@timeStarted = Time.now # needed for a time break after 30 minutes
 		
 		if @settings['maxThreads'] == 0 ; ripTracks() else Thread.new{ripTracks()} end
 	end
@@ -1841,7 +1842,21 @@ class SecureRip
 		end
 	end
 	
+	# add a timeout if a disc takes longer than 30 minutes to rip (this might save the hardware and the disc)
+	def cooldownNeeded
+		puts "Minutes ripping is #{(Time.now - @timeStarted) / 60}." if @settings['debug']
+		
+		if (((Time.now - @timeStarted) / 60) > 30 && @settings['maxThreads'] != 0)
+			@settings['log'].add(_("The drive is spinning for more than 30 minutes.\n"))
+			@settings['log'].add(_("Taking a timeout of 2 minutes to protect the hardware.\n"))
+			sleep(120)
+			@timeStarted = Time.now # reset time
+		end
+	end
+	
 	def rip(track) # set cdparanoia command + parameters
+		cooldownNeeded()
+		
 		if track == "image"
 			@settings['log'].add(_("Starting to rip CD image, trial \#%s\n") % [@trial])
 		else
