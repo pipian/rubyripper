@@ -52,10 +52,11 @@ class Gui_CLI
 	def parse_options
 		@options = OpenStruct.new
 		@options.file = "~/.rubyripper/settings"
+		@options.version = false
 		@options.help = false
 		@options.verbose = false
 		@options.configure = false
-		@options.all = false
+		@options.defaults = false
 		@options.help = false
 
 		opts = OptionParser.new(banner = nil, width = 20, indent = ' ' * 2) do |opts|
@@ -72,8 +73,8 @@ class Gui_CLI
 			opts.on("-c", "--configure", _("Change configuration settings.")) do |c|
 				@options.configure = c
 			end
-			opts.on("-a", "--all", _("Rip all tracks. Skip any questions about track selection.")) do |a|
-				@options.all = a
+			opts.on("-d", "--defaults", _("Skip questions and rip the disc.")) do |d|
+				@options.defaults = true
 			end
 			opts.on_tail("-h", "--help", _("Show this usage statement.")) do |h|
 				puts opts
@@ -92,7 +93,7 @@ class Gui_CLI
 
 		puts _("Verbose output specified.") if @options.verbose
 		puts _("Configure option specified.") if @options.configure
-		puts _("Rip all tracks specified.") if @options.all
+		puts _("Skip questions and rip the disc.") if @options.defaults
 		puts _("Use config file ") + @options.file if @options.file
 	end
 	
@@ -299,9 +300,14 @@ class Gui_CLI
 
 	def chooseFreedb(choices)
 		puts _("Freedb reported multiple possibilities.")
-		choices.each_index{|index| puts "#{index + 1}) #{choices[index]}"}
-		choice = get_answer(_("Please type the number of the one you prefer? : "), "number", 1)
-		handleFreedb(choice - 1)
+		if @options.defaults == true
+			puts _("The first freedb option is automatically selected (no questions allowed)")
+			handleFreedb(0)
+		else
+			choices.each_index{|index| puts "#{index + 1}) #{choices[index]}"}
+			choice = get_answer(_("Please type the number of the one you prefer? : "), "number", 1)
+			handleFreedb(choice - 1)
+		end
 	end
 
 	def showFreedb()
@@ -316,7 +322,7 @@ class Gui_CLI
 		puts _("TRACK INFO")
 		
 		showTracks()
-		if @options.all
+		if @options.defaults
 			prepareRip()
 		else
 			showFreedbOptions()
@@ -479,8 +485,8 @@ class Gui_CLI
 		@settings['tracksToRip'] = Array.new
 		@settings['cd'].audiotracks.times{|number| @settings['tracksToRip'] << number + 1} # Start with all tracks selected
 		if @settings['image']
-			@settings['tracksToRip'] << "image"
-		elsif @options.all || get_answer(_("\nShould all tracks be ripped ? (y/n) "), "yes", _('y'))
+			@settings['tracksToRip'] = ["image"]
+		elsif @options.defaults || get_answer(_("\nShould all tracks be ripped ? (y/n) "), "yes", _('y'))
 			puts _("Tracks to rip are %s") % [@settings['tracksToRip'].join(" ")]
 		else
 			succes = false
