@@ -1287,8 +1287,9 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@artistFile = @md.artist.gsub('/', '')
 		@albumFile = @md.album.gsub('/', '')
 
+		# do not allow multiple directories for various artists
 		{'%a' => @artistFile, '%b' => @albumFile, '%f' => codec, '%g' => @md.genre,
-		'%y' => @md.year}.each do |key, value|
+		'%y' => @md.year, '%va' => @artistFile}.each do |key, value|
 			dirName.gsub!(key, value)
 		end
 
@@ -1394,8 +1395,12 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	def giveFileName(codec, track=0)
 		file = @fileName.dup
 		
-		{'%a' => @md.artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
-		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => getVarArtist(track + 1), 
+		# the artist should always refer to the artist that is valid for the track
+		if getVarArtist(track + 1) == '' ; artist = @md.artist ; varArtist = ''
+		else artist = getVarArtist(track + 1) ; varArtist = @md.artist end
+		
+		{'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
+		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => varArtist, 
 		'%t' => getTrackname(track + 1)}.each do |key, value|
 			file.gsub!(key, value)
 		end
