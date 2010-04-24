@@ -1599,9 +1599,12 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 end
 
 class SecureRip
+	attr_writer :cancelled 
+	
 	def initialize(settings, encoding)
 		@settings = settings
 		@encoding = encoding
+		@cancelled = false
 		@reqMatchesAll = @settings['req_matches_all'] # Matches needed for all chunks
 		@reqMatchesErrors = @settings['req_matches_errors'] # Matches needed for chunks that didn't match immediately
 		@progress = 0.0 #for the progressbar
@@ -1615,6 +1618,7 @@ class SecureRip
 		@settings['log'].ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
 		
 		@settings['tracksToRip'].each do |track|
+			break if @cancelled == true
 			puts "Ripping track #{track}" if @settings['debug'] && track != 'image'
 			puts "Ripping image" if @settings['debug'] && track == 'image'
 			ripTrack(track)
@@ -1712,14 +1716,18 @@ class SecureRip
 	end
 	
 	def doNewTrial(track)
-		while true
+		fileOk = false
+	
+		while (!@cancelled && !fileOk)
 			@trial += 1
 			rip(track)
-			if not fileCreated(track) ; return false end
-			if not testFileSize(track) ; redo end
-			break
+			if fileCreated(track) && testFileSize(track)
+				fileOk = true
+			end
 		end
-		return true
+
+		# when cancelled fileOk will still be false
+		return fileOk
 	end
 	
 	def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
@@ -1742,7 +1750,7 @@ class SecureRip
 			@settings['log'].add(_("Your cdrom drive can not read last sector(s)\n"))
 			@settings['log'].add(_("Amount of sectors missing: %s.\n") % [sizeDiff / 2352])
 			@settings['log'].add(_("Notice that each sector is 1/75 second.\n"))
-		else
+		elsif @cancelled == false
 			if @settings['debug']
 				puts "Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
 				puts "Filesize should be : #{@settings['cd'].getFileSize(track)}"
@@ -1888,7 +1896,7 @@ class SecureRip
 		command += " \"#{@settings['Out'].getTempFile(track, @trial)}\""
 		unless @settings['verbose'] ; command += " 2>&1" end # hide the output of cdparanoia output
 		puts command if @settings['debug']
-		`#{command}` #Launch the cdparanoia command
+		`#{command}` if @cancelled == false #Launch the cdparanoia command
 	end
 	
 	def getDigest(track)
@@ -1906,10 +1914,12 @@ end
 
 class Encode < Monitor
 	attr_reader :addTrack
+	attr_writer :cancelled
 	
 	def initialize(settings)
 		super()
 		@settings = settings
+		@cancelled = false
 		@progress = 0.0
 		@threads = 0 # number of running threads
 		@ready = true # is there a thread available?
@@ -1981,17 +1991,19 @@ class Encode < Monitor
 				@threads += 1
 				track, codec = @waitingroom.shift
 				@busyTracks << track
-				if @settings['maxThreads'] == 0
-					encodeTrack(track, codec)
-				else
-					thread = Thread.new{ encodeTrack(track, codec) }
+				if @cancelled == false # don't start new rips if user has cancelled
+					if @settings['maxThreads'] == 0
+						encodeTrack(track, codec)
+					else
+						thread = Thread.new{ encodeTrack(track, codec) }
+					end
 				end
 			end
 			if @settings['maxThreads'] > @threads || @settings['maxThreads'] == 0 ; @ready = true else @ready = false end
 		end
 	end
 	
-	def encodeTrack(track, codec)
+	def encodeTrack(track, codec)		
 		if codec == 'flac' ; doFlac(track)
 		elsif codec == 'vorbis' ; doVorbis(track)
 		elsif codec == 'mp3' ; doMp3(track)
@@ -2275,7 +2287,8 @@ class Encode < Monitor
 end
 
 class Rubyripper
-attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :summary
+attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, 
+:summary, :cancelRip
 	
 	def initialize(settings, gui)
 		@settings = settings.dup
@@ -2283,6 +2296,8 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		@settings['log'] = false
 		@settings['instance'] = gui
 		@error = false
+		@encoding = nil
+		@ripping = nil
 	end
 	
 	def settingsOk
@@ -2306,6 +2321,17 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, :sum
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@settings) #Create an instance for encoding
 		@ripping = SecureRip.new(@settings, @encoding) #create an instance for ripping
+	end
+
+	# the user wants to abort the ripping	
+	def cancelRip
+		puts "User aborted current rip"
+		`killall cdrdao 2>&1`
+		@encoding.cancelled = true if @encoding != nil
+		@encoding = nil
+		@ripping.cancelled = true if @ripping != nil
+		@ripping = nil
+		`killall cdparanoia 2>&1` # kill any rip that is already started
 	end
 
 	# wait for the Advanced Toc class to finish

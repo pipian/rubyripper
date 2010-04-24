@@ -94,12 +94,13 @@ attr_reader :change_display, :instances, :update
 		if @buttontext[4].text == _("Exit")
 			savePreferences(); exit()
 		else
-			@rubyripperThread.exit()
-			@rubyripper = nil
-			cancelTocScan()
-			`killall cdparanoia 2>&1`
-			@buttons.each{|button| button.sensitive = true}
-			change_display(@instances['GtkMetadata'])
+			Thread.new do
+				@rubyripper.cancelRip() # Let rubyripper stop ripping and encoding
+				@rubyripper = nil # kill the instance
+				@rubyripperThread.exit() # kill the thread
+				@buttons.each{|button| button.sensitive = true}
+				change_display(@instances['GtkMetadata'])
+			end
 		end
 	end
 
