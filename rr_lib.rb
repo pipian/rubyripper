@@ -505,22 +505,27 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 	end
 
 	def checkDataTrack
+		startSector = nil
+		lastSector = nil
 		if @query.include?('track_num = 176') # 176 = 0xb0 = end of data track??? # only MacOS version prints this
-			startSector = @query.find_all{|line| line[0,9] == "track_num"}[0].split()[5].to_i
-			lastSector = @query.find_all{|line| line[0,15] == 'track_num = 176'}[0].split()[5].to_i
+			@query.split('/n').each do |line|
+				startSector = line.split()[5].to_i if (line[0,9] == "track_num" && startSector == nil)
+				lastSector = line.split()[5].to_i if line[0,15] == 'track_num = 176'
+			end
 		elsif installed('cd-info') #from the libcdio library
 			@query = `cd-info -C #{@cdrom}`
 			if @query.include?(' data ')
-				startSector = @query.find_all{|line| line =~ /\s+data\s+/}[0].split()[2].to_i
-				lastSector = @query.find_all{|line| line =~ /leadout/}[0].split()[2].to_i
-			else
-			    return false
+				@query.split('/n').each do |line|
+					startSector = line.split()[2].to_i if (line =~ /\s+data\s+/ && startSector == nil)
+					lastSector = line.split()[2].to_i if line =~ /leadout/
+				end
 			end
-		else
-			return false
-		end	
+		end
 
-		@datatrack = [startSector, lastSector-startSector]
+		if startSector != nil && lastSector != nil
+			puts "Data track is detected!"
+			@datatrack = [startSector, lastSector-startSector]
+		end
 	end
 
 	def createFreedbString
@@ -528,9 +533,16 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		seconds = 0
 		freedbOffsets = ''
 		totalSectors = 0
-		audiotracks = @audiotracks + if @datatrack ; 1 else 0 end
-		startSector = @startSector ; if @datatrack ;  startSector << @datatrack[0] end
-		lengthSector = @lengthSector ; if @datatrack ; lengthSector << @datatrack[1] end
+		audiotracks = @audiotracks
+		startSector = @startSector
+		lengthSector = @lengthSector
+
+		#I've commented this out since it actually hurts the results here
+		#if @datatrack
+		#	audiotracks += 1 # take the datatrack in account
+		#	startSector[audiotracks] = @datatrack[0] #add the start position of data track
+		#	lengthSector[audiotracks] = @datatrack[1] #add the lenght of the data track
+		#end
 
 		(1..audiotracks).each do |track|
 			checksum = 0
