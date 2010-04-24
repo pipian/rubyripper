@@ -2227,8 +2227,8 @@ class Encode < Monitor
 		tags = "--tl \"#{@out.album}\" "
 		tags += "--ty \"#{@out.year}\" "
 		tags += "--tg \"#{@out.genre}\" "
-		tags += "--tv DISCID=\"#{@settings['cd'].discId}\" "
-		tags += "--tv DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
+		tags += "--tv TXXX=DISCID=\"#{@settings['cd'].discId}\" "
+		tags += "--tv TPOS=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
 
 		 # Handle tags for single file images differently
 		if @settings['image']
