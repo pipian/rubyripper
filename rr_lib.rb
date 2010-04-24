@@ -1746,9 +1746,9 @@ class SecureRip
 			puts "Expected size matches exactly" if @settings['debug']
 		elsif sizeDiff < 0
 			puts "More sectors ripped than expected: #{sizeDiff / 2352} sector(s)" if @settings['debug']
-		elsif (track == "image" || track == @settings['cd'].audiotracks) && sizeDiff % 2352 == 0
-			@settings['log'].add(_("Your cdrom drive can not read last sector(s)\n"))
-			@settings['log'].add(_("Amount of sectors missing: %s.\n") % [sizeDiff / 2352])
+		elsif @settings['offset'] > 0 && (track == "image" || track == @settings['cd'].audiotracks)
+			@settings['log'].add(_("The ripped file misses %s sectors.\n") % [sizeDiff / 2352.0])			
+			@settings['log'].add(_("This is known behaviour for some drives when using an offset.\n"))		
 			@settings['log'].add(_("Notice that each sector is 1/75 second.\n"))
 		elsif @cancelled == false
 			if @settings['debug']
