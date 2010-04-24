@@ -1758,6 +1758,10 @@ class SecureRip
 				puts "Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
 				puts "Filesize should be : #{@settings['cd'].getFileSize(track)}"
 			end
+
+			#someone might get out of free diskspace meanwhile
+			@cancelled = true if not sizeTest(track)
+			
 			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
 			@settings['log'].add(_("Filesize is not correct! Trying another time\n"))
