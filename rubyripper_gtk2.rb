@@ -1214,10 +1214,13 @@ attr_reader :display, :save
 		@basedir_entry.signal_connect("button_release_event"){@example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text) ; false}
 		@naming_normal_entry.signal_connect("key_release_event"){@example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text) ; false}
 		@naming_normal_entry.signal_connect("button_release_event"){@example_label.text = get_example_filename_normal(@basedir_entry.text, @naming_normal_entry.text) ; false}
+		@naming_normal_entry.signal_connect("focus-out-event"){if not File.dirname(@naming_normal_entry.text) =~ /%a|%b/ ; @naming_normal_entry.text = "%a (%y) %b/" + @naming_normal_entry.text end; false}
 		@naming_various_entry.signal_connect("key_release_event"){@example_label.text = get_example_filename_various(@basedir_entry.text, @naming_various_entry.text) ; false}
 		@naming_various_entry.signal_connect("button_release_event"){@example_label.text = get_example_filename_various(@basedir_entry.text, @naming_various_entry.text) ; false}
+		@naming_various_entry.signal_connect("focus-out-event"){if not File.dirname(@naming_various_entry.text) =~ /%a|%b/ ; @naming_various_entry.text = "%a (%y) %b/" + @naming_various_entry.text end; false}
 		@naming_image_entry.signal_connect("key_release_event"){@example_label.text = get_example_filename_various(@basedir_entry.text, @naming_image_entry.text) ; false}
 		@naming_image_entry.signal_connect("button_release_event"){@example_label.text = get_example_filename_various(@basedir_entry.text, @naming_image_entry.text) ; false}
+		@naming_image_entry.signal_connect("focus-out-event"){if not File.dirname(@naming_image_entry.text) =~ /%a|%b/ ; @naming_image_entry.text = "%a (%y) %b/" + @naming_image_entry.text end; false}
 #packing 2nd column
 		@table100.attach(@basedir_entry, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table100.attach(@naming_normal_entry, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
