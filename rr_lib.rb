@@ -1220,13 +1220,14 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 	# split the filescheme into a dir and a file
 	def splitDirFile
 		if @settings['image']
-			fileScheme = File.join(@settings['basedir'], @settings['naming_image'])
+			fileScheme = @settings['naming_image']
 		elsif @md.varArtists.empty?
-			fileScheme =  File.join(@settings['basedir'], @settings['naming_normal'])
+			fileScheme =  @settings['naming_normal']
 		else
-			fileScheme = File.join(@settings['basedir'], @settings['naming_various'])
+			fileScheme = @settings['naming_various']
 		end
 		
+		# the basedir is added later on, since we don't want to change it
 		@dirName, @fileName = File.split(fileScheme)
 	end
 
@@ -1297,7 +1298,8 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 			dirName = File.join(dirName, "CD #{sprintf("%02d", @md.discNumber)}")
 		end
 		
-		return fileFilter(File.expand_path(dirName), true)
+		dirName = fileFilter(dirName, true)
+		return File.expand_path(File.join(@settings['basedir'], dirName))
 	end
 
 	# (re)attempt creation of the dirs, when succesfull create the filenames
