@@ -1701,6 +1701,7 @@ class SecureRip
 			end
 			
 			doNewTrial(track)
+			break if @cancelled == true
 
 			if @trial > @reqMatchesErrors # If the reqMatches errors is equal of higher to @trial, no match would ever be found, so skip
 				correctErrorPos(track)
@@ -2454,9 +2455,12 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir,
 		@settings['log'].add(_("\nAlbum\t= ") + @settings['cd'].md.album)
 		@settings['log'].add(_("\nYear\t= ") + @settings['cd'].md.year)
 		@settings['log'].add(_("\nGenre\t= ") + @settings['cd'].md.genre)
-		@settings['log'].add(_("\nTracks\t= ") + @settings['cd'].audiotracks.to_s + "\n\n")
+		@settings['log'].add(_("\nTracks\t= ") + @settings['cd'].audiotracks.to_s + 
+		" (#{@settings['tracksToRip'].length} selected)\n\n")
 		@settings['cd'].audiotracks.times do |track|
-			@settings['log'].add("#{sprintf("%02d", track + 1)} - #{@settings['cd'].md.tracklist[track]}\n")
+			if @settings['tracksToRip'] == 'image' || @settings['tracksToRip'].include?(track + 1)
+				@settings['log'].add("#{sprintf("%02d", track + 1)} - #{@settings['cd'].md.tracklist[track]}\n")	
+			end
 		end
 	end
 	
