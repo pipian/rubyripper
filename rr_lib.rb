@@ -2048,11 +2048,12 @@ class Encode < Monitor
 			@threads -= 1
 			@progress += @settings['percentages'][track] / @codecs
 			@settings['log'].encPerc(@progress)
+			if @waitingroom.empty? && @threads == 0 && @lasttrack == true
+				finished()
+			end
 		end
 
-		if @waitingroom.empty? && @threads == 0 && @lasttrack == true
-			finished()
-		elsif @ready == false
+		if @ready == false
 			#if no threads where available for encoding, update the status
 			handleThreads()
 		end
