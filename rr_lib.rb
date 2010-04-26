@@ -2474,7 +2474,7 @@ attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir,
 		@settings['log'].add(_("\nYear\t= ") + @settings['cd'].md.year)
 		@settings['log'].add(_("\nGenre\t= ") + @settings['cd'].md.genre)
 		@settings['log'].add(_("\nTracks\t= ") + @settings['cd'].audiotracks.to_s + 
-		" (#{@settings['tracksToRip'].length} selected)\n\n")
+		" (#{@settings['tracksToRip'].length} " + _("selected") + ")\n\n")
 		@settings['cd'].audiotracks.times do |track|
 			if @settings['tracksToRip'] == 'image' || @settings['tracksToRip'].include?(track + 1)
 				@settings['log'].add("#{sprintf("%02d", track + 1)} - #{@settings['cd'].md.tracklist[track]}\n")	
