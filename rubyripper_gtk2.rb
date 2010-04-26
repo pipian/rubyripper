@@ -187,15 +187,34 @@ attr_reader :change_display, :instances, :update
 			end
 		end
 	end
+
+	# give the cdrom drive a few seconds to read the disc
+	def waitForDisc
+		succes = false
+		trial = 1
+
+		while trial < 10
+			@settings['cd'] = Disc.new(@settings, self, 
+				@settings.key?('cd') ? @settings['cd'].freedbString : '')
+			if @settings['cd'].audiotracks != 0
+				succes = true
+				break
+			else
+				puts "No disc found at trial #{trial}!"
+				sleep(1)
+				trial += 1
+			end
+		end
+		return succes
+	end
 	
 	def scan_drive
 		cancelTocScan()
 		@buttons.each{|button| button.sensitive = false}
 		Thread.new do
-			# Analyze audio-cd, don't look at freedb yet. If the current freedb string is the same don't use yaml for metadata
-			@settings['cd'] = Disc.new(@settings, self, @settings.key?('cd') ? @settings['cd'].freedbString : '')
-
-			if @settings['cd'].audiotracks != 0 # if true, a cd is found
+			# Analyze audio-cd, don't look at freedb yet. 
+			#If the current freedb string is the same don't use yaml for metadata
+			if waitForDisc() # if true, a cd is found
 				if @buttontext[2].text != _("Open tray") # We know there's a cd inside so make sure that eject is shown instead of close tray
 					@buttontext[2].set_text('_'+_("Open tray"),true)
 					@buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
