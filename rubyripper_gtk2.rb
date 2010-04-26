@@ -325,9 +325,9 @@ attr_reader :change_display, :instances, :update
 		end
 	end
 	
-	def showSummary
+	def showSummary(succes)
 		@buttons[0..3].each{|button| button.sensitive = true}
-		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary)
+		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary, succes)
 		change_display(@instances['Summary'])
 		@instances['RipStatus'].reset()
 		@rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
@@ -353,7 +353,7 @@ attr_reader :change_display, :instances, :update
 				@instances['DirExists'] = DirExists.new(self, @rubyripper, value)
 				change_display(@instances['DirExists'])
 			elsif modus == "finished"
-				showSummary()
+				showSummary(value)
 				if @settings['eject'] == true
 					@buttontext[2].text =_("Close tray")
 					@buttonicons[2].stock = Gtk::Stock::GOTO_TOP
@@ -1454,9 +1454,14 @@ end
 class Summary
 attr_reader :display
 
-	def initialize(editor, filemanager, directory, summary)
-		@label1 = Gtk::Label.new(_("Rubyripper is finished with ripping the cd.\nA short summary is shown below."))
-		@image1 = Gtk::Image.new(Gtk::Stock::DIALOG_INFO, Gtk::IconSize::DIALOG)
+	def initialize(editor, filemanager, directory, summary, succes)
+		if succes == true
+			@label1 = Gtk::Label.new(_("The rip has succesfully finished.\nA short summary is shown below."))
+			@image1 = Gtk::Image.new(Gtk::Stock::DIALOG_INFO, Gtk::IconSize::DIALOG)
+		else
+			@label1 = Gtk::Label.new(_("The rip had some problems.\nA short summary is shown below."))
+			@image1 = Gtk::Image.new(Gtk::Stock::DIALOG_ERROR, Gtk::IconSize::DIALOG)
+		end
 		@hbox1 = Gtk::HBox.new()
 		[@image1, @label1].each{|object| @hbox1.pack_start(object)}
 		@hbox1.border_width = 10

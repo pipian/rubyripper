@@ -146,7 +146,9 @@ def eject(cdrom)
 end
 
 class Gui_support
-attr_reader :ripPerc, :encPerc, :add, :summary, :ripping_progress, :encoding_progress, :mismatch, :short_summary, :delLog
+attr_reader :ripPerc, :encPerc, :add, :summary, :ripping_progress, 
+:encoding_progress, :mismatch, :short_summary, :delLog, :encodingErrors,
+:rippingErrors
 attr_writer :encodingErrors
 
 	def initialize(settings) #gui is an instance of the graphical user interface used
@@ -158,6 +160,7 @@ attr_writer :encodingErrors
 		@ripping_progress = 0.0
 		@encoding_progress = 0.0
 		@encodingErrors = false
+		@rippingErrors = false
 		@short_summary = _("Artist : %s\nAlbum: %s\n") % [@settings['cd'].md.artist, @settings['cd'].md.album]
 		addLog(_("This log is created by Rubyripper, version %s\n") % [$rr_version])
 		addLog(_("Website: http://code.google.com/p/rubyripper\n\n"))
@@ -228,6 +231,7 @@ attr_writer :encodingErrors
  		elsif @not_corrected_tracks.size != 0
  			addLog(_("Some track(s) could NOT be corrected within the maximum amount of trials\n"), true)
  			@not_corrected_tracks.each do |track|
+				@rippingErrors = true
 				addLog(_("Track %s could NOT be corrected completely\n") % [track], true)
 			end
  		else
@@ -2065,7 +2069,11 @@ class Encode < Monitor
 		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
 		if @settings['no_log'] ; @settings['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
 		@out.cleanTempDir()
-		@settings['instance'].update("finished")
+		if (@settings['log'].rippingErrors || @settings['log'].encodingErrors)
+			@settings['instance'].update("finished", false)
+		else
+			@settings['instance'].update("finished", true)
+		end
 	end
 	
 	def replaygain(filename, codec, track)
