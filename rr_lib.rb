@@ -154,6 +154,11 @@ attr_reader :settings, :save, :configFound
 		FileUtils.mv(oldCache, newCache) if File.exists?(oldCache)
 
 		Dir.delete(oldDir) if File.directory?(oldDir) 
+
+		# clean up a very old config file
+		if File.exists?(oldFile = File.join(ENV['HOME'], '.rubyripper_settings'))
+			FileUtils.rm(oldFile)
+		end
 	end
 
 	# there is an option in the cli to pass the config file
