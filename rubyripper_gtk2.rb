@@ -50,7 +50,9 @@ attr_reader :change_display, :instances, :update
 		create_buttonbox()
 		create_signals()
 		
-		load_settings()
+		@settingsClass = Settings.new()
+		@settings = @settingsClass.settings
+		Thread.abort_on_exception = true if @settings['debug']
 		welcome_message()
 		
 		@lock = Monitor.new()
@@ -144,26 +146,6 @@ attr_reader :change_display, :instances, :update
 		object.display.show_all()
 	end
 	
-	def load_settings #first set default settings, then override them with custom settings if a config file is found
-		@settings = $rr_defaultSettings
-		
-		if File.exist?(settingsfile = File.join(ENV['HOME'], '.rubyripper/settings'))
-			file = File.new(settingsfile,'r')
-			while line = file.gets
-				key, value = line.split('=', 2)
-				value.rstrip! # remove the trailing newline character
-				if value == "false" ; value = false # replace the string with a bool
-				elsif value == "true" ; value = true  # replace the string with a bool
-				elsif value == "''" ; value = '' #replace a string that contains two quotes with an empty string
-				elsif value.to_i > 0 || value == '0' ; value = value.to_i
-				end
-				if @settings.key?(key) ; @settings[key] = value end
-			end
-			file.close()
-		end
-		if @settings['debug'] ; Thread.abort_on_exception = true end
-	end
-	
 	def welcome_message
 		@instances['ShortMessage'] = ShortMessage.new(@settings['cdrom'])
 		change_display(@instances['ShortMessage'])
@@ -175,7 +157,7 @@ attr_reader :change_display, :instances, :update
 			if @current_instance != 'Preferences'
 				@buttontext[0].set_text('_'+_('Disc info'),true)
 				@buttonicons[0].stock = Gtk::Stock::INFO
-				unless @instances['Preferences'] ; @instances['Preferences'] = Preferences.new(@settings) end
+				unless @instances['Preferences'] ; @instances['Preferences'] = Preferences.new(@settings, @settingsClass) end
 				@instances['Preferences'].display.page = 0
 				change_display(@instances['Preferences'])
 				@buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] ; @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
@@ -703,8 +685,9 @@ end
 class Preferences
 attr_reader :display, :save
 
-	def initialize(settings)
+	def initialize(settings, settingsClass)
 		@settings = settings
+		@settingsClass = settingsClass
 		@display = Gtk::Notebook.new # Create a notebook (multiple pages)
 		ripobjects_frame1()
 		ripobjects_frame2()
@@ -834,18 +817,7 @@ attr_reader :display, :save
 		@settings['editor'] = @editor_entry.text
 		@settings['filemanager'] = @filemanager_entry.text
 		if @settings['debug'] ; Thread.abort_on_exception = true end
-		save_configfile() #also update the config file
-	end
-	
-	def save_configfile
-		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper'))
-			Dir.mkdir(dirname)
-		end
-		file = File.new(File.join(ENV['HOME'], '.rubyripper/settings'), 'w')
-		@settings.each do |key, value|
-			file.puts "#{key}=#{value}" if $rr_defaultSettings.include?(key)
-		end
-		file.close()
+		@settingsClass.save(@settings) #also update the config file
 	end
 	
 #Today is a great day to start counting with 40 :) Actually I worked backwards and needed to make sure I had enough room in the beginning.
@@ -868,7 +840,7 @@ attr_reader :display, :save
 		@table40.attach(@cdrom_offset_spin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table40.attach(@offset_button, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect signal
-		@offset_button.signal_connect("clicked") {Thread.new{`#{browser()} #{@offset_button.uri}`}}
+		@offset_button.signal_connect("clicked") {Thread.new{`#{@settings['browser']} #{@offset_button.uri}`}}
 #create frame
 		@frame40 = Gtk::Frame.new(_('Cdrom device'))
 		@frame40.set_shadow_type(Gtk::SHADOW_ETCHED_IN)

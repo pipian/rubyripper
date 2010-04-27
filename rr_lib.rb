@@ -34,6 +34,7 @@ end
 
 require 'monitor' #help library for threaded applications
 require 'yaml' #help library to save data structures into files
+require 'fileutils' #help library for moving files
 
 def installed(filename) # a help function to check if an application is installed
 	ENV['PATH'].split(':').each do |dir|
@@ -46,79 +47,6 @@ if not installed('cdparanoia')
 	puts "Cdparanoia not found on your system.\nThis is required to run rubyripper. Exiting..."
 	exit()
 end
-
-def cdrom_drive #default values for cdrom drives under differenty os'es
-	drive = 'Unknown!'
-	system = RUBY_PLATFORM
-	if system.include?('openbsd')
-		drive = '/dev/cd0c' # as provided in issue 324
-	elsif system.include?('linux') || system.include?('bsd')
-		drive = '/dev/cdrom'
-	elsif system.include?('darwin')
-		drive = '/dev/disk1'
-	elsif system.include?('win') # no support for Windows as of yet, but keeping possibilities open for the future
-		drive = 'cdaudio'
-	end
-	return drive
-end
-
-def filemanager #look for default filemanager
-	if ENV['DESKTOP_SESSION'] == 'kde' && installed('dolphin')
-		return 'dolphin'
-	elsif ENV['DESKTOP_SESSION'] == 'kde' && installed('konqueror')
-		return 'konqueror'
-	elsif installed('thunar')
-		return 'thunar' #Xfce4 filemanager
-	elsif installed('nautilus')
-		return 'nautilus --no-desktop' #Gnome filemanager
-	else
-		return 'echo'
-	end
-end
-
-def editor # look for default editor
-	if ENV['DESKTOP_SESSION'] == 'kde' && installed('kwrite')
-		return 'kwrite'
-	elsif installed('mousepad')
-		return 'mousepad' #Xfce4 editor
-	elsif installed('gedit')
-		return 'gedit' #Gnome editor
-	elsif ENV.key?('EDITOR')
-		return ENV['EDITOR']
-	else
-		return 'echo'
-	end
-end
-
-def browser
-	if ENV['DESKTOP_SESSION'] == 'kde' && installed('konqueror')
-		return 'konqueror'
-	elsif installed('epiphany')
-		return 'epiphany'
-	elsif installed('firefox')
-		return 'firefox'
-	elsif installed('opera')
-		return 'opera'
-	elsif ENV.key?('BROWSER')
-		return ENV['BROWSER']
-	else
-		return 'echo'
-	end
-end
-
-$rr_defaultSettings = {"flac" => false, "flacsettings" => "--best -V", "vorbis" => true, 
-"vorbissettings" => "-q 4", "mp3" => false, "mp3settings" => "-V 3 --id3v2-only", 
-"wav" => false, "other" => false, "othersettings" => '', "playlist" => true,
-"cdrom" => cdrom_drive(), "offset" => 0, "maxThreads" => 0, "rippersettings" => '', 
-"max_tries" => 5, 'basedir' => '~/', 'naming_normal' => '%f/%a (%y) %b/%n - %t', 
-'naming_various' => '%f/%a (%y) %b/%n - %va - %t', 'naming_image' => '%f/%a (%y) %b/%a - %b (%y)',
-"verbose" => false, "debug" => true, "eject" => true, 'ripHiddenAudio' => true, 'minLengthHiddenTrack' => 2,
-"req_matches_errors" => 2, "req_matches_all" => 2, "site" => "http://freedb2.org:80/~cddb/cddb.cgi", 
-"username" => "anonymous", "hostname" => "my_secret.com", "first_hit" => true, "freedb" => true, 
-"editor" => editor(), "filemanager" => filemanager(), "no_log" =>false, "create_cue" => true, 
-"image" => false, 'normalize' => false, 'gain' => "album", 'gainTagsOnly' => false,
-'noSpaces' => false, 'noCapitals' => false,
-'pregaps' => "prepend", 'preEmphasis' => 'cue'}
 
 def get_example_filename_normal(basedir, layout) #separate function to make it faster
 	filename = File.join(basedir, layout)
@@ -141,6 +69,197 @@ def eject(cdrom)
 	 	if installed('eject') ; `eject #{cdrom}`
 		elsif installed('diskutil'); `diskutil eject #{cdrom}` #Mac users don't got eject, but diskutil
 		else puts _("No eject utility found!")
+		end
+	end
+end
+
+class Settings
+attr_reader :settings, :save, :configFound
+	def initialize(configFile = false)
+		@settings = Hash.new()
+		@configFile = configFile
+		@configFound = false
+		@defaultSettings = {"flac" => false, #boolean 
+			"flacsettings" => "--best -V", #string, passed to flac
+			"vorbis" => true, #boolean
+			"vorbissettings" => "-q 4", #string, passed to vorbis
+			"mp3" => false, #boolean
+			"mp3settings" => "-V 3 --id3v2-only", #string, passed to lame
+			"wav" => false, #boolean
+			"other" => false, #boolean, any other codec
+			"othersettings" => '', #string, the complete command
+			"playlist" => true, #boolean
+			"cdrom" => cdrom_drive(), #string
+			"offset" => 0, #integer
+			"maxThreads" => 0, #integer, number of encoding proces while ripping
+			"rippersettings" => '', #string, passed to cdparanoia
+			"max_tries" => 5, #integer, #tries before giving up correcting
+			'basedir' => '~/', #string, where to store your new rips?
+			'naming_normal' => '%f/%a (%y) %b/%n - %t', #string, normal discs
+			'naming_various' => '%f/%a (%y) %b/%n - %va - %t', #string various
+			'naming_image' => '%f/%a (%y) %b/%a - %b (%y)', #string, image
+			"verbose" => false, #boolean, extra verbose info shown in terminal
+			"debug" => true, #boolean, extra debug info shown in terminal
+			"eject" => true, #boolean, open up the tray when finished
+			'ripHiddenAudio' => true, #boolean, rip part before track 1
+			'minLengthHiddenTrack' => 2, #integer, min. length hidden track
+			"req_matches_errors" => 2, # #integer, matches when errors detected
+			"req_matches_all" => 2,  #integer, #matches when no errors detected
+			"site" => "http://freedb2.org:80/~cddb/cddb.cgi", #string, freedb site
+			"username" => "anonymous", #string, user name freedb
+			"hostname" => "my_secret.com", #string, hostname freedb
+			"first_hit" => true, #boolean, always choose 1st option
+			"freedb" => true, #boolean, enable freedb
+			"editor" => editor(), #string, default editor
+			"filemanager" => filemanager(), #string, default file manager
+			"browser" => browser(), #string, default browser
+			"no_log" =>false, #boolean, delete log if no errors?
+			"create_cue" => true, #boolean, create cuesheet
+			"image" => false, #boolean, save to single file
+			'normalize' => false, #boolean, normalize volume?
+			'gain' => "album", #string, gain mode
+			'gainTagsOnly' => false, #string, not actually modify audio
+			'noSpaces' => false, #boolean, replace spaces with underscores
+			'noCapitals' => false, #boolean, replace uppercase with lowercase
+			'pregaps' => "prepend", #string, way to handle pregaps
+			'preEmphasis' => 'cue' #string, way to handle pre-emphasis
+		}
+		migrationCheck()
+		getConfigFile()
+		loadSettings()
+	end
+
+	# check for existing configs in old directories and move them
+	# to the standard directories conform the freedesktop.org spec
+	def migrationCheck()
+		oldConfig = File.join(ENV['HOME'], '.rubyripper/settings')
+		oldCache = File.join(ENV['HOME'], '.rubyripper/freedb.yaml')
+		oldDir = File.join(ENV['HOME'], '.rubyripper')
+		newConfig = File.join(ENV['HOME'], '.config')
+		newCache = File.join(ENV['HOME'], '.cache')
+
+		Dir.mkdir(newConfig) if not File.directory?(newConfig)
+		Dir.mkdir(newCache) if not File.directory?(newCache)
+
+		newConfig = File.join(newConfig, 'rubyripper')
+		newCache = File.join(newCache, 'rubyripper')
+
+		Dir.mkdir(newConfig) if not File.directory?(newConfig)
+		Dir.mkdir(newCache) if not File.directory?(newCache)
+
+		newConfig = File.join(newConfig, 'settings')
+		newCache = File.join(newCache, 'freedb.yaml')
+
+		FileUtils.mv(oldConfig, newConfig) if File.exists?(oldConfig)
+		FileUtils.mv(oldCache, newCache) if File.exists?(oldCache)
+
+		Dir.delete(oldDir) if File.directory?(oldDir) 
+	end
+
+	# there is an option in the cli to pass the config file
+	def getConfigFile()
+		if @configFile != false && File.exists(File.expand_path(@configFile))
+			@configFile = File.expand_path(@configFile)
+		else
+			@configFile = File.join(ENV['HOME'], '.config/rubyripper/settings')
+		end
+	end
+
+	# first load defaults, then overwrite the values found in the config file
+	def loadSettings()
+		@settings = @defaultSettings.dup
+
+		if File.exist?(@configFile)
+			@configFound = true
+			file = File.new(@configFile,'r')
+			while line = file.gets
+				key, value = line.split('=', 2)
+				# remove the trailing newline character
+				value.rstrip!
+				# replace the strings false/true with a bool
+				if value == "false" ; value = false 
+				elsif value == "true" ; value = true
+				# replace two quotes with an empty string
+				elsif value == "''" ; value = ''
+				# replace an integer string with an integer 
+				elsif value.to_i > 0 || value == '0' ; value = value.to_i
+				end
+				# only load a setting that is included in the default
+				if @defaultSettings.key?(key) ; @settings[key] = value end
+			end
+			file.close()
+		end
+	end
+
+	# save the settings to the config file
+	def save(settings)
+		file = File.new(@configFile, 'w')
+		settings.each do |key, value|
+			file.puts "#{key}=#{value}" if @defaultSettings.include?(key)
+		end
+		file.close()
+	end
+
+	# determine default drive
+	def cdrom_drive #default values for cdrom drives under differenty os'es
+		drive = 'Unknown!'
+		system = RUBY_PLATFORM
+		if system.include?('openbsd')
+			drive = '/dev/cd0c' # as provided in issue 324
+		elsif system.include?('linux') || system.include?('bsd')
+			drive = '/dev/cdrom'
+		elsif system.include?('darwin')
+			drive = '/dev/disk1'
+		end
+		return drive
+	end
+
+	# determine default file manager
+	def filemanager #look for default filemanager
+		if ENV['DESKTOP_SESSION'] == 'kde' && installed('dolphin')
+			return 'dolphin'
+		elsif ENV['DESKTOP_SESSION'] == 'kde' && installed('konqueror')
+			return 'konqueror'
+		elsif installed('thunar')
+			return 'thunar' #Xfce4 filemanager
+		elsif installed('nautilus')
+			return 'nautilus --no-desktop' #Gnome filemanager
+		else
+			return 'echo'
+		end
+	end
+
+	# determine default editor
+	def editor # look for default editor
+		if ENV['DESKTOP_SESSION'] == 'kde' && installed('kwrite')
+			return 'kwrite'
+		elsif installed('mousepad')
+			return 'mousepad' #Xfce4 editor
+		elsif installed('gedit')
+			return 'gedit' #Gnome editor
+		elsif ENV.key?('EDITOR')
+			return ENV['EDITOR']
+		else	
+			return 'echo'
+		end
+	end
+
+	#determine default browser
+	def browser
+		if installed('chromium')
+			return 'chromium'
+		elsif ENV['DESKTOP_SESSION'] == 'kde' && installed('konqueror')
+			return 'konqueror'
+		elsif installed('epiphany')
+			return 'epiphany'
+		elsif installed('firefox')
+			return 'firefox'
+		elsif installed('opera')
+			return 'opera'
+		elsif ENV.key?('BROWSER')
+			return ENV['BROWSER']
+		else
+			return 'echo'
 		end
 	end
 end
@@ -961,7 +1080,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	end
 
 	def searchMetadata
- 		if File.exist?(metadataFile = File.join(ENV['HOME'], '.rubyripper/freedb.yaml'))
+ 		if File.exist?(metadataFile = File.join(ENV['HOME'], '.cache/rubyripper/freedb.yaml'))
 			@metadataFile = YAML.load(File.open(metadataFile))
 			#in case it got corrupted somehow
 			@metadataFile = Hash.new if @metadataFile.class != Hash
@@ -1087,7 +1206,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 			Dir.mkdir(dirname)
 		end
 
-		if File.exist?(filename = File.join(ENV['HOME'], '.rubyripper/freedb.yaml'))
+		if File.exist?(filename = File.join(ENV['HOME'], '.cache/rubyripper/freedb.yaml'))
 			@metadataFile = YAML.load(File.open(filename))
 		else
 			@metadataFile = Hash.new
@@ -1377,7 +1496,6 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 
 	# create the output dirs
 	def createDir
-		require 'fileutils'
 		@dir.values.each{|dir| FileUtils.mkdir_p(dir)}
 	end
 
@@ -2288,7 +2406,6 @@ class Encode < Monitor
 	end
 	
 	def wav(filename, track)
-		require 'fileutils'
 		begin
 			FileUtils.cp(@out.getTempFile(track, 1), filename)
 		rescue

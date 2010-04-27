@@ -39,19 +39,19 @@ class Gui_CLI
 		@ripping_progress = 0.0
 		@encoding_progress = 0.0
 		@finished = false
-		@settings = $rr_defaultSettings
-		if File.exist?(File.expand_path(@options.file))
-			load_configfile()
-			if @options.configure; edit_settings() end
+		@settingsClass = Settings.new(@options.file)
+		@settings = @settingsClass.settings
+		
+		if !@settingsClass.configFound || @options.configure
+			edit_settings()
 		else
-			edit_settings() # Always set up settings if no config file exists.
-		end		
-		get_cd_info()
+			get_cd_info()
+		end
 	end
 
 	def parse_options
 		@options = OpenStruct.new
-		@options.file = "~/.rubyripper/settings"
+		@options.file = false
 		@options.version = false
 		@options.help = false
 		@options.verbose = false
@@ -165,8 +165,12 @@ class Gui_CLI
 			puts ""
 			show_settings()
 		end
-		save_configfile()
-		unless get_answer(_("Do you want to continue with the program now? (y/n) : "), "yes", _("y")) ; exit() end
+		@settingsClass.save(@settings)
+		if get_answer(_("Do you want to continue with the program now? (y/n) : "), "yes", _("y"))
+			get_cd_info()
+		else
+			exit()
+		end
 	end
 	
 	def set_codec(codec) # little help function for edit_settings
@@ -180,7 +184,7 @@ class Gui_CLI
 	end
 	
 	def set_cdrom # little help function for edit_settings
-		@settings['cdrom'] = get_answer(_("Cdrom device : "), "open", cdrom_drive())
+		@settings['cdrom'] = get_answer(_("Cdrom device : "), "open", @settings['cdrom'])
 		@settings['offset'] = get_answer(_("Offset for drive : "), "number", 0)
 	end
 
@@ -204,32 +208,6 @@ class Gui_CLI
 				@settings['naming_various'] = answer
 			end
 		end
-	end
-
-	def load_configfile # load config file
-		if File.exist?(File.expand_path(@options.file))
-			file = File.new(File.expand_path(@options.file),'r')
-			while line = file.gets
-				key, value = line.split('=', 2)
-				value.rstrip! # remove the trailing newline character
-				if value == "false" ; value = false # replace the string with a bool
-				elsif value == "true" ; value = true  # replace the string with a bool
-				elsif value == "''" ; value = '' #replace a string that contains two quotes with an empty string
-				elsif value.to_i > 0 || value == '0' ; value = value.to_i
-				end
-				@settings[key] = value
-			end
-			file.close()
-		end
-	end
-	
-	def save_configfile # save config file
-		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper')) ; Dir.mkdir(dirname) end
-		file = File.new(File.expand_path(@options.file), 'w')
-		@settings.each do |key, value|
-			file.puts "#{key}=#{value}" if $rr_defaultSettings.include?(key)
-		end
-		file.close()
 	end
 	
 	def get_answer(question, answer, default)
