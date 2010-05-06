@@ -135,8 +135,9 @@ attr_reader :settings, :save, :configFound
 		oldConfig = File.join(ENV['HOME'], '.rubyripper/settings')
 		oldCache = File.join(ENV['HOME'], '.rubyripper/freedb.yaml')
 		oldDir = File.join(ENV['HOME'], '.rubyripper')
-		newConfig = File.join(ENV['HOME'], '.config')
-		newCache = File.join(ENV['HOME'], '.cache')
+		
+		newConfig = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+		newCache = ENV['XDG_CACHE_HOME'] || File.join(ENV['HOME'], '.cache')
 
 		Dir.mkdir(newConfig) if not File.directory?(newConfig)
 		Dir.mkdir(newCache) if not File.directory?(newCache)
