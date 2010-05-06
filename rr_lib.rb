@@ -1584,10 +1584,16 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
 		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @settings[codec]}
 	end
 
-	# characters that will be changed for filenames
+	# characters that will be changed for filenames (monkeyproof for FAT32)
 	def fileFilter(var, isDir=false)
 		if not isDir
 			var.gsub!('/', '') #no slashes allowed in filenames
+			var.gsub!(':', '') #no colons allowed in FAT
+			var.gsub!('*', '') #no asterix allowed in FAT
+			var.gsub!('?', '') #no question mark allowed in FAT
+			var.gsub!('<', '') #no smaller than allowed in FAT
+			var.gsub!('>', '') #no greater than allowed in FAT
+			var.gsub!('|', '') #no pipe allowed in FAT
 		end
 		var.gsub!('\\', '') #the \\ means a normal \
  		var.gsub!('"', '')
