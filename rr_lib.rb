@@ -153,7 +153,8 @@ attr_reader :settings, :save, :configFound
 		FileUtils.mv(oldConfig, newConfig) if File.exists?(oldConfig)
 		FileUtils.mv(oldCache, newCache) if File.exists?(oldCache)
 
-		Dir.delete(oldDir) if File.directory?(oldDir) 
+		Dir.delete(oldDir) if File.directory?(oldDir) && !File.symlink?(oldDir)
+		File.delete(oldDir) if File.exists?(oldDir) #in case of a symlink
 
 		# clean up a very old config file
 		if File.exists?(oldFile = File.join(ENV['HOME'], '.rubyripper_settings'))
