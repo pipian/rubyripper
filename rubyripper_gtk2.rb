@@ -36,7 +36,7 @@ rescue LoadError
 end
 
 class Main #the main window
-attr_reader :change_display, :instances, :update
+attr_reader :instances
 
 	def initialize
 		@instances = {'Preferences' => false, 'GtkMetadata' => false, 'ShortMessage' => false, 'RipStatus' => false, 'DirExists' => false, 'MultipleFreedbHits' => false, 'Summary' => false}
@@ -362,7 +362,7 @@ attr_reader :change_display, :instances, :update
 end
 
 class ShortMessage
-attr_reader :display, :no_disc_found, :open_tray, :close_tray, :ask_for_disc, :no_eject_found, :show_message
+attr_reader :display
 
 	def initialize(cdrom)
 		@display = Gtk::Label.new(_("Welcome to rubyripper %s.\nScanning drive %s for an audio disc...") % [$rr_version, cdrom])
@@ -394,7 +394,7 @@ attr_reader :display, :no_disc_found, :open_tray, :close_tray, :ask_for_disc, :n
 end
 
 class GtkMetadata
-attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_rip
+attr_reader :display, :tracks_to_rip
 
 	def initialize(cdinfo)
 		@cd = cdinfo
@@ -683,7 +683,7 @@ attr_reader :refreshDisc, :updateMetadata, :display, :save_updates, :tracks_to_r
 end
 
 class Preferences
-attr_reader :display, :save
+attr_reader :display
 
 	def initialize(settings, settingsClass)
 		@settings = settings
@@ -1291,7 +1291,7 @@ attr_reader :display, :save
 end
 
 class RipStatus
-attr_reader :textview, :rip_bar, :enc_bar, :display, :reset
+attr_reader :textview, :rip_bar, :enc_bar, :display
 
 	def initialize
 		create_status_objects()

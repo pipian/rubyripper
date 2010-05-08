@@ -74,7 +74,7 @@ def eject(cdrom)
 end
 
 class Settings
-attr_reader :settings, :save, :configFound
+attr_reader :settings, :configFound
 	def initialize(configFile = false)
 		@settings = Hash.new()
 		@configFile = configFile
@@ -272,9 +272,7 @@ attr_reader :settings, :save, :configFound
 end
 
 class Gui_support
-attr_reader :ripPerc, :encPerc, :add, :summary, :ripping_progress, 
-:encoding_progress, :mismatch, :short_summary, :delLog, :encodingErrors,
-:rippingErrors
+attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
 	def initialize(settings) #gui is an instance of the graphical user interface used
@@ -400,8 +398,7 @@ end
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
-:discId, :getFileSize,:getStartSector, :getLengthSector, :getLengthText,
-:updateSettings, :toc
+:discId, :toc
 
 	def initialize(settings, gui=false, oldFreedbString = '', test = false)
 		@settings = settings
@@ -771,7 +768,7 @@ end
 # cuesheet is necessary to store the gap info.
 
 class AdvancedToc
-attr_reader :getPregap, :hasPreEmph, :log
+attr_reader :log
 
 	def initialize(settings)
 		@settings = settings
@@ -1049,7 +1046,7 @@ class Cuesheet
 end
 
 class Metadata
-attr_reader :freedb, :rawResponse, :freedbChoice, :saveChanges, :undoVarArtist, :redoVarArtist, :status
+attr_reader :status
 attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumber
 	
 	def initialize(disc, gui, verbose=false)
@@ -1328,9 +1325,7 @@ end
 # Output is initialized as soon as the player pushes Rip Now!
 
 class Output
-attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
-:getTempDir, :getTempFile, :postfixDir, :overwriteDir, :status,
-:cleanTempDir, :artist, :album, :year, :genre, :getTrackname, :getVarArtist
+attr_reader :status, :artist, :album, :year, :genre
 	
 	def initialize(settings)
 		@settings = settings
@@ -1647,7 +1642,7 @@ attr_reader :getDir, :getFile, :getLogFile, :getCueFile,
  		@dir.values.each do |dir|
 			while File.directory?(dir + "\##{postfix}")
 				postfix += 1
-			 end
+			end
 		end
 		@dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
 		attemptDirCreation()
@@ -2067,7 +2062,6 @@ class SecureRip
 end
 
 class Encode
-	attr_reader :addTrack
 	attr_writer :cancelled
 	
 	require 'thread'
@@ -2412,8 +2406,7 @@ class Encode
 end
 
 class Rubyripper
-attr_reader :settingsOk, :startRip, :postfixDir, :overwriteDir, :outputDir, 
-:summary, :cancelRip
+attr_reader :outputDir
 	
 	def initialize(settings, gui)
 		@settings = settings.dup
