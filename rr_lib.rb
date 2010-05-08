@@ -1893,7 +1893,7 @@ class SecureRip
 
 		# at the end the disc may differ 1 sector on some drives (2352 bytes)
 		if sizeDiff == 0
-			puts "Expected size matches exactly" if @settings['debug']
+			# expected size matches exactly
 		elsif sizeDiff < 0
 			puts "More sectors ripped than expected: #{sizeDiff / 2352} sector(s)" if @settings['debug']
 		elsif @settings['offset'] > 0 && (track == "image" || track == @settings['cd'].audiotracks)
@@ -2066,98 +2066,85 @@ class SecureRip
 	end
 end
 
-class Encode < Monitor
+class Encode
 	attr_reader :addTrack
 	attr_writer :cancelled
 	
+	require 'thread'
+	
 	def initialize(settings)
-		super()
 		@settings = settings
 		@cancelled = false
 		@progress = 0.0
-		@threads = 0 # number of running threads
-		@ready = true # is there a thread available?
-		@waitingroom = Array.new # Track/codec waiting for a free thread.
-		@busyTracks = Array.new # Tracks that are currently encoding
-		@lasttrack = false
+		@threads = []
+		@queue = SizedQueue.new(@settings['maxThreads'])
+		@lock = Monitor.new
 		@out = @settings['Out'] # create a shortcut
+		
 
 		# Set the charset environment variable to UTF-8. Oggenc needs this.
 		# Perhaps others need it as well.
 		ENV['CHARSET'] = "UTF-8" 
+		
 		@codecs = 0 # number of codecs
 		['flac','vorbis','mp3','wav','other'].each do |codec|
 			@codecs += 1 if @settings[codec]
 		end
+
+		# all encoding tasks are saved here, to determine when to delete a wav
+		@tasks = Hash.new
+		@settings['tracksToRip'].each{|track| @tasks[track] = @codecs}
 	end
 	
+	# is called when a track is ripped succesfully
 	def addTrack(track)
+		# mark the progress bar as being started
+		@settings['log'].encPerc(0.0) if track == @settings['tracksToRip'][0]
+
+		normalize(track) if @settings['normalize'] == 'normalize'
+
 		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-			if @settings[codec]
-				@waitingroom << [track, codec]
-				puts "Adding track #{track} (#{codec}) into the waitingroom.." if @settings['debug']
-			end
-		end
-		
-		# normalize in album mode prevents encoding untill the last wav file is ripped
-		if normalize(track) == false ; return false end
-		
-		# show progress is started
-		if track == @settings['tracksToRip'][0]
-			@settings['log'].encPerc(0.0)
-		end
-
-		# set the last track setting so we can check if we're finished later on
-		if track == @settings['tracksToRip'][-1]
-			@lasttrack = true
-		end
-
-		if @ready == true ; handleThreads() end
-	end
-
-	# respect the normalize setting
-	def normalize(track)
-		if not installed('normalize')
-			puts "WARNING: Normalize is not installed. Cannot normalize files"
-			return true
-		end
-
-		if @settings['normalize'] == 'normalize'
-			if @settings['gain'] == 'album'
-				if @settings['tracksToRip'][-1] != track
-					return false
+			if @settings[codec] && @cancelled == false
+				if @settings['maxThreads'] == 0
+					encodeTrack(track,codec)
 				else
-					command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
-					`#{command}`
-				end
-			else
-				command = "normalize \"#{@out.getTempFile(track, 1)}\""
-				`#{command}`
-			end
-		end
-		return true
-	end
-	
-	def handleThreads
-		synchronize do #we don't want to mess up with shared variables, so synchronize
-			while (@settings['maxThreads'] > @threads || @settings['maxThreads'] == 0) && @waitingroom.empty? == false
-				puts "Inside handleThreads: maxthreads = #{@settings['maxThreads']}, threads = #{@threads}" if @settings['debug']	
-				@threads += 1
-				track, codec = @waitingroom.shift
-				@busyTracks << track
-				if @cancelled == false # don't start new rips if user has cancelled
-					if @settings['maxThreads'] == 0
-						encodeTrack(track, codec)
-					else
-						thread = Thread.new{ encodeTrack(track, codec) }
+					@threads << Thread.new do
+						puts "Adding track #{track} (#{codec}) to the queue.." if @settings['debug']
+						@queue << 1 # add a value to the queue, if full wait here.
+						encodeTrack(track,codec)
+						puts "Removing track #{track} (#{codec}) from the queue.." if @settings['debug']
+						@queue.shift() # move up in the queue to the first waiter
 					end
 				end
 			end
-			if @settings['maxThreads'] > @threads || @settings['maxThreads'] == 0 ; @ready = true else @ready = false end
+		end
+		
+		#give the signal we're finished
+		if track == @settings['tracksToRip'][-1] && @cancelled == false
+			@threads.each{|thread| thread.join()}	
+			finished()
+		end
+	end
+
+	# respect the normalize setting
+	def normalize(track)	
+		if !installed('normalize')
+			puts "WARNING: normalize is not installed on your system!"
+		elsif @settings['gain'] == 'album' #FIXME
+			#if @settings['tracksToRip'][-1] != track
+			#	return false
+			#else
+			#	command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
+			#	`#{command}`
+			#end
+		else
+			command = "normalize \"#{@out.getTempFile(track, 1)}\""
+			`#{command}`
 		end
 	end
 	
-	def encodeTrack(track, codec)		
+	# call the specific codec function for the track
+	def encodeTrack(track, codec)
 		if codec == 'flac' ; doFlac(track)
 		elsif codec == 'vorbis' ; doVorbis(track)
 		elsif codec == 'mp3' ; doMp3(track)
@@ -2165,34 +2152,18 @@ class Encode < Monitor
 		elsif codec == 'other' && @settings['othersettings'] != nil ; doOther(track)
 		end
 		
-		if @settings['debug']
-			puts "busytracks = #{@busyTracks}, track = #{track}, codec = #{codec}"
-		end
-		
-		# we don't want to mess up with shared variables, so synchronize
-		synchronize do 
-			# delete the first mention of this track,
-			@busyTracks.delete_at(@busyTracks.index(track)) 
-		
-			#clean up wav's that are not needed anymore
-			if !@waitingroom.flatten.include?(track) &&	
-			!@busyTracks.include?(track) &&	File.exist?(@out.getTempFile(track, 1))
-				File.delete(@out.getTempFile(track, 1))
-			end
-	
-			@threads -= 1
-			@progress += @settings['percentages'][track] / @codecs
-			@settings['log'].encPerc(@progress)
-			if @waitingroom.empty? && @threads == 0 && @lasttrack == true
-				finished()
-			end
-		end
-
-		if @ready == false
-			#if no threads where available for encoding, update the status
-			handleThreads()
+		@lock.synchronize do
+			File.delete(@out.getTempFile(track, 1)) if (@tasks[track] -= 1) == 0
+			updateProgress(@settings['percentages'][track] / @codecs)
 		end
 	end
+
+	# update the gui
+	def updateProgress(progress)
+		@progress += progress
+		@settings['log'].encPerc(@progress)
+	end
+
 	
 	def finished
 		puts "Inside the finished function" if @settings['debug']
@@ -2432,10 +2403,6 @@ class Encode < Monitor
 
 		exec = IO.popen("nice -n 6 " + command) #execute command
 		exec.readlines() #get all the output
-		
-		if @settings['debug']
-			puts "Check exitstatus track #{track}, pid = #{exec.pid}"
-		end
 		
 		if Process.waitpid2(exec.pid)[1].exitstatus != 0
 			@settings['log'].add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
