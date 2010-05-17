@@ -2018,11 +2018,13 @@ class SecureRip
 	
 	def rip(track) # set cdparanoia command + parameters
 		cooldownNeeded()
+
+		timeStarted = Time.now
 		
 		if track == "image"
-			@settings['log'].add(_("Starting to rip CD image, trial \#%s\n") % [@trial])
+			@settings['log'].add(_("Starting to rip CD image, trial \#%s") % [@trial])
 		else
-			@settings['log'].add(_("Starting to rip track %s, trial \#%s\n") % [track, @trial])
+			@settings['log'].add(_("Starting to rip track %s, trial \#%s") % [track, @trial])
 		end
 
 		command = "cdparanoia"
@@ -2046,6 +2048,7 @@ class SecureRip
 		unless @settings['verbose'] ; command += " 2>&1" end # hide the output of cdparanoia output
 		puts command if @settings['debug']
 		`#{command}` if @cancelled == false #Launch the cdparanoia command
+		@settings['log'].add(" (#{(Time.now - timeStarted).to_i} #{_("seconds")})\n")
 	end
 	
 	def getDigest(track)
