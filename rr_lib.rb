@@ -2290,7 +2290,6 @@ class Encode
 		 # Handle tags for single file images differently
 		if @settings['image']
 			tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
-			tags += "--tag TITLE=\"#{@out.album}\" " # title = album here
 			if @settings['create_cue'] # embed the cuesheet
 				tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
 			end
@@ -2323,7 +2322,6 @@ class Encode
 		 # Handle tags for single file images differently
 		if @settings['image']
 			tags += "-c ARTIST=\"#{@out.artist}\" "
-			tags += "-c TITLE=\"#{@out.album}\""
 		else # Handle tags for var artist discs differently
 			if @out.getVarArtist(track) != ''
 				tags += "-c ARTIST=\"#{@out.getVarArtist(track)}\" "
@@ -2353,7 +2351,6 @@ class Encode
 		 # Handle tags for single file images differently
 		if @settings['image']
 			tags += "--ta \"#{@out.artist}\" "
-			tags += "--tt \"#{@out.album}\" "
 		else # Handle tags for var artist discs differently
 			if @out.getVarArtist(track) != ''
 				tags += "--ta \"#{@out.getVarArtist(track)}\" "
