@@ -2497,6 +2497,9 @@ attr_reader :outputDir
 			return false
  		end
 
+		# filter out encoding flags that do non-encoding tasks
+		@settings['flacsettings'].gsub!(' --delete-input-file', '')
+
 		if @settings['other'] ; checkOtherSettings() end
 			
 		# update the ripping settings for a hidden audio track if track 1 is selected
