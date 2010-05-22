@@ -1754,8 +1754,7 @@ class SecureRip
 		@progress = 0.0 #for the progressbar
 		@sizeExpected = 0
 		@timeStarted = Time.now # needed for a time break after 30 minutes
-		
-		if @settings['maxThreads'] == 0 ; ripTracks() else Thread.new{ripTracks()} end
+		ripTracks()
 	end
 
 	def ripTracks
@@ -2074,10 +2073,9 @@ class Encode
 		@cancelled = false
 		@progress = 0.0
 		@threads = []
-		@queue = SizedQueue.new(@settings['maxThreads'])
+		@queue = SizedQueue.new(@settings['maxThreads']) if @settings['maxThreads'] != 0
 		@lock = Monitor.new
 		@out = @settings['Out'] # create a shortcut
-		
 
 		# Set the charset environment variable to UTF-8. Oggenc needs this.
 		# Perhaps others need it as well.
