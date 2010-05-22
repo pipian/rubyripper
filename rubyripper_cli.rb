@@ -38,7 +38,6 @@ class Gui_CLI
 		@ripping_log = ""
 		@ripping_progress = 0.0
 		@encoding_progress = 0.0
-		@finished = false
 		@settingsClass = Settings.new(@options.file)
 		@settings = @settingsClass.settings
 		
@@ -410,7 +409,7 @@ class Gui_CLI
 		
 		status = @rubyripper.settingsOk
 		if status == true
-			start()
+			@rubyripper.startRip()
 		else
 			update(status[0], status[1])
 		end
@@ -425,17 +424,9 @@ class Gui_CLI
 		puts ""
 
 		answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
-		if answer == 1; @rubyripper.postfixDir() ; start()
-		elsif answer == 2; @rubyripper.overwriteDir() ; start()
+		if answer == 1; @rubyripper.postfixDir() ; @rubyripper.startRip()
+		elsif answer == 2; @rubyripper.overwriteDir() ; @rubyripper.startRip()
 		else cancelRip()
-		end
-	end
-
-	def start
-		@rubyripper.startRip()
-		while @finished == false
-			sleep(1) #loop until the finished signal is given.
-			#This is not ideal, but apparently the program gets terminated otherwise.
 		end
 	end
 
@@ -454,8 +445,6 @@ class Gui_CLI
 			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y")) ; edit_settings() end
 		elsif modus == "dir_exists"
 			dir_exists()
-		elsif modus == "finished"
-			@finished = true
 		end
 	end
 
