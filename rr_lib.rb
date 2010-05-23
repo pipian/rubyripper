@@ -398,7 +398,7 @@ end
 class Disc
 attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 :playtime, :freedbString, :oldFreedbString, :totalSectors, :md, :error,
-:discId, :toc
+:discId, :toc, :tocStarted, :tocFinished
 
 	def initialize(settings, gui=false, oldFreedbString = '', test = false)
 		@settings = settings
@@ -438,6 +438,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 
 		@toc = nil # instance of the AdvancedToc class
 		@tocStarted = false # keeps track if the toc class is ever created
+		@tocFinished = false
 		@cdrdaoThread = nil # to later synchronize
 		@cue = nil # instance of the Cuesheet class
 	end
@@ -445,7 +446,6 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 	# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
 	def prepareToc
 		if @settings['create_cue'] && installed('cdrdao')
-			@tocFinished = false
 			@cdrdaoThread = Thread.new{advancedToc()}
 		end
 
@@ -2494,10 +2494,12 @@ attr_reader :outputDir
 			return false
 		end
 		
-		temp = Disc.new(@settings, @settings['instance'], '', true)
-		if @settings['cd'].freedbString != temp.freedbString || @settings['cd'].playtime != temp.playtime
-			@error = ["error", _("The Gui doesn't match inserted cd. Please press Scan Drive first.")]
- 			return false
+		if (!@settings['cd'].tocStarted || @settings['cd'].tocFinished)
+			temp = Disc.new(@settings, @settings['instance'], '', true)
+			if @settings['cd'].freedbString != temp.freedbString || @settings['cd'].playtime != temp.playtime
+				@error = ["error", _("The Gui doesn't match inserted cd. Please press Scan Drive first.")]
+ 				return false
+			end
 		end
 		
 		unless @settings['flac'] || @settings['vorbis'] || @settings['mp3'] || @settings['wav'] || @settings['other']
