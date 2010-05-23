@@ -966,6 +966,8 @@ class Cuesheet
 				elsif track == 1 && @settings['cd'].getStartSector(0)
 					trackinfo(track)
 					writeFileLine(track)
+					# if there's a hidden track, start the first track at 0
+					@cuesheet << "    INDEX 01 #{time(0)}"
 				# when no hidden track exists write the file and then the trackinfo
 				elsif track == 1 && !@settings['cd'].getStartSector(0)
 					writeFileLine(track)
@@ -1030,6 +1032,8 @@ class Cuesheet
 			elsif @settings['pregaps'] == "prepend" && @toc.getPregap(track) > 0 
 				@cuesheet << "    INDEX 00 #{time(0)}"
 				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
+			elsif track == 0 # hidden track needs index 00
+				@cuesheet << "    INDEX 00 #{time(0)}"
 			else # no pregap or appended to previous which means it starts at 0
 				@cuesheet << "    INDEX 01 #{time(0)}"
 			end
