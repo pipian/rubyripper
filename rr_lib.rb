@@ -2093,11 +2093,15 @@ class Encode
 	
 	# is called when a track is ripped succesfully
 	def addTrack(track)
+		if normalize(track)
+			startEncoding(track)
+		end
+	end
+
+	# encode track when normalize is finished
+	def startEncoding(track)
 		# mark the progress bar as being started
 		@settings['log'].encPerc(0.0) if track == @settings['tracksToRip'][0]
-
-		normalize(track) if @settings['normalize'] == 'normalize'
-
 		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
 			if @settings[codec] && @cancelled == false
 				if @settings['maxThreads'] == 0
@@ -2122,20 +2126,22 @@ class Encode
 	end
 
 	# respect the normalize setting
-	def normalize(track)	
-		if !installed('normalize')
+	def normalize(track)
+		continue = true
+		if @settings['normalize'] != 'normalize'
+		elsif !installed('normalize')
 			puts "WARNING: normalize is not installed on your system!"
-		elsif @settings['gain'] == 'album' #FIXME
-			#if @settings['tracksToRip'][-1] != track
-			#	return false
-			#else
-			#	command = "normalize -b \"#{@out.getTempDir()}/\"*.wav"
-			#	`#{command}`
-			#end
-		else
+		elsif @settings['gain'] == 'album' && @settings['tracksToRip'][-1] == track
+			command = "normalize -b \"#{File.join(@out.getTempDir(),'*.wav')}\""
+			`#{command}`
+			# now the wavs are altered, the encoding can start
+			@settings['tracksToRip'].each{|track| startEncoding(track)}
+			continue = false
+		elsif @settings['gain'] == 'track'
 			command = "normalize \"#{@out.getTempFile(track, 1)}\""
 			`#{command}`
 		end
+		return continue
 	end
 	
 	# call the specific codec function for the track
