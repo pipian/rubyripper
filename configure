@@ -81,7 +81,21 @@ end
 
 def update_lang #will be called by the self-created Makefile :)
 	if ($LANG_SUPPORT.size != 0)
-		GetText.update_pofiles("rubyripper", ["rubyripper_cli.rb","rubyripper_gtk2.rb", "rr_lib.rb"], "Rubyripper #{$rr_version}", "./locale/po")
+		begin
+			GetText.update_pofiles("rubyripper", ["rubyripper_cli.rb",
+			"rubyripper_gtk2.rb", "rr_lib.rb"], "Rubyripper #{$rr_version}",
+			"./locale/po")
+		rescue Exception => e
+			puts "\n", '*' * 80, "\n"
+			puts e.backtrace
+			puts e.message
+			puts "\n", '*' * 80, "\n"
+			puts "Unfortunately ruby-gettext crashed at updating the po file."
+			puts "This is a known issue with ruby-1.9 and ruby-gettext."
+			puts "See also issue 400 at http://code.google.com/p/rubyripper."
+			puts "For official releases the po files are already updated."
+			puts "\n", '*' * 80, "\n"
+		end
 		GetText.create_mofiles(true, "./locale/po", "./locale")
 	end
 	exit()
