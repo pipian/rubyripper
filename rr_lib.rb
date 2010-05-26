@@ -60,7 +60,7 @@ def get_example_filename_various(basedir, layout) #separate function to make it 
 	filename = File.join(basedir, layout)
 	filename = File.expand_path(filename)
 	filename = _("Example filename: %s.ext") % [filename]
-	{'%a' => 'Various Artists', '%b' => 'TMF Rockzone', '%f' => 'codec', '%g' => "Rock", '%y' => '1999', '%n' => '01', '%va' => 'Kid Rock', '%t' => 'Cowboy'}.each{|key, value| filename.gsub!(key,value)}
+	{'%va' => 'Various Artists', '%b' => 'TMF Rockzone', '%f' => 'codec', '%g' => "Rock", '%y' => '1999', '%n' => '01', '%a' => 'Kid Rock', '%t' => 'Cowboy'}.each{|key, value| filename.gsub!(key,value)}
 	return filename
 end
 
@@ -96,7 +96,7 @@ attr_reader :settings, :configFound
 			"max_tries" => 5, #integer, #tries before giving up correcting
 			'basedir' => '~/', #string, where to store your new rips?
 			'naming_normal' => '%f/%a (%y) %b/%n - %t', #string, normal discs
-			'naming_various' => '%f/%a (%y) %b/%n - %va - %t', #string various
+			'naming_various' => '%f/%va (%y) %b/%n - %a - %t', #string various
 			'naming_image' => '%f/%a (%y) %b/%a - %b (%y)', #string, image
 			"verbose" => false, #boolean, extra verbose info shown in terminal
 			"debug" => true, #boolean, extra debug info shown in terminal
