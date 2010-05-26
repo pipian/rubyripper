@@ -105,6 +105,7 @@ but it may not work on audio-cd's with a data track.
 
 4. CHANGELOG
 ---------0.6.0 RELEASE------
+* many ruby-1.9 fixes
 * get advanced toc scanning with help of cdrdao
 * support for hidden tracks before track 1
 * optionally set how many seconds a hidden track at least must be
@@ -113,6 +114,24 @@ but it may not work on audio-cd's with a data track.
 * option for pre-emphasis handling
 * fix rips with discs that start with a data track once again
 * all new options result in a correct cuesheet (like EAC)
+* fix the --all CLI option and rename it to --defaults
+* improved aborting a rip
+* better show intention of "overwrite" dir by renaming it
+* better detection of various artist discs
+* cooldown the drive for two minutes after 30 minutes non-stop ripping
+* better handling of incomplete rips of last track due to offsets
+* added detection of free disk space
+* force a unique output directory in the gtk2 gui
+* fix some exotic lame tags
+* poll for the drive for some seconds to detect a disc
+* more easy visual sign when some erors were not recovered
+* move to freedesktop.org standard directories to store files (auto migration)
+* automatically filter out illegal FAT32 characters in filenames
+* better implementation of encoding threads, fixes multiple encodings
+* show the amount of seconds for each trial to rip
+* new Italian translation
+* update of many translations
+* and many other small fixes
 
 ---------0.5.7 RELEASE------
 * a fix for discs that start with a data track
