@@ -1012,12 +1012,10 @@ attr_reader :display
 		if installed('cdrdao')
 			@cdrdaoImage.stock = Gtk::Stock::APPLY
 			@frameToc2.each{|child| child.sensitive = true}
-			#@create_single_file.sensitive = @create_cue.sensitive = true
 		else
 			@cdrdaoImage.stock = Gtk::Stock::CANCEL
 			@create_cue.active = false
 			@frameToc2.each{|child| child.sensitive = false}
-			#@create_single_file.sensitive = @create_cue.sensitive = false
 		end
 	end
 	
@@ -1027,7 +1025,6 @@ attr_reader :display
 		@create_single_file.active = false if !@create_cue.active?
 		@tableToc3.each{|child| child.sensitive = @create_cue.active?}
 		@tableToc4.each{|child| child.sensitive = @create_cue.active?}
-		`killall cdrdao 2>&1` if not @create_cue.active?
 	end
 	
 	# signal for create single file
@@ -1043,6 +1040,7 @@ attr_reader :display
 		createSingle()
 		createCue()
 		@create_cue.signal_connect("clicked"){createCue()}
+		@create_cue.signal_connect("clicked"){`killall cdrdao 2>1` if !@create_cue.active?}
 		@create_single_file.signal_connect("clicked"){createSingle()}
 	end
 
