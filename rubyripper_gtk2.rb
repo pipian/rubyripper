@@ -1027,6 +1027,7 @@ attr_reader :display
 		@create_single_file.active = false if !@create_cue.active?
 		@tableToc3.each{|child| child.sensitive = @create_cue.active?}
 		@tableToc4.each{|child| child.sensitive = @create_cue.active?}
+		`killall cdrdao 2>&1` if not @create_cue.active?
 	end
 	
 	# signal for create single file
