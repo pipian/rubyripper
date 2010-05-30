@@ -77,7 +77,6 @@ class Settings
 attr_reader :settings, :configFound
 	def initialize(configFile = false)
 		@settings = Hash.new()
-		@configFile = configFile
 		@configFound = false
 		@defaultSettings = {"flac" => false, #boolean 
 			"flacsettings" => "--best -V", #string, passed to flac
@@ -124,38 +123,49 @@ attr_reader :settings, :configFound
 			'pregaps' => "prepend", #string, way to handle pregaps
 			'preEmphasis' => 'cue' #string, way to handle pre-emphasis
 		}
+		setFileLocation(configFile)
 		migrationCheck()
-		getConfigFile()
 		loadSettings()
+	end
+
+	# set all file locations
+	def setFileLocation(configFile)
+		if configFile == false
+			dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+			@configFile = File.join(dir, 'rubyripper/settings')
+		else
+			@configFile = File.expand_path(configFile)
+		end
+
+		dir = ENV['XDG_CACHE_HOME'] || File.join(ENV['HOME'], '.cache')
+		@cacheFile = File.join(dir, 'rubyripper/freedb.yaml')
+
+		#store the location in the settings for use later on
+		@defaultSettings['freedbCache'] = @cacheFile
+
+		createDirs(File.dirname(@configFile))
+		createDirs(File.dirname(@cacheFile))
+	end
+
+	# help function to create dirs
+	def createDirs(dirName)
+		if !File.directory?(File.dirname(dirName))
+			createDirs(File.dirname(dirName))
+		end
+		Dir.mkdir(dirName) if !File.directory?(dirName)
 	end
 
 	# check for existing configs in old directories and move them
 	# to the standard directories conform the freedesktop.org spec
 	def migrationCheck()
-		oldConfig = File.join(ENV['HOME'], '.rubyripper/settings')
-		oldCache = File.join(ENV['HOME'], '.rubyripper/freedb.yaml')
 		oldDir = File.join(ENV['HOME'], '.rubyripper')
-		
-		newConfig = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
-		newCache = ENV['XDG_CACHE_HOME'] || File.join(ENV['HOME'], '.cache')
-
-		Dir.mkdir(newConfig) if not File.directory?(newConfig)
-		Dir.mkdir(newCache) if not File.directory?(newCache)
-
-		newConfig = File.join(newConfig, 'rubyripper')
-		newCache = File.join(newCache, 'rubyripper')
-
-		Dir.mkdir(newConfig) if not File.directory?(newConfig)
-		Dir.mkdir(newCache) if not File.directory?(newCache)
-
-		newConfig = File.join(newConfig, 'settings')
-		newCache = File.join(newCache, 'freedb.yaml')
-
-		FileUtils.mv(oldConfig, newConfig) if File.exists?(oldConfig)
-		FileUtils.mv(oldCache, newCache) if File.exists?(oldCache)
-
-		Dir.delete(oldDir) if File.directory?(oldDir) && !File.symlink?(oldDir)
-		File.delete(oldDir) if File.exists?(oldDir) #in case of a symlink
+		if File.directory?(oldDir)
+			puts "Auto migrating to new file locations..."
+			oldConfig = File.join(ENV['HOME'], '.rubyripper/settings')
+			oldCache = File.join(ENV['HOME'], '.rubyripper/freedb.yaml')
+			moveFiles(oldConfig, oldCache)
+			deleteOldDir(oldDir)
+		end
 
 		# clean up a very old config file
 		if File.exists?(oldFile = File.join(ENV['HOME'], '.rubyripper_settings'))
@@ -163,13 +173,29 @@ attr_reader :settings, :configFound
 		end
 	end
 
-	# there is an option in the cli to pass the config file
-	def getConfigFile()
-		if @configFile != false && File.exists(File.expand_path(@configFile))
-			@configFile = File.expand_path(@configFile)
-		else
-			@configFile = File.join(ENV['HOME'], '.config/rubyripper/settings')
+	# help function to move the files
+	def moveFiles(oldConfig, oldCache)
+		if File.exists?(oldConfig)
+			FileUtils.mv(oldConfig, @configFile)
+			puts "New location of config file: #{@configFile}"
 		end
+
+		if File.exists?(oldCache)
+			FileUtils.mv(oldCache, @cacheFile)
+			puts "New location of freedb file: #{@cacheFile}"
+		end
+	end
+
+	# help function to remove the old dir
+	def deleteOldDir(oldDir)
+		if File.symlink?(oldDir)
+			File.delete(oldDir)
+		elsif Dir.entries(oldDir).size > 2 # some leftover file(s) remain
+			puts "#{oldDir} could not be removed: it's not empty!"
+		else
+			Dir.delete(oldDir)
+		end
+		puts "Auto migration finished succesfull."
 	end
 
 	# first load defaults, then overwrite the values found in the config file
@@ -412,7 +438,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		if audioDisc()
 			getDiscInfo()
 			analyzeTOC() #table of contents
-			@md = Metadata.new(self, @gui, @verbose) unless test == true
+			@md = Metadata.new(self, @settings) #@gui, @verbose, @settings['freedbCache']) unless test == true
 			prepareToc() unless test == true # use help of cdrdao to get info about pregaps etcetera
 		end
 	end
@@ -1053,10 +1079,11 @@ class Metadata
 attr_reader :status
 attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumber
 	
-	def initialize(disc, gui, verbose=false)
+	def initialize(disc, settings) #disc, gui, verbose=false, freedbCache)
 		@disc = disc
-		@gui = gui
-		@verbose = verbose
+		@gui = settings['instance']
+		@verbose = settings['verbose']
+		@settings = settings
 		setVariables()
 	end
 
@@ -1088,8 +1115,8 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	end
 
 	def searchMetadata
- 		if File.exist?(metadataFile = File.join(ENV['HOME'], '.cache/rubyripper/freedb.yaml'))
-			@metadataFile = YAML.load(File.open(metadataFile))
+ 		if File.exist?(@settings['freedbCache'])
+			@metadataFile = YAML.load(File.open(@settings['freedbCache']))
 			#in case it got corrupted somehow
 			@metadataFile = Hash.new if @metadataFile.class != Hash
 		else
@@ -1210,12 +1237,8 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	end
 	
 	def saveResponse
-		if not File.directory?(dirname = File.join(ENV['HOME'], '.rubyripper'))
-			Dir.mkdir(dirname)
-		end
-
-		if File.exist?(filename = File.join(ENV['HOME'], '.cache/rubyripper/freedb.yaml'))
-			@metadataFile = YAML.load(File.open(filename))
+		if File.exist?(@settings['freedbCache'])
+			@metadataFile = YAML.load(File.open(@settings['freedbCache']))
 		else
 			@metadataFile = Hash.new
 		end
