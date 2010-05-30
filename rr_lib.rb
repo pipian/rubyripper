@@ -438,7 +438,7 @@ attr_reader :cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 		if audioDisc()
 			getDiscInfo()
 			analyzeTOC() #table of contents
-			@md = Metadata.new(self, @settings) #@gui, @verbose, @settings['freedbCache']) unless test == true
+			@md = Metadata.new(self, @settings)
 			prepareToc() unless test == true # use help of cdrdao to get info about pregaps etcetera
 		end
 	end
@@ -1079,7 +1079,7 @@ class Metadata
 attr_reader :status
 attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumber
 	
-	def initialize(disc, settings) #disc, gui, verbose=false, freedbCache)
+	def initialize(disc, settings)
 		@disc = disc
 		@gui = settings['instance']
 		@verbose = settings['verbose']
@@ -1245,7 +1245,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 
 		@metadataFile[@disc.freedbString] = @rawResponse
 		
-		file = File.new(filename, 'w')
+		file = File.new(@settings['freedbCache'], 'w')
 		file.write(@metadataFile.to_yaml)
 		file.close()
 	end
