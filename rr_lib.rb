@@ -2425,7 +2425,7 @@ class Encode
 	def checkCommand(command, track, codec)
 		puts "command = #{command}" if @settings['debug']
 
-		exec = IO.popen("nice -n 6 " + command) #execute command
+		exec = IO.popen("nice -n 6 #{command}") #execute command
 		exec.readlines() #get all the output
 		
 		if Process.waitpid2(exec.pid)[1].exitstatus != 0
