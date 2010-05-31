@@ -2340,7 +2340,8 @@ class Encode
 			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
-		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}\
+		command = String.new.force_encoding("UTF-8")
+		command +="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}\
 \"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
 
 		checkCommand(command, track, 'flac')
@@ -2369,7 +2370,8 @@ class Encode
 			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
 		end
 
-		command = "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
+		command = String.new.force_encoding("UTF-8")
+		command += "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
 #{tags} \"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'vorbis')
@@ -2411,7 +2413,8 @@ class Encode
 			puts "couldn't convert to ISO-8859-1 succesfully"
 		end
 
-		command = "lame #{@settings['mp3settings']} #{tags}\"\
+		command = String.new.force_encoding("ASCII-8BIT")
+		command += "lame #{@settings['mp3settings']} #{tags}\"\
 #{@out.getTempFile(track, 1)}\" \"#{filename}\" 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'mp3')
