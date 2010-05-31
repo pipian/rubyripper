@@ -2294,6 +2294,7 @@ class Encode
 		filename = @out.getFile(track, 'other')
 		command = @settings['othersettings'].dup
 
+		command.force_encoding("UTF-8")
 		command.gsub!('%n', sprintf("%02d", track)) if track != "image"
 		command.gsub!('%f', 'other')
 
@@ -2314,7 +2315,8 @@ class Encode
 	end
 	
 	def flac(filename, track)
-		tags = "--tag ALBUM=\"#{@out.album}\" "
+		tags = String.new.force_encoding("UTF-8")
+		tags += "--tag ALBUM=\"#{@out.album}\" "
 		tags += "--tag DATE=\"#{@out.year}\" "
 		tags += "--tag GENRE=\"#{@out.genre}\" "
 		tags += "--tag DISCID=\"#{@settings['cd'].discId}\" "
@@ -2338,15 +2340,15 @@ class Encode
 			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
-		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}"
-		command += "\"#{@out.getTempFile(track, 1)}\""
-		command += " 2>&1" unless @settings['verbose']
+		command ="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}\
+\"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
 
 		checkCommand(command, track, 'flac')
 	end
 	
 	def vorbis(filename, track)
-		tags = "-c ALBUM=\"#{@out.album}\" "
+		tags = String.new.force_encoding("UTF-8")
+		tags += "-c ALBUM=\"#{@out.album}\" "
 		tags += "-c DATE=\"#{@out.year}\" "
 		tags += "-c GENRE=\"#{@out.genre}\" "
 		tags += "-c DISCID=\"#{@settings['cd'].discId}\" "
@@ -2367,15 +2369,15 @@ class Encode
 			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
 		end
 
-		command = "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} "
-		command += "#{tags} \"#{@out.getTempFile(track, 1)}\" "
-		command += " 2>&1" unless @settings['verbose']
+		command = "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
+#{tags} \"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'vorbis')
 	end
 	
 	def mp3(filename, genre, track)
-		tags = "--tl \"#{@out.album}\" "
+		tags = String.new.force_encoding("UTF-8")
+		tags += "--tl \"#{@out.album}\" "
 		tags += "--ty \"#{@out.year}\" "
 		tags += "--tg \"#{@out.genre}\" "
 		tags += "--tv TXXX=DISCID=\"#{@settings['cd'].discId}\" "
