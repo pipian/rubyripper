@@ -92,7 +92,7 @@ attr_reader :settings, :configFound
 			"playlist" => true, #boolean
 			"cdrom" => cdrom_drive(), #string
 			"offset" => 0, #integer
-			"maxThreads" => 0, #integer, number of encoding proces while ripping
+			"maxThreads" => 2, #integer, number of encoding proces while ripping
 			"rippersettings" => '', #string, passed to cdparanoia
 			"max_tries" => 5, #integer, #tries before giving up correcting
 			'basedir' => '~/', #string, where to store your new rips?
@@ -2136,9 +2136,9 @@ class Encode
 				if @settings['maxThreads'] == 0
 					encodeTrack(track,codec)
 				else
+					puts "Adding track #{track} (#{codec}) to the queue.." if @settings['debug']
+					@queue << 1 # add a value to the queue, if full wait here.
 					@threads << Thread.new do
-						puts "Adding track #{track} (#{codec}) to the queue.." if @settings['debug']
-						@queue << 1 # add a value to the queue, if full wait here.
 						encodeTrack(track,codec)
 						puts "Removing track #{track} (#{codec}) from the queue.." if @settings['debug']
 						@queue.shift() # move up in the queue to the first waiter
