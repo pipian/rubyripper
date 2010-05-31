@@ -291,10 +291,10 @@ class Gui_CLI
 		puts ""
 		puts _("FREEDB INFO\n\n")
 		puts _("DISC INFO")
-		puts _("Artist:") + " #{@settings['cd'].md.artist}"
-		puts _("Album:") + " #{@settings['cd'].md.album}"
-		puts _("Genre:") + " #{@settings['cd'].md.genre}"
-		puts _("Year:") + " #{@settings['cd'].md.year}"
+		print _("Artist:") ; print " #{@settings['cd'].md.artist}\n"
+		print _("Album:") ; print " #{@settings['cd'].md.album}\n"
+		print _("Genre:") ; print " #{@settings['cd'].md.genre}\n"
+		print _("Year:") ; print " #{@settings['cd'].md.year}\n"
 		puts ""
 		puts _("TRACK INFO")
 		
