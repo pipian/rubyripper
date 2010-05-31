@@ -2407,9 +2407,8 @@ class Encode
 			puts "couldn't convert to ISO-8859-1 succesfully"
 		end
 
-		command = "lame #{@settings['mp3settings']} #{tags}"
-		command += "\"#{@out.getTempFile(track, 1)}\" \"#{filename}\""
-		command += " 2>&1" unless @settings['verbose']
+		command = "lame #{@settings['mp3settings']} #{tags} \
+\"#{@out.getTempFile(track, 1)}\" \"#{filename}\" 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'mp3')
 	end
