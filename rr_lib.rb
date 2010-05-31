@@ -2603,8 +2603,10 @@ attr_reader :outputDir
 		if @settings['wav']; @settings['log'].add(_("-wav\n")) end
 		if @settings['other'] ; @settings['log'].add(_("-other\t-> %s\n") % [@settings['othersettings']]) end
 		@settings['log'].add(_("\nCDDB INFO\n"))
-		@settings['log'].add(_("\nArtist\t= ") + @settings['cd'].md.artist)
-		@settings['log'].add(_("\nAlbum\t= ") + @settings['cd'].md.album)
+		@settings['log'].add(_("\nArtist\t= "))
+		@settings['log'].add(@settings['cd'].md.artist)
+		@settings['log'].add(_("\nAlbum\t= "))
+		@settings['log'].add(@settings['cd'].md.album)
 		@settings['log'].add(_("\nYear\t= ") + @settings['cd'].md.year)
 		@settings['log'].add(_("\nGenre\t= ") + @settings['cd'].md.genre)
 		@settings['log'].add(_("\nTracks\t= ") + @settings['cd'].audiotracks.to_s + 
