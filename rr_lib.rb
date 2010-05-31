@@ -32,6 +32,8 @@ rescue LoadError
 	end
 end
 
+Thread.abort_on_exception = true
+
 require 'monitor' #help library for threaded applications
 require 'yaml' #help library to save data structures into files
 require 'fileutils' #help library for moving files

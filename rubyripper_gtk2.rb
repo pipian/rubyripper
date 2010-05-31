@@ -52,7 +52,6 @@ attr_reader :instances
 		
 		@settingsClass = Settings.new()
 		@settings = @settingsClass.settings
-		Thread.abort_on_exception = true if @settings['debug']
 		welcome_message()
 		
 		@lock = Monitor.new()
@@ -816,7 +815,6 @@ attr_reader :display
 		@settings['debug'] = @debug.active?
 		@settings['editor'] = @editor_entry.text
 		@settings['filemanager'] = @filemanager_entry.text
-		if @settings['debug'] ; Thread.abort_on_exception = true end
 		@settingsClass.save(@settings) #also update the config file
 	end
 	
