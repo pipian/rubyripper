@@ -106,7 +106,7 @@ attr_reader :settings, :configFound
 			'minLengthHiddenTrack' => 2, #integer, min. length hidden track
 			"req_matches_errors" => 2, # #integer, matches when errors detected
 			"req_matches_all" => 2,  #integer, #matches when no errors detected
-			"site" => "http://freedb2.org:80/~cddb/cddb.cgi", #string, freedb site
+			"site" => "http://freedb.freedb.org/~cddb/cddb.cgi", #string, freedb site
 			"username" => "anonymous", #string, user name freedb
 			"hostname" => "my_secret.com", #string, hostname freedb
 			"first_hit" => true, #boolean, always choose 1st option
