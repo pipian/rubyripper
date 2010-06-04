@@ -2294,7 +2294,7 @@ class Encode
 		filename = @out.getFile(track, 'other')
 		command = @settings['othersettings'].dup
 
-		command.force_encoding("UTF-8")
+		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
 		command.gsub!('%n', sprintf("%02d", track)) if track != "image"
 		command.gsub!('%f', 'other')
 
@@ -2315,7 +2315,8 @@ class Encode
 	end
 	
 	def flac(filename, track)
-		tags = String.new.force_encoding("UTF-8")
+		tags = String.new
+		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
 		tags += "--tag ALBUM=\"#{@out.album}\" "
 		tags += "--tag DATE=\"#{@out.year}\" "
 		tags += "--tag GENRE=\"#{@out.genre}\" "
@@ -2340,7 +2341,8 @@ class Encode
 			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
 		end
 
-		command = String.new.force_encoding("UTF-8")
+		command = String.new
+		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
 		command +="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}\
 \"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
 
@@ -2378,7 +2380,8 @@ class Encode
 	end
 	
 	def mp3(filename, genre, track)
-		tags = String.new.force_encoding("UTF-8")
+		tags = String.new
+		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
 		tags += "--tl \"#{@out.album}\" "
 		tags += "--ty \"#{@out.year}\" "
 		tags += "--tg \"#{@out.genre}\" "
@@ -2413,7 +2416,8 @@ class Encode
 			puts "couldn't convert to ISO-8859-1 succesfully"
 		end
 
-		command = String.new.force_encoding("ASCII-8BIT")
+		command = String.new
+		command.force_encoding("ASCII-8BIT") if command.respond_to?("force_encoding")
 		command += "lame #{@settings['mp3settings']} #{tags}\"\
 #{@out.getTempFile(track, 1)}\" \"#{filename}\" 2>&1" unless @settings['verbose']
 	
