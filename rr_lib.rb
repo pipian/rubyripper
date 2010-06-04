@@ -2344,7 +2344,8 @@ class Encode
 		command = String.new
 		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
 		command +="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}\
-\"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
+\"#{@out.getTempFile(track, 1)}\""
+		command += " 2>&1" unless @settings['verbose']
 
 		checkCommand(command, track, 'flac')
 	end
@@ -2374,7 +2375,8 @@ class Encode
 
 		command = String.new.force_encoding("UTF-8")
 		command += "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
-#{tags} \"#{@out.getTempFile(track, 1)}\" 2>&1" unless @settings['verbose']
+#{tags} \"#{@out.getTempFile(track, 1)}\""
+		command += " 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'vorbis')
 	end
@@ -2419,7 +2421,8 @@ class Encode
 		command = String.new
 		command.force_encoding("ASCII-8BIT") if command.respond_to?("force_encoding")
 		command += "lame #{@settings['mp3settings']} #{tags}\"\
-#{@out.getTempFile(track, 1)}\" \"#{filename}\" 2>&1" unless @settings['verbose']
+#{@out.getTempFile(track, 1)}\" \"#{filename}\""
+		command += " 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'mp3')
 	end
