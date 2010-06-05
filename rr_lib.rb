@@ -2351,7 +2351,8 @@ class Encode
 	end
 	
 	def vorbis(filename, track)
-		tags = String.new.force_encoding("UTF-8")
+		tags = String.new
+		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
 		tags += "-c ALBUM=\"#{@out.album}\" "
 		tags += "-c DATE=\"#{@out.year}\" "
 		tags += "-c GENRE=\"#{@out.genre}\" "
