@@ -2374,7 +2374,8 @@ class Encode
 			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
 		end
 
-		command = String.new.force_encoding("UTF-8")
+		command = String.new
+		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
 		command += "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
 #{tags} \"#{@out.getTempFile(track, 1)}\""
 		command += " 2>&1" unless @settings['verbose']
@@ -2405,24 +2406,26 @@ class Encode
 			tags += "--tn #{track}/#{@settings['cd'].audiotracks} "
 		end
 
-		#translate the UTF-8 tags to latin because of a lame bug.
+		# set UTF-8 tags (not the filename) to latin because of a lame bug.
 		begin
 			require 'iconv'
 			tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
-			if filename.respond_to?(:force_encoding)
-				# make both strings binary in ruby 1.9
-				# in order to concatenate them
-				tags.force_encoding("ASCII-8BIT")
-				filename.force_encoding("ASCII-8BIT")
-			end
 		rescue
 			puts "couldn't convert to ISO-8859-1 succesfully"
 		end
 
+		# combining two encoding sets in binary mode, only needed for ruby >=1.9
 		command = String.new
-		command.force_encoding("ASCII-8BIT") if command.respond_to?("force_encoding")
+		inputWavFile = @out.getTempFile(track, 1)
+		if command.respond_to?("force_encoding")
+			command.force_encoding("ASCII-8BIT")
+			tags.force_encoding("ASCII-8BIT")
+			inputWavFile.force_encoding("ASCII-8BIT")
+			filename.force_encoding("ASCII-8BIT")
+		end
+
 		command += "lame #{@settings['mp3settings']} #{tags}\"\
-#{@out.getTempFile(track, 1)}\" \"#{filename}\""
+#{inputWavFile}\" \"#{filename}\""
 		command += " 2>&1" unless @settings['verbose']
 	
 		checkCommand(command, track, 'mp3')
