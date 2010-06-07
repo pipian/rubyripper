@@ -929,6 +929,7 @@ attr_reader :display
 		@tableToc1.attach(@markHiddenTrackSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@tableToc1.attach(@markHiddenTrackLabel2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #create frame
+		@ripHiddenAudio.signal_connect("clicked"){@markHiddenTrackSpin.sensitive = @ripHiddenAudio.active?}
 		@frameToc1 = Gtk::Frame.new(_('Audio sectors before track 1'))
 		@frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@frameToc1.border_width = 5
