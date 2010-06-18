@@ -19,7 +19,7 @@
 LOCALE=[ENV['PWD'] + "/locale", "/usr/local/share/locale"]
 LOCALE.each{|dir| if File.directory?(dir) ; ENV['GETTEXT_PATH'] = dir ; break end}
 
-$rr_version = '0.6.0rc2' #application wide setting
+$rr_version = '0.6.0' #application wide setting
 
 begin
 	require 'gettext'

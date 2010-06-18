@@ -1031,13 +1031,12 @@ msgid "Not yet started (0%)"
 msgstr "Non commencé (0%)"
 
 #: rubyripper_gtk2.rb:1349
-#, fuzzy
 msgid ""
 "The directory %s already exists.\n"
 "\n"
 "What do you want rubyripper to do?"
 msgstr ""
-"Le dossier %s\n"
+"Le dossier %s\n\n"
 "existe déjà. Quelle action voulez-vous que Rubyripper effectue?"
 
 #: rubyripper_gtk2.rb:1358
@@ -1045,11 +1044,10 @@ msgid "Cancel rip"
 msgstr "Abandonner l'extraction"
 
 #: rubyripper_gtk2.rb:1358
-#, fuzzy
 msgid ""
 "Delete existing\n"
 "directory"
-msgstr "2) Effacer le dossier de destination"
+msgstr ""
 
 #: rubyripper_gtk2.rb:1358
 msgid ""
@@ -1080,22 +1078,16 @@ msgid "Multiple hits found..."
 msgstr "Plusieurs résultats trouvés..."
 
 #: rubyripper_gtk2.rb:1431
-#, fuzzy
 msgid ""
 "The rip has succesfully finished.\n"
 "A short summary is shown below."
 msgstr ""
-"Rubyripper a terminé l'extraction du CD.\n"
-"Un résumé est disponible ci-dessous."
 
 #: rubyripper_gtk2.rb:1434
-#, fuzzy
 msgid ""
 "The rip had some problems.\n"
 "A short summary is shown below."
 msgstr ""
-"Rubyripper a terminé l'extraction du CD.\n"
-"Un résumé est disponible ci-dessous."
 
 #: rubyripper_gtk2.rb:1451
 msgid "Open log file"
@@ -1428,14 +1420,12 @@ msgid "Taking a timeout of 2 minutes to protect the hardware.\n"
 msgstr ""
 
 #: rr_lib.rb:2028
-#, fuzzy
 msgid "Starting to rip CD image, trial #%s"
-msgstr "Début de l'extraction de l'image disque, essai #%s\n"
+msgstr "Début de l'extraction de l'image disque, essai #%s"
 
 #: rr_lib.rb:2030
-#, fuzzy
 msgid "Starting to rip track %s, trial #%s"
-msgstr "Début de l'extraction de la piste %s, essai #%s\n"
+msgstr "Début de l'extraction de la piste %s, essai #%s"
 
 #: rr_lib.rb:2066
 msgid ""

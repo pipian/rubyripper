@@ -679,9 +679,8 @@ msgid "The eject utility is not found on your system!"
 msgstr "Не е намерено устройство на вашата система!"
 
 #: rubyripper_gtk2.rb:444
-#, fuzzy
 msgid "Freeze disc info"
-msgstr " Неизменима информация за диска "
+msgstr ""
 
 #: rubyripper_gtk2.rb:445
 msgid "Disc:"
@@ -1037,14 +1036,11 @@ msgid "Not yet started (0%)"
 msgstr "Не е започнало (0%)"
 
 #: rubyripper_gtk2.rb:1349
-#, fuzzy
 msgid ""
 "The directory %s already exists.\n"
 "\n"
 "What do you want rubyripper to do?"
 msgstr ""
-"Директорията %s вече съществува.\n"
-"Какво да правя?"
 
 #: rubyripper_gtk2.rb:1358
 msgid "Cancel rip"
@@ -1053,11 +1049,10 @@ msgstr ""
 "извличането"
 
 #: rubyripper_gtk2.rb:1358
-#, fuzzy
 msgid ""
 "Delete existing\n"
 "directory"
-msgstr "2) Подмяна на директория"
+msgstr ""
 
 #: rubyripper_gtk2.rb:1358
 msgid ""
@@ -1088,22 +1083,16 @@ msgid "Multiple hits found..."
 msgstr "Намерени са няколко съвпадения..."
 
 #: rubyripper_gtk2.rb:1431
-#, fuzzy
 msgid ""
 "The rip has succesfully finished.\n"
 "A short summary is shown below."
 msgstr ""
-"Rubyripper зърши извличането на данните.\n"
-"Резюме е показано по-доло."
 
 #: rubyripper_gtk2.rb:1434
-#, fuzzy
 msgid ""
 "The rip had some problems.\n"
 "A short summary is shown below."
 msgstr ""
-"Rubyripper зърши извличането на данните.\n"
-"Резюме е показано по-доло."
 
 #: rubyripper_gtk2.rb:1451
 msgid "Open log file"
@@ -1211,47 +1200,35 @@ msgstr ""
 "може да се види в лога\n"
 
 #: rr_lib.rb:373
-#, fuzzy
 msgid ""
 "\n"
 "SUSPICIOUS POSITION ANALYSIS\n"
 "\n"
 msgstr ""
-"\n"
-"АНАЛИЗ НА ПОДОЗРИТЕЛНИ ЧАСТИ\n"
-"\n"
+""
 
 #: rr_lib.rb:374
 msgid "Since there are 75 chunks per second, after making the notion of the\n"
 msgstr "В една секунда са повече от 75 части, въз основа на това може\n"
 
 #: rr_lib.rb:375
-#, fuzzy
 msgid ""
 "suspicious position, the amount of initially mismatched chunks for\n"
 "that position is shown.\n"
 "\n"
 msgstr ""
-"да се получи представа, къде е разминаването.\n"
-"\n"
 
 #: rr_lib.rb:377
 msgid "TRACK %s\n"
 msgstr "Песен %s\n"
 
 #: rr_lib.rb:382
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n"
 msgstr ""
-"\tПодозрителна част: %s:${seconds} (%sx) (КОРИГИРАНА на\n"
-"%s опит\n"
 
 #: rr_lib.rb:384
-#, fuzzy
 msgid "\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
 msgstr ""
-"\tПодозрителна част: %s:${seconds} (%sx)\n"
-"(НЕ Е ВЪЗМОЖНА КОРЕКЦИЯ)"
 
 #: rr_lib.rb:427
 msgid "Unknown drive"
@@ -1371,9 +1348,8 @@ msgid "Hidden Track"
 msgstr "Скрита песен"
 
 #: rr_lib.rb:1582
-#, fuzzy
 msgid "Unknown Artist"
-msgstr "Неизвестен изпълнител"
+msgstr ""
 
 #: rr_lib.rb:1831
 msgid "Not enough disk space left! Rip aborted"
@@ -1440,14 +1416,12 @@ msgid "Taking a timeout of 2 minutes to protect the hardware.\n"
 msgstr "Изчакване от 2 минути, за защита на хардуера."
 
 #: rr_lib.rb:2028
-#, fuzzy
 msgid "Starting to rip CD image, trial #%s"
-msgstr "Извличане на имидж на компактдиска, опит №%s\n"
+msgstr ""
 
 #: rr_lib.rb:2030
-#, fuzzy
 msgid "Starting to rip track %s, trial #%s"
-msgstr "Стартиране на извличането %s, опит №%s\n"
+msgstr ""
 
 #: rr_lib.rb:2066
 msgid ""

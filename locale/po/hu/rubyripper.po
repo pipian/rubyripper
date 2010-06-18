@@ -1023,13 +1023,12 @@ msgid "Not yet started (0%)"
 msgstr "Még nem indult el (0%)"
 
 #: rubyripper_gtk2.rb:1349
-#, fuzzy
 msgid ""
 "The directory %s already exists.\n"
 "\n"
 "What do you want rubyripper to do?"
 msgstr ""
-"A kimeneti mappa %s\n"
+"A kimeneti mappa %s\n\n"
 "már létezik. Mit tegyen a rubyripper?"
 
 #: rubyripper_gtk2.rb:1358
@@ -1037,11 +1036,10 @@ msgid "Cancel rip"
 msgstr "Másolás leállítása"
 
 #: rubyripper_gtk2.rb:1358
-#, fuzzy
 msgid ""
 "Delete existing\n"
 "directory"
-msgstr "2) Létező mappa felülírása"
+msgstr ""
 
 #: rubyripper_gtk2.rb:1358
 msgid ""
@@ -1072,22 +1070,16 @@ msgid "Multiple hits found..."
 msgstr "Több találat..."
 
 #: rubyripper_gtk2.rb:1431
-#, fuzzy
 msgid ""
 "The rip has succesfully finished.\n"
 "A short summary is shown below."
 msgstr ""
-"A CD másolása elkészült.\n"
-"Egy rövid összefoglaló található alább."
 
 #: rubyripper_gtk2.rb:1434
-#, fuzzy
 msgid ""
 "The rip had some problems.\n"
 "A short summary is shown below."
 msgstr ""
-"A CD másolása elkészült.\n"
-"Egy rövid összefoglaló található alább."
 
 #: rubyripper_gtk2.rb:1451
 msgid "Open log file"
@@ -1351,9 +1343,8 @@ msgid "Hidden Track"
 msgstr ""
 
 #: rr_lib.rb:1582
-#, fuzzy
 msgid "Unknown Artist"
-msgstr "Ismeretlen"
+msgstr ""
 
 #: rr_lib.rb:1831
 msgid "Not enough disk space left! Rip aborted"
@@ -1418,14 +1409,12 @@ msgid "Taking a timeout of 2 minutes to protect the hardware.\n"
 msgstr ""
 
 #: rr_lib.rb:2028
-#, fuzzy
 msgid "Starting to rip CD image, trial #%s"
-msgstr "CD kép másolása, #%s. próba\n"
+msgstr "CD kép másolása, #%s. próba"
 
 #: rr_lib.rb:2030
-#, fuzzy
 msgid "Starting to rip track %s, trial #%s"
-msgstr "%s. szám másolása, #%s. próba\n"
+msgstr "%s. szám másolása, #%s. próba"
 
 #: rr_lib.rb:2066
 msgid ""
