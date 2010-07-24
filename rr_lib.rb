@@ -2210,33 +2210,21 @@ class Encode
 	
 	def replaygain(filename, codec, track)
 		if @settings['normalize'] == "replaygain"
+			command = ''
 			if @settings['gain'] == "album" && @settings['tracksToRip'][-1] == track || @settings['gain']=="track"
-				if codec == 'flac'
-					if not installed('metaflac') ; puts "WARNING: Metaflac is not installed. Cannot replaygain files." ; return false end
+				if codec == 'flac' && installed('metaflac')
 					command = "metaflac --add-replay-gain \"#{if @settings['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
-					`#{command}`
-				elsif codec == 'vorbis'
-					if not installed('vorbisgain') ; puts "WARNING: Vorbisgain is not installed. Cannot replaygain files." ; return false end
+				elsif codec == 'vorbis' && installed('vorbisgain')
 					command = "vorbisgain #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
-					`#{command}`
-				elsif codec == 'mp3'
-					if not installed('mp3gain') ; puts "WARNING: Mp3gain is not installed. Cannot replaygain files." ; return false end
-					if @settings['gainTagsOnly']
-						command = "mp3gain -c #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
-					else
-						command = "mp3gain -c #{if @settings['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
-					end
-					`#{command}`
-				elsif codec == 'wav'
-					if @settings['gainTagsOnly']
-						puts "No replay gain tags possible for wav codec."
-					else
-						if not installed('wavegain') ; puts "WARNING: Wavegain is not installed. Cannot replaygain files." ; return false end
-						command = "wavegain #{if @settings['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
-						`#{command}`
-					end
+				elsif codec == 'mp3' && installed('mp3gain') && @settings['gainTagsOnly']
+					command = "mp3gain -c #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
+				elsif codec == 'mp3' && installed('mp3gain') && !@settings['gainTagsOnly']
+					command = "mp3gain -c #{if @settings['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
+				elsif codec == 'wav' && installed('wavegain')
+					command = "wavegain #{if @settings['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
 				end
 			end
+			`#{command}` if command != ''
 		end
 	end
 
@@ -2464,11 +2452,13 @@ attr_reader :outputDir
 		@error = false
 		@encoding = nil
 		@ripping = nil
+		@warnings = Array.new
 	end
 	
 	def settingsOk
 		if not checkConfig() ; return @error end
 		if not testDeps() ; return @error end
+		getWarnings()
 		@settings['cd'].md.saveChanges()
 		@settings['Out'] = Output.new(@settings)
 		return @settings['Out'].status
@@ -2595,6 +2585,31 @@ attr_reader :outputDir
 		return true
 	end
 
+	# check for some non-blocking problems
+	def getWarnings
+		if @settings['normalize'] == 'normalize' && !installed('normalize')
+			@warnings << _("WARNING: Normalize is not installed!\n")
+		end
+
+		if @settings['normalize'] == 'replaygain'
+			if @settings['flac'] && !installed('metaflac')
+				@warnings << _("WARNING: Replaygain for flac (metaflac) not installed!\n")
+			end
+
+			if @settings['vorbis'] && !installed('vorbisgain')
+				@warnings << _("WARNING: Replaygain for vorbis (vorbisgain) not installed!\n")
+			end
+
+			if @settings['mp3'] && !installed('mp3gain')
+				@warnings << _("WARNING: Replaygain for mp3 (mp3gain) not installed!\n")
+			end
+
+			if @settings['wav'] && !installed('wavegain')
+				@warnings << _("WARNING: Replaygain for wav (wavegain) not installed!\n")
+			end
+		end
+	end
+
 	def summary
 		return @settings['log'].short_summary
 	end
@@ -2614,6 +2629,7 @@ attr_reader :outputDir
 		@settings['log'].add(_("Matches required for all chunks: %s\n") % [@settings['req_matches_all']])
 		@settings['log'].add(_("Matches required for erroneous chunks: %s\n\n") % [@settings['req_matches_errors']])
 		
+		@warnings.each{|warning| @settings['log'].add(warning)}
 		@settings['log'].add(_("Codec(s) used:\n"))
 		if @settings['flac']; @settings['log'].add(_("-flac \t-> %s (%s)\n") % [@settings['flacsettings'], `flac --version`.strip]) end
 		if @settings['vorbis']; @settings['log'].add(_("-vorbis\t-> %s (%s)\n") % [@settings['vorbissettings'], `oggenc --version`.strip]) end
