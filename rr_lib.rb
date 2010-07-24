@@ -1919,7 +1919,7 @@ class SecureRip
 			# expected size matches exactly
 		elsif sizeDiff < 0
 			puts "More sectors ripped than expected: #{sizeDiff / 2352} sector(s)" if @settings['debug']
-		elsif @settings['offset'] > 0 && (track == "image" || track == @settings['cd'].audiotracks)
+		elsif @settings['offset'] != 0 && (track == "image" || track == @settings['cd'].audiotracks)
 			@settings['log'].add(_("The ripped file misses %s sectors.\n") % [sizeDiff / 2352.0])			
 			@settings['log'].add(_("This is known behaviour for some drives when using an offset.\n"))		
 			@settings['log'].add(_("Notice that each sector is 1/75 second.\n"))
