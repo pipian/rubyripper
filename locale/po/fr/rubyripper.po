@@ -443,7 +443,7 @@ msgstr "3) Editer les informations des pistes"
 
 #: rubyripper_cli.rb:327
 msgid "4) Cancel the rip and eject the disc"
-msgstr "3) Annuler l'extraction et éjecter le disque"
+msgstr "4) Annuler l'extraction et éjecter le disque"
 
 #: rubyripper_cli.rb:330 rubyripper_cli.rb:426
 msgid "Please enter the number of your choice: "
