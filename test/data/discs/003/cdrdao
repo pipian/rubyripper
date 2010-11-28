@@ -1,0 +1,4 @@
+Cdrdao version 1.2.3 - (C) Andreas Mueller <andreas@daneb.de>
+ERROR: Unable to open SCSI device /dev/weirdo: No such file or directory.
+ERROR: Please use option '--device {[proto:]bus,id,lun}|device', e.g. --device 0,6,0, --device ATA:0,0,0 or --device /dev/cdrom
+ERROR: Cannot setup device /dev/weirdo.

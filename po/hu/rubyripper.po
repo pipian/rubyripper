@@ -1,0 +1,1600 @@
+# Hungarian translations for PACKAGE package.
+# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# viktor <bervi@users.sourceforge.net>, 2007.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Rubyripper 0.6.0b2\n"
+"POT-Creation-Date: 2010-05-24 21:30+0200\n"
+"PO-Revision-Date: 2009-07-14 06:27+0100\n"
+"Last-Translator: Berke Viktor <bervi@users.sourceforge.net>\n"
+"Language-Team: Hungarian\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: rubyripper_cli.rb:62
+msgid "Show current version of rubyripper."
+msgstr "A rubyripper jelenlegi verziójának mutatása."
+
+#: rubyripper_cli.rb:66
+msgid "Load configuration settings from file <FILE>."
+msgstr "Beállítások betöltése a <FILE> fájlból."
+
+#: rubyripper_cli.rb:69
+msgid "Display verbose output."
+msgstr "Részletes kimenet."
+
+#: rubyripper_cli.rb:72
+msgid "Change configuration settings."
+msgstr "Beállítások módosítása."
+
+#: rubyripper_cli.rb:75 rubyripper_cli.rb:95
+msgid "Skip questions and rip the disc."
+msgstr ""
+
+#: rubyripper_cli.rb:78
+msgid "Show this usage statement."
+msgstr "Ezen felhasználói infók megjelenítése."
+
+#: rubyripper_cli.rb:93
+msgid "Verbose output specified."
+msgstr "Részletes kimenet megadva."
+
+#: rubyripper_cli.rb:94
+msgid "Configure option specified."
+msgstr "Beállítás opció megadva."
+
+#: rubyripper_cli.rb:96
+msgid "Use config file "
+msgstr "Beállítófájl használata"
+
+#: rubyripper_cli.rb:100
+msgid "*** RUBYRIPPER SETTINGS ***"
+msgstr "*** RUBYRIPPER BEÁLLÍTÁSOK ***"
+
+#: rubyripper_cli.rb:102
+msgid "** ENCODING **"
+msgstr "** TÖMÖRÍTÉS **"
+
+#: rubyripper_cli.rb:103
+msgid "1)  flac [%s] , settings: %s"
+msgstr "1)  flac [%s] , kapcsolók: %s"
+
+#: rubyripper_cli.rb:104
+msgid "2)  vorbis [%s] , settings: %s"
+msgstr "2)  vorbis [%s] , kapcsolók: %s"
+
+#: rubyripper_cli.rb:105
+msgid "3)  mp3 [%s] , settings: %s"
+msgstr "3)  mp3 [%s] , kapcsolók: %s"
+
+#: rubyripper_cli.rb:106
+msgid "4)  wav [%s]"
+msgstr "4)  wav [%s]"
+
+#: rubyripper_cli.rb:107
+msgid "5)  other [%s], settings: %s"
+msgstr "5)  egyéb [%s], kapcsolók: %s"
+
+#: rubyripper_cli.rb:108
+msgid "6)  playlist support [%s]"
+msgstr "6)  számlista támogatás [%s]"
+
+#: rubyripper_cli.rb:109
+msgid "7)  encode while ripping [%s]"
+msgstr "7)  tömörítés másolás közben [%s]"
+
+#: rubyripper_cli.rb:111
+msgid "** RIPPING **"
+msgstr "** MÁSOLÁS **"
+
+#: rubyripper_cli.rb:112
+msgid "8)  cdrom : %s with offset %s"
+msgstr "8)  cdrom : %s %s offset-tel"
+
+#: rubyripper_cli.rb:113
+msgid ""
+"   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Your drive model is shown in the logfile."
+msgstr ""
+"   **A megfelelő offset-et a http://www.accuraterip.com/driveoffsets.htm "
+"címen nézheted meg.\n"
+"   **A meghajtód típusa a naplófájlban található."
+
+#: rubyripper_cli.rb:114
+msgid "9)  passing extra cdparanoia parameters : %s"
+msgstr "9)  további cdparanoia kapcsolók : %s"
+
+#: rubyripper_cli.rb:115
+msgid "10) match all chunks : %s"
+msgstr "10) minden darab összevetése : %s"
+
+#: rubyripper_cli.rb:116
+msgid "11) match erroneous chunks : %s"
+msgstr "11) hibás darabok összevetése : %s"
+
+#: rubyripper_cli.rb:117
+msgid "12) maximum trials : %s"
+msgstr "12) maximum próbálkozás : %s"
+
+#: rubyripper_cli.rb:118
+msgid "13) eject disc after ripping [%s]"
+msgstr "13) lemez kiadása másolás után [%s]"
+
+#: rubyripper_cli.rb:120
+msgid "** NAMING SCHEME **"
+msgstr "** NÉVADÁSI SÉMA **"
+
+#: rubyripper_cli.rb:121
+msgid "14) base directory : %s"
+msgstr "14) főmappa : %s"
+
+#: rubyripper_cli.rb:122
+msgid "15) standard scheme: %s"
+msgstr "15) standard séma: %s"
+
+#: rubyripper_cli.rb:123
+msgid "16) various artist scheme: %s"
+msgstr "16) több előadó séma: %s"
+
+#: rubyripper_cli.rb:125
+msgid "** FREEDB  **"
+msgstr "** FREEDB  **"
+
+#: rubyripper_cli.rb:126
+msgid "17) fetch cd info with freedb [%s]"
+msgstr "17) cd infó lekérdezése freedb-vel [%s]"
+
+#: rubyripper_cli.rb:127
+msgid "18) always use first hit [%s]"
+msgstr "18) mindig az első találat használata [%s]"
+
+#: rubyripper_cli.rb:128
+msgid "19) site = %s"
+msgstr "19) oldal = %s"
+
+#: rubyripper_cli.rb:129
+msgid "20) username = %s"
+msgstr "20) felhasználónév = %s"
+
+#: rubyripper_cli.rb:130
+msgid "21) hostname = %s"
+msgstr "21) gépnév = %s"
+
+#: rubyripper_cli.rb:132
+msgid "88) config file = %s"
+msgstr "88) konfigfájl = %s"
+
+#: rubyripper_cli.rb:133
+msgid "99) Don't change any setting"
+msgstr "99) Beállítások érintetlenül hagyása"
+
+#: rubyripper_cli.rb:139
+msgid "Please type the number of the setting you wish to change : "
+msgstr "Add meg, hány beállítást szeretnél módosítani : "
+
+#: rubyripper_cli.rb:143
+msgid "wav disabled"
+msgstr "wav letiltva"
+
+#: rubyripper_cli.rb:143
+msgid "wav enabled"
+msgstr "wav engedélyezve"
+
+#: rubyripper_cli.rb:145
+msgid "playlist disabled"
+msgstr "számlista letiltva"
+
+#: rubyripper_cli.rb:145
+msgid "playlist enabled"
+msgstr "számlista engedélyezve"
+
+#: rubyripper_cli.rb:146
+msgid "How many encoding threads would you like? : "
+msgstr "Hány tömörítési szálat szeretnél? :"
+
+#: rubyripper_cli.rb:148
+msgid "Which options to pass to cdparanoia? : "
+msgstr "Mely opciókat kapja meg a cdparanoia? : "
+
+#: rubyripper_cli.rb:149
+msgid "How many times must all chunks be matched? : "
+msgstr "Hányszor kell minden darabot összevetni? : "
+
+#: rubyripper_cli.rb:150
+msgid "How many times must erroneous chunks be matched? : "
+msgstr "Hányszor kell a hibás darabokat összevetni? : "
+
+#: rubyripper_cli.rb:151
+msgid "What should be the maximum number of tries? : "
+msgstr "Max. hányszor próbálkozzon? : "
+
+#: rubyripper_cli.rb:152
+msgid "eject disabled"
+msgstr "kiadás letiltva"
+
+#: rubyripper_cli.rb:152
+msgid "eject enabled"
+msgstr "kiadás engedélyezve"
+
+#: rubyripper_cli.rb:153
+msgid "Please enter your directory for your encodings: "
+msgstr "Add meg a tömörített fájlok mappáját: "
+
+#: rubyripper_cli.rb:156
+msgid "freedb disabled"
+msgstr "freedb letiltva"
+
+#: rubyripper_cli.rb:156
+msgid "freedb enabled"
+msgstr "freedb engedélyezve"
+
+#: rubyripper_cli.rb:157
+msgid "first hit disabled"
+msgstr "első találat letiltva"
+
+#: rubyripper_cli.rb:157
+msgid "first hit enabled"
+msgstr "első találat engedélyezve"
+
+#: rubyripper_cli.rb:158
+msgid "Freedb mirror: "
+msgstr "freedb tükör: "
+
+#: rubyripper_cli.rb:159
+msgid "Username : "
+msgstr "Felhasználónév : "
+
+#: rubyripper_cli.rb:160
+msgid "Hostname : "
+msgstr "Gépnév : "
+
+#: rubyripper_cli.rb:161
+msgid "Config file : "
+msgstr "Konfigfájl : "
+
+#: rubyripper_cli.rb:162
+msgid ""
+"Number %s is not an option!\n"
+"Please try again."
+msgstr ""
+"A %s szám nem opció!\n"
+"Próbáld újra."
+
+#: rubyripper_cli.rb:168
+msgid "Do you want to continue with the program now? (y/n) : "
+msgstr "Folytassa a program most? (y/n) : "
+
+#: rubyripper_cli.rb:168 rubyripper_cli.rb:176 rubyripper_cli.rb:216
+#: rubyripper_cli.rb:221 rubyripper_cli.rb:445 rubyripper_cli.rb:456
+msgid "y"
+msgstr "y"
+
+#: rubyripper_cli.rb:178
+msgid "Do you want to change the encoding parameters for %s? (y/n) : "
+msgstr ""
+"Módosítani szeretnéd a tömörítési beállításokat a %s formátumhoz? (y/n) : "
+
+#: rubyripper_cli.rb:178 rubyripper_cli.rb:216 rubyripper_cli.rb:479
+msgid "n"
+msgstr "n"
+
+#: rubyripper_cli.rb:179
+msgid ""
+"%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
+"tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
+msgstr ""
+"%a = előadó, %b = album, %g = műfaj, %y = év, %t = számcím, %n = szám "
+"sorszám, %i = bemenet, %o = kimenet (ne feledd a kiterjesztést)"
+
+#: rubyripper_cli.rb:180
+msgid "Encoding paramaters for %s : "
+msgstr "A %s formátum paraméterei : "
+
+#: rubyripper_cli.rb:186
+msgid "Cdrom device : "
+msgstr "CD-ROM eszköz : "
+
+#: rubyripper_cli.rb:187
+msgid "Offset for drive : "
+msgstr "Meghajtó offset-je : "
+
+#: rubyripper_cli.rb:192 rubyripper_cli.rb:195
+msgid ""
+"\n"
+"Current naming scheme: %s"
+msgstr ""
+"\n"
+"Jelenlegi elnevezési séma: %s"
+
+#: rubyripper_cli.rb:199
+msgid ""
+"\n"
+"%a = Artist\t\n"
+"%b = Album\n"
+"%g = Genre\n"
+"%y = Year\n"
+"%f = Codec\n"
+"%n = Tracknumber\n"
+"%t = Trackname\n"
+"%va = Various Artist\n"
+msgstr ""
+"\n"
+"%a = Előadó\t\n"
+"%b = Album\n"
+"%g = Műfaj\n"
+"%y = Év\n"
+"%f = Kodek\n"
+"%n = Szám sorszám\n"
+"%t = Számnév\n"
+"%va = Több előadó\n"
+
+#: rubyripper_cli.rb:200
+msgid "New %s naming scheme (q to quit) : "
+msgstr "Új %s elnevezési séma (q a kilépéshez) : "
+
+#: rubyripper_cli.rb:201
+msgid "q"
+msgstr "q"
+
+#: rubyripper_cli.rb:203 rubyripper_cli.rb:206
+msgid ""
+"An example filename is now:\n"
+"\n"
+"\t%s"
+msgstr ""
+"Egy fájlnév minta:\n"
+"\n"
+"\t%s"
+
+#: rubyripper_cli.rb:216 rubyripper_cli.rb:221
+msgid "yes"
+msgstr "igen"
+
+#: rubyripper_cli.rb:216
+msgid "no"
+msgstr "nem"
+
+#: rubyripper_cli.rb:222
+msgid "Please answer yes or no"
+msgstr "Kérlek válaszolj igennel vagy nemmel"
+
+#: rubyripper_cli.rb:233
+msgid "We should never get here"
+msgstr "Sosem kéne idáig jutnunk"
+
+#: rubyripper_cli.rb:233
+msgid "answer = %s, question = %s (error)"
+msgstr "válasz = %s, kérdés = %s (hiba)"
+
+#: rubyripper_cli.rb:241
+msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
+msgstr "Hanglemez észlelve, %s számmal, %s hosszban"
+
+#: rubyripper_cli.rb:243
+msgid "Fetching freedb info..."
+msgstr "freedb infó lekérése..."
+
+#: rubyripper_cli.rb:279
+msgid "Freedb reported multiple possibilities."
+msgstr "Több freedb találat van."
+
+#: rubyripper_cli.rb:281
+msgid ""
+"The first freedb option is automatically selected (no questions allowed)"
+msgstr ""
+
+#: rubyripper_cli.rb:285
+msgid "Please type the number of the one you prefer? : "
+msgstr "Add meg, melyik találatot szeretnéd használni? : "
+
+#: rubyripper_cli.rb:292
+msgid ""
+"FREEDB INFO\n"
+"\n"
+msgstr ""
+"FREEDB INFÓ\n"
+"\n"
+
+#: rubyripper_cli.rb:293
+msgid "DISC INFO"
+msgstr "LEMEZ INFÓ"
+
+#: rubyripper_cli.rb:294 rubyripper_cli.rb:339 rubyripper_gtk2.rb:438
+msgid "Artist:"
+msgstr "Előadó:"
+
+#: rubyripper_cli.rb:295 rubyripper_cli.rb:340 rubyripper_gtk2.rb:439
+msgid "Album:"
+msgstr "Album:"
+
+#: rubyripper_cli.rb:296 rubyripper_cli.rb:341 rubyripper_gtk2.rb:440
+msgid "Genre:"
+msgstr "Műfaj:"
+
+#: rubyripper_cli.rb:297 rubyripper_cli.rb:342 rubyripper_gtk2.rb:441
+msgid "Year:"
+msgstr "Év:"
+
+#: rubyripper_cli.rb:299
+msgid "TRACK INFO"
+msgstr "SZÁM INFÓ"
+
+#: rubyripper_cli.rb:322
+msgid "What would you like to do?"
+msgstr "Mit szeretnél tenni?"
+
+#: rubyripper_cli.rb:324
+msgid "1) Select the tracks to rip"
+msgstr "1) Kiválasztani a másolandó számokat"
+
+#: rubyripper_cli.rb:325
+msgid "2) Edit the disc info"
+msgstr "2) Szerkeszteni a lemez adatait"
+
+#: rubyripper_cli.rb:326
+msgid "3) Edit the track info"
+msgstr "3) Szerkeszteni a szám adatait"
+
+#: rubyripper_cli.rb:327
+msgid "4) Cancel the rip and eject the disc"
+msgstr "4) Megszakítani a másolást, és a lemezt kivenni"
+
+#: rubyripper_cli.rb:330 rubyripper_cli.rb:426
+msgid "Please enter the number of your choice: "
+msgstr "Add meg a kívánt lehetőség számát: "
+
+#: rubyripper_cli.rb:345 rubyripper_gtk2.rb:442
+msgid "Mark disc as various artist"
+msgstr "A lemezen több előadó van"
+
+#: rubyripper_cli.rb:347
+msgid "Mark disc as single artist"
+msgstr "A lemezt egy szerző készítette"
+
+#: rubyripper_cli.rb:350
+msgid ""
+"Finished editing disc info\n"
+"\n"
+msgstr ""
+"A lemez adatainak szerkesztése kész\n"
+"\n"
+
+#: rubyripper_cli.rb:353 rubyripper_cli.rb:384
+msgid "Please enter the number you'd like to edit: "
+msgstr "Add meg a kívánt lehetőség számát: "
+
+#: rubyripper_cli.rb:354
+msgid "Artist : "
+msgstr "Előadó : "
+
+#: rubyripper_cli.rb:355
+msgid "Album : "
+msgstr "Album : "
+
+#: rubyripper_cli.rb:356
+msgid "Genre : "
+msgstr "Műfaj : "
+
+#: rubyripper_cli.rb:357
+msgid "Year : "
+msgstr "Év : "
+
+#: rubyripper_cli.rb:369 rubyripper_gtk2.rb:635 rr_lib.rb:1064 rr_lib.rb:1065
+#: rr_lib.rb:1066 rr_lib.rb:1251 rr_lib.rb:1253 rr_lib.rb:1254 rr_lib.rb:1261
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: rubyripper_cli.rb:381
+msgid ""
+"Finished editing track info\n"
+"\n"
+msgstr ""
+"A szám adatainak szerkesztése kész\n"
+"\n"
+
+#: rubyripper_cli.rb:393
+msgid "This is not a valid number. Try again"
+msgstr "Érvénytelen szám. Próbáld újra"
+
+#: rubyripper_cli.rb:401
+msgid "Rip is canceled, exiting..."
+msgstr "Másolás leállítva, kilépés..."
+
+#: rubyripper_cli.rb:419
+msgid "The output directory already exists. What would you like to do?"
+msgstr "A kimeneti mappa már létezik. Mit szeretnél tenni?"
+
+#: rubyripper_cli.rb:421
+msgid "1) Auto rename the output directory"
+msgstr "1) Kimeneti mappa automatikus átnevezése"
+
+#: rubyripper_cli.rb:422
+msgid "2) Overwrite the existing directory"
+msgstr "2) Létező mappa felülírása"
+
+#: rubyripper_cli.rb:423
+msgid "3) Cancel the rip and eject the disc"
+msgstr "3) Megszakítani a másolást, és a lemezt kivenni"
+
+#: rubyripper_cli.rb:445
+msgid "Do you want to change your settings? (y/n) : "
+msgstr "Módosítani szeretnéd a beállításokat? (y/n) : "
+
+#: rubyripper_cli.rb:456
+msgid ""
+"\n"
+"Should all tracks be ripped ? (y/n) "
+msgstr ""
+"\n"
+"Minden számot másolni szeretnél ? (y/n) "
+
+#: rubyripper_cli.rb:457
+msgid "Tracks to rip are %s"
+msgstr "A %s számok lesznek másolva"
+
+#: rubyripper_cli.rb:461 rubyripper_cli.rb:478
+msgid "Current selection of tracks : %s"
+msgstr "Jelenleg kiválasztott számok : %s"
+
+#: rubyripper_cli.rb:462
+msgid ""
+"Enter 1 for entering the tracknumbers you want to remove.\n"
+"Enter 2 for entering the tracks you want to keep.\n"
+"Your choice: "
+msgstr ""
+"Írj 1-et a törölni kívánt számok megadásához.\n"
+"Írj 2-t a megtartani kívánt számok megadásához.\n"
+"A választásod: "
+
+#: rubyripper_cli.rb:464
+msgid ""
+"Type the numbers of the tracks you want to remove and separate them with a "
+"space: "
+msgstr "Írd be a törölni kívánt számok sorszámát, szóközzel elválasztva: "
+
+#: rubyripper_cli.rb:469
+msgid ""
+"Type the numbers of the tracks you want to keep and separate them with a "
+"space: "
+msgstr "Írd be a megtartani kívánt számok sorszámát, szóközzel elválasztva: "
+
+#: rubyripper_cli.rb:475
+msgid "%s is not a valid number! Please enter 1 or 2!\n"
+msgstr "%s érvénytelen szám! 1-et vagy 2-t adj meg!\n"
+
+#: rubyripper_cli.rb:479
+msgid "Do you want to make any changes? (y/n) : "
+msgstr "Szeretnél változtatni? (y/n) : "
+
+#: rubyripper_gtk2.rb:68 rubyripper_gtk2.rb:115
+msgid "Preferences"
+msgstr "Beállítások"
+
+#: rubyripper_gtk2.rb:68
+msgid "Scan drive"
+msgstr "Beolvasás"
+
+#: rubyripper_gtk2.rb:68 rubyripper_gtk2.rb:200 rubyripper_gtk2.rb:201
+#: rubyripper_gtk2.rb:253 rubyripper_gtk2.rb:267
+msgid "Open tray"
+msgstr "Tálca kidobása"
+
+#: rubyripper_gtk2.rb:68
+msgid "Rip cd now!"
+msgstr "Másolás!"
+
+#: rubyripper_gtk2.rb:68 rubyripper_gtk2.rb:96 rubyripper_gtk2.rb:129
+msgid "Exit"
+msgstr "Kilépés"
+
+#: rubyripper_gtk2.rb:142
+msgid "Abort"
+msgstr "Megszakítás"
+
+#: rubyripper_gtk2.rb:158
+msgid "Disc info"
+msgstr "Lemezinfó"
+
+#: rubyripper_gtk2.rb:259 rubyripper_gtk2.rb:340
+msgid "Close tray"
+msgstr "Tálca betöltése"
+
+#: rubyripper_gtk2.rb:344
+msgid "Ehh.. There shouldn't be anything else. WTF?"
+msgstr "Ehh.. Semmi másnak nem kéne lennie. WTF?"
+
+#: rubyripper_gtk2.rb:345
+msgid "Secret modus = %s"
+msgstr "Titkos mód = %s"
+
+#: rubyripper_gtk2.rb:354
+msgid "Encoding progress %s %"
+msgstr "Tömörítés folyamatban %s %"
+
+#: rubyripper_gtk2.rb:357
+msgid "Ripping progress %s %"
+msgstr "Másolás folyamatban %s %"
+
+#: rubyripper_gtk2.rb:368
+msgid ""
+"Welcome to rubyripper %s.\n"
+"Scanning drive %s for an audio disc..."
+msgstr ""
+"Üdvözöl a rubyripper %s.\n"
+"Audio lemez keresése a %s meghajtóban..."
+
+#: rubyripper_gtk2.rb:372
+msgid ""
+"No disc found in %s!\n"
+"Please insert a disc and push 'Scan drive'.\n"
+"\n"
+"The cdrom drive can be set in 'Preferences'."
+msgstr ""
+"Nincs lemez a %s eszközben!\n"
+"Helyezz be egy lemezt és kattints a 'Beolvasás'-ra.\n"
+"\n"
+"A meghajtó a 'Beállítások' alatt adható meg."
+
+#: rubyripper_gtk2.rb:376
+msgid "Opening tray of drive %s"
+msgstr "A %s meghajtó tálcájának kinyitása"
+
+#: rubyripper_gtk2.rb:380
+msgid ""
+"Closing tray of drive %s. \n"
+"\n"
+"The drive will be scanned for an audio disc..."
+msgstr ""
+"A %s tálcájának becsukása. \n"
+"\n"
+"A meghajtóban hanglemez keresése..."
+
+#: rubyripper_gtk2.rb:384
+msgid ""
+"Insert an audio-disc and press 'Close tray'.\n"
+"The drive will automatically be scanned for a disc.\n"
+"\n"
+"If the tray is already closed, press 'Scan drive'"
+msgstr ""
+"Helyezz be egy hanglemezt és kattints a 'Tálca betöltésé'-re.\n"
+"A meghajtóban automatikusan megkeresem a lemezt.\n"
+"\n"
+"Ha a tálca már be van csukva, kattints a  'Beolvasás'-ra"
+
+#: rubyripper_gtk2.rb:388
+msgid "The eject utility is not found on your system!"
+msgstr "Az eject program nem található a rendszeren!"
+
+#: rubyripper_gtk2.rb:444
+msgid "Freeze disc info"
+msgstr "Lemezinfó megtartása"
+
+#: rubyripper_gtk2.rb:445
+msgid "Disc:"
+msgstr "Lemez:"
+
+#: rubyripper_gtk2.rb:467
+msgid ""
+"Use this option to keep the disc info\n"
+"for albums that span multiple discs"
+msgstr ""
+"Használd ezt az opciót több lemezes\n"
+"albumoknál a lemezinfó megtartásához"
+
+#: rubyripper_gtk2.rb:503
+msgid "All"
+msgstr "Mind"
+
+#: rubyripper_gtk2.rb:504
+msgid "Artist"
+msgstr "Előadó"
+
+#: rubyripper_gtk2.rb:505
+msgid "Tracknames (%s tracks)"
+msgstr "Számcímek (%s szám)"
+
+#: rubyripper_gtk2.rb:506
+msgid "Length (%s)"
+msgstr "Hossz (%s)"
+
+#: rubyripper_gtk2.rb:573
+msgid "<b>Disc info</b>"
+msgstr "<b>Lemezinfó</b>"
+
+#: rubyripper_gtk2.rb:581
+msgid "<b>Track selection</b>"
+msgstr "<b>Kiválaszott számok</b>"
+
+#: rubyripper_gtk2.rb:830
+msgid "Cdrom device:"
+msgstr "CD-ROM eszköz:"
+
+#: rubyripper_gtk2.rb:831
+msgid "Cdrom offset:"
+msgstr "CD-ROM offset:"
+
+#: rubyripper_gtk2.rb:834
+msgid "List with offsets"
+msgstr "Offset-ek listája"
+
+#: rubyripper_gtk2.rb:835
+msgid ""
+"A website which lists the offset for most drives.\n"
+"Your drivename can be found in each logfile."
+msgstr ""
+"Egy weblap, ahol megtalálható a legtöbb meghajtó offset-je.\n"
+"A meghajtó típusát minden naplófájlban megtalálhatod."
+
+#: rubyripper_gtk2.rb:845
+msgid "Cdrom device"
+msgstr "CD-ROM eszköz"
+
+#: rubyripper_gtk2.rb:857
+msgid "Match all chunks:"
+msgstr "Összvetés minden darabra:"
+
+#: rubyripper_gtk2.rb:858
+msgid "Match erroneous chunks:"
+msgstr "Összvetés a hibás darabokra:"
+
+#: rubyripper_gtk2.rb:859
+msgid "Maximum trials (0 = unlimited):"
+msgstr "Maximum próbálkozás (0 = végtelen):"
+
+#: rubyripper_gtk2.rb:863 rubyripper_gtk2.rb:864 rubyripper_gtk2.rb:865
+msgid "times"
+msgstr "alkalommal"
+
+#: rubyripper_gtk2.rb:879
+msgid "Ripping options"
+msgstr "Másolási beállítások"
+
+#: rubyripper_gtk2.rb:891
+msgid "Pass cdparanoia options:"
+msgstr "cdparanoia kapcsolók:"
+
+#: rubyripper_gtk2.rb:892
+msgid "Eject cd when finished"
+msgstr "CD kiadása, ha kész"
+
+#: rubyripper_gtk2.rb:893
+msgid "Only keep logfile if correction is needed"
+msgstr "Naplófájl megtartása csak hiba esetén"
+
+#: rubyripper_gtk2.rb:901
+msgid "Ripping related"
+msgstr "Másolással kapcsolatos"
+
+#: rubyripper_gtk2.rb:908
+msgid "Secure Ripping"
+msgstr "Biztonságos másolás"
+
+#: rubyripper_gtk2.rb:918
+msgid "Rip hidden audio sectors"
+msgstr ""
+
+#: rubyripper_gtk2.rb:919
+msgid "Mark as a hidden track when bigger than"
+msgstr ""
+
+#: rubyripper_gtk2.rb:920
+msgid "seconds"
+msgstr ""
+
+#: rubyripper_gtk2.rb:923
+msgid "Uncheck this if cdparanoia crashes with your ripping drive."
+msgstr ""
+
+#: rubyripper_gtk2.rb:924
+msgid ""
+"A hidden track will rip to a seperate file if used in track modus.\n"
+"If it's smaller the sectors will be prepended to the first track."
+msgstr ""
+
+#: rubyripper_gtk2.rb:934
+msgid "Audio sectors before track 1"
+msgstr ""
+
+#: rubyripper_gtk2.rb:946
+msgid "Create cuesheet"
+msgstr "cuesheet készítése"
+
+#: rubyripper_gtk2.rb:947
+msgid "Rip CD to single file"
+msgstr "CD másolása egyetlen fájlba"
+
+#: rubyripper_gtk2.rb:952
+msgid "Advanced Toc analysis"
+msgstr ""
+
+#: rubyripper_gtk2.rb:960
+msgid "Cdrdao installed?"
+msgstr ""
+
+#: rubyripper_gtk2.rb:972
+msgid "Append pregap to the previous track"
+msgstr ""
+
+#: rubyripper_gtk2.rb:973
+msgid "Prepend pregaps to the track"
+msgstr ""
+
+#: rubyripper_gtk2.rb:978
+msgid "Handling pregaps other than track 1"
+msgstr ""
+
+#: rubyripper_gtk2.rb:991
+msgid "Correct pre-emphasis tracks with sox"
+msgstr ""
+
+#: rubyripper_gtk2.rb:992
+msgid "Save the pre-emphasis tag in the cuesheet."
+msgstr ""
+
+#: rubyripper_gtk2.rb:997
+msgid "Handling tracks with pre-emphasis"
+msgstr ""
+
+#: rubyripper_gtk2.rb:1006
+msgid "TOC analysis"
+msgstr ""
+
+#: rubyripper_gtk2.rb:1052
+msgid "Flac"
+msgstr "FLAC"
+
+#: rubyripper_gtk2.rb:1053
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: rubyripper_gtk2.rb:1054
+msgid "Lame Mp3"
+msgstr "LAME mp3"
+
+#: rubyripper_gtk2.rb:1055
+msgid "Wav"
+msgstr "Wav"
+
+#: rubyripper_gtk2.rb:1056 rubyripper_gtk2.rb:1281
+msgid "Other"
+msgstr "Egyéb"
+
+#: rubyripper_gtk2.rb:1057
+msgid "Show options for \"Other\""
+msgstr "Opciók az \"Egyéb\"-hez"
+
+#: rubyripper_gtk2.rb:1064
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist\n"
+"%o = outputfile   %i = inputfile"
+msgstr ""
+"%a=előadó   %g=műfaj   %t=számcím   %f=kodek\n"
+"%b=album   %y=év   %n=szám   %va=több előadó\n"
+"%o = kimenet   %i = bemenet"
+
+#: rubyripper_gtk2.rb:1078
+msgid "Select audio codecs"
+msgstr "Hangkodekek kiválasztása"
+
+#: rubyripper_gtk2.rb:1090
+msgid "Create m3u playlist"
+msgstr "m3u számlista készítése"
+
+#: rubyripper_gtk2.rb:1091
+msgid "Replace spaces with underscores in filenames"
+msgstr "Szóközök kicserélése aláhúzásjelre a fájlnevekben"
+
+#: rubyripper_gtk2.rb:1092
+msgid "Downsize all capital letters in filenames"
+msgstr "Nagybetűk cseréje kisbetűre a fájlnevekben"
+
+#: rubyripper_gtk2.rb:1094
+msgid "Number of extra encoding threads"
+msgstr ""
+
+#: rubyripper_gtk2.rb:1103
+msgid "Codec related"
+msgstr "Kodekkel kapcsolatos"
+
+#: rubyripper_gtk2.rb:1116
+msgid "Don't standardize volume"
+msgstr "Hangerő változatlanul hagyása"
+
+#: rubyripper_gtk2.rb:1117
+msgid "Use replaygain on audio files"
+msgstr "Replaygain használata"
+
+#: rubyripper_gtk2.rb:1118
+msgid "Use normalize on wav files"
+msgstr "wav fájlok normalizálása"
+
+#: rubyripper_gtk2.rb:1121
+msgid "Album / Audiophile modus"
+msgstr "Album / Audiofil mód"
+
+#: rubyripper_gtk2.rb:1122
+msgid "Track modus"
+msgstr "Szám mód"
+
+#: rubyripper_gtk2.rb:1130
+msgid "Normalize to standard volume"
+msgstr "Normalizálás standard hangerőre "
+
+#: rubyripper_gtk2.rb:1137
+msgid "Codecs"
+msgstr "Tömörítők"
+
+#: rubyripper_gtk2.rb:1147
+msgid "Enable freedb metadata fetching"
+msgstr "freedb metaadatok lekérése"
+
+#: rubyripper_gtk2.rb:1148
+msgid "Always use first freedb hit"
+msgstr "Első freedb találat használata mindig"
+
+#: rubyripper_gtk2.rb:1149
+msgid "Freedb server:"
+msgstr "freedb szerver:"
+
+#: rubyripper_gtk2.rb:1150
+msgid "Username:"
+msgstr "Felhasználónév:"
+
+#: rubyripper_gtk2.rb:1151
+msgid "Hostname:"
+msgstr "Gépnév:"
+
+#: rubyripper_gtk2.rb:1165
+msgid "Freedb options"
+msgstr "freedb beállítások"
+
+#: rubyripper_gtk2.rb:1172
+msgid "Freedb"
+msgstr "freedb"
+
+#: rubyripper_gtk2.rb:1182
+msgid "Base directory:"
+msgstr "Fő könyvtár:"
+
+#: rubyripper_gtk2.rb:1183
+msgid "Standard:"
+msgstr "Standard"
+
+#: rubyripper_gtk2.rb:1184
+msgid "Various artists:"
+msgstr "Több előadó:"
+
+#: rubyripper_gtk2.rb:1185
+msgid "Single file image:"
+msgstr "Egyetlen képfájl: "
+
+#: rubyripper_gtk2.rb:1187
+msgid "Show options for \"Filenaming scheme\""
+msgstr "Opciók mutatása a \"\"Elnevezési sémá\"-hoz"
+
+#: rubyripper_gtk2.rb:1190
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist"
+msgstr ""
+"%a=előadó   %g=műfaj   %t=számcím   %f=kodek\n"
+"%b=album   %y=év   %n=szám   %va=több előadó"
+
+#: rubyripper_gtk2.rb:1221
+msgid "Filenaming scheme"
+msgstr "Elnevezési séma"
+
+#: rubyripper_gtk2.rb:1243
+msgid "Log file viewer: "
+msgstr "Naplófájl olvasó: "
+
+#: rubyripper_gtk2.rb:1244
+msgid "File manager: "
+msgstr "Fájlkezelő: "
+
+#: rubyripper_gtk2.rb:1253
+msgid "Programs of choice"
+msgstr "Kiválaszott programok"
+
+#: rubyripper_gtk2.rb:1267
+msgid "Verbose mode"
+msgstr "Részletes mód"
+
+#: rubyripper_gtk2.rb:1268
+msgid "Debug mode"
+msgstr "Hibakeresési mód"
+
+#: rubyripper_gtk2.rb:1272
+msgid "Debug options"
+msgstr "Hibakeresési beállítások"
+
+#: rubyripper_gtk2.rb:1321
+msgid "<b>Ripping status</b>"
+msgstr "<b>Másolás állapota</b>"
+
+#: rubyripper_gtk2.rb:1337 rubyripper_gtk2.rb:1338
+msgid "Not yet started (0%)"
+msgstr "Még nem indult el (0%)"
+
+#: rubyripper_gtk2.rb:1349
+msgid ""
+"The directory %s already exists.\n"
+"\n"
+"What do you want rubyripper to do?"
+msgstr ""
+"A kimeneti mappa %s\n\n"
+"már létezik. Mit tegyen a rubyripper?"
+
+#: rubyripper_gtk2.rb:1358
+msgid "Cancel rip"
+msgstr "Másolás leállítása"
+
+#: rubyripper_gtk2.rb:1358
+msgid ""
+"Delete existing\n"
+"directory"
+msgstr ""
+
+#: rubyripper_gtk2.rb:1358
+msgid ""
+"Auto rename\n"
+"directory"
+msgstr ""
+"Mappa automatikus\n"
+"átnevezése"
+
+#: rubyripper_gtk2.rb:1378
+msgid "Dir already exists..."
+msgstr "A mappa már létezik..."
+
+#: rubyripper_gtk2.rb:1389
+msgid ""
+"The freedb server reports multiple hits.\n"
+"Which one would you prefer?"
+msgstr ""
+"A freedb szerver több találatot adott.\n"
+"Melyiket szeretnéd használni?"
+
+#: rubyripper_gtk2.rb:1401
+msgid "Ok"
+msgstr "OK"
+
+#: rubyripper_gtk2.rb:1413
+msgid "Multiple hits found..."
+msgstr "Több találat..."
+
+#: rubyripper_gtk2.rb:1431
+msgid ""
+"The rip has succesfully finished.\n"
+"A short summary is shown below."
+msgstr ""
+
+#: rubyripper_gtk2.rb:1434
+msgid ""
+"The rip had some problems.\n"
+"A short summary is shown below."
+msgstr ""
+
+#: rubyripper_gtk2.rb:1451
+msgid "Open log file"
+msgstr "Naplófájl megnyitása"
+
+#: rubyripper_gtk2.rb:1456 rubyripper_gtk2.rb:1464
+msgid "%s is not found on your system!"
+msgstr "A %s nem található a rendszeren!"
+
+#: rubyripper_gtk2.rb:1459
+msgid "Open directory"
+msgstr "Mappa megnyitása"
+
+#: rubyripper_gtk2.rb:1475
+msgid "Ripping and encoding is finished"
+msgstr "A másolás és tömörítés befejeződött"
+
+#: rr_lib.rb:54 rr_lib.rb:62
+msgid "Example filename: %s.ext"
+msgstr "Egy fájlnév minta: %s.ext"
+
+#: rr_lib.rb:71
+msgid "No eject utility found!"
+msgstr "Az eject program nem található!"
+
+#: rr_lib.rb:288
+msgid ""
+"Artist : %s\n"
+"Album: %s\n"
+msgstr ""
+"Előadó : %s\n"
+"Album: %s\n"
+
+#: rr_lib.rb:289
+msgid "This log is created by Rubyripper, version %s\n"
+msgstr "Ez a naplófájl a Rubyripper %s verziójával készült\n"
+
+#: rr_lib.rb:290
+msgid ""
+"Website: http://code.google.com/p/rubyripper\n"
+"\n"
+msgstr ""
+"Weblap: http://code.google.com/p/rubyripper\n"
+"\n"
+
+#: rr_lib.rb:347
+msgid ""
+"\n"
+"WARNING: ENCODING ERRORS WERE DETECTED\n"
+msgstr ""
+"\n"
+"FIGYELMEZTETÉS: TÖMÖRÍTÉSI HIBÁT ÉSZLELTEM\n"
+
+#: rr_lib.rb:348
+msgid ""
+"\n"
+"RIPPING SUMMARY\n"
+"\n"
+msgstr ""
+"\n"
+"MÁSOLÁS ÖSSZEGZÉSE\n"
+"\n"
+
+#: rr_lib.rb:350
+msgid "All chunks were tried to match at least %s times.\n"
+msgstr "Minden darab legalább %s alkalommal volt összevetve.\n"
+
+#: rr_lib.rb:351
+msgid ""
+"Chunks that differed after %s trials,\n"
+"were tried to match %s times.\n"
+msgstr ""
+"A %s próbálkozás után is különböző darabokat\n"
+"%s alkalommal próbáltam összevetni.\n"
+
+#: rr_lib.rb:354
+msgid "None of the tracks gave any problems\n"
+msgstr "Egyik szám másolásával sem volt probléma\n"
+
+#: rr_lib.rb:356
+msgid ""
+"Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr ""
+"Néhány számot nem lehetett kijavítani a megadott maximális próbálkozás "
+"alatt\n"
+
+#: rr_lib.rb:359
+msgid "Track %s could NOT be corrected completely\n"
+msgstr "A %s. számot nem lehetett teljesen kijavítani\n"
+
+#: rr_lib.rb:362
+msgid ""
+"Some track(s) needed correction,but could\n"
+"be corrected within the maximum amount of trials\n"
+msgstr ""
+"Néhány számot javítani kellett, de sikerült\n"
+"kijavítani a megadott maximális próbálkozás alatt\n"
+
+#: rr_lib.rb:367
+msgid ""
+"The exact positions of the suspicious chunks\n"
+"can be found in the ripping log\n"
+msgstr ""
+"A gyanús darabok pontos helye\n"
+"megtalálható a másolási naplóban\n"
+
+#: rr_lib.rb:373
+msgid ""
+"\n"
+"SUSPICIOUS POSITION ANALYSIS\n"
+"\n"
+msgstr ""
+"\n"
+"GYANÚS POZÍCIÓ ELEMZÉSE\n"
+"\n"
+
+#: rr_lib.rb:374
+msgid "Since there are 75 chunks per second, after making the notion of the\n"
+msgstr ""
+"Mivel másodpercenként több, mint 75 darab van, a gyanús pozíció jelzése "
+"után\n"
+
+#: rr_lib.rb:375
+msgid ""
+"suspicious position, the amount of initially mismatched chunks for\n"
+"that position is shown.\n"
+"\n"
+msgstr ""
+"gyanús pozíció, az adott pozíción kezdetileg különböző darabok\n"
+"száma alább található.\n"
+"\n"
+
+#: rr_lib.rb:377
+msgid "TRACK %s\n"
+msgstr "%s. SZÁM\n"
+
+#: rr_lib.rb:382
+msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n"
+msgstr "\tGyanús pozíció : %s:%s (%sx) (JAVÍTVA a(z) %s. próbálkozásnál)\n"
+
+#: rr_lib.rb:384
+msgid "\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
+msgstr "\tGyanús pozíció : %s:%s (%sx) (NEM LEHETETT JAVÍTANI)\n"
+
+#: rr_lib.rb:427
+msgid "Unknown drive"
+msgstr "Ismeretlen"
+
+#: rr_lib.rb:519
+msgid ""
+"No disc found in drive %s.\n"
+"\n"
+"Please put an audio disc in first..."
+msgstr ""
+"A %s meghajtóban nem található lemez.\n"
+"\n"
+"Helyezz be egy audio lemezt..."
+
+#: rr_lib.rb:526
+msgid ""
+"Perhaps cdparanoia doesn't support the drive parameter.\n"
+" Will retry with default drive"
+msgstr ""
+"Talán a cdparanoia nem támogatja a meghajtó paramétert.\n"
+" Új próbálkozás az alapértelmezett meghajtóval"
+
+#: rr_lib.rb:549
+msgid ""
+"Cdrom drive %s does not exist on your system!\n"
+"Please configure your cdrom drive first."
+msgstr ""
+"A %s meghajtó nem található!\n"
+"Állítsd be a meghajtót."
+
+#: rr_lib.rb:556 rr_lib.rb:586
+msgid ""
+"You don't have read and write permission\n"
+"for device %s on your system! These permissions are\n"
+"necessary for cdparanoia to scan your drive.\n"
+"\n"
+"%s\n"
+"You might want to add yourself to the necessary group in /etc/group"
+msgstr ""
+"Nincs írási és olvasási jogod a %s\n"
+"eszközre. Ezek a jogok elengedhetetlenek, hogy\n"
+"a cdparanoia kezelni tudja a meghajtót.\n"
+"\n"
+"%s\n"
+"Talán hozzá kell adnod magad a szükséges csoporthoz az /etc/group-ban"
+
+#: rr_lib.rb:626
+msgid ""
+"warning: discid or cd-discid isn't found on your system! Using fallback..."
+msgstr ""
+"figyelmeztetés: nem található a discid vagy a cd-discid. Visszaugrás..."
+
+#: rr_lib.rb:629
+msgid "freedb string = %s"
+msgstr "freedb folyam = %s"
+
+#: rr_lib.rb:825
+msgid "No pregaps, silences or pre-emphasis detected\n"
+msgstr ""
+
+#: rr_lib.rb:863
+msgid "Track %s is marked as a DATA track\n"
+msgstr ""
+
+#: rr_lib.rb:866
+msgid "Pre_emphasis detected on track %s\n"
+msgstr ""
+
+#: rr_lib.rb:871
+msgid "Pregap detected for track %s : %s sectors\n"
+msgstr ""
+
+#: rr_lib.rb:876
+msgid "Silence detected for track %s : %s sectors\n"
+msgstr ""
+
+#: rr_lib.rb:1070
+msgid "Track %s"
+msgstr "%s. szám"
+
+#: rr_lib.rb:1086
+msgid "No audio disc found in %s"
+msgstr "Nem található hanglemez a %s eszközben"
+
+#: rr_lib.rb:1156
+msgid ""
+"Couldn't connect to freedb server. Network down?\n"
+"\n"
+"Default values will be shown..."
+msgstr ""
+"Nem lehet kapcsolódni a freedb szerverhez. Hálózati hiba?\n"
+"\n"
+"Az alapértelmezett értékek érhetők el..."
+
+#: rr_lib.rb:1172
+msgid "No match in Freedb database. Default values are used."
+msgstr "Nincs freedb találat. Az alapértelmezett értékeket használom."
+
+#: rr_lib.rb:1174
+msgid "cddb_query return code = %s. Return code not supported."
+msgstr "cddb_query visszatérési kód = %s. A kód nem támogatott."
+
+#: rr_lib.rb:1181
+msgid "Keep defaults / don't use freedb"
+msgstr "Alapértékek / freedb kihagyása"
+
+#: rr_lib.rb:1484
+msgid ""
+"Can't create output directory!\n"
+"You have no writing acces in dir %s"
+msgstr ""
+"A kimeneti mappa nem hozható létre!\n"
+"Nincs írási jogod a %s mappára"
+
+#: rr_lib.rb:1581
+msgid "Hidden Track"
+msgstr ""
+
+#: rr_lib.rb:1582
+msgid "Unknown Artist"
+msgstr ""
+
+#: rr_lib.rb:1831
+msgid "Not enough disk space left! Rip aborted"
+msgstr "Nincs elég szabad hely! A másolás megszakítva"
+
+#: rr_lib.rb:1844
+msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
+msgstr ""
+"Max. próbálkozás megtörtént. %s darab nem egyezik a szükséges %{amount2} "
+"alkalommal\n"
+
+#: rr_lib.rb:1845
+msgid "Will continue with the file we've got so far\n"
+msgstr "Az eddig létrejött fájlt folytatom\n"
+
+#: rr_lib.rb:1883
+msgid ""
+"Cdparanoia doesn't output wav files.\n"
+"Check your settings please."
+msgstr ""
+"A cdparanoia nem készít wav fájlokat.\n"
+"Ellenőrizd a beállításokat."
+
+#: rr_lib.rb:1898
+msgid "The ripped file misses %s sectors.\n"
+msgstr ""
+
+#: rr_lib.rb:1899
+msgid "This is known behaviour for some drives when using an offset.\n"
+msgstr ""
+
+#: rr_lib.rb:1900
+msgid "Notice that each sector is 1/75 second.\n"
+msgstr ""
+
+#: rr_lib.rb:1912
+msgid "Filesize is not correct! Trying another time\n"
+msgstr "A fájlméret helytelen! Újabb próbálkozás\n"
+
+#: rr_lib.rb:1919
+msgid "Analyzing files for mismatching chunks\n"
+msgstr "Fájlok elemzése hibás darabokért\n"
+
+#: rr_lib.rb:1943
+msgid "Every chunk matched %s times :)\n"
+msgstr "Minden darab %s alkalommal megegyezett :)\n"
+
+#: rr_lib.rb:1946 rr_lib.rb:2006
+msgid "%s chunk(s) didn't match %s times.\n"
+msgstr "%s darab nem egyezett %s alkalommal.\n"
+
+#: rr_lib.rb:2003
+msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
+msgstr "A hibák sikeresen kijavítva, %s egyezést találtam minden darabhoz :)\n"
+
+#: rr_lib.rb:2015
+msgid "The drive is spinning for more than 30 minutes.\n"
+msgstr ""
+
+#: rr_lib.rb:2016
+msgid "Taking a timeout of 2 minutes to protect the hardware.\n"
+msgstr ""
+
+#: rr_lib.rb:2028
+msgid "Starting to rip CD image, trial #%s"
+msgstr "CD kép másolása, #%s. próba"
+
+#: rr_lib.rb:2030
+msgid "Starting to rip track %s, trial #%s"
+msgstr "%s. szám másolása, #%s. próba"
+
+#: rr_lib.rb:2066
+msgid ""
+"MD5 sum: %s\n"
+"\n"
+msgstr ""
+"MD5 sum: %s\n"
+"\n"
+
+#: rr_lib.rb:2410
+msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
+msgstr "FIGYELMEZTETÉS: A %s hibával leállt a %s. szám tömörítésekor!\n"
+
+#: rr_lib.rb:2444
+msgid ""
+"\n"
+"STATUS\n"
+"\n"
+msgstr ""
+"\n"
+"ÁLLAPOT\n"
+"\n"
+
+#: rr_lib.rb:2467
+msgid ""
+"\n"
+"ADVANCED TOC ANALYSIS (with cdrdao)\n"
+msgstr ""
+
+#: rr_lib.rb:2468
+msgid ""
+"...please be patient, this may take a while\n"
+"\n"
+msgstr ""
+
+#: rr_lib.rb:2488
+msgid "The device %s doesn't exist on your system!"
+msgstr "A %s eszköz nem létezik a rendszeren!"
+
+#: rr_lib.rb:2493
+msgid "Please select at least one track."
+msgstr "Legalább egy számot válassz ki."
+
+#: rr_lib.rb:2500
+msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
+msgstr "A GUI nem észleli a betett CD-t. Kattints a Beolvasásra."
+
+#: rr_lib.rb:2506
+msgid "No codecs are selected!"
+msgstr "Nincs kodek kiválasztva!"
+
+#: rr_lib.rb:2551
+msgid "%s not found on your system!"
+msgstr "A %s nem található a rendszeren!"
+
+#: rr_lib.rb:2571
+msgid ""
+"Cdrom player used to rip:\n"
+"%s\n"
+msgstr ""
+"Másoláshoz használt CD-ROM eszköz:\n"
+"%s\n"
+
+#: rr_lib.rb:2572
+msgid ""
+"Cdrom offset used: %s\n"
+"\n"
+msgstr ""
+"Használt CD-ROM offset: %s\n"
+"\n"
+
+#: rr_lib.rb:2573
+msgid "Ripper used: cdparanoia %s\n"
+msgstr "Használt másoló: cdparanoia %s\n"
+
+#: rr_lib.rb:2573
+msgid "default settings"
+msgstr "alapértékek"
+
+#: rr_lib.rb:2574
+msgid "Matches required for all chunks: %s\n"
+msgstr "Szükséges egyezés minden darabhoz: %s\n"
+
+#: rr_lib.rb:2575
+msgid ""
+"Matches required for erroneous chunks: %s\n"
+"\n"
+msgstr ""
+"Szükséges egyezés a hibás darabokhoz: %s\n"
+"\n"
+
+#: rr_lib.rb:2577
+msgid "Codec(s) used:\n"
+msgstr "Használt kodek(ek):\n"
+
+#: rr_lib.rb:2578
+msgid "-flac \t-> %s (%s)\n"
+msgstr "-flac \t-> %s (%s)\n"
+
+#: rr_lib.rb:2579
+msgid "-vorbis\t-> %s (%s)\n"
+msgstr "-vorbis\t-> %s (%s)\n"
+
+#: rr_lib.rb:2580
+msgid ""
+"-mp3\t-> %s\n"
+"(%s\n"
+msgstr ""
+"-mp3\t-> %s\n"
+"(%s\n"
+
+#: rr_lib.rb:2581
+msgid "-wav\n"
+msgstr "-wav\n"
+
+#: rr_lib.rb:2582
+msgid "-other\t-> %s\n"
+msgstr "-egyéb\t-> %s\n"
+
+#: rr_lib.rb:2583
+msgid ""
+"\n"
+"CDDB INFO\n"
+msgstr ""
+"\n"
+"CDDB INFÓ\n"
+
+#: rr_lib.rb:2584
+msgid ""
+"\n"
+"Artist\t= "
+msgstr ""
+"\n"
+"Előadó\t= "
+
+#: rr_lib.rb:2585
+msgid ""
+"\n"
+"Album\t= "
+msgstr ""
+"\n"
+"Album\t= "
+
+#: rr_lib.rb:2586
+msgid ""
+"\n"
+"Year\t= "
+msgstr ""
+"\n"
+"Év\t= "
+
+#: rr_lib.rb:2587
+msgid ""
+"\n"
+"Genre\t= "
+msgstr ""
+"\n"
+"Műfaj\t= "
+
+#: rr_lib.rb:2588
+msgid ""
+"\n"
+"Tracks\t= "
+msgstr ""
+"\n"
+"Számok\t= "
+
+#: rr_lib.rb:2589
+msgid "selected"
+msgstr ""
+
+#~ msgid "Rip all tracks. Skip any questions about track selection."
+#~ msgstr "MInden szám másolása. Nincs kérdés a számok kiválasztásra."
+
+#~ msgid "Rip all tracks specified."
+#~ msgstr "Minden szám másolása megadva."
+
+#~ msgid ""
+#~ "Overwrite\n"
+#~ "directory"
+#~ msgstr ""
+#~ "Mappa\n"
+#~ "felülírása"

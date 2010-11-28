@@ -1,0 +1,27 @@
+ERROR: Illegal command: --weird-toc
+Cdrdao version 1.2.3 - (C) Andreas Mueller <andreas@daneb.de>
+
+Usage: cdrdao <command> [options] [toc-file]
+command:
+  show-toc   - prints out toc and exits
+  toc-info   - prints out short toc-file summary
+  toc-size   - prints total number of blocks for toc
+  read-toc   - create toc file from audio CD
+  read-cd    - create toc and rip audio data from CD
+  read-cddb  - contact CDDB server and add data as CD-TEXT to toc-file
+  show-data  - prints out audio data and exits
+  read-test  - reads all audio files and exits
+  disk-info  - shows information about inserted medium
+  discid     - prints out CDDB information
+  msinfo     - shows multi session info, output is suited for scripts
+  drive-info - shows drive information
+  unlock     - unlock drive after failed writing
+  blank      - blank a CD-RW
+  scanbus    - scan for devices
+  simulate   - shortcut for 'write --simulate'
+  write      - writes CD
+  copy       - copies CD
+
+
+ Try 'cdrdao <command> -h' to get a list of available options
+

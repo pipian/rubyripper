@@ -1,0 +1,6 @@
+cdparanoia III release 10.2 (September 11, 2008)
+
+Using cdda library version: 10.2
+Using paranoia library version: 10.2
+Checking /dev/weirdo for cdrom...
+	Could not stat /dev/weirdo: No such file or directory
