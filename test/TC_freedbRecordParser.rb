@@ -16,10 +16,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/freedb/freedbResultParser.rb'
+require 'rubyripper/freedb/freedbRecordParser.rb'
 
-# A class to test if to_be_tested_ruby_file does <X> correctly
-class TC_FreedbResultParser < Test::Unit::TestCase
+# A class to test if the freedb record is parsed correctly
+class TC_FreedbRecordParser < Test::Unit::TestCase
 	# make all instances necessary only once
 	def setup
 		@file001 = getFile(File.join($localdir, 'data/freedb/disc001'))
@@ -28,12 +28,12 @@ class TC_FreedbResultParser < Test::Unit::TestCase
 		@file004 = getFile(File.join($localdir, 'data/freedb/disc004'))
 		@file005 = getFile(File.join($localdir, 'data/freedb/disc005'))
 		@file006 = getFile(File.join($localdir, 'data/freedb/disc006'))
-		@inst001 = FreedbResultParser.new(@file001)
-		@inst002 = FreedbResultParser.new(@file002)
-		@inst003 = FreedbResultParser.new(@file003)
-		@inst004 = FreedbResultParser.new(@file004)
-		@inst005 = FreedbResultParser.new(@file005)
-		@inst006 = FreedbResultParser.new(@file006)
+		@inst001 = FreedbRecordParser.new(@file001)
+		@inst002 = FreedbRecordParser.new(@file002)
+		@inst003 = FreedbRecordParser.new(@file003)
+		@inst004 = FreedbRecordParser.new(@file004)
+		@inst005 = FreedbRecordParser.new(@file005)
+		@inst006 = FreedbRecordParser.new(@file006)
 	end
 
 	# file helper because of different encoding madness, it should be UTF-8

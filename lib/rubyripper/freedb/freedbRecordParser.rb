@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # This class can read and interpret a freedb metadata message
-class FreedbResultParser
+class FreedbRecordParser
 
 	# setup actions to analyze the result
 	# freedbResult = A string with the complete freedb metadata message
