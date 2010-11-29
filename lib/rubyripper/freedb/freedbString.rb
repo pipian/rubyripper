@@ -22,15 +22,14 @@ class FreedbString
 
 	# * deps = instance of Dependency class
 	# * cdrom = string with location of the cdrom drive
-	# * startSector = hash that has the startsector for each track
-	# * lengthSector = hash that has the amount of sectors for each track
+	# * disc = instance of scanDiscCdparanoia
 	# * test = false, 'manual' for testing the auto generation or the complete
 	# freedbstring, faking a helpprogram
-	def initialize(deps, cdrom, startSector, lengthSector, test=false)
+	def initialize(deps, settings, disc, test=false)
 		@deps = deps
-		@cdrom = cdrom
-		@startSector = startSector
-		@lengthSector = lengthSector
+		@cdrom = settings['cdrom']
+		@startSector = disc.getInfo('startSector')
+		@lengthSector = disc.getInfo('lengthSector')
 		@test = test
 
 		checkArguments()

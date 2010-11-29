@@ -76,50 +76,50 @@ class TC_FreedbRecordParser < Test::Unit::TestCase
 	# test if inst001 passes (normal audio disc, single artist)
 	def instance001
 		assert_equal(_('ok'), @inst001.status)
-		assert_equal('98113b0e', @inst001.getInfo('discid'))
-		assert_equal('Type O Negative', @inst001.getInfo('artist'))
-		assert_equal('Bloody Kisses', @inst001.getInfo('album'))
-		assert_equal('1993', @inst001.getInfo('year'))
-		assert_equal('Gothic', @inst001.getInfo('genre'))
+		assert_equal('98113b0e', @inst001.metadata['discid'])
+		assert_equal('Type O Negative', @inst001.metadata['artist'])
+		assert_equal('Bloody Kisses', @inst001.metadata['album'])
+		assert_equal('1993', @inst001.metadata['year'])
+		assert_equal('Gothic', @inst001.metadata['genre'])
 		{1=>'Machine Screw', 2=>'Christian Woman', 
 3=>'Black No.1 (Little Miss Scare-All)', 4=>'Fay Wray Come Out and Play', 
 5=>'Kill All the White People', 6=>'Summer Breeze', 7=>'Set Me on Fire', 
 8=>'Dark Side of the Womb', 9=>'We Hate Everyone', 
 10=>'Bloody Kisses (A Death in the Family)', 11=>'3.0.I.F', 12=>'Too Late: Frozen',
 13=>'Blood & Fire', 14=>'Can\'t Lose You'}.each do |key, value|
-			assert_equal(value, @inst001.getInfo('tracklist')[key])
+			assert_equal(value, @inst001.metadata['tracklist'][key])
 		end
-		assert_equal(false, @inst001.getInfo('extraDiscInfo'))
-		assert_equal(false, @inst001.getInfo('oldTracklist'))
+		assert_equal(nil, @inst001.metadata['extraDiscInfo'])
+		assert_equal(nil, @inst001.metadata['oldTracklist'])
 	end
 
 	# test if inst002 passes (audio disc with extra disc info)
 	def instance002
 		assert_equal(_('ok'), @inst002.status)
-		assert_equal('8d093509', @inst002.getInfo('discid'))
-		assert_equal('Judas Priest', @inst002.getInfo('artist'))
-		assert_equal('Sad Wings Of Destiny', @inst002.getInfo('album'))
-		assert_equal('1976', @inst002.getInfo('year'))
-		assert_equal('Rock', @inst002.getInfo('genre'))
+		assert_equal('8d093509', @inst002.metadata['discid'])
+		assert_equal('Judas Priest', @inst002.metadata['artist'])
+		assert_equal('Sad Wings Of Destiny', @inst002.metadata['album'])
+		assert_equal('1976', @inst002.metadata['year'])
+		assert_equal('Rock', @inst002.metadata['genre'])
 		{1=>'Victim Of Changes', 2=>'The Ripper', 3=>'Dreamer Deceiver', 
 4=>'Deceiver', 5=>'Prelude', 6=> 'Tyrant', 7=>'Genocide', 8=>'Epitaph', 
 9=>'Island Of Domination'}.each do |key, value|
-			assert_equal(value, @inst002.getInfo('tracklist')[key])
+			assert_equal(value, @inst002.metadata['tracklist'][key])
 		end
 		assert_equal("P 1976 Gull Records\\nC 1995 Repertoire Records\\n\\nRobert \
 Halfordt- vocals\\nGlenn Tiptont- guitar\\nK. K. Downingt- guitar\\nIan Hilltt- \
-bass\\nAlan Mooret- drums", @inst002.getInfo('extraDiscInfo'))
-		assert_equal(false, @inst002.getInfo('oldTracklist'))
+bass\\nAlan Mooret- drums", @inst002.metadata['extraDiscInfo'])
+		assert_equal(nil, @inst002.metadata['oldTracklist'])
 	end
 
 	# test if inst003 passes (various artist disc with / separator)
 	def instance003
 		assert_equal(_('ok'), @inst003.status)
-		assert_equal('0a0dd914', @inst003.getInfo('discid'))
-		assert_equal('Various', @inst003.getInfo('artist'))
-		assert_equal('Années 60 CD1', @inst003.getInfo('album'))
-		assert_equal('2004', @inst003.getInfo('year'))
-		assert_equal('Misc', @inst003.getInfo('genre'))
+		assert_equal('0a0dd914', @inst003.metadata['discid'])
+		assert_equal('Various', @inst003.metadata['artist'])
+		assert_equal('Années 60 CD1', @inst003.metadata['album'])
+		assert_equal('2004', @inst003.metadata['year'])
+		assert_equal('Misc', @inst003.metadata['genre'])
 		{1=>'Baby Come Back', 2=>'No Milk Today', 3=> 'In The Summertime', 
 4=>'Friday on my Mind', 5=>'The Letter', 6=>'Black is Black', 
 7=>'House of The Rising Sun', 8=>'Leader Of The Pack', 9=>'Happy Together', 
@@ -127,16 +127,16 @@ bass\\nAlan Mooret- drums", @inst002.getInfo('extraDiscInfo'))
 13=>'Ob-La-DI, Ob-La-Da', 14=>'Ya Ya', 15=>'Save The Last Dance For Me',
 16=>'Michelle', 17=>'Let\'s Dance', 18=>'Lets Go In yon Francisco', 
 19=>'Raindrops Keep Fallin\' On My Head', 20=>'Suddenly You Love Me'}.each do |key, value|
-			assert_equal(value, @inst003.getInfo('tracklist')[key])
+			assert_equal(value, @inst003.metadata['tracklist'][key])
 		end
 		{1=>'THE EQUALS', 2=>'HERMAN HERMITS', 3=>'MUNGO JERRY', 4=>'THE EASYBEATS', 
 5=>'THE BOX TOPS', 6=>'LOS BRAVOS', 7=>'THE ANIMALS', 8=>'THE SHANGRI LAS', 
 9=>'THE TURTLES', 10=>'PAT BOONE', 11=>'THE RIVINGTONS', 12=>'THE TOKENS', 
 13=>'MARMALADE', 14=>'THE SAVAGE YOUNG BEATLES', 15=>'THE DRIFTERS', 16=>'THE OVERLANDERS', 17=>'THE SAVAGE YOUNG BEATLES', 18=>'TONY BURROWS OF THE FLOWERPOT MEN', 
 19=>'BJ THOMAS', 20=>'THE TREMOLOES'}.each do |key, value|
-			assert_equal(value, @inst003.getInfo('varArtist')[key])
+			assert_equal(value, @inst003.metadata['varArtist'][key])
 		end
-		assert_equal(false, @inst003.getInfo('extraDiscInfo'))
+		assert_equal(nil, @inst003.metadata['extraDiscInfo'])
 
 		# test if the original message is saved
 		# this either works or not, so it's only tested once
@@ -152,18 +152,18 @@ bass\\nAlan Mooret- drums", @inst002.getInfo('extraDiscInfo'))
 18=>'TONY BURROWS OF THE FLOWERPOT MEN / Lets Go In yon Francisco',
 19=>'BJ THOMAS / Raindrops Keep Fallin\' On My Head',
 20=>'THE TREMOLOES / Suddenly You Love Me'}.each do |key, value|
-			assert_equal(value, @inst003.getInfo('oldTracklist')[key])
+			assert_equal(value, @inst003.metadata['oldTracklist'][key])
 		end		
 	end
 
 	#test if inst004 passes (disc with multiple rows per track and title)
 	def instance004
 		assert_equal(_('ok'), @inst004.status)
-		assert_equal('0a0f5811', @inst004.getInfo('discid'))
-		assert_equal('Maria Venuti', @inst004.getInfo('artist'))
-		assert_equal('Maria Venuti Sings Schubert, Schoenberg, Schumann', @inst004.getInfo('album'))
-		assert_equal('1994', @inst004.getInfo('year'))
-		assert_equal('Classical', @inst004.getInfo('genre'))
+		assert_equal('0a0f5811', @inst004.metadata['discid'])
+		assert_equal('Maria Venuti', @inst004.metadata['artist'])
+		assert_equal('Maria Venuti Sings Schubert, Schoenberg, Schumann', @inst004.metadata['album'])
+		assert_equal('1994', @inst004.metadata['year'])
+		assert_equal('Classical', @inst004.metadata['genre'])
 		{1=>'Der Hirt Auf Dem Flesen Op. 129 (Studio)', 
 2=>'4 Lieder Nach Texten V. Richard Dehmel Op. 2: Erwartung', 
 3=>'4 Lieder Nach Texten V. Richard Dehmel Op. 2: Schenk Mir Deinen Goldenen Kamm',
@@ -181,27 +181,27 @@ bass\\nAlan Mooret- drums", @inst002.getInfo('extraDiscInfo'))
 15=>'Franz Schubert: Suleikas Zweiter Gesang Op. 31',
 16=>'Franz Schubert: Florio Op. 124, No. 2',
 17=>'Franz Schubert: Delphine Op. 124, No. 1'}.each do |key, value|
-			assert_equal(value, @inst004.getInfo('tracklist')[key])
+			assert_equal(value, @inst004.metadata['tracklist'][key])
 		end
-		assert_equal(false, @inst004.getInfo('extraDiscInfo'))
-		assert_equal(false, @inst004.getInfo('oldTracklist'))
+		assert_equal(nil, @inst004.metadata['extraDiscInfo'])
+		assert_equal(nil, @inst004.metadata['oldTracklist'])
 	end
 
 	# test if inst005 passes (various artist disc with - separator)
 	def instance005
 		assert_equal(_('ok'), @inst005.status)
-		assert_equal('0a105e12', @inst005.getInfo('discid'))
-		assert_equal('Sampler Klezmer', @inst005.getInfo('artist'))
-		assert_equal('Doyres (Generations)', @inst005.getInfo('album'))
-		assert_equal(false, @inst005.getInfo('year'))
-		assert_equal('Klezmer', @inst005.getInfo('genre'))
+		assert_equal('0a105e12', @inst005.metadata['discid'])
+		assert_equal('Sampler Klezmer', @inst005.metadata['artist'])
+		assert_equal('Doyres (Generations)', @inst005.metadata['album'])
+		assert_equal(nil, @inst005.metadata['year'])
+		assert_equal('Klezmer', @inst005.metadata['genre'])
 		{1=>'Bucharest', 2=>'Gypsy hora and sirba', 3=>'Opshpiel far di Makhutonim',
 4=>'Another glass of wine', 5=>'Moldavian hora', 6=>'No name sirba',
 7=>'Husid\'l Medley', 8=>'Dovid, shpil es nokh amol', 9=>'Ot Azoy!',
 10=>'A Doinele', 11=>'Hora and sirba', 12=>'Meron arabesque', 13=>'Shabes Nign',
 14=>'Greeting of the bride', 15=>'Freilik', 16=>'Oy, di Kinderlakh!',
 17=>'Unzer Toyrele', 18=>'Oy Tate - Serbe romanya - Lebn zol Palestina'}.each do |key, value|
-			assert_equal(value, @inst005.getInfo('tracklist')[key])
+			assert_equal(value, @inst005.metadata['tracklist'][key])
 		end
 		{1=>'Klezmorim, The', 2=>'Feldman, Zev & Andy Statman', 3=>'Tarras, Dave',
 4=>'Statman Klezmer Orchestra, The Andy', 5=>'Kapelye',
@@ -211,27 +211,27 @@ bass\\nAlan Mooret- drums", @inst002.getInfo('extraDiscInfo'))
 12=>'Berlin, Musa', 13=>'Rubin & Horowitz', 14=>'Muszikás', 
 15=>'Ukrainian Brass Band From Vinnitsa, The', 16=>'Chicago Klezmer Ensemble',
 17=>'Kapelye', 18=>'New Shtetl Band'}.each do |key, value|
-			assert_equal(value, @inst005.getInfo('varArtist')[key])
+			assert_equal(value, @inst005.metadata['varArtist'][key])
 		end
-		assert_equal(false, @inst005.getInfo('extraDiscInfo'))
+		assert_equal(nil, @inst005.metadata['extraDiscInfo'])
 	end
 
 	# test if inst006 passes (various artist disc with : separator)
 	# also with ISO-8859-1 encoding
 	def instance006
 		assert_equal(_('ok'), @inst006.status)
-		assert_equal('1c11c714', @inst006.getInfo('discid'))
-		assert_equal('Various', @inst006.getInfo('artist'))
-		assert_equal('Jazz Manouche CD 1', @inst006.getInfo('album'))
-		assert_equal(false, @inst006.getInfo('year'))
-		assert_equal('Jazz', @inst006.getInfo('genre'))
+		assert_equal('1c11c714', @inst006.metadata['discid'])
+		assert_equal('Various', @inst006.metadata['artist'])
+		assert_equal('Jazz Manouche CD 1', @inst006.metadata['album'])
+		assert_equal(nil, @inst006.metadata['year'])
+		assert_equal('Jazz', @inst006.metadata['genre'])
 		{1=>'New York City', 2=>'Flèche D\'or', 3=>'Undecided', 4=>'Jo\'s Remake',
 5=>'Cherokee', 6=>'Stompin\' At Decca', 7=>'Joseph\'s Tiger', 8=>'Minor Swing',
 9=>'Bleu Citron', 10=>'Djangologie', 11=>'Complices', 12=>'After You\'ve Gone',
 13=>'Les Yeux Noirs', 14=>'J\'attendrai', 15=>'Où Es Tu Mon Amour', 16=>'S\'wonderful',
 17=>'Oh, Lady, Be Good (live In Paris 1992)', 18=>'La Bande Des Trois',
 19=>'Twelth Year', 20=>'Manoir De Mes Rêves'}.each do |key, value|
-			assert_equal(value, @inst006.getInfo('tracklist')[key])
+			assert_equal(value, @inst006.metadata['tracklist'][key])
 		end
 		{1=>'Bireli Lagrène', 2=>'Angelo Debarre Quartet', 3=>'Tchavolo Schmitt',
 4=>'Romane', 5=>'Gyppsy Guitars', 6=>'Mandino Reinhardt', 7=>'Stochelo Rosenberg',
@@ -243,8 +243,8 @@ bass\\nAlan Mooret- drums", @inst002.getInfo('extraDiscInfo'))
 16=>'Häns´che Weiss Quartett', 17=>'Stéphane Grappelli', 18=>'Boulou',
 19=>'Fapy Lafertin',
 20=>'Le Quintette Du Hot Club De France, Django Reinhardt'}.each do |key, value|
-			assert_equal(value, @inst006.getInfo('varArtist')[key])
+			assert_equal(value, @inst006.metadata['varArtist'][key])
 		end
-		assert_equal(false, @inst006.getInfo('extraDiscInfo'))
+		assert_equal(nil, @inst006.metadata['extraDiscInfo'])
 	end
 end

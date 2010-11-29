@@ -22,7 +22,7 @@ class FreedbRecordParser
 	# freedbResult = A string with the complete freedb metadata message
 	def initialize(freedbResult)
 		@freedbResult = freedbResult		
-		@status = _('ok')
+		@status = 'ok'
 		@metadata = Hash.new
 		@metadata['tracklist'] = Hash.new
 		@metadata['varArtist'] = Hash.new
@@ -34,15 +34,9 @@ class FreedbRecordParser
 	end
 
 	# return the metadata, if unknown return false
-	def getInfo(key)
-		if @metadata.key?(key)
-			return @metadata[key]
-		else
-			return false
-		end
-	end
+	def metadata ; return @metadata ; end
 
-	# If succesfull, status will be _('ok')
+	# If succesfull, status will be 'ok'
 	def status ; return @status ; end
 
 private
@@ -60,7 +54,7 @@ private
 		elsif @freedbResult.encoding.name != 'UTF-8'
 			@status = _('ERROR: The freedb string is not UTF-8 encoded')
 		end
-		return @status == _('ok')
+		return @status == 'ok'
 	end
 
 	# analyze the output

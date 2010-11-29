@@ -34,6 +34,8 @@ class GetFreedbRecord
 
 		@status = ['ok', _('ok')]
 		@freedbRecord = String.new
+		@category = String.new
+		@finalDiscId = String.new
 		@choices = Array.new
 		handleConnection()
 	end
@@ -46,6 +48,12 @@ class GetFreedbRecord
 
 	# return the different choices
 	def getChoices ; return @choices ; end
+
+	# return the category for chosen disc
+	def category ; return @category ; end
+
+	# return the discid for chosen disc
+	def discId ; return @finalDiscId ; end
 
 	# choose number in the array [0-XX] which result you want to return
 	def choose(number)
@@ -163,6 +171,7 @@ rubyripper #{$rr_version}") + "&proto=6"
 		statusHttp, reply = @server.get(query)
 		
 		if reply[0..2] == '210'
+			code, @category, @finalDiscId = reply.split()
 			cleanup(reply)
 			@status = ['ok', _('ok')]
 		else

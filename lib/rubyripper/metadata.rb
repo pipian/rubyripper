@@ -16,7 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/freedb/freedbString.rb'
-require 'rubyripper/freedb/getFreedbRecord.rb'
+require 'rubyripper/freedb/loadFreedbRecord.rb'
+require 'rubyripper/freedb/freedbRecordParser.rb'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class Metadata
@@ -27,15 +28,19 @@ class Metadata
 	def initialize(deps, settings, disc)
 		@deps = deps
 		@settings = settings
+		@disc = disc
 		checkArguments()
 		
-		# store all metadata into a hash
+		@status = 'ok'
 		@metadata = Hash.new()		
 		setDefaultTags()
 		getFreedbString()
 
-		# try to retrieve local metadata first
-		findLocalMetadata()
+		findMetadata()
+
+		if @status == 'ok'
+			updateMetadata()
+		end
 	end
 
 	# return a string with the artist
@@ -50,8 +55,24 @@ class Metadata
 	# return a string with the genre
 	def genre ; return getInfo('genre') ; end
 
-	# return an array of strings with all tracknames
+	# return a hash with strings with the trackname for each number
 	def tracklist ; return getInfo('tracklist') ; end
+
+	# return extra disc info, false if unknown
+	def extraDiscInfo ; return getInfo('extraDiscInfo') ; end
+
+	# return a hash with strings with the artist for each number, false if unknown
+	def varArtists ; return getInfo('varArtist') ; end
+
+	# return a trackname for a number, false if unknown
+	def trackname(number)
+		return getInfo('tracklist')[number]
+	end
+
+	# return the artist for the number, false if unknown
+	def varArtist(number)
+		return getInfo('varArtist')[number]
+	end
 
 private
 	
@@ -84,37 +105,56 @@ private
 		@metadata['genre'] = _('Unknown')
 		@metadata['year'] = '0'
 
-		@metadata['tracklist'] = Array.new
+		@metadata['tracklist'] = Hash.new
 		(1..@disc.getInfo('audiotracks').each do |track|
-			@metadata['tracklist'] << _("Track %s") % [track]
+			@metadata['tracklist'][track] << _("Track %s") % [track]
 		end
 	end
 
 	# read the freedb string from the helper class
 	def getFreedbString
-		freedbHelper = FreedbString.new(@deps, @cdrom, getDisc('startSector'),
-getDisc('lengthSector'))
-		@freedbString = freedbHelper.getFreedbString()
-		@discId = freedbHelper.getDiscId()
-		if not findLocalMetadata
-			@freedb = getFreedbRecord.new(@freedbString, @settings)
+		disc = FreedbString.new(@deps, @settings, @disc)
+		@freedbString = disc.getFreedbString()
+		@discId = disc.getDiscId()
+	end
+
+	# try to find local Cddb files first
+	def findMetadata
+		local = LoadFreedbRecord.new(@discId)
+		if local.status == 'ok'
+			@freedbRecord = local.freedbRecord
+		else
+			getFreedb()
 		end
 	end
 
-	# search local environment for cached information, return true if success
-	def findLocalMetadata
-		
+	# get the information from the freedb server
+	def getFreedb
+		require 'rubyripper/freedb/getFreedbRecord.rb'
+		require 'rubyripper/freedb/cgiHttpHandler.rb'
+		@remote = GetFreedbRecord.new(@freedbString, @settings, 
+CgiHttpHandler.new(@settings))
+
+		if @remote.status[0] == 'ok'
+			@freedbRecord = @remote.freedbRecord
+			require 'rubyripper/freedb/saveFreedbRecord.rb'
+			SaveFreedbRecord.new(@freedbRecord, @remote.category, @remote.discId)
+		else
+			@status = @remote.status[0]
+		end
 	end
 
-#	def searchMetadata
-# 		if File.exist?(@settings['freedbCache'])
-#			@metadataFile = YAML.load(File.open(@settings['freedbCache']))
-#			#in case it got corrupted somehow
-#			@metadataFile = Hash.new if @metadataFile.class != Hash
-#		else
-#			@metadataFile = Hash.new
-#		end
-#
+	# add the freedb info
+	def updateMetadata
+		@freedb = FreedbRecordParser.new(@freedbRecord)
+		if @freedb.status == 'ok'
+			@metadata.merge!(@freedb.metadata)
+		else
+			puts @freedb.status
+		end
+	end
+end
+
 #		if @disc.freedbString != @disc.oldFreedbString # Scanning the same disc will always result in an new freedb fetch.
 #			if @metadataFile.has_key?(@disc.freedbString) || findLocalMetadata #is the Metadata somewhere local?
 #				if @metadataFile.has_key?(@disc.freedbString)
@@ -130,22 +170,3 @@ getDisc('lengthSector'))
 #		if @verbose ; puts "preparing to contact freedb server" end
 #		handshake()
 #	end
-#
-#	def findLocalMetadata
-#		if File.directory?(dir = File.join(ENV['HOME'], '.cddb'))
-#			Dir.foreach(dir) do |subdir|
-#				if subdir == '.' || subdir == '..' || !File.directory?(File.join(dir, subdir)) ;  next end
-#				Dir.foreach(File.join(dir, subdir)) do |file|
-#					if file == @disc.freedbString[0,8]
-#						puts "Local file found #{File.join(dir, subdir, file)}"
-#						# convert the string to an array, since ruby-1.9 handles these differently
-#						@rawResponse = File.read(File.join(dir, subdir, file)).split("\n")
-#						return true
-#					end
-#				end
-#			end
-#		end
-#		return false
-#	end
-#
-end

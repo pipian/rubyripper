@@ -78,7 +78,7 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 	def test_SingleRecordFound
 		# prepare test
 		query = ['ok', '200 blues 7F087C0A Some random artist / Some random album']
-		read = ['ok', "210 blues 7F087C0A\n" + @file001 + "\n."]
+		read = ['ok', "210 metal 7F087C01\n" + @file001 + "\n."]
 		category = 'blues'
 		discid = '7F087C0A'
 		mock = FakeConnection.new(query, read, category, discid)
@@ -88,6 +88,8 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 		assert_equal('ok', instance.status[0])
 		assert_equal(@file001, instance.freedbRecord)
 		assert_equal([], instance.getChoices)
+		assert_equal('metal', instance.category)
+		assert_equal('7F087C01', instance.discId)
 	end
 
 	# test when multiple records found
