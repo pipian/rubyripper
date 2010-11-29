@@ -181,8 +181,6 @@ rubyripper #{$rr_version}") + "&proto=6"
 	# error handling for read command
 	def errorReading(reply)
 		code = reply[0..2].to_i
-		
-		puts "code = #{code}"
 
 		if code == 401
 			@status = ['cddbEntryNotFound', _('The disc can\'t be found!')]
