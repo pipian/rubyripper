@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc/freedbString.rb'
+require 'rubyripper/freedb/freedbString.rb'
 
 # A class to test the freedbstring generation
 class TC_FreedbString < Test::Unit::TestCase

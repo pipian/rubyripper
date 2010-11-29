@@ -16,7 +16,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc/freedbResultParser.rb'
+require 'rubyripper/freedb/freedbResultParser.rb'
 
 # A class to test if to_be_tested_ruby_file does <X> correctly
 class TC_FreedbResultParser < Test::Unit::TestCase

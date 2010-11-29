@@ -15,8 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc/freedbString.rb'
-require 'rubyripper/disc/freedb.rb'
+require 'rubyripper/freedb/freedbString.rb'
+require 'rubyripper/freedb/getFreedbRecord.rb'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class Metadata
@@ -97,7 +97,7 @@ getDisc('lengthSector'))
 		@freedbString = freedbHelper.getFreedbString()
 		@discId = freedbHelper.getDiscId()
 		if not findLocalMetadata
-			@freedb = Freedb.new(@freedbString, @settings)
+			@freedb = getFreedbRecord.new(@freedbString, @settings)
 		end
 	end
 

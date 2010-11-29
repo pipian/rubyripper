@@ -65,4 +65,5 @@ require './TC_scanDiscCdinfo.rb'
 require './TC_scanDiscCdparanoia.rb'
 require './TC_scanDiscCdrdao.rb'
 require './TC_freedbResultParser.rb'
+require './TC_getFreedbRecord.rb'
 
