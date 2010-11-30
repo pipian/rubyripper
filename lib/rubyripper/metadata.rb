@@ -25,10 +25,12 @@ class Metadata
 	# * deps = instance of Dependency class
 	# * settings = hash with all settings
 	# * disc = instance of ScanDiscCdparanoia
-	def initialize(deps, settings, disc)
+	# * freshCopy = if true, always fetch a fresh copy from the server
+	def initialize(deps, settings, disc, freshCopy=false)
 		@deps = deps
 		@settings = settings
 		@disc = disc
+		@freshCopy = freshCopy
 		checkArguments()
 		
 		@status = 'ok'
@@ -96,6 +98,9 @@ private
 		unless @disc.class == ScanDiscCdparanoia
 			raise ArgumentError, "disc must be an instance of ScanDiscCdparanoia"
 		end
+		unless @freshCopy == true || @freshCopy == false
+			raise ArgumentError, 'freshCopy must be true or false'
+		end
 	end
 
 	# before doing any attempts at getting extra metadata set the defaults
@@ -121,7 +126,7 @@ private
 	# try to find local Cddb files first
 	def findMetadata
 		local = LoadFreedbRecord.new(@discId)
-		if local.status == 'ok'
+		if @freshCopy == false && local.status == 'ok'
 			@freedbRecord = local.freedbRecord
 		else
 			getFreedb()

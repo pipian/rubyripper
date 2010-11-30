@@ -16,71 +16,80 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/disc/scanDiscCdparanoia.rb'
-require 'rubyripper/disc/metadata.rb'
+require 'rubyripper/metadata.rb'
 
-# The DiscHelper class manages the different scans of the disc
+# The Disc class manages the different scans of the disc
 # This is mainly done with the help of cdparanoia
 # The scan should typically take about 2 seconds
 
-class DiscHelper
-attr_reader :getMetadata, :getDisc,
-:settings, :gui, :deps, :oldFreedbString, :testQuery
-
+class Disc
 #:cdrom, :multipleDriveSupport, :audiotracks, :devicename,
 #:playtime, :freedbString, :totalSectors, :freedb, :error,
 #:discId, :toc, :tocStarted, :tocFinished, :getFreedbInfo,
 #:getStartSector, :getLengthSector, :getLengthText, :getFileSize,
-#:settings, :gui, :deps, :oldFreedbString, :testQuery, :testCdInfo
 
-	def initialize(settings, gui, deps, oldFreedbString = '', testQuery = false)
+	# * settings = hash with all settings
+	# * gui = instance of a gui, with :update function
+	# * deps = instance of Dependency class
+	def initialize(settings, gui, deps)
 		@settings = settings
 		@gui = gui
 		@deps = deps
-		# string of previous scan
-		@oldFreedbString = oldFreedbString
-		# for testing purposes the disc query can be provided	
-		@testQuery = testQuery
-
-		# status for the class
-		@status = _('ok')
-
 		checkArguments()
-		if isAudioDisc()
-			startFreedb()
-			prepareToc() # use help of cdrdao to get info about pregaps etcetera
-		end
+		findDisc()
 	end
-	
+
+	# return the metadata instance
+	def md ; return @metadata ; end
+
+	# return the scanDiscCdparanoia instance
+	def scan ; return @scan ; end
+
+	# scan a new disc
+	def refresh
+		#TODO If same disc as current, set freshCopy argument true for metadata
+		findDisc()
+	end
+
+	# save updated metadata
+	def saveMetadata(inputUser)
+		#TODO
+	end
+
+private	
 	# check for valid arguments
 	def checkArguments()
 		unless @settings.class == Hash
 			raise ArgumentError, "settings parameter must be a hash"
 		end
 		unless @gui.respond_to?(:update)
-			raise ArgumentError, "The gui parameter is a class which " +
-			"needs at least needs the \"update\" function"
+			raise ArgumentError, "The gui parameter is a class which needs at \
+least needs the update function"
 		end
 		unless @deps.class == Dependency
 			raise ArgumentError, "deps parameter must be an instance of Dependency"
 		end
-		unless @oldFreedbString.class == String
-			raise ArgumentError, "oldFreedbString parameter must be a string"
-		end
-		unless @testQuery == false || @testQuery.class == String
-			raise ArgumentError, "query parameter must be false or a string"
+	end
+
+	# the overall function to search for a disc
+	def findDisc
+		@status = 'noDisc'
+		if isAudioDisc()
+			findMetadata()
+			#prepareToc() # use help of cdrdao to get info about pregaps etcetera
 		end
 	end
 
-	# initiate the scanning of cdparanoia output and return it a disc is found
+	# initiate the scanning of cdparanoia output and return true if a disc is found
 	def isAudioDisc
-		if @deps.getForcedDeps('Cdparanoia')
-			@disc = ScanDiscCdparanoia.new(@deps, @settings)
-			@status = @disc.status
-			return @status == _('ok')
-		else
-			@status = _('Cdparanoia not found, can\'t scan disc!')
-			return false
-		end
+		@scan = ScanDiscCdparanoia.new(@deps, @settings)
+		@status = @scan.status
+		return @status == 'ok'
+	end
+
+	# get the freedb string and launch the freedb class
+	def findMetadata
+		@metadata = Metadata.new(@deps, @settings, @scan)
 	end
 
 	# retrieve information of the disc retrieved by cdparanoia
@@ -89,21 +98,6 @@ attr_reader :getMetadata, :getDisc,
 			return @disc.getInfo()
 		else
 			@disc.getInfo(key)
-		end
-	end
-
-	# get the freedb string and launch the freedb class
-	def startFreedb
-		@metadata = Metadata.new(@deps, @settings, @disc)
-
-	end
-
-	# retrieve information of the disc retrieve via freedb
-	def getMetadata(key=false)
-		if key == false
-			return @freedb.getInfo()
-		else
-			@freedb.getInfo(key)
 		end
 	end
 

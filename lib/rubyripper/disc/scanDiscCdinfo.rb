@@ -32,7 +32,7 @@ class ScanDiscCdinfo
 		@settings['startSector'] = Hash.new
 		@settings['dataTracks'] = Array.new
 		
-		@status = _('ok')
+		@status = 'ok'
 		query = testRead || `cd-info -C #{@cdrom}`
 		
 		if isValidQuery(query)
@@ -41,7 +41,7 @@ class ScanDiscCdinfo
 		end
 	end
 
-	# return the status, _('ok') is good
+	# return the status, 'ok' is good
 	def status ; return @status ; end
 
 	# return the settings variable
@@ -76,7 +76,7 @@ private
 			@status = _('ERROR: No disc found')
 		end
 		
-		return @status == _('ok')
+		return @status == 'ok'
 	end
 
 	# minutes:seconds:sectors to sectors

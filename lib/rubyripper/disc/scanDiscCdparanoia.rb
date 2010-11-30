@@ -32,7 +32,7 @@ class ScanDiscCdparanoia
 		checkArguments()		
 		setDefaultVariables()
 		
-		@status = _('ok')
+		@status = 'ok'
 		query = testRead || `cdparanoia -d #{@cdrom} -vQ 2>&1`
 		
 		# some versions of cdparanoia don't support the cdrom parameter
@@ -47,7 +47,7 @@ class ScanDiscCdparanoia
 			checkOffsetFirstTrack()
 		end
 		
-		if @status == _('ok') && !testRead
+		if @status == 'ok' && !testRead
 			@status = PermissionsDrive.new(@cdrom, query, @deps).status
 		end
 	end
@@ -65,7 +65,7 @@ class ScanDiscCdparanoia
 		end
 	end
 
-	# return the status, _('ok') is good
+	# return the status, 'ok' is good
 	def status ; return @status ; end
 
 private
@@ -102,7 +102,7 @@ Please put an audio disc in first...") %[@cdrom]
 			@status = _('ERROR: drive %s is not found') %[@cdrom]
 		end
 		
-		return @status == _('ok')
+		return @status == 'ok'
 	end
 
 	# store the info of the query in variables
