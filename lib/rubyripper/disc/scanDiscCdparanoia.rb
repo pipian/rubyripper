@@ -48,7 +48,7 @@ class ScanDiscCdparanoia
 		end
 		
 		if @status == 'ok' && !testRead
-			@status = PermissionsDrive.new(@cdrom, query, @deps).status
+			@status = PermissionDrive.new(@cdrom, query, @deps).status
 		end
 	end
 
@@ -84,6 +84,7 @@ private
 	def setDefaultVariables
 		@cdrom = @settings['cdrom']
 		@disc = Hash.new
+		@disc['audiotracks'] = 0
 		@disc['startSector'] = Hash.new
 		@disc['lengthSector'] = Hash.new
 		@disc['lengthText'] = Hash.new

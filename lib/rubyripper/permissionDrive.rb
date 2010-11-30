@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # check the permissions of the drive
-class PermissionDisc
+class PermissionDrive
 
 	# * cdrom = location of cdrom drive
 	# * query = cdparanoia query

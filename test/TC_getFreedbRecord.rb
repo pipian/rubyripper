@@ -63,7 +63,7 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 	# test when no records found
 	def test_NoRecordsFound
 		# prepare test
-		query = ['ok', '202 No match found']
+		query = '202 No match found'
 		read = ''
 		mock = FakeConnection.new(query, read, '', '')
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
@@ -77,8 +77,8 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 	# test when single record found
 	def test_SingleRecordFound
 		# prepare test
-		query = ['ok', '200 blues 7F087C0A Some random artist / Some random album']
-		read = ['ok', "210 metal 7F087C01\n" + @file001 + "\n."]
+		query = '200 blues 7F087C0A Some random artist / Some random album'
+		read = "210 metal 7F087C01\n" + @file001 + "\n."
 		category = 'blues'
 		discid = '7F087C0A'
 		mock = FakeConnection.new(query, read, category, discid)
@@ -100,8 +100,8 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 #rock 7F087C0B Artist B / Album B\n\
 #jazz 7F087C0C Artist C / Album C\n\
 #country 7F087C0D Artist D / Album D\n."
-		query = ['ok', "211 code close matches found\n#{choices}"]
-		read = ['ok', "210 blues 7F087C0A\n" + @file001 + "\n."]
+		query = "211 code close matches found\n#{choices}"
+		read = "210 blues 7F087C0A\n" + @file001 + "\n."
 		category = ''
 		discid = ''
 		mock = FakeConnection.new(query, read, category, discid)
@@ -150,7 +150,7 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 	# test when freedb replies the database is corrupt
 	def test_databaseCorrupt
 		# prepare test
-		query = ['ok', '403 Database entry is corrupt']
+		query = '403 Database entry is corrupt'
 		read = ''
 		mock = FakeConnection.new(query, read, '', '')
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
@@ -164,7 +164,7 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 	# test when freedb replies with an unknown return code
 	def test_unknownCode
 		# prepare test
-		query = ['ok', '666 The Number of the beast']
+		query = '666 The Number of the beast'
 		read = ''
 		mock = FakeConnection.new(query, read, '', '')
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
@@ -180,8 +180,8 @@ Return code is not supported.", instance.status[1])
 	# test when read command has 401 error (specified CDDB entry not found)
 	def test_CddbEntryNotFound
 		# prepare test
-		query = ['ok', '200 blues 7F087C0A Some random artist / Some random album']
-		read = ['ok', "401 Specified CDDB entry not found"]
+		query = '200 blues 7F087C0A Some random artist / Some random album'
+		read = "401 Specified CDDB entry not found"
 		category = 'blues'
 		discid = '7F087C0A'
 		mock = FakeConnection.new(query, read, category, discid)
@@ -196,8 +196,8 @@ Return code is not supported.", instance.status[1])
 	# test when read command has 402 error (server error)
 	def test_serverError
 		# prepare test
-		query = ['ok', '200 blues 7F087C0A Some random artist / Some random album']
-		read = ['ok', "402 Server error"]
+		query = '200 blues 7F087C0A Some random artist / Some random album'
+		read = "402 Server error"
 		category = 'blues'
 		discid = '7F087C0A'
 		mock = FakeConnection.new(query, read, category, discid)
@@ -212,8 +212,8 @@ Return code is not supported.", instance.status[1])
 	# test when read command has 403 error (server error)
 	def test_serverError
 		# prepare test
-		query = ['ok', '200 blues 7F087C0A Some random artist / Some random album']
-		read = ['ok', "403 Server error"]
+		query = '200 blues 7F087C0A Some random artist / Some random album'
+		read = "403 Server error"
 		category = 'blues'
 		discid = '7F087C0A'
 		mock = FakeConnection.new(query, read, category, discid)

@@ -30,21 +30,31 @@ rescue LoadError
 	exit()
 end
 
-require 'rubyripper/cli/settings.rb'
-require 'rubyripper/cli/metadata.rb'
-# TODO require 'rubyripper/cli/tracklist.rb'
+require 'rubyripper/dependency.rb'
+require 'rubyripper/cli/cliSettings.rb'
+require 'rubyripper/cli/cliMetadata.rb'
+# TODO require 'rubyripper/cli/cliTracklist.rb'
 
 # The class that initiates the commandline interface
 class CommandLineInterface
-	include HelpFunctions
 	
+	# start up the interface
 	def initialize()
-		@ripping_log = ""
-		@ripping_progress = 0.0
-		@encoding_progress = 0.0
-		@settingsInfo = CliSettings.new()		
-		@settings = @settingsInfo.settings
-		getDiscInfo()
+		@rippingLog = ""
+		@rippingProgress = 0.0
+		@encodingProgress = 0.0
+
+		# verify if all dependencies are found
+		@deps = Dependency.new(verbose=true, runtime=true)
+	
+		# get the settings
+		@settingsCli = CliSettings.new(@deps)
+		@settings = @settingsCli.settings
+
+		# show the discinfo
+		@discCli = CliMetadata.new(@settings, self, @deps, @settingsCli.isDefault)
+
+		#getDiscInfo()
 		#selectTracks()
 	end
 
@@ -73,12 +83,10 @@ private
 
 	# Show the disc info and include error handling
 	def getDiscInfo()
-		@discInfo = CliMetadata.new(@settings, @settingsInfo.isDefault)
-		
-		if @discInfo.getError
-			puts @discInfo.getError
+		if @discCli.getError
+			puts @discCli.getError
 			if getAnswer(_("Do you want to change your settings? "), "yes", _('y'))
-				@settingsInfo.editSettings()
+				@settingsCli.editSettings()
 				getDiscInfo()
 			end
 			exit()
@@ -122,10 +130,9 @@ private
 		else cancelRip()
 		end
 	end
-
-
-
-	
 end	
 
-CommandLineInterface.new()
+if __FILE__ == $0
+	CommandLineInterface.new()
+end
+

@@ -101,7 +101,7 @@ private
 rubyripper #{$rr_version}") + "&proto=6"
 		
 		# http requests return all output at once, even if multiple lines		
-		statusHttp, reply = @server.get(query)
+		reply = @server.get(query)
 		return reply
 	end
 
@@ -168,7 +168,7 @@ Return code is not supported.") % [reply[0..2]]]
 "&hello=" + CGI.escape("#{@settings['username']} #{@settings['hostname']} \
 rubyripper #{$rr_version}") + "&proto=6"
 
-		statusHttp, reply = @server.get(query)
+		reply = @server.get(query)
 		
 		if reply[0..2] == '210'
 			code, @category, @finalDiscId = reply.split()

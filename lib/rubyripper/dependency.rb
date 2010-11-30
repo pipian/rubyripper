@@ -173,7 +173,7 @@ calculation unless %s is installed.") % ['Discid'],
 
 	# when running rubyripper make sure the forced deps are there
 	def forceDepsRuntime
-		if not @deps['Cdparanoia']
+		if not @deps['cdparanoia']
 			puts "Cdparanoia not found on your system."
 			puts "This is required to run rubyripper. Exiting..."
 			exit()

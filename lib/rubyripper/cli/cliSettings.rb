@@ -22,7 +22,9 @@ require 'rubyripper/settings.rb'
 # It also interpretes the parameters when loaded
 class CliSettings
 	# Read the commandline options and read settings
-	def initialize()
+	# * deps = instance of Dependency class
+	def initialize(deps)
+		@deps = deps
 		parseOptions()
 		readSettings()
 	end
@@ -48,8 +50,8 @@ private
 
 	# Read the settings of the config file or the defaults
 	def readSettings()
-		@config = Settings.new(@options['file'])
-		@settings = @config.settings
+		@config = Settings.new(@deps, @options['file'])
+		@settings = @config.getSettings
 		
 		# in case the configfile is missing
 		if @options['file'] != false && !@config.isConfigFound

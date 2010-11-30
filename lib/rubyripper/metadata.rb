@@ -92,8 +92,8 @@ private
 		unless @deps.class == Dependency
 			raise ArgumentError, "deps parameter must be an instance of Dependency"
 		end
-		unless @settings.class == String
-			raise ArgumentError, "cdrom parameter must be a string"
+		unless @settings.class == Hash
+			raise ArgumentError, "settings parameter must be a hash"
 		end
 		unless @disc.class == ScanDiscCdparanoia
 			raise ArgumentError, "disc must be an instance of ScanDiscCdparanoia"
@@ -111,8 +111,8 @@ private
 		@metadata['year'] = '0'
 
 		@metadata['tracklist'] = Hash.new
-		(1..@disc.getInfo('audiotracks').each do |track|
-			@metadata['tracklist'][track] << _("Track %s") % [track]
+		(1..@disc.getInfo('audiotracks')).each do |track|
+			@metadata['tracklist'][track] = _("Track %s") % [track]
 		end
 	end
 

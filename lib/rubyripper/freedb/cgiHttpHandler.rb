@@ -25,7 +25,7 @@ class CgiHttpHandler
 	
 	# the settings file have all necessary info in them
 	def initialize(settings)
-		getLogger = Array.new
+		@getLogger = Array.new
 	end
 	
 	# first configure the connection (with proxy if needed)

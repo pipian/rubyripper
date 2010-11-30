@@ -15,92 +15,118 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/quickScanDisc.rb'
+require 'rubyripper/disc.rb'
 
 # Metadata class is responsible for showing and editing the metadata
 
 class CliMetadata
-attr_reader :getStatus, :getError
-
-	def initialize(settings, defaults)
+	
+	# * settings = hash with settings
+	# * gui = instance of the user interface
+	# * deps = instance of dependency class
+	# * defaults = if true, skip all questions
+	def initialize(settings, gui, deps, defaults)
 		@settings = settings
+		@gui = gui
+		@deps = deps
+		@defaults = defaults				
+		checkArguments()
+
 		@error = ''
-		@defaults = defaults
 		@status = false
 		getDiscInfo()
 	end
 
-	# return status when finished
-	def getStatus
-		return @status
-	end
+	# return the disc object
+	def disc ; return @disc ; end
 
-	# return error
-	def getError
-		return @error
+	# return status when finished
+	def status ; return @status ; end
+
+	# return any problems reported
+	def error ; return @error ; end
+
+private
+	# make sure the proper values are passed
+	def checkArguments
+		unless @settings.class == Hash
+			raise ArgumentError, "settings must be a hash"
+		end
+	
+		unless @gui.respond_to?(:update)
+			raise ArgumentError, "gui must have an update function"
+		end
+
+		unless @deps.class == Dependency
+			raise ArgumentError, "deps must be of Dependency class"
+		end
 	end
 
 	# Analyze the TOC of disc in drive
 	def getDiscInfo
-		@settings['cd'] = QuickScanDisc.new(@settings, self)
+		@disc = Disc.new(@settings, @gui, @deps)
+		@cd = @disc.scan
+		@md = @disc.md
 		
 		# When a disc is found
-		if @settings['cd'].audiotracks != 0
+		if @cd.getInfo('audiotracks') != 0
 			puts _("Audio-disc found, number of tracks : %s, total playlength \
-: %s") % [@settings['cd'].audiotracks, @settings['cd'].playtime]			
+: %s") % [@cd.getInfo('audiotracks'), @cd.getInfo('playtime')]
+			showFreedb()
 			# When freedb is enabled 
-			if @settings['freedb']
-				puts _("Fetching freedb info...")
-				handleFreedb()
-			else
-				showFreedb()
-			end
+			#if @settings['freedb']
+			#	puts _("Fetching freedb info...")
+			#	handleFreedb()
+			#else
+			#	showFreedb()
+			#end
 		# When no disc is found
 		else 
-			@error = @settings['cd'].error
+			puts "ERROR: No disc found."
+			exit()
 		end
 	end
 
 	# Fetch the cddb info, if choice is true, multiple discs were available
-	def handleFreedb(choice = false)
-		status = @settings['cd'].getFreedbInfo(choice)
-		
-		if status == true #success
-			showFreedb()
-		elsif status[0] == "choices"
-			chooseFreedb(status[1])
-		elsif status[0] == "noMatches"
-			update("error", status[1]) # display the warning, but continue anyway
-			showFreedb()
-		elsif status[0] == "networkDown" || status[0] == "unknownReturnCode" || status[0] == "NoAudioDisc"
-			update("error", status[1])
-		else
-			puts "Unknown error with Freedb class.", status
-		end
-	end
+	#def handleFreedb(choice = false)
+	#	status = @cd.getFreedbInfo(choice)
+	#	
+	#	if status == true #success
+	#		showFreedb()
+	#	elsif status[0] == "choices"
+	#		chooseFreedb(status[1])
+	#	elsif status[0] == "noMatches"
+	#		update("error", status[1]) # display the warning, but continue anyway
+	#		showFreedb()
+	#	elsif status[0] == "networkDown" || status[0] == "unknownReturnCode" || status[0] == "NoAudioDisc"
+	#		update("error", status[1])
+	#	else
+	#		puts "Unknown error with Freedb class.", status
+	#	end
+	#end
 
 	# Present the freedb choices to the user
-	def chooseFreedb(choices)
-		puts _("Freedb reported multiple possibilities.")
-		if @defaults == true
-			puts _("The first freedb option is automatically selected (no questions allowed)")
-			handleFreedb(0)
-		else
-			choices.each_index{|index| puts "#{index + 1}) #{choices[index]}"}
-			choice = getAnswer(_("Please type the number of the one you prefer? : "), "number", 1)
-			handleFreedb(choice - 1)
-		end
-	end
+	#def chooseFreedb(choices)
+	#	puts _("Freedb reported multiple possibilities.")
+	#	if @defaults == true
+	#		puts _("The first freedb option is automatically selected (no questions allowed)")
+	#		handleFreedb(0)
+	#	else
+	#		choices.each_index{|index| puts "#{index + 1}) #{choices[index]}"}
+	#		choice = getAnswer(_("Please type the number of the one you prefer? : "), "number", 1)
+	#		handleFreedb(choice - 1)
+	#	end
+	#end
 
 	# Present the disc info
 	def showFreedb()
 		puts ""
 		puts _("FREEDB INFO\n\n")
 		puts _("DISC INFO")
-		print _("Artist:") ; print " #{@settings['cd'].freedb.artist}\n"
-		print _("Album:") ; print " #{@settings['cd'].freedb.album}\n"
-		print _("Genre:") ; print " #{@settings['cd'].freedb.genre}\n"
-		print _("Year:") ; print " #{@settings['cd'].freedb.year}\n"
+		print _("Artist:") ; print " #{@md.artist}\n"
+		print _("Album:") ; print " #{@md.album}\n"
+		print _("Genre:") ; print " #{@md.genre}\n"
+		print _("Year:") ; print " #{@md.year}\n"
 		puts ""
 		puts _("TRACK INFO")
 		
@@ -114,10 +140,10 @@ attr_reader :getStatus, :getError
 
 	# Present the track info
 	def showTracks()
-		@settings['cd'].audiotracks.times do |index|
-			trackname = @settings['cd'].freedb.tracklist[index]
-			if not @settings['cd'].freedb.varArtists.empty?
-				trackname = "#{@settings['cd'].freedb.varArtists[index]} - #{trackname}"
+		@cd.getInfo('audiotracks').times do |index|
+			trackname = @md.trackname(index + 1)
+			if @md.varArtists
+				trackname = "#{@md.varArtists(index+1)} - #{trackname}"
 			end
 
 			puts "#{index +1 }) #{trackname}"

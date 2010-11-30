@@ -77,7 +77,7 @@ private
 	# try to fetch freedb string with help programs
 	def autoCalcFreedb
 		# mac OS needs to unmount the disc first
-		if RUBY_PLATFORM.include?('darwin') && @deps.getOptionalDeps('diskutil')
+		if RUBY_PLATFORM.include?('darwin') && @deps.getDep('diskutil')
 			`diskutil unmount #{@cdrom}`			
 		end
 			
@@ -85,14 +85,14 @@ private
 			@freedbString = ''
 		elsif @test != false
 			@freedbString = @test
-		elsif @deps.getOptionalDeps('discid')
+		elsif @deps.getDep('discid')
 			@freedbString = `discid #{@cdrom}`
-		elsif @deps.getOptionalDeps('cd-discid')
+		elsif @deps.getDep('cd-discid')
 			@freedbString = `cd-discid #{@cdrom}`
 		end
 		
 		# mac OS needs to mount the disc again
-		if RUBY_PLATFORM.include?('darwin') && @deps.getOptionalDeps('diskutil')
+		if RUBY_PLATFORM.include?('darwin') && @deps.getDep('diskutil')
 			`diskutil mount #{@cdrom}`					
 		end
 
