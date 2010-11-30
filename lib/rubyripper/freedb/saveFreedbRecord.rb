@@ -26,7 +26,8 @@ class SaveFreedbRecord
 		@freedbRecord = freedbRecord
 		@category = category
 		@discid = discid
-
+		checkArguments()
+		
 		setNames()
 		checkDir(@baseDir)
 		checkDir(@categoryDir)
@@ -37,6 +38,21 @@ class SaveFreedbRecord
 	def outputFile ; return @outputFile ; end
 
 private
+	# check the arguments
+	def checkArguments()
+		unless @freedbRecord.class == String
+			raise ArgumentError, "freedbrecord must be a string"
+		end
+	
+		unless @category.class == String
+			raise ArgumentError, "category must be a string"
+		end
+
+		unless @discid.class == String && @discid.length == 8
+			raise ArgumentError, "discid must be a string of 8 characters"
+		end
+	end
+
 	# set the dir names
 	def setNames
 		@baseDir = File.join(ENV['HOME'], '.cddb')

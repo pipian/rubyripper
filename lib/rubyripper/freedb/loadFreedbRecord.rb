@@ -21,6 +21,7 @@ class LoadFreedbRecord
 	# * discid = the discid as calculated for the freedb server
 	def initialize(discid)
 		@discid = discid
+		checkArguments()
 
 		@freedbRecord = ''
 		@status = 'noRecords'
@@ -33,6 +34,13 @@ class LoadFreedbRecord
 	def status ; return @status ; end
 
 private
+	# check the arguments for the type
+	def checkArguments
+		unless @discid.class == String && @discid.length == 8
+			raise ArgumentError, "discid must be a string of 8 characters"
+		end
+	end
+
 	# Find all matches in the cddb directory
 	def scanLocal
 		dir = File.join(ENV['HOME'], '.cddb')
