@@ -68,6 +68,64 @@ class ScanDiscCdparanoia
 	# return the status, 'ok' is good
 	def status ; return @status ; end
 
+	# prepend the gaps, so rewrite the toc info
+	# notice that cdparanoia appends by default
+	# * scanCdrdao = instance of ScanDiscCdrdao
+	def prependGaps(scanCdrdao)
+		(2..@disc['audiotracks']).each do |track|
+			pregap = scanCdrdao.getPregap(track)
+			@disc['lengthSector'][track - 1] -= pregap
+			@disc['startSector'][track] -= pregap
+			@disc['lengthSector'][track] += pregap
+		end          
+	end
+
+	# return the startSector, example for track 1 getStartSector(1)
+	def getStartSector(track)
+		if track == "image"
+			# give the first known track
+			lowestKey = @disc['startSector'].keys.sort[0]
+			return @disc['startSector'][lowestKey]
+		elsif @disc['startSector'].key?(track)
+			return @disc['startSector'][track]
+		else
+			raise ArgumentError, "There is no track #{track}"
+		end
+	end
+
+	# return the sectors, example for track 1 getLengthSector(1)
+	def getLengthSector(track)
+		if track == "image"
+			return @disc['totalSectors']
+		elsif @disc['lengthSector'].key?(track)
+			return @disc['lengthSector'][track]
+		else
+			raise ArgumentError, "There is no track #{track}"
+		end
+	end
+
+	# return the length in text, example for track 1 getLengthSector(1)
+	def getLengthText(track)
+		if track == "image"
+			return @disc['playtime']
+		elsif @disc['lengthText'].key?(track)
+			return @disc['lengthText'][track]
+		else
+			raise ArgumentError, "There is no track #{track}"
+		end
+	end
+
+	# return the length in bytes, example for track 1 getFileSize(1)
+	def getFileSize(track)
+		if track == "image"
+			return 44 + @disc['totalSectors'] * 2352
+		elsif @disc['lengthSector'].key?(track)
+			return 44 + @disc['lengthSector'][track] * 2352
+		else
+			raise ArgumentError, "There is no track #{track}"
+		end
+	end
+
 private
 
 	# check the parameters

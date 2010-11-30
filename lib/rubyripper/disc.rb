@@ -138,76 +138,20 @@ least needs the update function"
 		# only make a cuesheet when the toc class is there
 		@cue = Cuesheet.new(@settings, @toc) if @toc != nil
 	end
-
-	# prepend the gaps, so rewrite the toc info
-	# notice that cdparanoia appends by default
-	def prependGaps
-		(2..@audiotracks).each do |track|
-			pregap = @toc.getPregap(track)
-			@lengthSector[track - 1] -= pregap
-			@startSector[track] -= pregap
-			@lengthSector[track] += pregap
-		end
-			             
-		if @settings['debug']
-			puts "Debug info: gaps are now prepended"
-			puts "Startsector\tLengthsector"
-			(1..@audiotracks).each do |track|
-				puts "#{@startSector[track]}\t#{@lengthSector[track]}"
-			end
-		end             
-	end
-
-	# return the startSector, example for track 1 getStartSector(1)
-	def getStartSector(track)
-		if track == "image"
-			@startSector.key?(0) ? @startSector[0] : @startSector[1]
-		else
-			if @startSector.key?(track)
-				return @startSector[track]
-			else
-				return false
-			end
-		end
-	end
-
-	# return the sectors of the track, example for track 1 getLengthSector(1)
-	def getLengthSector(track)
-		if track == "image"
-			return @totalSectors
-		else
-			return @lengthSector[track]
-		end
-	end
-
-	# return the length of the track in text, 
-	# example for track 1 getLengthSector(1)
-	def getLengthText(track)
-		if track == "image"
-			return @playtime
-		else
-			return @lengthText[track]
-		end
-	end
-
-	# return the length in bytes of the track, 
-	# example for track 1 getFileSize(1)
-	def getFileSize(track)
-		if track == "image"
-			return 44 + @totalSectors * 2352
-		else
-			return 44 + @lengthSector[track] * 2352
-		end
-	end
-
-	# help function for passing to Freedb class
-	def getFreedbInfo(choice=false)
-		if choice == false # first time
-			@freedb.freedb(@settings, @settings['first_hit'])
-		else # specific disc is chosen (after multiple discs reported)
-			@freedb.freedbChoice(choice)
-		end
-		return @freedb.status
-	end
 end
 
+#		if @disc.freedbString != @disc.oldFreedbString # Scanning the same disc will always result in an new freedb fetch.
+#			if @metadataFile.has_key?(@disc.freedbString) || findLocalMetadata #is the Metadata somewhere local?
+#				if @metadataFile.has_key?(@disc.freedbString)
+#					@rawResponse = @metadataFile[@disc.freedbString]
+#				end
+#				@tracklist.clear()
+#				handleResponse()
+#				@status = true # Give the signal that we're finished
+#				return true
+#			end
+#		end
+#
+#		if @verbose ; puts "preparing to contact freedb server" end
+#		handshake()
+#	end

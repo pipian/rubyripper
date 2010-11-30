@@ -171,12 +171,12 @@ private
 
 	# Edit metadata at the disc level
 	def editDiscInfo()
-		puts "1) " + _("Artist:") + " #{@settings['cd'].freedb.artist}"
-		puts "2) " + _("Album:") + " #{@settings['cd'].freedb.album}"
-		puts "3) " + _("Genre:") + " #{@settings['cd'].freedb.genre}"
-		puts "4) " + _("Year:") + " #{@settings['cd'].freedb.year}"
+		puts "1) " + _("Artist:") + " #{@md.artist}"
+		puts "2) " + _("Album:") + " #{@md.album}"
+		puts "3) " + _("Genre:") + " #{@md.genre}"
+		puts "4) " + _("Year:") + " #{@md.year}"
 		
-		if @settings['cd'].freedb.varArtists.empty?
+		if @md.varArtists.empty?
 			puts "5) " + _("Mark disc as various artist")
 		else
 			puts "5) " + _("Mark disc as single artist")
@@ -186,11 +186,11 @@ private
 		
 		while true
 			answer = getAnswer(_("Please enter the number you'd like to edit: "), "number", 99)
-			if answer == 1 ; @settings['cd'].freedb.artist = getAnswer(_("Artist : "), "open", @settings['cd'].freedb.artist)
-			elsif answer == 2 ; @settings['cd'].freedb.album = getAnswer(_("Album : "), "open", @settings['cd'].freedb.album)
-			elsif answer == 3 ; @settings['cd'].freedb.genre = getAnswer(_("Genre : "), "open", @settings['cd'].freedb.genre)
-			elsif answer == 4 ; @settings['cd'].freedb.year = getAnswer(_("Year : "), "open", @settings['cd'].freedb.year)
-			elsif answer == 5 ; if @settings['cd'].freedb.varArtists.empty? ; setVarArtist() else unsetVarArtist() end
+			if answer == 1 ; @md.artist = getAnswer(_("Artist : "), "open", @md.artist)
+			elsif answer == 2 ; @md.album = getAnswer(_("Album : "), "open", @md.album)
+			elsif answer == 3 ; @md.genre = getAnswer(_("Genre : "), "open", @md.genre)
+			elsif answer == 4 ; @md.year = getAnswer(_("Year : "), "open", @md.year)
+			elsif answer == 5 ; if @md.varArtists.empty? ; setVarArtist() else unsetVarArtist() end
 			elsif answer == 99 ; break
 			end
 		end
@@ -200,16 +200,16 @@ private
 
 	# Mark the disc as various artist
 	def setVarArtist
-		@settings['cd'].audiotracks.times do |time|
-			if @settings['cd'].freedb.varArtists[time] == nil
-				@settings['cd'].freedb.varArtists[time] = _('Unknown')
+		@cd.audiotracks.times do |time|
+			if @md.varArtists[time] == nil
+				@md.varArtists[time] = _('Unknown')
 			end
 		end
 	end
 	
 	# Unmark the disc as various artist
 	def unsetVarArtist
-		@settings['cd'].freedb.undoVarArtist()
+		@md.undoVarArtist()
 	end
 
 	# Edit metadata at the track level
@@ -222,10 +222,10 @@ private
 			answer = getAnswer(_("Please enter the number you'd like to edit: "), "number", 99)
 		
 			if answer == 99 ; break
-			elsif (answer.to_i > 0 && answer.to_i <= @settings['cd'].audiotracks)
-				@settings['cd'].freedb.tracklist[answer - 1] = getAnswer("Track #{answer} : ", "open", @settings['cd'].freedb.tracklist[answer - 1])
-				if not @settings['cd'].freedb.varArtists.empty?
-					@settings['cd'].freedb.varArtists[answer - 1] = getAnswer("Artist for Track #{answer} : ", "open", @settings['cd'].freedb.varArtists[answer - 1])
+			elsif (answer.to_i > 0 && answer.to_i <= @cd.audiotracks)
+				@md.tracklist[answer - 1] = getAnswer("Track #{answer} : ", "open", @md.tracklist[answer - 1])
+				if not @md.varArtists.empty?
+					@md.varArtists[answer - 1] = getAnswer("Artist for Track #{answer} : ", "open", @md.varArtists[answer - 1])
 				end
 			else
 				puts _("This is not a valid number. Try again")

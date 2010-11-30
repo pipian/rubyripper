@@ -160,19 +160,3 @@ CgiHttpHandler.new(@settings))
 		end
 	end
 end
-
-#		if @disc.freedbString != @disc.oldFreedbString # Scanning the same disc will always result in an new freedb fetch.
-#			if @metadataFile.has_key?(@disc.freedbString) || findLocalMetadata #is the Metadata somewhere local?
-#				if @metadataFile.has_key?(@disc.freedbString)
-#					@rawResponse = @metadataFile[@disc.freedbString]
-#				end
-#				@tracklist.clear()
-#				handleResponse()
-#				@status = true # Give the signal that we're finished
-#				return true
-#			end
-#		end
-#
-#		if @verbose ; puts "preparing to contact freedb server" end
-#		handshake()
-#	end
