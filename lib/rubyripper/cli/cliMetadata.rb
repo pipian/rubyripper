@@ -143,7 +143,7 @@ private
 		@cd.getInfo('audiotracks').times do |index|
 			trackname = @md.trackname(index + 1)
 			if @md.varArtists
-				trackname = "#{@md.varArtists(index+1)} - #{trackname}"
+				trackname = "#{@md.varArtist(index+1)} - #{trackname}"
 			end
 
 			puts "#{index +1 }) #{trackname}"

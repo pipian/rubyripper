@@ -37,13 +37,11 @@ class Metadata
 		@metadata = Hash.new()		
 		setDefaultTags()
 		getFreedbString()
-
 		findMetadata()
-
-		if @status == 'ok'
-			updateMetadata()
-		end
 	end
+
+	# return the status
+	def status ; return @status ; end
 
 	# return a string with the artist
 	def artist ; return getInfo('artist') ; end
@@ -144,7 +142,10 @@ CgiHttpHandler.new(@settings))
 			@freedbRecord = @remote.freedbRecord
 			require 'rubyripper/freedb/saveFreedbRecord.rb'
 			SaveFreedbRecord.new(@freedbRecord, @remote.category, @remote.discId)
+			@freedbRecord = LoadFreedbRecord.new(@remote.discId).freedbRecord
+			updateMetadata()
 		else
+			puts @remote.status[0]
 			@status = @remote.status[0]
 		end
 	end

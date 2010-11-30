@@ -52,7 +52,8 @@ private
 		if !@freedbResult.valid_encoding?
 			@status = _('ERROR: The freedb string has no valid encoding')
 		elsif @freedbResult.encoding.name != 'UTF-8'
-			@status = _('ERROR: The freedb string is not UTF-8 encoded')
+			@status = _("ERROR: The freedb string is not UTF-8 encoded\
+format = #{@freedbResult.encoding.name}")
 		end
 		return @status == 'ok'
 	end
