@@ -21,13 +21,22 @@ require 'rubyripper/settings.rb'
 # CliSettings class is responsible for showing and editing the settings
 # It also interpretes the parameters when loaded
 class CliSettings
-	attr_reader :settings, :editSettings, :isDefault
-	
 	# Read the commandline options and read settings
 	def initialize()
 		parseOptions()
 		readSettings()
 	end
+
+	# return the settings hash
+	def settings ; return @settings ; end
+
+	# return true if user has chosen for defaults
+	def isDefault ; return @options['defaults'] ; end
+
+	# edit the current settings
+	def edit ; editSettings() ; end
+
+private
 
 	# Make sure the commandline options are interpreted
 	def parseOptions
@@ -37,16 +46,18 @@ class CliSettings
 		getParseOptions()
 	end
 
-	# return if user has chosen for defaults
-	def isDefault
-		return @options['defaults']
-	end
-
 	# Read the settings of the config file or the defaults
 	def readSettings()
-		@configFile = Settings.new(@options['file'])
-		@settings = @configFile.settings
-		if !@configFile.configFound || @options['configure']
+		@config = Settings.new(@options['file'])
+		@settings = @config.settings
+		
+		# in case the configfile is missing
+		if @options['file'] != false && !@config.isConfigFound
+			puts "WARNING: the provided configfile is not found."
+			puts "The default settings are used instead."
+		end 
+		
+		if @options['configure']
 			editSettings()
 		end
 	end
@@ -164,7 +175,7 @@ class CliSettings
 			puts ""
 			showSettings()
 		end
-		@configFile.save(@settings)
+		@config.save(@settings)
 	end
 	
 	# update if codec is used and with what setting

@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# TODO fix the config script, to not default to /usr/local/share
-
 # set the directory of the local installation
 $localdir = File.expand_path(File.dirname(File.dirname(__FILE__)))
 
@@ -34,11 +32,10 @@ end
 
 require 'rubyripper/cli/settings.rb'
 require 'rubyripper/cli/metadata.rb'
-require 'rubyripper/cli/tracklist.rb'
+# TODO require 'rubyripper/cli/tracklist.rb'
 
 # The class that initiates the commandline interface
 class CommandLineInterface
-	attr_reader :update
 	include HelpFunctions
 	
 	def initialize()
@@ -48,9 +45,31 @@ class CommandLineInterface
 		@settingsInfo = CliSettings.new()		
 		@settings = @settingsInfo.settings
 		getDiscInfo()
-		selectTracks()
-		
+		#selectTracks()
 	end
+
+	# The only function where the lib files are reporting to
+	def update(modus, value=false)
+		if modus == "ripping_progress"
+			progress = "%.3g" % (value * 100)
+			puts "Ripping progress (#{progress} %)"
+		elsif modus == "encoding_progress"
+			progress = "%.3g" % (value * 100)
+			puts "Encoding progress (#{progress} %)"
+		elsif modus == "log_change"
+			print value
+		elsif modus == "error"
+			print value
+			print "\n"
+			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y"))
+				@settingsInfo.editSettings()
+			end
+		elsif modus == "dir_exists"
+			dirExists()
+		end
+	end
+
+private
 
 	# Show the disc info and include error handling
 	def getDiscInfo()
@@ -104,26 +123,7 @@ class CommandLineInterface
 		end
 	end
 
-	# The only function where the lib files are reporting to
-	def update(modus, value=false)
-		if modus == "ripping_progress"
-			progress = "%.3g" % (value * 100)
-			puts "Ripping progress (#{progress} %)"
-		elsif modus == "encoding_progress"
-			progress = "%.3g" % (value * 100)
-			puts "Encoding progress (#{progress} %)"
-		elsif modus == "log_change"
-			print value
-		elsif modus == "error"
-			print value
-			print "\n"
-			if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y"))
-				@settingsInfo.editSettings()
-			end
-		elsif modus == "dir_exists"
-			dirExists()
-		end
-	end
+
 
 	
 end	

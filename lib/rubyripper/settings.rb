@@ -22,10 +22,8 @@
 # * Finding the default help programs like browser, editor, etcetera
 class Settings
 
-# function that return a boolean to tell if the provided inputfile is found
-attr_reader :isConfigFound
-
-	# define all actions for getting the settings
+	# * deps = instance of Dependency class
+	# * configFileInput = the location of a custom configFile
 	def initialize(deps, configFileInput = false)
 		@configFileInput = configFileInput
 		@deps = deps
@@ -34,41 +32,22 @@ attr_reader :isConfigFound
 		@settings = Hash.new()
 		@configFound = false
 		setDefaultSettings()
-		setFileLocation()
+		findConfigFile()
+		findOtherFiles()
 		migrationCheck()
 		loadSettings()
 	end
 
-	#return the settings hash
+	# return the settings hash
 	def getSettings ; return @settings ; end
 
 	# return if the specified configfile is found
 	def isConfigFound ; return @configFound ; end
 
-	# update the settings to the config file
-	# * settings = hash with updated settings
-	# * test = if true don't write changes to the settings file
-	def setSettings(settings, test=false)
-		unless (settings.class == Hash)
-			raise ArgumentError, "Settings parameter must be a Hash."
-		end
-
-		# update the settings
-		@settings.each do |key, value|
-			if settings.has_key?(key)
-				@settings[key] = settings[key]
-			end
-		end
-
-		# update the config file, but do not update when unit testing
-		if test == false
-			file = File.new(@configFile, 'w')
-			@settings.each do |key, value|
-				file.puts "#{key}=#{value}"
-			end
-			file.close()
-		end
-	end
+	# save the updated settings
+	# * config = hash with updated settings
+	# * test = true when used while unit testing (prevents writing to files)
+	def save(config, test=false) ; setSettings(config, test) ; end
 
 private
 
@@ -116,39 +95,42 @@ private
 			"hostname" => "my_secret.com", # hostname freedb
 			"firstHit" => true, # always choose 1st option
 			"freedb" => true, # enable freedb
-			"editor" => @deps.getHelpApp('editor'), #string, default editor
-			"filemanager" => @deps.getHelpApp('filemanager'), #string, default file manager
-			"browser" => @deps.getHelpApp('browser'), #string, default browser
-			"noLog" => false, #boolean, delete log if no errors?
-			"createCue" => true, #boolean, create cuesheet
-			"image" => false, #boolean, save to single file
+			"editor" => @deps.getHelpApp('editor'), #default editor
+			"filemanager" => @deps.getHelpApp('filemanager'), #default file manager
+			"browser" => @deps.getHelpApp('browser'), #default browser
+			"noLog" => false, #delete log if no errors?
+			"createCue" => true, #create cuesheet
+			"image" => false, #save to single file
 			'normalizer' => 'none', #normalize volume?
-			'gain' => "album", #string, gain mode
-			'gainTagsOnly' => false, #string, not actually modify audio
-			'noSpaces' => false, #boolean, replace spaces with underscores
-			'noCapitals' => false, #boolean, replace uppercase with lowercase
-			'preGaps' => "prepend", #string, way to handle pregaps
-			'preEmphasis' => 'cue' #string, way to handle pre-emphasis
+			'gain' => "album", #gain mode
+			'gainTagsOnly' => false, #not actually modify audio
+			'noSpaces' => false, #replace spaces with underscores
+			'noCapitals' => false, #replace uppercase with lowercase
+			'preGaps' => "prepend", #way to handle pregaps
+			'preEmphasis' => 'cue' #way to handle pre-emphasis
 		}
 	end
 
-	# set all file locations
-	def setFileLocation()
-		if @configFileInput == false
+	# find the location of the config file
+	def findConfigFile
+		if @configFileInput != false
+			@configFile = File.expand_path(@configFileInput)		
+			@configFound = true if File.exists?(@configFile)		
+		else
 			dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
 			@configFile = File.join(dir, 'rubyripper/settings')
-		else
-			@configFile = File.expand_path(@configFileInput)
+			createDirs(File.dirname(@configFile))
 		end
+	end
 
+	# find the location fo the other files
+	def findOtherFiles
 		dir = ENV['XDG_CACHE_HOME'] || File.join(ENV['HOME'], '.cache')
 		@cacheFile = File.join(dir, 'rubyripper/freedb.yaml')
+		createDirs(File.dirname(@cacheFile))
 
 		#store the location in the settings for use later on
 		@defaultSettings['freedbCache'] = @cacheFile
-
-		createDirs(File.dirname(@configFile))
-		createDirs(File.dirname(@cacheFile))
 	end
 
 	# help function to create dirs
@@ -204,11 +186,35 @@ private
 		end
 		puts "Auto migration finished succesfull."
 	end
+	
+	# update the settings to the config file
+	# * settings = hash with updated settings
+	# * test = if true don't write changes to the settings file
+	def setSettings(settings, test=false)
+		unless (settings.class == Hash)
+			raise ArgumentError, "Settings parameter must be a Hash."
+		end
+
+		# update the settings
+		@settings.each do |key, value|
+			if settings.has_key?(key)
+				@settings[key] = settings[key]
+			end
+		end
+
+		# update the config file, but do not update when unit testing
+		if test == false
+			file = File.new(@configFile, 'w')
+			@settings.each do |key, value|
+				file.puts "#{key}=#{value}"
+			end
+			file.close()
+		end
+	end
 
 	# first the values found in the config file, then add any missing values
 	def loadSettings()
 		if File.exist?(@configFile)
-			@configFound = true
 			file = File.new(@configFile,'r')
 			while line = file.gets
 				key, value = line.split('=', 2)

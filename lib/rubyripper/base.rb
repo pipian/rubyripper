@@ -38,10 +38,8 @@ else
 	end
 end
 
+# A class with several help functions, include them if necessary
 class HelpFunctions
-	def initialize
-	end
-
 	# A separate help function to make it faster
 	def getExampleFilenameNormal(basedir, layout)
 		filename = File.expand_path(File.join(basedir, layout))

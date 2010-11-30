@@ -82,10 +82,10 @@ class TC_Settings < Test::Unit::TestCase
 			assert_equal(true, @inst001.getSettings()[key], "#{key} must be true")
 		end
 
-		# test the setSettings function
+		# test the save function
 		settingsHash = Hash.new
 		@boolKeys.each{|key| settingsHash[key] = false}
-		@inst001.setSettings(settingsHash, true)
+		@inst001.save(settingsHash, true)
 		
 		@boolKeys.each do |key|
 			assert_equal(false, @inst001.getSettings()[key], "#{key} must be false")
@@ -110,10 +110,10 @@ class TC_Settings < Test::Unit::TestCase
 			assert_equal(1, @inst002.getSettings()[key], "#{key} must be 1")
 		end
 
-		# test the setSettings function
+		# test the save function
 		settingsHash = Hash.new
 		@boolKeys.each{|key| settingsHash[key] = true}
-		@inst002.setSettings(settingsHash, true)
+		@inst002.save(settingsHash, true)
 		
 		@boolKeys.each do |key|
 			assert_equal(true, @inst002.getSettings()[key], "#{key} must be true")
