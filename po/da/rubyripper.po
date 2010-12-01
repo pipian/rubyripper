@@ -1,0 +1,1606 @@
+# Danish translation rubyripper.
+# Copyright (C) 2010 rubyripper & nedenstående oversættere.
+# This file is distributed under the same license as the rubyripper package.
+# Joe Hansen <joedalton2@yahoo.dk>, 2010.
+#
+# base directory -> startmappe (det sted hvor mapperne til rippet bliver oprettet
+#                               fra. Et bedre forslag?"   
+# chunk -> stykke
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Rubyripper 0.6.0\n"
+"POT-Creation-Date: 2010-06-18 21:20+0200\n"
+"PO-Revision-Date: 2010-08-14 21:16+0100\n"
+"Last-Translator: Joe Hansen <joedalton2@yahoo.dk>\n"
+"Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: rubyripper_cli.rb:62
+msgid "Show current version of rubyripper."
+msgstr "Vis aktuel version af rubyripper."
+
+#: rubyripper_cli.rb:66
+msgid "Load configuration settings from file <FILE>."
+msgstr "Indlæs konfigurationsopsætning fra fil <FIl>."
+
+#: rubyripper_cli.rb:69
+msgid "Display verbose output."
+msgstr "Vis uddybende uddata."
+
+#: rubyripper_cli.rb:72
+msgid "Change configuration settings."
+msgstr "Ændr konfigurationsopsætning."
+
+#: rubyripper_cli.rb:75 rubyripper_cli.rb:95
+msgid "Skip questions and rip the disc."
+msgstr "Spring spørgsmål over og rip disken."
+
+#: rubyripper_cli.rb:78
+msgid "Show this usage statement."
+msgstr "Vis denne brugserklæring."
+
+#: rubyripper_cli.rb:93
+msgid "Verbose output specified."
+msgstr "Uddybende uddata angivet."
+
+#: rubyripper_cli.rb:94
+msgid "Configure option specified."
+msgstr "Konfigurationsindstilling angivet."
+
+#: rubyripper_cli.rb:96
+msgid "Use config file "
+msgstr "Brug konfigurationsfil "
+
+#: rubyripper_cli.rb:100
+msgid "*** RUBYRIPPER SETTINGS ***"
+msgstr "*** RUBYRIPPER OPSÆTNING ***"
+
+#: rubyripper_cli.rb:102
+msgid "** ENCODING **"
+msgstr "** KODNING **"
+
+#: rubyripper_cli.rb:103
+msgid "1)  flac [%s] , settings: %s"
+msgstr "1)  flac [%s] , opsætning: %s"
+
+#: rubyripper_cli.rb:104
+msgid "2)  vorbis [%s] , settings: %s"
+msgstr "2)  vorbis [%s] , opsætning: %s"
+
+#: rubyripper_cli.rb:105
+msgid "3)  mp3 [%s] , settings: %s"
+msgstr "3)  mp3 [%s] , opsætning: %s"
+
+#: rubyripper_cli.rb:106
+msgid "4)  wav [%s]"
+msgstr "4)  wav [%s]"
+
+#: rubyripper_cli.rb:107
+msgid "5)  other [%s], settings: %s"
+msgstr "5)  andet [%s], opsætning: %s"
+
+#: rubyripper_cli.rb:108
+msgid "6)  playlist support [%s]"
+msgstr "6)  understøttelse af afspilningsliste [%s]"
+
+#: rubyripper_cli.rb:109
+msgid "7)  encode while ripping [%s]"
+msgstr "7)  kodning under ripning [%s]"
+
+#: rubyripper_cli.rb:111
+msgid "** RIPPING **"
+msgstr "** RIPPER **"
+
+#: rubyripper_cli.rb:112
+msgid "8)  cdrom : %s with offset %s"
+msgstr "8)  cdrom: %s med forskydning %s"
+
+#: rubyripper_cli.rb:113
+msgid ""
+"   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Your drive model is shown in the logfile."
+msgstr ""
+"   **Find din forskydning på http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Din drevmodel er vist i logfilen."
+
+#: rubyripper_cli.rb:114
+msgid "9)  passing extra cdparanoia parameters : %s"
+msgstr "9)  videresender ekstra cdparanoia-parametre: %s"
+
+#: rubyripper_cli.rb:115
+msgid "10) match all chunks : %s"
+msgstr "10) match alle stykker: %s "
+
+#: rubyripper_cli.rb:116
+msgid "11) match erroneous chunks : %s"
+msgstr "11) match fejlbehæftede stykker: %s"
+
+#: rubyripper_cli.rb:117
+msgid "12) maximum trials : %s"
+msgstr "12) maksimalt antal forsøg: %s"
+
+#: rubyripper_cli.rb:118
+msgid "13) eject disc after ripping [%s]"
+msgstr "13) skub disk ud efter ripning [%s]"
+
+#: rubyripper_cli.rb:120
+msgid "** NAMING SCHEME **"
+msgstr "** NAVNGIVNINGSSKEMA **"
+
+#: rubyripper_cli.rb:121
+msgid "14) base directory : %s"
+msgstr "14) startmappe: %s"
+
+#: rubyripper_cli.rb:122
+msgid "15) standard scheme: %s"
+msgstr "15) standardskema: %s"
+
+#: rubyripper_cli.rb:123
+msgid "16) various artist scheme: %s"
+msgstr "16) skema for forskellige kunstnere: %s"
+
+#: rubyripper_cli.rb:125
+msgid "** FREEDB  **"
+msgstr "** FREEDB  **"
+
+#: rubyripper_cli.rb:126
+msgid "17) fetch cd info with freedb [%s]"
+msgstr "17) hent cd-info med freedb [%s]"
+
+#: rubyripper_cli.rb:127
+msgid "18) always use first hit [%s]"
+msgstr "18) brug altid første resultat [%s]"
+
+#: rubyripper_cli.rb:128
+msgid "19) site = %s"
+msgstr "19) sted = %s"
+
+#: rubyripper_cli.rb:129
+msgid "20) username = %s"
+msgstr "20) brugernavn = %s"
+
+#: rubyripper_cli.rb:130
+msgid "21) hostname = %s"
+msgstr "21) værtsnavn = %s"
+
+#: rubyripper_cli.rb:132
+msgid "88) config file = %s"
+msgstr "88) konfigurationsfil = %s"
+
+#: rubyripper_cli.rb:133
+msgid "99) Don't change any setting"
+msgstr "99) Ændr ikke nogen indstillinger"
+
+#: rubyripper_cli.rb:139
+msgid "Please type the number of the setting you wish to change : "
+msgstr "Indtast venligst den indstilling du ønsker at ændre: "
+
+#: rubyripper_cli.rb:143
+msgid "wav disabled"
+msgstr "wav deaktiveret"
+
+#: rubyripper_cli.rb:143
+msgid "wav enabled"
+msgstr "wav aktiveret"
+
+#: rubyripper_cli.rb:145
+msgid "playlist disabled"
+msgstr "afspilningsliste deaktiveret"
+
+#: rubyripper_cli.rb:145
+msgid "playlist enabled"
+msgstr "afspilningsliste aktiveret"
+
+#: rubyripper_cli.rb:146
+msgid "How many encoding threads would you like? : "
+msgstr "Hvor mange kodningstråde ønsker du?: "
+
+#: rubyripper_cli.rb:148
+msgid "Which options to pass to cdparanoia? : "
+msgstr "Hvilke indstillinger skal videresendes til cdparanoia?: "
+
+#: rubyripper_cli.rb:149
+msgid "How many times must all chunks be matched? : "
+msgstr "Hvor mange gange skal alle stykker afstemmes?: "
+
+#: rubyripper_cli.rb:150
+msgid "How many times must erroneous chunks be matched? : "
+msgstr "Hvor mange gange skal fejlbehæftede stykker afstemmes?: "
+
+#: rubyripper_cli.rb:151
+msgid "What should be the maximum number of tries? : "
+msgstr "Hvad skal være det maksimale antal forsøg?: "
+
+#: rubyripper_cli.rb:152
+msgid "eject disabled"
+msgstr "skub ud deaktiveret"
+
+#: rubyripper_cli.rb:152
+msgid "eject enabled"
+msgstr "skub ud aktiveret"
+
+#: rubyripper_cli.rb:153
+msgid "Please enter your directory for your encodings: "
+msgstr "Indtast venligst din mappe for kodninger: "
+
+#: rubyripper_cli.rb:156
+msgid "freedb disabled"
+msgstr "freedb deaktiveret"
+
+#: rubyripper_cli.rb:156
+msgid "freedb enabled"
+msgstr "freedb aktiveret"
+
+#: rubyripper_cli.rb:157
+msgid "first hit disabled"
+msgstr "første resultat deaktiveret"
+
+#: rubyripper_cli.rb:157
+msgid "first hit enabled"
+msgstr "første resultat aktiveret"
+
+#: rubyripper_cli.rb:158
+msgid "Freedb mirror: "
+msgstr "Freedb-spejl: "
+
+#: rubyripper_cli.rb:159
+msgid "Username : "
+msgstr "Brugernavn: "
+
+#: rubyripper_cli.rb:160
+msgid "Hostname : "
+msgstr "Værtsnavn: "
+
+#: rubyripper_cli.rb:161
+msgid "Config file : "
+msgstr "Konfigurationsfil: "
+
+#: rubyripper_cli.rb:162
+msgid ""
+"Number %s is not an option!\n"
+"Please try again."
+msgstr ""
+"Nummer %s er ikke en indstilling!\n"
+"Forsøg venligst igen."
+
+#: rubyripper_cli.rb:168
+msgid "Do you want to continue with the program now? (y/n) : "
+msgstr "Ønsker du at fortsætte med programmet nu? (j/n): "
+
+#: rubyripper_cli.rb:168 rubyripper_cli.rb:176 rubyripper_cli.rb:216
+#: rubyripper_cli.rb:221 rubyripper_cli.rb:445 rubyripper_cli.rb:456
+msgid "y"
+msgstr "j"
+
+#: rubyripper_cli.rb:178
+msgid "Do you want to change the encoding parameters for %s? (y/n) : "
+msgstr "Ønsker du at ændre kodningsparametrene for %s? (j/n): "
+
+#: rubyripper_cli.rb:178 rubyripper_cli.rb:216 rubyripper_cli.rb:479
+msgid "n"
+msgstr "n"
+
+#: rubyripper_cli.rb:179
+msgid ""
+"%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
+"tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
+msgstr ""
+"%a = kunstner, %b = album, %g = genre, %y = år, %t = titel, %n = "
+"nr. på cd, %i = inddatafil, %o = uddatafil (husk filendelse)"
+
+# engelsk fejl a -> e
+#: rubyripper_cli.rb:180
+msgid "Encoding paramaters for %s : "
+msgstr "Kodningsparametre for %s: "
+
+#: rubyripper_cli.rb:186
+msgid "Cdrom device : "
+msgstr "Cd-rom-enhed: "
+
+#: rubyripper_cli.rb:187
+msgid "Offset for drive : "
+msgstr "Forskydning for drev: "
+
+#: rubyripper_cli.rb:192 rubyripper_cli.rb:195
+msgid ""
+"\n"
+"Current naming scheme: %s"
+msgstr ""
+"\n"
+"Aktuelt navngivningskema: %s"
+
+#: rubyripper_cli.rb:199
+msgid ""
+"\n"
+"%a = Artist\t\n"
+"%b = Album\n"
+"%g = Genre\n"
+"%y = Year\n"
+"%f = Codec\n"
+"%n = Tracknumber\n"
+"%t = Trackname\n"
+"%va = Various Artist\n"
+msgstr ""
+"\n"
+"%a = Kunstner\t\n"
+"%b = Album\n"
+"%g = Genre\n"
+"%y = År\n"
+"%f = Codec\n"
+"%n = Nr. på cd\n"
+"%t = Titel\n"
+"%va = Forskellige kunstnere\n"
+
+#: rubyripper_cli.rb:200
+msgid "New %s naming scheme (q to quit) : "
+msgstr "Ny %s navngivningsskema (a for afslut): "
+
+#: rubyripper_cli.rb:201
+msgid "q"
+msgstr "a"
+
+#: rubyripper_cli.rb:203 rubyripper_cli.rb:206
+msgid ""
+"An example filename is now:\n"
+"\n"
+"\t%s"
+msgstr ""
+"Et eksempelfilnavn er nu:\n"
+"\n"
+"\t%s"
+
+#: rubyripper_cli.rb:216 rubyripper_cli.rb:221
+msgid "yes"
+msgstr "ja"
+
+#: rubyripper_cli.rb:216
+msgid "no"
+msgstr "nej"
+
+#: rubyripper_cli.rb:222
+msgid "Please answer yes or no"
+msgstr "svar venligst ja eller nej"
+
+#: rubyripper_cli.rb:233
+msgid "We should never get here"
+msgstr "Vi bør aldrig nå hertil"
+
+#: rubyripper_cli.rb:233
+msgid "answer = %s, question = %s (error)"
+msgstr "svar = %s, spørgsmål = %s (fejl)"
+
+#: rubyripper_cli.rb:241
+msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
+msgstr "Lyddisk fundet, antal numre: %s, samlet spilletil: %s"
+
+#: rubyripper_cli.rb:243
+msgid "Fetching freedb info..."
+msgstr "Henter freedb-info..."
+
+#: rubyripper_cli.rb:279
+msgid "Freedb reported multiple possibilities."
+msgstr "Freedb rapporterede flere muligheder."
+
+#: rubyripper_cli.rb:281
+msgid ""
+"The first freedb option is automatically selected (no questions allowed)"
+msgstr ""
+"Det første freedb-valg vælges automatisk (ingen spørgsmål tilladt)"
+
+#: rubyripper_cli.rb:285
+msgid "Please type the number of the one you prefer? : "
+msgstr "Indtast venligst nummeret på den foretrukne?: "
+
+#: rubyripper_cli.rb:292
+msgid ""
+"FREEDB INFO\n"
+"\n"
+msgstr ""
+"FREEBD-INFO\n"
+"\n"
+
+#: rubyripper_cli.rb:293
+msgid "DISC INFO"
+msgstr "DISKINFO"
+
+#: rubyripper_cli.rb:294 rubyripper_cli.rb:339 rubyripper_gtk2.rb:437
+msgid "Artist:"
+msgstr "Kunstner:"
+
+#: rubyripper_cli.rb:295 rubyripper_cli.rb:340 rubyripper_gtk2.rb:438
+msgid "Album:"
+msgstr "Album:"
+
+#: rubyripper_cli.rb:296 rubyripper_cli.rb:341 rubyripper_gtk2.rb:439
+msgid "Genre:"
+msgstr "Genre:"
+
+#: rubyripper_cli.rb:297 rubyripper_cli.rb:342 rubyripper_gtk2.rb:440
+msgid "Year:"
+msgstr "År:"
+
+#: rubyripper_cli.rb:299
+msgid "TRACK INFO"
+msgstr "NUMMERINFO"
+
+#: rubyripper_cli.rb:322
+msgid "What would you like to do?"
+msgstr "Hvad ønsker du at gøre?"
+
+#: rubyripper_cli.rb:324
+msgid "1) Select the tracks to rip"
+msgstr "1) Vælg numrene der skal rippes"
+
+#: rubyripper_cli.rb:325
+msgid "2) Edit the disc info"
+msgstr "2) Rediger diskinfoen"
+
+#: rubyripper_cli.rb:326
+msgid "3) Edit the track info"
+msgstr "3) Rediger nummerinfoen"
+
+#: rubyripper_cli.rb:327
+msgid "4) Cancel the rip and eject the disc"
+msgstr "4) Afbryd rippet og skub disken ud"
+
+#: rubyripper_cli.rb:330 rubyripper_cli.rb:426
+msgid "Please enter the number of your choice: "
+msgstr "Indtast venligst nummeret på dit valg: "
+
+#: rubyripper_cli.rb:345 rubyripper_gtk2.rb:441
+msgid "Mark disc as various artist"
+msgstr "Marker disk som indeholdende forskellige kunstnere"
+
+#: rubyripper_cli.rb:347
+msgid "Mark disc as single artist"
+msgstr "Marker disk som indeholdende en kunstner"
+
+#: rubyripper_cli.rb:350
+msgid ""
+"Finished editing disc info\n"
+"\n"
+msgstr ""
+"Færdig med redigering af diskinfo\n"
+"\n"
+
+#: rubyripper_cli.rb:353 rubyripper_cli.rb:384
+msgid "Please enter the number you'd like to edit: "
+msgstr "Indtast venligst nummeret du ønsker at redigere: "
+
+#: rubyripper_cli.rb:354
+msgid "Artist : "
+msgstr "Kunstner: "
+
+#: rubyripper_cli.rb:355
+msgid "Album : "
+msgstr "Album: "
+
+#: rubyripper_cli.rb:356
+msgid "Genre : "
+msgstr "Genre: "
+
+#: rubyripper_cli.rb:357
+msgid "Year : "
+msgstr "År: "
+
+#: rubyripper_cli.rb:369 rubyripper_gtk2.rb:634 rr_lib.rb:1093 rr_lib.rb:1094
+#: rr_lib.rb:1095 rr_lib.rb:1276 rr_lib.rb:1278 rr_lib.rb:1279 rr_lib.rb:1286
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: rubyripper_cli.rb:381
+msgid ""
+"Finished editing track info\n"
+"\n"
+msgstr ""
+"Færdig med redigering af nummerinfo\n"
+"\n"
+
+#: rubyripper_cli.rb:393
+msgid "This is not a valid number. Try again"
+msgstr "Dette er ikke et gyldigt nummer. Forsøg igen"
+
+# engelsk fejl cancelled
+#: rubyripper_cli.rb:401
+msgid "Rip is canceled, exiting..."
+msgstr "Rip er afbrudt, afslutter.."
+
+#: rubyripper_cli.rb:419
+msgid "The output directory already exists. What would you like to do?"
+msgstr "Uddatamappen findes allerede. Hvad ønsker du at gøre?"
+
+#: rubyripper_cli.rb:421
+msgid "1) Auto rename the output directory"
+msgstr "1) Automatisk omdøbe uddatamappen"
+
+#: rubyripper_cli.rb:422
+msgid "2) Overwrite the existing directory"
+msgstr "2) Overskriv eksisterende mappe"
+
+#: rubyripper_cli.rb:423
+msgid "3) Cancel the rip and eject the disc"
+msgstr "3) Afbryd rippet og skub disken ud"
+
+#: rubyripper_cli.rb:445
+msgid "Do you want to change your settings? (y/n) : "
+msgstr "Ønsker du at ændre din opsætning? (j/n): "
+
+#: rubyripper_cli.rb:456
+msgid ""
+"\n"
+"Should all tracks be ripped ? (y/n) "
+msgstr ""
+"\n"
+"Skal alle numre rippes? (j/n) "
+
+#: rubyripper_cli.rb:457
+msgid "Tracks to rip are %s"
+msgstr "Numre at rippe er %s"
+
+#: rubyripper_cli.rb:461 rubyripper_cli.rb:478
+msgid "Current selection of tracks : %s"
+msgstr "Aktuel valg af numre: %s"
+
+#: rubyripper_cli.rb:462
+msgid ""
+"Enter 1 for entering the tracknumbers you want to remove.\n"
+"Enter 2 for entering the tracks you want to keep.\n"
+"Your choice: "
+msgstr ""
+"Indtast 1 for indtastning af numrene du ønsker at fjerne.\n"
+"Indtast 2 for indtastning af numrene du ønsker at beholde.\n"
+"Dit valg: "
+
+#: rubyripper_cli.rb:464
+msgid ""
+"Type the numbers of the tracks you want to remove and separate them with a "
+"space: "
+msgstr ""
+"Indtast rækkefølgenumrene på de numre du ønsker at fjerne og adskil dem med "
+"et mellemrum: "
+
+#: rubyripper_cli.rb:469
+msgid ""
+"Type the numbers of the tracks you want to keep and separate them with a "
+"space: "
+msgstr ""
+"Indtast rækkefølgenumrene på de numre du ønsker at beholde og adskil dem med "
+"et mellemrum: "
+
+#: rubyripper_cli.rb:475
+msgid "%s is not a valid number! Please enter 1 or 2!\n"
+msgstr "%s er ikke et gyldigt nummer! Indtast venligst 1 eller 2!\n"
+
+#: rubyripper_cli.rb:479
+msgid "Do you want to make any changes? (y/n) : "
+msgstr "Ønsker du at udføre nogle ændringer? (j/n): "
+
+#: rubyripper_gtk2.rb:67 rubyripper_gtk2.rb:114
+msgid "Preferences"
+msgstr "Indstillinger"
+
+#: rubyripper_gtk2.rb:67
+msgid "Scan drive"
+msgstr "Skan drev"
+
+#: rubyripper_gtk2.rb:67 rubyripper_gtk2.rb:199 rubyripper_gtk2.rb:200
+#: rubyripper_gtk2.rb:252 rubyripper_gtk2.rb:266
+msgid "Open tray"
+msgstr "Åbn bakke"
+
+#: rubyripper_gtk2.rb:67
+msgid "Rip cd now!"
+msgstr "Rip cd nu!"
+
+#: rubyripper_gtk2.rb:67 rubyripper_gtk2.rb:95 rubyripper_gtk2.rb:128
+msgid "Exit"
+msgstr "Afslut"
+
+#: rubyripper_gtk2.rb:141
+msgid "Abort"
+msgstr "Afbryd"
+
+#: rubyripper_gtk2.rb:157
+msgid "Disc info"
+msgstr "Diskinfo"
+
+#: rubyripper_gtk2.rb:258 rubyripper_gtk2.rb:339
+msgid "Close tray"
+msgstr "Luk bakke"
+
+#: rubyripper_gtk2.rb:343
+msgid "Ehh.. There shouldn't be anything else. WTF?"
+msgstr "Ehh.. Der skulle ikke være mere. Hvad sker der?"
+
+#: rubyripper_gtk2.rb:344
+msgid "Secret modus = %s"
+msgstr "Hemmelig modus = %s"
+
+#: rubyripper_gtk2.rb:353
+msgid "Encoding progress %s %"
+msgstr "Status for kodning %s %"
+
+#: rubyripper_gtk2.rb:356
+msgid "Ripping progress %s %"
+msgstr "Status for ripning %s %"
+
+#: rubyripper_gtk2.rb:367
+msgid ""
+"Welcome to rubyripper %s.\n"
+"Scanning drive %s for an audio disc..."
+msgstr ""
+"Velkommen til rubyripper %s.\n"
+"Skanner drev %s for en lyddisk..."
+
+#: rubyripper_gtk2.rb:371
+msgid ""
+"No disc found in %s!\n"
+"Please insert a disc and push 'Scan drive'.\n"
+"\n"
+"The cdrom drive can be set in 'Preferences'."
+msgstr ""
+"Ingen disk fundet i %s!\n"
+"Indsæt venligst en disk og tryk »Skan drev«.\n"
+"\n"
+"Cd-rom-drevet kan angives under »Indstillinger«."
+
+#: rubyripper_gtk2.rb:375
+msgid "Opening tray of drive %s"
+msgstr "Åbner bakke på drev %s"
+
+#: rubyripper_gtk2.rb:379
+msgid ""
+"Closing tray of drive %s. \n"
+"\n"
+"The drive will be scanned for an audio disc..."
+msgstr ""
+"Lukker bakke på drev %s. \n"
+"\n"
+"Drevet vil blive skannet for en lyddisk..."
+
+# engelsk fejl manglende punktum
+#: rubyripper_gtk2.rb:383
+msgid ""
+"Insert an audio-disc and press 'Close tray'.\n"
+"The drive will automatically be scanned for a disc.\n"
+"\n"
+"If the tray is already closed, press 'Scan drive'"
+msgstr ""
+"Indsæt en lyddisk og tryk »luk bakke«.\n"
+"Drevet vil automatisk blive skannet for en disk.\n"
+"\n"
+"Hvis bakken allerede er lukket, tryk »skan drev«"
+
+#: rubyripper_gtk2.rb:387
+msgid "The eject utility is not found on your system!"
+msgstr "Udskubningsværktøjet er ikke fundet på dit system!"
+
+#: rubyripper_gtk2.rb:443
+msgid "Freeze disc info"
+msgstr "Fastlås diskinfo"
+
+#: rubyripper_gtk2.rb:444
+msgid "Disc:"
+msgstr "Disk:"
+
+#: rubyripper_gtk2.rb:466
+msgid ""
+"Use this option to keep the disc info\n"
+"for albums that span multiple discs"
+msgstr ""
+"Brug denne indstiling til at bevare diskinfoen\n"
+"for album som har flere diske"
+
+#: rubyripper_gtk2.rb:502
+msgid "All"
+msgstr "Alle"
+
+#: rubyripper_gtk2.rb:503
+msgid "Artist"
+msgstr "Kunstner"
+
+#: rubyripper_gtk2.rb:504
+msgid "Tracknames (%s tracks)"
+msgstr "Titler (%s numre)"
+
+#: rubyripper_gtk2.rb:505
+msgid "Length (%s)"
+msgstr "Længde (%s)"
+
+#: rubyripper_gtk2.rb:572
+msgid "<b>Disc info</b>"
+msgstr "<b>Diskinfo</b>"
+
+#: rubyripper_gtk2.rb:580
+msgid "<b>Track selection</b>"
+msgstr "<b>Valg af numre</b>"
+
+#: rubyripper_gtk2.rb:828
+msgid "Cdrom device:"
+msgstr "Cd-rom-enhed:"
+
+#: rubyripper_gtk2.rb:829
+msgid "Cdrom offset:"
+msgstr "Cd-rom-forskydning:"
+
+#: rubyripper_gtk2.rb:832
+msgid "List with offsets"
+msgstr "Liste med forskydninger"
+
+#: rubyripper_gtk2.rb:833
+msgid ""
+"A website which lists the offset for most drives.\n"
+"Your drivename can be found in each logfile."
+msgstr ""
+"En internetside som viser forskydningerne for de fleste \n"
+"drev. Dit drevnavn kan ses i hver logfil."
+
+#: rubyripper_gtk2.rb:843
+msgid "Cdrom device"
+msgstr "Cd-rom-enhed"
+
+#: rubyripper_gtk2.rb:855
+msgid "Match all chunks:"
+msgstr "Match alle stykker:"
+
+#: rubyripper_gtk2.rb:856
+msgid "Match erroneous chunks:"
+msgstr "Match fejlbehæftede stykker:"
+
+#: rubyripper_gtk2.rb:857
+msgid "Maximum trials (0 = unlimited):"
+msgstr "Maksimalt antal forsøg (0 = ubegrænset):"
+
+#: rubyripper_gtk2.rb:861 rubyripper_gtk2.rb:862 rubyripper_gtk2.rb:863
+msgid "times"
+msgstr "gange"
+
+#: rubyripper_gtk2.rb:877
+msgid "Ripping options"
+msgstr "Ripningsindstillinger"
+
+#: rubyripper_gtk2.rb:889
+msgid "Pass cdparanoia options:"
+msgstr "Videresend cdparanoiaindstillinger:"
+
+#: rubyripper_gtk2.rb:890
+msgid "Eject cd when finished"
+msgstr "Skub cd ud når færdig"
+
+#: rubyripper_gtk2.rb:891
+msgid "Only keep logfile if correction is needed"
+msgstr "Behold kun logfil hvis korrektion er krævet"
+
+#: rubyripper_gtk2.rb:899
+msgid "Ripping related"
+msgstr "Ripningsrelateret"
+
+#: rubyripper_gtk2.rb:906
+msgid "Secure Ripping"
+msgstr "Sikker ripning"
+
+#: rubyripper_gtk2.rb:916
+msgid "Rip hidden audio sectors"
+msgstr "Rip skjulte lydsektorer"
+
+#: rubyripper_gtk2.rb:917
+msgid "Mark as a hidden track when bigger than"
+msgstr "Marker som skjult spor når større end"
+
+#: rubyripper_gtk2.rb:918
+msgid "seconds"
+msgstr "sekunder"
+
+#: rubyripper_gtk2.rb:921
+msgid "Uncheck this if cdparanoia crashes with your ripping drive."
+msgstr "Fjern afkrydsning hvis cdparanoia går ned med dit ripningsdrev."
+
+#: rubyripper_gtk2.rb:922
+msgid ""
+"A hidden track will rip to a seperate file if used in track modus.\n"
+"If it's smaller the sectors will be prepended to the first track."
+msgstr ""
+"Et skjult nummer vil rippe til en separat fil hvis brugt i nummermodus.\n"
+"Hvis det er mindre, vil sektorene blive foranstillet det første nummer."
+
+#: rubyripper_gtk2.rb:933
+msgid "Audio sectors before track 1"
+msgstr "Lydsektorer før nummer 1 på cd'en"
+
+#: rubyripper_gtk2.rb:945
+msgid "Create cuesheet"
+msgstr "Opret cuesheet (diskaftryk)"
+
+# engelsk fejl her er CD med stort
+#: rubyripper_gtk2.rb:946
+msgid "Rip CD to single file"
+msgstr "Rip cd til en enkel fil"
+
+#: rubyripper_gtk2.rb:951
+msgid "Advanced Toc analysis"
+msgstr "Avanceret Toc-analyse"
+
+#: rubyripper_gtk2.rb:959
+msgid "Cdrdao installed?"
+msgstr "Cdrdao installeret?"
+
+#: rubyripper_gtk2.rb:971
+msgid "Append pregap to the previous track"
+msgstr "Tilføj indledende mellemrum til det forrige nummer"
+
+#: rubyripper_gtk2.rb:972
+msgid "Prepend pregaps to the track"
+msgstr "Tilføj indledende mellemrum til nummeret"
+
+#: rubyripper_gtk2.rb:977
+msgid "Handling pregaps other than track 1"
+msgstr "Håndtere indledende mellemrum for andre end det første nummer"
+
+#: rubyripper_gtk2.rb:990
+msgid "Correct pre-emphasis tracks with sox"
+msgstr "Ret foranstillede fremhævningsnumre med sox"
+
+#: rubyripper_gtk2.rb:991
+msgid "Save the pre-emphasis tag in the cuesheet."
+msgstr "Gem foranstillet fremhævningsmærke i diskaftrykket."
+
+#: rubyripper_gtk2.rb:996
+msgid "Handling tracks with pre-emphasis"
+msgstr "Håndtere numre med foranstillet fremhævelse"
+
+#: rubyripper_gtk2.rb:1005
+msgid "TOC analysis"
+msgstr "TOC-analyse"
+
+#: rubyripper_gtk2.rb:1052
+msgid "Flac"
+msgstr "Flac"
+
+#: rubyripper_gtk2.rb:1053
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: rubyripper_gtk2.rb:1054
+msgid "Lame Mp3"
+msgstr "Lame Mp3"
+
+#: rubyripper_gtk2.rb:1055
+msgid "Wav"
+msgstr "Wav"
+
+#: rubyripper_gtk2.rb:1056 rubyripper_gtk2.rb:1281
+msgid "Other"
+msgstr "Andre"
+
+#: rubyripper_gtk2.rb:1057
+msgid "Show options for \"Other\""
+msgstr "Vis indstillinger »Andre«"
+
+#: rubyripper_gtk2.rb:1064
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist\n"
+"%o = outputfile   %i = inputfile"
+msgstr ""
+"%a=kunstner   %g=genre   %t=titel   %f=codec\n"
+"%b=album   %y=år   %n=nr. på cd   %va=forskellige kunstnere\n"
+"%o = outputfile   %i = inputfile"
+
+#: rubyripper_gtk2.rb:1078
+msgid "Select audio codecs"
+msgstr "Vælg lydcodec'er"
+
+#: rubyripper_gtk2.rb:1090
+msgid "Create m3u playlist"
+msgstr "Opret m2u-afspilningsliste"
+
+#: rubyripper_gtk2.rb:1091
+msgid "Replace spaces with underscores in filenames"
+msgstr "Erstat mellemrum med understregninger i filnavne"
+
+#: rubyripper_gtk2.rb:1092
+msgid "Downsize all capital letters in filenames"
+msgstr "Erstat alle store bogstaver i filnavne med små"
+
+#: rubyripper_gtk2.rb:1094
+msgid "Number of extra encoding threads"
+msgstr "Antal ekstra kodningstråde"
+
+#: rubyripper_gtk2.rb:1103
+msgid "Codec related"
+msgstr "Codecrelateret"
+
+#: rubyripper_gtk2.rb:1116
+msgid "Don't standardize volume"
+msgstr "Standardiser ikke lydstyrke"
+
+#: rubyripper_gtk2.rb:1117
+msgid "Use replaygain on audio files"
+msgstr "Brug replaygain på lydfiler"
+
+#: rubyripper_gtk2.rb:1118
+msgid "Use normalize on wav files"
+msgstr "Brug normalisering på wav-filer"
+
+#: rubyripper_gtk2.rb:1121
+msgid "Album / Audiophile modus"
+msgstr "Album / Audiophilemodus"
+
+#: rubyripper_gtk2.rb:1122
+msgid "Track modus"
+msgstr "Nummermodus"
+
+#: rubyripper_gtk2.rb:1130
+msgid "Normalize to standard volume"
+msgstr "Normaliser til standardlydstyrke"
+
+#: rubyripper_gtk2.rb:1137
+msgid "Codecs"
+msgstr "Codec'er"
+
+#: rubyripper_gtk2.rb:1147
+msgid "Enable freedb metadata fetching"
+msgstr "Aktiver hentning af freedb-metadata"
+
+#: rubyripper_gtk2.rb:1148
+msgid "Always use first freedb hit"
+msgstr "Brug altid første resultat fra freedb"
+
+#: rubyripper_gtk2.rb:1149
+msgid "Freedb server:"
+msgstr "Freedb-server:"
+
+#: rubyripper_gtk2.rb:1150
+msgid "Username:"
+msgstr "Brugernavn:"
+
+#: rubyripper_gtk2.rb:1151
+msgid "Hostname:"
+msgstr "Værtsnavn:"
+
+#: rubyripper_gtk2.rb:1165
+msgid "Freedb options"
+msgstr "Freedb-indstillinger"
+
+#: rubyripper_gtk2.rb:1172
+msgid "Freedb"
+msgstr "Freedb"
+
+#: rubyripper_gtk2.rb:1182
+msgid "Base directory:"
+msgstr "Startmappe:"
+
+#: rubyripper_gtk2.rb:1183
+msgid "Standard:"
+msgstr "Standard:"
+
+#: rubyripper_gtk2.rb:1184
+msgid "Various artists:"
+msgstr "Forskellige kunstnere:"
+
+#: rubyripper_gtk2.rb:1185
+msgid "Single file image:"
+msgstr "Et filaftryk:"
+
+#: rubyripper_gtk2.rb:1187
+msgid "Show options for \"Filenaming scheme\""
+msgstr "Vis indstillinger for »filnavngivningsskema«"
+
+#: rubyripper_gtk2.rb:1190
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist"
+msgstr ""
+"%a=kunstner   %g=genre   %t=titel   %f=codec\n"
+"%b=album   %y=år   %n=nr. på cd   %va=forskellige kunstnere"
+
+#: rubyripper_gtk2.rb:1221
+msgid "Filenaming scheme"
+msgstr "Filnavngivningsskema"
+
+#: rubyripper_gtk2.rb:1243
+msgid "Log file viewer: "
+msgstr "Logfilviser: "
+
+#: rubyripper_gtk2.rb:1244
+msgid "File manager: "
+msgstr "Filhåndtering: "
+
+#: rubyripper_gtk2.rb:1253
+msgid "Programs of choice"
+msgstr "Valgte programmer"
+
+#: rubyripper_gtk2.rb:1267
+msgid "Verbose mode"
+msgstr "Uddybende tilstand"
+
+#: rubyripper_gtk2.rb:1268
+msgid "Debug mode"
+msgstr "Fejlsøgningstilstand"
+
+#: rubyripper_gtk2.rb:1272
+msgid "Debug options"
+msgstr "Fejlsøgningsindstillinger"
+
+#: rubyripper_gtk2.rb:1321
+msgid "<b>Ripping status</b>"
+msgstr "<b>Ripningsstatus</b>"
+
+#: rubyripper_gtk2.rb:1337 rubyripper_gtk2.rb:1338
+msgid "Not yet started (0%)"
+msgstr "Ikke startet endnu (0 %)"
+
+#: rubyripper_gtk2.rb:1349
+msgid ""
+"The directory %s already exists.\n"
+"\n"
+"What do you want rubyripper to do?"
+msgstr ""
+"Mappen %s findes allerede.\n"
+"\n"
+"Hvad ønsker du at rubyripper gør?"
+
+#: rubyripper_gtk2.rb:1358
+msgid "Cancel rip"
+msgstr "Afbryd rip"
+
+#: rubyripper_gtk2.rb:1358
+msgid ""
+"Delete existing\n"
+"directory"
+msgstr ""
+"Slet eksisterende\n"
+"mappe"
+
+#: rubyripper_gtk2.rb:1358
+msgid ""
+"Auto rename\n"
+"directory"
+msgstr ""
+"Automatisk omdøbe\n"
+"mappe"
+
+#: rubyripper_gtk2.rb:1378
+msgid "Dir already exists..."
+msgstr "Mappe findes allerede..."
+
+#: rubyripper_gtk2.rb:1389
+msgid ""
+"The freedb server reports multiple hits.\n"
+"Which one would you prefer?"
+msgstr ""
+"Freedb-serveren har flere resultater.\n"
+"Hvilken foretrækker du?"
+
+#: rubyripper_gtk2.rb:1401
+msgid "Ok"
+msgstr "O.k."
+
+#: rubyripper_gtk2.rb:1413
+msgid "Multiple hits found..."
+msgstr "Flere resultater fundet..."
+
+#: rubyripper_gtk2.rb:1431
+msgid ""
+"The rip has succesfully finished.\n"
+"A short summary is shown below."
+msgstr ""
+"Rippet er afsluttet.\n"
+"Et kort sammendrag er vist nedenfor."
+
+#: rubyripper_gtk2.rb:1434
+msgid ""
+"The rip had some problems.\n"
+"A short summary is shown below."
+msgstr ""
+"Rippet havde nogle problemer.\n"
+"Et kort sammendrag er vist nedenfor."
+
+#: rubyripper_gtk2.rb:1451
+msgid "Open log file"
+msgstr "Åbn logfil"
+
+#: rubyripper_gtk2.rb:1456 rubyripper_gtk2.rb:1464
+msgid "%s is not found on your system!"
+msgstr "%s er ikke fundet på dit system!"
+
+#: rubyripper_gtk2.rb:1459
+msgid "Open directory"
+msgstr "Åbn mappe"
+
+#: rubyripper_gtk2.rb:1475
+msgid "Ripping and encoding is finished"
+msgstr "Ripning og kodning er afsluttet"
+
+#: rr_lib.rb:56 rr_lib.rb:64
+msgid "Example filename: %s.ext"
+msgstr "Eksempelfilnavn: %s.end"
+
+#: rr_lib.rb:73
+msgid "No eject utility found!"
+msgstr "Intet skub ud-værktøj fundet!"
+
+# engelsk fejl mellemrum?
+#: rr_lib.rb:316
+msgid ""
+"Artist : %s\n"
+"Album: %s\n"
+msgstr ""
+"Kunster: %s\n"
+"Album: %s\n"
+
+#: rr_lib.rb:317
+msgid "This log is created by Rubyripper, version %s\n"
+msgstr "Denne log er oprettet af Rubyripper, version %s\n"
+
+#: rr_lib.rb:318
+msgid ""
+"Website: http://code.google.com/p/rubyripper\n"
+"\n"
+msgstr ""
+"Internetside: http://code.google.com/p/rubyripper\n"
+"\n"
+
+#: rr_lib.rb:375
+msgid ""
+"\n"
+"WARNING: ENCODING ERRORS WERE DETECTED\n"
+msgstr ""
+"\n"
+"ADVARSEL: KODNINGSFEJL BLEV REGISTRERET\n"
+
+#: rr_lib.rb:376
+msgid ""
+"\n"
+"RIPPING SUMMARY\n"
+"\n"
+msgstr ""
+"\n"
+"RIPNINGSSAMMENDRAG\n"
+"\n"
+
+#: rr_lib.rb:378
+msgid "All chunks were tried to match at least %s times.\n"
+msgstr "Alle stykker blev forsøgt sammenlignet mindst %s gange.\n"
+
+#: rr_lib.rb:379
+msgid ""
+"Chunks that differed after %s trials,\n"
+"were tried to match %s times.\n"
+msgstr ""
+"Stykker som var forskellige efter %s forsøg,\n"
+"blev forsøgt sammenlignet %s gange.\n"
+
+#: rr_lib.rb:382
+msgid "None of the tracks gave any problems\n"
+msgstr "Ingen af numrene gav nogen problemer\n"
+
+#: rr_lib.rb:384
+msgid ""
+"Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr ""
+"Nogle numre kunne IKKE tilrettes indenfor det maksimale antal forsøg\n"
+
+#: rr_lib.rb:387
+msgid "Track %s could NOT be corrected completely\n"
+msgstr "Nummer %s kunne IKKE tilrettes fuldstændigt\n"
+
+# engelsk fejl , but
+#: rr_lib.rb:390
+msgid ""
+"Some track(s) needed correction,but could\n"
+"be corrected within the maximum amount of trials\n"
+msgstr ""
+"Nogle numre krævede korrektion, men kunne tilrettes "
+"indenfor det maksimale antal forsøg\n"
+
+#: rr_lib.rb:395
+msgid ""
+"The exact positions of the suspicious chunks\n"
+"can be found in the ripping log\n"
+msgstr ""
+"Den præcise placering af de mistænksomme stykker\n"
+"kan ses i ripningsloggen\n"
+
+#: rr_lib.rb:401
+msgid ""
+"\n"
+"SUSPICIOUS POSITION ANALYSIS\n"
+"\n"
+msgstr ""
+"\n"
+"ANALYSE OVER MISTÆNKELIGE PLACERINGER\n"
+"\n"
+
+#: rr_lib.rb:402
+msgid "Since there are 75 chunks per second, after making the notion of the\n"
+msgstr "Da der er 75 stykker per sekund, efter markering af de\n"
+
+#: rr_lib.rb:403
+msgid ""
+"suspicious position, the amount of initially mismatched chunks for\n"
+"that position is shown.\n"
+"\n"
+msgstr ""
+"mistænkelige placeringer, er antallet af oprindelige fejlmatchede stykker\n"
+"for den position vist.\n"
+
+#: rr_lib.rb:405
+msgid "TRACK %s\n"
+msgstr "NUMMER %s\n"
+
+#: rr_lib.rb:410
+msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n"
+msgstr "\tMistænkelig placering: %s:%s (%s x) (TILRETTET ved forsøg %s)\n"
+
+#: rr_lib.rb:412
+msgid "\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n"
+msgstr "\tMistænkelig placering: %s:%s (%s x) (KUNNE IKKE TILRETTES)\n"
+
+#: rr_lib.rb:455
+msgid "Unknown drive"
+msgstr "Ukendt drev"
+
+#: rr_lib.rb:547
+msgid ""
+"No disc found in drive %s.\n"
+"\n"
+"Please put an audio disc in first..."
+msgstr ""
+"Ingen disk fundet i drev %s.\n"
+"\n"
+"Indsæt venligst en lyddisk..."
+
+#: rr_lib.rb:554
+msgid ""
+"Perhaps cdparanoia doesn't support the drive parameter.\n"
+" Will retry with default drive"
+msgstr ""
+"Måske understøtter cdparanoia ikke drevparameteren.\n"
+" Vil forsøge med standarddrev"
+
+#: rr_lib.rb:577
+msgid ""
+"Cdrom drive %s does not exist on your system!\n"
+"Please configure your cdrom drive first."
+msgstr ""
+"Cd-rom-drev %s findes ikke på dit system!\n"
+"Konfigurer dit cd-rom-drev først."
+
+#: rr_lib.rb:584 rr_lib.rb:614
+msgid ""
+"You don't have read and write permission\n"
+"for device %s on your system! These permissions are\n"
+"necessary for cdparanoia to scan your drive.\n"
+"\n"
+"%s\n"
+"You might want to add yourself to the necessary group in /etc/group"
+msgstr ""
+"Du har ikke læse- og skriverettigheder\n"
+"for enhed %s på dit system! Disse rettigheder er\n"
+"nødvendige for at cdparanoia kan skanne dit drev.\n"
+"\n"
+"%s\n"
+"Du skal måske tilføje dig selv i den nødvendige gruppe i /etc/group"
+
+#: rr_lib.rb:654
+msgid ""
+"warning: discid or cd-discid isn't found on your system! Using fallback..."
+msgstr ""
+"advarsel: discid eller cd-discid er ikke fundet på dit system! Bruger reserve..."
+
+#: rr_lib.rb:657
+msgid "freedb string = %s"
+msgstr "freedb-streng = %s"
+
+#: rr_lib.rb:853
+msgid "No pregaps, silences or pre-emphasis detected\n"
+msgstr "Ingen indledende mellemrum, stilhed eller foranstillet fremhævelse genkendt\n"
+
+#: rr_lib.rb:891
+msgid "Track %s is marked as a DATA track\n"
+msgstr "Nummer %s er markeret som et DATA-spor\n"
+
+#: rr_lib.rb:894
+msgid "Pre_emphasis detected on track %s\n"
+msgstr "Foranstillet fremhævelse genkendt på nummer %s\n"
+
+#: rr_lib.rb:899
+msgid "Pregap detected for track %s : %s sectors\n"
+msgstr "Indledende mellemrum genkendt for nummer %s: %s sektorer\n"
+
+#: rr_lib.rb:904
+msgid "Silence detected for track %s : %s sectors\n"
+msgstr "Stilhed genkendt for nummer %s: %s sektorer\n"
+
+#: rr_lib.rb:1099
+msgid "Track %s"
+msgstr "Nummer %s"
+
+#: rr_lib.rb:1115
+msgid "No audio disc found in %s"
+msgstr "Ingen lyddisk fundet i %s"
+
+#: rr_lib.rb:1185
+msgid ""
+"Couldn't connect to freedb server. Network down?\n"
+"\n"
+"Default values will be shown..."
+msgstr ""
+"Kunne ikke forbinde til freedb-server. Er netværket nede?\n"
+"\n"
+"Standardværdier vil blive vist..."
+
+#: rr_lib.rb:1201
+msgid "No match in Freedb database. Default values are used."
+msgstr "Intet resultat i Freedb-databasen. Standardværdier bruges."
+
+#: rr_lib.rb:1203
+msgid "cddb_query return code = %s. Return code not supported."
+msgstr "cddb_query returkode = %s. Returkode er ikke understøttet."
+
+#: rr_lib.rb:1210
+msgid "Keep defaults / don't use freedb"
+msgstr "Behold standarder / brug ikke freedb"
+
+#: rr_lib.rb:1509
+msgid ""
+"Can't create output directory!\n"
+"You have no writing acces in dir %s"
+msgstr ""
+"Kan ikke oprette uddatamappe!\n"
+"Du har ingen skriveadgang i mappe %s"
+
+#: rr_lib.rb:1606
+msgid "Hidden Track"
+msgstr "Skjult nummer"
+
+#: rr_lib.rb:1607
+msgid "Unknown Artist"
+msgstr "Ukendt kunstner"
+
+#: rr_lib.rb:1856
+msgid "Not enough disk space left! Rip aborted"
+msgstr "Ikke nok diskplads tilbage! Rip afbrudt"
+
+#: rr_lib.rb:1869
+msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
+msgstr "Maksimalt antal forsøg nået. %s stykker matchede ikke de krævede %s gange\n"
+
+#: rr_lib.rb:1870
+msgid "Will continue with the file we've got so far\n"
+msgstr "Vil fortsætte med filen vi har indtil nu\n"
+
+#: rr_lib.rb:1908
+msgid ""
+"Cdparanoia doesn't output wav files.\n"
+"Check your settings please."
+msgstr ""
+"Cdparanoia laver ikke wav-filer.\n"
+"Tjek venligst din opsætning."
+
+#: rr_lib.rb:1923
+msgid "The ripped file misses %s sectors.\n"
+msgstr "Den rippede fil mangler %s sektorer.\n"
+
+#: rr_lib.rb:1924
+msgid "This is known behaviour for some drives when using an offset.\n"
+msgstr "Dette er en kendt opførsel for nogle drev når der bruges forskydning.\n"
+
+#: rr_lib.rb:1925
+msgid "Notice that each sector is 1/75 second.\n"
+msgstr "Bemærk at hver sektor er 1/75 sekund.\n"
+
+#: rr_lib.rb:1937
+msgid "Filesize is not correct! Trying another time\n"
+msgstr "Filstørrelse er ikke korrekt! Forsøger igen\n"
+
+#: rr_lib.rb:1944
+msgid "Analyzing files for mismatching chunks\n"
+msgstr "Analyserer filer for stykker der ikke svarer overens\n"
+
+#: rr_lib.rb:1968
+msgid "Every chunk matched %s times :)\n"
+msgstr "Hvert stykke matchede %s gange :)\n"
+
+#: rr_lib.rb:1971 rr_lib.rb:2031
+msgid "%s chunk(s) didn't match %s times.\n"
+msgstr "%s stykker matchede ikke %s gange.\n"
+
+#: rr_lib.rb:2028
+msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
+msgstr "Fejl rettet, %s match fundet for hvert stykke :)\n"
+
+#: rr_lib.rb:2040
+msgid "The drive is spinning for more than 30 minutes.\n"
+msgstr "Drevet har rotereret i mere end 30 minutter.\n"
+
+#: rr_lib.rb:2041
+msgid "Taking a timeout of 2 minutes to protect the hardware.\n"
+msgstr "Holder en pause på 2 minutter for at beskytte hardwaren.\n"
+
+#: rr_lib.rb:2053
+msgid "Starting to rip CD image, trial #%s"
+msgstr "Påbegynder rip af cd-aftryk, forsøg #%s"
+
+#: rr_lib.rb:2055
+msgid "Starting to rip track %s, trial #%s"
+msgstr "Påbetynder rip af nummer %s, forsøg #%s"
+
+#: rr_lib.rb:2091
+msgid ""
+"MD5 sum: %s\n"
+"\n"
+msgstr ""
+"MD5-sum: %s\n"
+"\n"
+
+#: rr_lib.rb:2450
+msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
+msgstr "ADVARSEL: Kodning til %s afsluttedes med en fejl på nummer %s!\n"
+
+#: rr_lib.rb:2484
+msgid ""
+"\n"
+"STATUS\n"
+"\n"
+msgstr ""
+"\n"
+"STATUS\n"
+"\n"
+
+#: rr_lib.rb:2507
+msgid ""
+"\n"
+"ADVANCED TOC ANALYSIS (with cdrdao)\n"
+msgstr ""
+"\n"
+"AVANCERET TOC-ANALYSE (med cdrdao)\n"
+
+#: rr_lib.rb:2508
+msgid ""
+"...please be patient, this may take a while\n"
+"\n"
+msgstr ""
+"...vær tålmodig, det kan godt tage et stykke tid\n"
+"\n"
+
+#: rr_lib.rb:2528
+msgid "The device %s doesn't exist on your system!"
+msgstr "Enheden %s findes ikke på dit system!"
+
+#: rr_lib.rb:2533
+msgid "Please select at least one track."
+msgstr "Vælg venligst mindst et nummer."
+
+#: rr_lib.rb:2540
+msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
+msgstr "Grænsefladen svarer ikke til den indsatte cd. Tryk først på Skan drev."
+
+#: rr_lib.rb:2546
+msgid "No codecs are selected!"
+msgstr "Ingen codec'er er valgt!"
+
+#: rr_lib.rb:2591
+msgid "%s not found on your system!"
+msgstr "%s ikke fundet på dit system!"
+
+#: rr_lib.rb:2611
+msgid ""
+"Cdrom player used to rip:\n"
+"%s\n"
+msgstr ""
+"Cd-rom-afspiller brugt til ripning:\n"
+"%s\n"
+
+#: rr_lib.rb:2612
+msgid ""
+"Cdrom offset used: %s\n"
+"\n"
+msgstr ""
+"Cd-rom-forskydning brugt: %s\n"
+"\n"
+
+#: rr_lib.rb:2613
+msgid "Ripper used: cdparanoia %s\n"
+msgstr "Ripper brugt: cdparanoia %s\n"
+
+#: rr_lib.rb:2613
+msgid "default settings"
+msgstr "standardopsætning"
+
+#: rr_lib.rb:2614
+msgid "Matches required for all chunks: %s\n"
+msgstr "Matchninger krævet for alle stykker: %s\n"
+
+#: rr_lib.rb:2615
+msgid ""
+"Matches required for erroneous chunks: %s\n"
+"\n"
+msgstr ""
+"Matchninger krævet for fejlbehæftede stykker: %s\n"
+"\n"
+
+#: rr_lib.rb:2617
+msgid "Codec(s) used:\n"
+msgstr "Codec'er brugt:\n"
+
+#: rr_lib.rb:2618
+msgid "-flac \t-> %s (%s)\n"
+msgstr "-flac \t-> %s (%s)\n"
+
+#: rr_lib.rb:2619
+msgid "-vorbis\t-> %s (%s)\n"
+msgstr "-vorbis\t-> %s (%s)\n"
+
+#: rr_lib.rb:2620
+msgid ""
+"-mp3\t-> %s\n"
+"(%s\n"
+msgstr ""
+"-mp3\t-> %s\n"
+"(%s\n"
+
+#: rr_lib.rb:2621
+msgid "-wav\n"
+msgstr "-wav\n"
+
+#: rr_lib.rb:2622
+msgid "-other\t-> %s\n"
+msgstr "-andre\t-> %s\n"
+
+#: rr_lib.rb:2623
+msgid ""
+"\n"
+"CDDB INFO\n"
+msgstr ""
+"\n"
+"CDDB-INFO\n"
+
+#: rr_lib.rb:2624
+msgid ""
+"\n"
+"Artist\t= "
+msgstr ""
+"\n"
+"Kunstner\t= "
+
+#: rr_lib.rb:2626
+msgid ""
+"\n"
+"Album\t= "
+msgstr ""
+"\n"
+"Album\t= "
+
+#: rr_lib.rb:2628
+msgid ""
+"\n"
+"Year\t= "
+msgstr ""
+"\n"
+"År\t= "
+
+#: rr_lib.rb:2629
+msgid ""
+"\n"
+"Genre\t= "
+msgstr ""
+"\n"
+"Genre\t= "
+
+#: rr_lib.rb:2630
+msgid ""
+"\n"
+"Tracks\t= "
+msgstr ""
+"\n"
+"Numre\t= "
+
+#: rr_lib.rb:2631
+msgid "selected"
+msgstr "valgt"
