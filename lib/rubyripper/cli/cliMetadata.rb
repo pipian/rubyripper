@@ -25,11 +25,14 @@ class CliMetadata
 	# * gui = instance of the user interface
 	# * deps = instance of dependency class
 	# * defaults = if true, skip all questions
-	def initialize(settings, gui, deps, defaults)
+	def initialize(settings, gui, deps, defaults, answers)
 		@settings = settings
 		@gui = gui
 		@deps = deps
-		@defaults = defaults				
+		@defaults = defaults
+		@int = answers['getInt']
+		@bool = answers['getBool']
+		@string = answers['getString']
 		checkArguments()
 
 		@error = ''
@@ -59,6 +62,14 @@ private
 
 		unless @deps.class == Dependency
 			raise ArgumentError, "deps must be of Dependency class"
+		end
+
+		unless defaults == true || defaults == false
+			raise ArgumentError, "defaults can only be true or false"		
+		end
+
+		unless @answers.class == Hash
+			raise ArgumentError, "answers must be a hash"
 		end
 	end
 
@@ -161,7 +172,7 @@ private
 		puts _("4) Cancel the rip and eject the disc")
 		puts ""
 
-		answer = getAnswer(_("Please enter the number of your choice: "), "number", 1)
+		answer = @int.get(_("Please enter the number of your choice: "), 1)
 		if answer == 1 ; @status = "chooseTracks"
 		elsif answer == 2 ; editDiscInfo()
 		elsif answer == 3 ; editTrackInfo()
@@ -185,11 +196,11 @@ private
 		puts "99) " + _("Finished editing disc info\n\n")
 		
 		while true
-			answer = getAnswer(_("Please enter the number you'd like to edit: "), "number", 99)
-			if answer == 1 ; @md.artist = getAnswer(_("Artist : "), "open", @md.artist)
-			elsif answer == 2 ; @md.album = getAnswer(_("Album : "), "open", @md.album)
-			elsif answer == 3 ; @md.genre = getAnswer(_("Genre : "), "open", @md.genre)
-			elsif answer == 4 ; @md.year = getAnswer(_("Year : "), "open", @md.year)
+			answer = @ing.get(_("Please enter the number you'd like to edit: "), "number", 99)
+			if answer == 1 ; @md.artist = @string.get(_("Artist : "), @md.artist)
+			elsif answer == 2 ; @md.album = @string.get(_("Album : "), @md.album)
+			elsif answer == 3 ; @md.genre = @string.get(_("Genre : "), @md.genre)
+			elsif answer == 4 ; @md.year = @string.get(_("Year : "), @md.year)
 			elsif answer == 5 ; if @md.varArtists.empty? ; setVarArtist() else unsetVarArtist() end
 			elsif answer == 99 ; break
 			end
@@ -219,13 +230,14 @@ private
 		puts "99) " + _("Finished editing track info\n\n")
 
 		while true
-			answer = getAnswer(_("Please enter the number you'd like to edit: "), "number", 99)
+			answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
 		
 			if answer == 99 ; break
-			elsif (answer.to_i > 0 && answer.to_i <= @cd.audiotracks)
-				@md.tracklist[answer - 1] = getAnswer("Track #{answer} : ", "open", @md.tracklist[answer - 1])
+			elsif (answer.to_i > 0 && answer.to_i <= @cd.getInfo('audiotracks'))
+				@md.tracklist[answer - 1] = @string.get("Track #{answer} : ", @md.trackname(answer))
 				if not @md.varArtists.empty?
-					@md.varArtists[answer - 1] = getAnswer("Artist for Track #{answer} : ", "open", @md.varArtists[answer - 1])
+					@md.varArtists[answer - 1] = @string.get("Artist for \
+Track #{answer} : ",  @md.varArtist(answer))
 				end
 			else
 				puts _("This is not a valid number. Try again")

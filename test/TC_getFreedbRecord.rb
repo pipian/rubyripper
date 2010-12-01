@@ -15,41 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require './mocks.rb'
 require 'rubyripper/freedb/getFreedbRecord.rb'
-
-# create mock for http traffic
-class FakeConnection
-	
-	# query = first response, read = freedbRecord, category = genre, discid = discid
-	def initialize(query, read, category, discid)
-		update(query, read, category, discid)
-	end
-
-	# skip http configuration, faking the connection
-	def configConnection(url)
-	end
-
-	# refresh the variables
-	def update (query, read, category, discid)
-		@query = query
-		@read = read
-		@category = category
-		@discid = discid
-	end
-
-	# simulate server response and validate query
-	def get(query)
-		if query.include?('query')
-			return @query
-		elsif query.include?('read')
-			raise "Category not found: #{query}" unless query.include?(@category)
-			raise "Connection not found: #{query}" unless query.include?(@discid)
-			return @read
-		else
-			raise "query #{query} not recognized"
-		end
-	end
-end
 
 # A class to test if GetFreedbRecord conforms to the Freedb protocol
 class TC_GetFreedbRecord < Test::Unit::TestCase

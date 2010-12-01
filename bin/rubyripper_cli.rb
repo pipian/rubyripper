@@ -33,6 +33,7 @@ end
 require 'rubyripper/dependency.rb'
 require 'rubyripper/cli/cliSettings.rb'
 require 'rubyripper/cli/cliMetadata.rb'
+require 'rubyripper/cli/cliGetAnswer.rb'
 # TODO require 'rubyripper/cli/cliTracklist.rb'
 
 # The class that initiates the commandline interface
@@ -47,12 +48,19 @@ class CommandLineInterface
 		# verify if all dependencies are found
 		@deps = Dependency.new(verbose=true, runtime=true)
 	
+		# save all answer machines in a Hash and pass them (better for testing)
+		@answers = {'getString' => GetString.new, 'getInt' => GetInt.new, 
+'getBool' => GetBool.new}
+
 		# get the settings
-		@settingsCli = CliSettings.new(@deps)
+		@settingsCli = CliSettings.new(@deps, @answers)
 		@settings = @settingsCli.settings
 
 		# show the discinfo
-		@discCli = CliMetadata.new(@settings, self, @deps, @settingsCli.isDefault)
+		@discCli = CliMetadata.new(@settings, self, @deps, 
+			@settingsCli.isDefault, @answers)
+
+
 
 		#getDiscInfo()
 		#selectTracks()

@@ -68,4 +68,4 @@ require './TC_freedbRecordParser.rb'
 require './TC_getFreedbRecord.rb'
 require './TC_saveFreedbRecord.rb'
 require './TC_loadFreedbRecord.rb'
-
+require './TC_cliGetAnswer.rb'

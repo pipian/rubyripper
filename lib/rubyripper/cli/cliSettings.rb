@@ -23,8 +23,11 @@ require 'rubyripper/settings.rb'
 class CliSettings
 	# Read the commandline options and read settings
 	# * deps = instance of Dependency class
-	def initialize(deps)
+	def initialize(deps, answers)
 		@deps = deps
+		@int = answers['getInt']
+		@bool = answers['getBool']
+		@string = answers['getString']
 		parseOptions()
 		readSettings()
 	end
@@ -149,29 +152,35 @@ private
 	# depending on the input of the user as asked in showSettings(), change the setting
 	def editSettings
 		showSettings()
-		while (number = getAnswer(_("Please type the number of the setting you wish to change : "), "number", 99)) != 99
+		while (number = @int.get(_("Please type the number of the setting you \
+wish to change : "), 99)) != 99
 			if number == 1 ; setCodec('flac')
 			elsif number == 2 ; setCodec('vorbis')
 			elsif number == 3 ; setCodec('mp3')
 			elsif number == 4 ; if @settings['wav'] ; puts _("wav disabled") ; @settings['wav'] = false else puts _("wav enabled") ; @settings['wav'] = true end
 			elsif number == 5 ; setCodec('other')
 			elsif number == 6 ; if @settings['playlist'] ; puts _("playlist disabled") ; @settings['playlist'] = false else puts _("playlist enabled") ; @settings['playlist'] = true end
-			elsif number == 7 ; @settings['maxThreads'] = getAnswer(_("How many encoding threads would you like? : "), "number", 1)
+			elsif number == 7 ; @settings['maxThreads'] = @int.get(_("How many \
+encoding threads would you like? : "), 1)
 			elsif number == 8 ; setCdrom()
-			elsif number == 9 ; @settings['rippersettings'] = getAnswer(_("Which options to pass to cdparanoia? : "), "open", "")
-			elsif number == 10 ; @settings['req_matches_all'] = getAnswer(_("How many times must all chunks be matched? : "), "number", 2)
-			elsif number == 11 ; @settings['req_matches_errors'] = getAnswer(_("How many times must erroneous chunks be matched? : "), "number", 3)
-			elsif number == 12 ; @settings['max_tries'] = getAnswer(_("What should be the maximum number of tries? : "), "number", 5)
+			elsif number == 9 ; @settings['rippersettings'] = @string.get(_("Which \
+options to pass to cdparanoia? : "), "")
+			elsif number == 10 ; @settings['reqMatchesAll'] = @int.get(_("How \
+many times must all chunks be matched? : "), 2)
+			elsif number == 11 ; @settings['reqMatchesErrors'] = @int.get(_("How many times must erroneous chunks be matched? : "), 3)
+			elsif number == 12 ; @settings['maxTries'] = @int.get(_("What \
+should be the maximum number of tries? : "), 5)
 			elsif number == 13 ; if @settings['eject'] ; puts _("eject disabled") ; @settings['eject'] = false else puts _("eject enabled") ; @settings['eject'] = true end
-			elsif number == 14 ; @settings['basedir'] = getAnswer(_("Please enter your directory for your encodings: "), "open", "")
+			elsif number == 14 ; @settings['basedir'] = @string.get(_("Please \
+enter your directory for your encodings: "), "")
 			elsif number == 15 ; setDir('normal')
 			elsif number == 16 ; setDir('various')
 			elsif number == 17 ; if @settings['freedb'] ; puts _("freedb disabled") ; @settings['freedb'] = false else puts _("freedb enabled") ; @settings['freedb'] = true end
 			elsif number == 18 ; if @settings['first_hit'] ; puts _("first hit disabled") ; @settings['first_hit'] = false else puts _("first hit enabled") ; @settings['first_hit'] = true end
-			elsif number == 19 ; @settings['site'] = getAnswer(_("Freedb mirror: "), "open", "freedb.org")
-			elsif number == 20 ; @settings['username'] = getAnswer(_("Username : "), "open", "anonymous")
-			elsif number == 21 ; @settings['hostname'] = getAnswer(_("Hostname : "), "open", "my_secret.com")
-			elsif number == 88 ; @options['file'] = getAnswer(_("Config file : "), "open", @options['file'])
+			elsif number == 19 ; @settings['site'] = @string.get(_("Freedb mirror: "), "freedb.org")
+			elsif number == 20 ; @settings['username'] = @string.get(_("Username : "), "anonymous")
+			elsif number == 21 ; @settings['hostname'] = @string.get(_("Hostname : "), "my_secret.com")
+			elsif number == 88 ; @options['file'] = @string.get(_("Config file : "), @options['file'])
 			else puts _("Number %s is not an option!\nPlease try again.") % [number]
 			end
 			puts ""
@@ -182,19 +191,26 @@ private
 	
 	# update if codec is used and with what setting
 	def setCodec(codec)
-		@settings[codec] = getAnswer("Do you want to enable #{codec} encoding? (y/n) : ", "yes", _("y"))
+		@settings[codec] = @bool.get("Do you want to enable #{codec} encoding?\
+ (y/n) : ", _("y"))
 		if @settings[codec]
-			if getAnswer(_("Do you want to change the encoding parameters for %s? (y/n) : ") % [codec], "yes", _("n"))
-				if codec == 'other' ; puts _("%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)") end
-				@settings[codec + 'settings'] = getAnswer(_("Encoding paramaters for %s : ") % [codec], "open", "")
+			if @bool.get(_("Do you want to change the encoding parameters for \
+%s? (y/n) :\ ") % [codec], _("n"))
+				if codec == 'other'
+					puts _("%a = artist, %b = album, %g = genre, %y = year, \
+%t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't \
+forget extension)") 
+				end
+				@settings[codec + 'settings'] = @string.get(_("Encoding \
+paramaters for %s : ") % [codec], "")
 			end
 		end
 	end
 	
 	# set cdrom drive and it's offset
 	def setCdrom
-		@settings['cdrom'] = getAnswer(_("Cdrom device : "), "open", @settings['cdrom'])
-		@settings['offset'] = getAnswer(_("Offset for drive : "), "number", 0)
+		@settings['cdrom'] = @string.get(_("Cdrom device : "), @settings['cdrom'])
+		@settings['offset'] = @int.get(_("Offset for drive : "), 0)
 	end
 
 	# set the naming schemes
@@ -208,8 +224,10 @@ private
 		end
 
 		puts _("\n%a = Artist\n%b = Album\n%g = Genre\n%y = Year\n%f = Codec\n%n = Tracknumber\n%t = Trackname\n%va = Various Artist\n")
-		answer = getAnswer(_("New %s naming scheme (q to quit) : ") % [variable], "open", "%f/%a (%y) %b/%n - %t") 
-		if answer !=_('q')
+		answer = @string.get(_("New %s naming scheme (q to quit) : \
+") % [variable], "%f/%a (%y) %b/%n - %t") 
+		
+		if answer != ('q')
 			if variable == 'normal'
 				puts _("An example filename is now:\n\n\t%s") % [getExampleFilenameNormal(@settings['basedir'], answer)]
 				@settings['naming_normal'] = answer

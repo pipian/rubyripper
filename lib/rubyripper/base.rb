@@ -68,30 +68,3 @@ def eject(cdrom)
 		end
 	end
 end
-	
-# A help function for asking answers for the commandline interface
-def getAnswer(question, answer, default)
-	succes = false
-	while !succes 
-		if answer == "yes"
-			answers = [_("yes"), _("y"), _("no"), _("n")]
-			STDOUT.print(question + " [#{default}] ")
-			input = STDIN.gets.strip
-			if input == '' ; input = default end
-			if answers.include?(input)
-				if input == _('y') || input == _("yes") ; return true else return false end
-			else puts _("Please answer yes or no") end
-		elsif answer == "open"
-			STDOUT.print(question + " [#{default}] ")
-			input = STDIN.gets.strip
-			if input == '' ; return default else return input end
-		elsif answer == "number"
-			STDOUT.print(question + " [#{default}] ")
-			input = STDIN.gets.strip
-			#convert the answer to an integer value, if input is a text it will be 0.
-			#make sure that the valid answer of 0 is respected though
-			if input.to_i == 0 && input != "0" ; return default else return input.to_i end
-		else puts _("We should never get here") ; puts _("answer = %s, question = %s (error)") % [answer, question]
- 		end
-	end
-end
