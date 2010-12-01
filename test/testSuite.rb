@@ -26,16 +26,8 @@ def _(txt)
 	return txt
 end
 
-# Provide the update function to simulate a user interface
-class FakeGui
-attr_reader :update
-	def initialize
-	end
-	
-	def update(key, value)
-		puts value
-	end
-end
+# load all mock objects (faking objects)
+require './mocks.rb'
 
 # load two libs that are needed a lot and make one generic instance
 require 'rubyripper/settings.rb'
@@ -59,7 +51,6 @@ require 'test/unit'
 # Load and run all test scripts
 require './TC_dependency.rb'
 require './TC_settings.rb'
-#require './TC_quickScanDisc.rb'
 require './TC_freedbString.rb'
 require './TC_scanDiscCdinfo.rb'
 require './TC_scanDiscCdparanoia.rb'

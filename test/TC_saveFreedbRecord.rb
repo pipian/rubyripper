@@ -22,21 +22,21 @@ class TC_SaveFreedbRecord < Test::Unit::TestCase
 
 	# test for new location
 	def test_01newlocation
-		file001 = File.read(File.join($localdir, 'data/freedb/disc001'))
-		inst001 = SaveFreedbRecord.new(file001, 'strange', 'ABCDEFGH')
-		assert(File.exists?(inst001.outputFile))
-		assert_equal(file001, File.read(inst001.outputFile))
+		file = File.read(File.join($localdir, 'data/freedb/disc001'))
+		instance = SaveFreedbRecord.new(file, 'strange', 'ABCDEFGH')
+		assert(File.exists?(instance.outputFile))
+		assert_equal(file, File.read(instance.outputFile))
 	end
 
-	# test for existing location
+	# test for existing location, the number is edited to ensure 01 runs first
 	def test_02existingLocation
-		file002 = File.read(File.join($localdir, 'data/freedb/disc002'))
-		inst002 = SaveFreedbRecord.new(file002, 'strange', 'ABCDEFGH')
-		assert(File.exists?(inst002.outputFile))
-		assert_not_equal(file002, File.read(inst002.outputFile))
+		file = File.read(File.join($localdir, 'data/freedb/disc002'))
+		instance = SaveFreedbRecord.new(file, 'strange', 'ABCDEFGH')
+		assert(File.exists?(instance.outputFile))
+		assert_not_equal(file, File.read(instance.outputFile))
 		
 		# clean up
-		File.delete(inst002.outputFile)
-		Dir.rmdir(File.dirname(inst002.outputFile))
+		File.delete(instance.outputFile)
+		Dir.rmdir(File.dirname(instance.outputFile))
 	end
 end

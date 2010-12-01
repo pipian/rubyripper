@@ -15,6 +15,35 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+# Provide the update function to simulate a user interface
+class FakeGui
+	def initialize
+	end
+	
+	def update(key, value)
+		puts value
+	end
+end
+
+# mock up a class for cdparanoia
+class FakeDisc
+
+	# * startSector = hash with startsectors
+	# * lengthSector = hash with startsectors
+	def initialize(startSector, lengthSector)
+		@startSector = startSector
+		@lengthSector = lengthSector
+	end
+
+	def getInfo(key)
+		if key == 'startSector'
+			return @startSector
+		else
+			return @lengthSector
+		end
+	end
+end
+
 # a class to fake input
 class Input
 	def initialize

@@ -15,7 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require './mocks.rb'
 require 'rubyripper/cli/cliGetAnswer.rb'
 
 # A class to test if the class returns proper answers
