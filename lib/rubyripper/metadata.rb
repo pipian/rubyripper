@@ -46,14 +46,26 @@ class Metadata
 	# return a string with the artist
 	def artist ; return getInfo('artist') ; end
 
+	# set the artist to a new string
+	def artist=(string); @metadata['artist'] = string ; end
+
 	# return a string with the album
 	def album ; return getInfo('album') ; end
+
+	# set the album to a new string
+	def album=(string); @metadata['album'] = string ; end
 
 	# return a string with the year
 	def year ; return getInfo('year') ;	end
 
+	# set the year to a new string
+	def year=(string); @metadata['year'] = string ; end
+
 	# return a string with the genre
 	def genre ; return getInfo('genre') ; end
+
+	# set the genre to a new string
+	def genre=(string); @metadata['genre'] = string ; end
 
 	# return a hash with strings with the trackname for each number
 	def tracklist ; return getInfo('tracklist') ; end
@@ -69,9 +81,19 @@ class Metadata
 		return getInfo('tracklist')[number]
 	end
 
+	# set the trackname for a number
+	def setTrackname(number, string)
+		@metadata['tracklist'][number] = string
+	end
+
 	# return the artist for the number, false if unknown
 	def varArtist(number)
 		return getInfo('varArtist')[number]
+	end
+
+	# set the artist for a number
+	def setVarArtist(number, string)
+		@metadata['varArtist'][number] = tring
 	end
 
 private

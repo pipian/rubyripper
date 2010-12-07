@@ -30,6 +30,7 @@ class CliMetadata
 		@gui = gui
 		@deps = deps
 		@defaults = defaults
+		@answers = answers
 		@int = answers['getInt']
 		@bool = answers['getBool']
 		@string = answers['getString']
@@ -64,7 +65,7 @@ private
 			raise ArgumentError, "deps must be of Dependency class"
 		end
 
-		unless defaults == true || defaults == false
+		unless @defaults == true || @defaults == false
 			raise ArgumentError, "defaults can only be true or false"		
 		end
 
@@ -172,11 +173,14 @@ private
 		puts _("4) Cancel the rip and eject the disc")
 		puts ""
 
-		answer = @int.get(_("Please enter the number of your choice: "), 1)
-		if answer == 1 ; @status = "chooseTracks"
-		elsif answer == 2 ; editDiscInfo()
-		elsif answer == 3 ; editTrackInfo()
-		else @status = "cancelRip"
+		answer = ''
+		while answer != 1 && answer != 4
+			answer = @int.get(_("Please enter the number of your choice: "), 1)
+			if answer == 1 ; @status = "chooseTracks"
+			elsif answer == 2 ; editDiscInfo()
+			elsif answer == 3 ; editTrackInfo()
+			elsif answer == 4 ; @status = "cancelRip"
+			end
 		end
 	end
 
@@ -195,14 +199,14 @@ private
 
 		puts "99) " + _("Finished editing disc info\n\n")
 		
-		while true
-			answer = @ing.get(_("Please enter the number you'd like to edit: "), "number", 99)
+		answer = ''
+		while answer != 99
+			answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
 			if answer == 1 ; @md.artist = @string.get(_("Artist : "), @md.artist)
 			elsif answer == 2 ; @md.album = @string.get(_("Album : "), @md.album)
 			elsif answer == 3 ; @md.genre = @string.get(_("Genre : "), @md.genre)
 			elsif answer == 4 ; @md.year = @string.get(_("Year : "), @md.year)
 			elsif answer == 5 ; if @md.varArtists.empty? ; setVarArtist() else unsetVarArtist() end
-			elsif answer == 99 ; break
 			end
 		end
 
@@ -234,10 +238,11 @@ private
 		
 			if answer == 99 ; break
 			elsif (answer.to_i > 0 && answer.to_i <= @cd.getInfo('audiotracks'))
-				@md.tracklist[answer - 1] = @string.get("Track #{answer} : ", @md.trackname(answer))
+				string = @string.get("Track #{answer} : ", @md.trackname(answer))
+				@md.setTrackname(answer, string)
 				if not @md.varArtists.empty?
-					@md.varArtists[answer - 1] = @string.get("Artist for \
-Track #{answer} : ",  @md.varArtist(answer))
+					string = @string.get("Artist for Track #{answer} : ",  @md.varArtist(answer))
+					@md.setVarArtist(answer, string)
 				end
 			else
 				puts _("This is not a valid number. Try again")
