@@ -32,11 +32,19 @@ require './mocks.rb'
 # load two libs that are needed a lot and make one generic instance
 require 'rubyripper/settings.rb'
 require 'rubyripper/dependency.rb'
+require 'rubyripper/cli/cliGetAnswer.rb'
 
 $rr_version = 'test'
-$deps = Dependency.new(verbose=false,runtime=false)
-$settings = Settings.new($deps,
-	File.join($localdir, 'data/settings/settings001')).getSettings()
+
+$objects = Hash.new
+$objects['deps'] = Dependency.new(verbose=false,runtime=false)
+$objects['settings'] = Settings.new($objects, File.join($localdir, 'data/settings/settings001'))
+$objects['getString'] = GetString.new
+$objects['getInt'] = GetInt.new
+$objects['getBool'] = GetBool.new
+$objects['gui'] = FakeGui.new
+$settings = $objects['settings'].getSettings()
+$deps = $objects['deps']
 
 # define a boolean type to test against
 module Boolean; end

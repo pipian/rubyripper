@@ -25,15 +25,16 @@ class CliMetadata
 	# * gui = instance of the user interface
 	# * deps = instance of dependency class
 	# * defaults = if true, skip all questions
-	def initialize(settings, gui, deps, defaults, answers)
-		@settings = settings
-		@gui = gui
-		@deps = deps
-		@defaults = defaults
-		@answers = answers
-		@int = answers['getInt']
-		@bool = answers['getBool']
-		@string = answers['getString']
+	def initialize(objects) #settings, gui, deps, defaults, answers, disc)
+		@objects = objects		
+		@settings = objects['cliSettings'].settings
+		@gui = objects['gui']
+		@deps = objects['deps']
+		@defaults = objects['cliSettings'].defaults
+		@int = objects['getInt']
+		@bool = objects['getBool']
+		@string = objects['getString']
+		@disc = objects['disc']
 		checkArguments()
 
 		@error = ''
@@ -53,30 +54,16 @@ class CliMetadata
 private
 	# make sure the proper values are passed
 	def checkArguments
-		unless @settings.class == Hash
-			raise ArgumentError, "settings must be a hash"
-		end
-	
-		unless @gui.respond_to?(:update)
-			raise ArgumentError, "gui must have an update function"
-		end
-
-		unless @deps.class == Dependency
-			raise ArgumentError, "deps must be of Dependency class"
-		end
-
-		unless @defaults == true || @defaults == false
-			raise ArgumentError, "defaults can only be true or false"		
-		end
-
-		unless @answers.class == Hash
-			raise ArgumentError, "answers must be a hash"
+		['cliSettings', 'gui', 'deps', 'getInt', 'getBool', 
+'getString', 'disc'].each do |key|
+			unless @objects.key?(key)
+				raise ArgumentError, "Objects must have key #{key}"
+			end
 		end
 	end
 
 	# Analyze the TOC of disc in drive
 	def getDiscInfo
-		@disc = Disc.new(@settings, @gui, @deps)
 		@cd = @disc.scan
 		@md = @disc.md
 		

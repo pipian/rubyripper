@@ -24,9 +24,9 @@ class Settings
 
 	# * deps = instance of Dependency class
 	# * configFileInput = the location of a custom configFile
-	def initialize(deps, configFileInput = false)
+	def initialize(objects, configFileInput = false)
 		@configFileInput = configFileInput
-		@deps = deps
+		@deps = objects['deps']
 		checkArguments()
 
 		@settings = Hash.new()

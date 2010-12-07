@@ -28,10 +28,10 @@ class TC_Settings < Test::Unit::TestCase
 		@file002 = File.join($localdir, 'data/settings/settings002')
 		@file003 = File.join($localdir, 'data/settings/settings003')
 		
-		@instFailed = Settings.new($deps, @failed)
-		@inst001 = Settings.new($deps, @file001)
-		@inst002 = Settings.new($deps, @file002)
-		@inst003 = Settings.new($deps, @file003)
+		@instFailed = Settings.new($objects, @failed)
+		@inst001 = Settings.new($objects, @file001)
+		@inst002 = Settings.new($objects, @file002)
+		@inst003 = Settings.new($objects, @file003)
 
 		@boolKeys = ["flac", "vorbis", "wav", "other", 'mp3', "playlist", 
 "verbose", "debug", "eject", 'ripHiddenAudio', "firstHit", "freedb", "noLog", 

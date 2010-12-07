@@ -44,23 +44,28 @@ class CommandLineInterface
 		@rippingLog = ""
 		@rippingProgress = 0.0
 		@encodingProgress = 0.0
+		@objects = Hash.new
+		setObjects()
+	end
 
+	def setObjects
 		# verify if all dependencies are found
-		@deps = Dependency.new(verbose=true, runtime=true)
+		@objects['deps'] = Dependency.new(verbose=true, runtime=true)
 	
 		# save all answer machines in a Hash and pass them (better for testing)
-		@answers = {'getString' => GetString.new, 'getInt' => GetInt.new, 
-'getBool' => GetBool.new}
+		@objects['getString'] = GetString.new
+		@objects['getInt'] = GetInt.new
+		@objects['getBool'] = GetBool.new
+
+		# set the gui
+		@objects['gui'] = self
 
 		# get the settings
-		@settingsCli = CliSettings.new(@deps, @answers)
-		@settings = @settingsCli.settings
+		@objects['settingsCli'] = CliSettings.new(@objects)
+		@objects['disc'] = Disc.new(@objects)
 
 		# show the discinfo
-		@discCli = CliMetadata.new(@settings, self, @deps, 
-			@settingsCli.isDefault, @answers)
-
-
+		@objects['discCli'] = CliMetadata.new(@objects)
 
 		#getDiscInfo()
 		#selectTracks()

@@ -31,10 +31,10 @@ class Disc
 	# * settings = hash with all settings
 	# * gui = instance of a gui, with :update function
 	# * deps = instance of Dependency class
-	def initialize(settings, gui, deps)
-		@settings = settings
-		@gui = gui
-		@deps = deps
+	def initialize(objects)
+		@settings = objects['settingsCli'].settings
+		@gui = objects['gui']
+		@deps = objects['deps']
 		checkArguments()
 		findDisc()
 	end
