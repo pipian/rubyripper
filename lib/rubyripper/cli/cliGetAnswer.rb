@@ -72,10 +72,6 @@ end
 
 # return an answer from the user, typed into the screen
 class GetString < GetAnswer
-	
-	def initialize
-		super()
-	end
 
 	# get the input from the user	
 	def get(question, default)

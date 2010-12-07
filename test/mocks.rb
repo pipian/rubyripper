@@ -91,29 +91,33 @@ end
 class FakeConnection
 	
 	# query = first response, read = freedbRecord, category = genre, discid = discid
-	def initialize(query, read, category, discid)
-		update(query, read, category, discid)
+	def initialize(query, read)
+		update(query, read)
+		@config = false
+		@inputQuery = Array.new
 	end
+
+	# allow the config to be checked
+	def config ; return @config ; end
+
+	# allow the input queries to be checked
+	def inputQuery ; return @inputQuery ; end
 
 	# skip http configuration, faking the connection
-	def configConnection(url)
-	end
+	def configConnection(url) ; @config = true ; end
 
 	# refresh the variables
-	def update (query, read, category, discid)
+	def update (query, read)
 		@query = query
 		@read = read
-		@category = category
-		@discid = discid
 	end
 
 	# simulate server response and validate query
 	def get(query)
+		@inputQuery << query
 		if query.include?('query')
 			return @query
 		elsif query.include?('read')
-			raise "Category not found: #{query}" unless query.include?(@category)
-			raise "Connection not found: #{query}" unless query.include?(@discid)
 			return @read
 		else
 			raise "query #{query} not recognized"

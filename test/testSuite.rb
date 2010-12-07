@@ -33,6 +33,7 @@ require './mocks.rb'
 require 'rubyripper/settings.rb'
 require 'rubyripper/dependency.rb'
 
+$rr_version = 'test'
 $deps = Dependency.new(verbose=false,runtime=false)
 $settings = Settings.new($deps,
 	File.join($localdir, 'data/settings/settings001')).getSettings()

@@ -23,6 +23,9 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 	def setup
 		@freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
+		@queryRequest = "/~cddb/cddb.cgi?cmd=cddb+query+7F087C0A+10+150+13359+\
+36689+53647+68322+81247+87332+106882+122368+124230+2174&hello=anonymous+\
+my_secret.com+rubyripper+test&proto=6"
 		@file001 = File.read(File.join($localdir, 'data/freedb/disc001'))
 	end
 
@@ -31,10 +34,16 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 		# prepare test
 		query = '202 No match found'
 		read = ''
-		mock = FakeConnection.new(query, read, '', '')
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
-		# execute test
+		# execute test to verify input for fakeconnection
+		readRequest = nil
+		assert_equal(true, mock.config)
+		assert_equal(@queryRequest, mock.inputQuery[0])
+		assert_equal(readRequest, mock.inputQuery[1])
+		
+		# execute test to verify output
 		assert_equal('noMatches', instance.status[0])
 		assert_equal('', instance.freedbRecord)
 		assert_equal([], instance.getChoices)
@@ -45,12 +54,17 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 		# prepare test
 		query = '200 blues 7F087C0A Some random artist / Some random album'
 		read = "210 metal 7F087C01\n" + @file001 + "\n."
-		category = 'blues'
-		discid = '7F087C0A'
-		mock = FakeConnection.new(query, read, category, discid)
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
-		# execute test
+		# execute test to verify input for fakeconnection
+		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
+anonymous+my_secret.com+rubyripper+test&proto=6"
+		assert_equal(true, mock.config)
+		assert_equal(@queryRequest, mock.inputQuery[0])
+		assert_equal(readRequest, mock.inputQuery[1])
+
+		# execute test to verify output
 		assert_equal('ok', instance.status[0])
 		assert_equal(@file001, instance.freedbRecord)
 		assert_equal([], instance.getChoices)
@@ -63,54 +77,79 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 		# prepare test
 		$settings['firstHit'] = false
 		choices = "blues 7F087C0A Artist A / Album A\n\
-#rock 7F087C0B Artist B / Album B\n\
-#jazz 7F087C0C Artist C / Album C\n\
-#country 7F087C0D Artist D / Album D\n."
+rock 7F087C0B Artist B / Album B\n\
+jazz 7F087C0C Artist C / Album C\n\
+country 7F087C0D Artist D / Album D\n."
 		query = "211 code close matches found\n#{choices}"
 		read = "210 blues 7F087C0A\n" + @file001 + "\n."
-		category = ''
-		discid = ''
-		mock = FakeConnection.new(query, read, category, discid)
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
 		# execute test, user has to choose first before record is shown
+		assert_equal(true, mock.config)
+		assert_equal(@queryRequest, mock.inputQuery[0])
 		assert_equal('multipleRecords', instance.status[0])
 		assert_equal('', instance.freedbRecord)
 		assert_equal(choices[0..-3], instance.getChoices().join("\n"))
 		
 		# choose 1st option
-		mock.update(query, read, 'blues', '7F087C0A')
+		mock.update(query, read)
 		instance.choose(0)
 		assert_equal('ok', instance.status[0])
 		assert_equal(@file001, instance.freedbRecord)
 
+		# execute test to verify input for fakeconnection
+		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
+anonymous+my_secret.com+rubyripper+test&proto=6"
+		assert_equal(readRequest, mock.inputQuery[-1])
+
 		# choose 2nd option
-		mock.update(query, read, 'rock', '7F087C0B')
+		mock.update(query, read)
 		instance.choose(1)
 		assert_equal('ok', instance.status[0])
 		assert_equal(@file001, instance.freedbRecord)
 
+		# execute test to verify input for fakeconnection
+		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+rock+7F087C0B&hello=\
+anonymous+my_secret.com+rubyripper+test&proto=6"
+		assert_equal(readRequest, mock.inputQuery[-1])
+
 		# choose 3rd option
-		mock.update(query, read, 'jazz', '7F087C0C')
+		mock.update(query, read)
 		instance.choose(2)
 		assert_equal('ok', instance.status[0])
 		assert_equal(@file001, instance.freedbRecord)
 
+		# execute test to verify input for fakeconnection
+		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+jazz+7F087C0C&hello=\
+anonymous+my_secret.com+rubyripper+test&proto=6"
+		assert_equal(readRequest, mock.inputQuery[-1])
+
 		# choose 4th option
-		mock.update(query, read, 'country', '7F087C0D')
+		mock.update(query, read)
 		instance.choose(3)
 		assert_equal('ok', instance.status[0])
 		assert_equal(@file001, instance.freedbRecord)
+
+		# execute test to verify input for fakeconnection
+		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+country+7F087C0D&hello=\
+anonymous+my_secret.com+rubyripper+test&proto=6"
+		assert_equal(readRequest, mock.inputQuery[-1])
 
 		# choose 5th option (there is NONE !!)
 		assert_raise ArgumentError do instance.choose(4) end
 		
 		# test with firstHit == true
 		$settings['firstHit'] = true
-		mock.update(query, read, 'blues', '7F087C0A')
+		mock.update(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 		assert_equal(@file001, instance.freedbRecord)
 		assert_equal('ok', instance.status[0])
+
+		# execute test to verify input for fakeconnection
+		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
+anonymous+my_secret.com+rubyripper+test&proto=6"
+		assert_equal(readRequest, mock.inputQuery[-1])
 	end
 
 	# test when freedb replies the database is corrupt
@@ -118,7 +157,7 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 		# prepare test
 		query = '403 Database entry is corrupt'
 		read = ''
-		mock = FakeConnection.new(query, read, '', '')
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
 		# execute test
@@ -132,7 +171,7 @@ class TC_GetFreedbRecord < Test::Unit::TestCase
 		# prepare test
 		query = '666 The Number of the beast'
 		read = ''
-		mock = FakeConnection.new(query, read, '', '')
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
 		# execute test
@@ -148,9 +187,7 @@ Return code is not supported.", instance.status[1])
 		# prepare test
 		query = '200 blues 7F087C0A Some random artist / Some random album'
 		read = "401 Specified CDDB entry not found"
-		category = 'blues'
-		discid = '7F087C0A'
-		mock = FakeConnection.new(query, read, category, discid)
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
 		# execute test
@@ -164,9 +201,7 @@ Return code is not supported.", instance.status[1])
 		# prepare test
 		query = '200 blues 7F087C0A Some random artist / Some random album'
 		read = "402 Server error"
-		category = 'blues'
-		discid = '7F087C0A'
-		mock = FakeConnection.new(query, read, category, discid)
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
 		# execute test
@@ -180,9 +215,7 @@ Return code is not supported.", instance.status[1])
 		# prepare test
 		query = '200 blues 7F087C0A Some random artist / Some random album'
 		read = "403 Server error"
-		category = 'blues'
-		discid = '7F087C0A'
-		mock = FakeConnection.new(query, read, category, discid)
+		mock = FakeConnection.new(query, read)
 		instance = GetFreedbRecord.new(@freedbString, $settings, mock)
 
 		# execute test
