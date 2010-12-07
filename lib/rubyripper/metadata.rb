@@ -93,7 +93,7 @@ class Metadata
 
 	# set the artist for a number
 	def setVarArtist(number, string)
-		@metadata['varArtist'][number] = tring
+		@metadata['varArtist'][number] = string
 	end
 
 private
