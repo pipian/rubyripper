@@ -42,7 +42,7 @@ class ScanDiscCdinfo
 	def scan
 		query = @fire.launch('cd-info', "cd-info -C #{@cdrom}")
 		
-		if query && isValidQuery(query)
+		if isValidQuery(query)
 			parseQuery(query)
 			addExtraInfo()
 		end
@@ -79,7 +79,9 @@ private
 
 	# check the query result for errors
 	def isValidQuery(query)
-		if query.include?('WARN: Can\'t get file status')
+		if query == false
+			@status = 'notInstalled'		
+		elsif query.include?('WARN: Can\'t get file status')
 			@status = _('ERROR: Not a valid cdrom drive')
 		elsif query.include?('Usage:')
 			@status = _('ERROR: invalid parameters for cd-info')

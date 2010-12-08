@@ -102,12 +102,12 @@ private
 		command += " 2>&1" unless @verbose
 
 		# fire the command
-		@fire.launch('cdrdao', command, file)
+		result = @fire.launch('cdrdao', command, file)
 
-		if @fire.status == true 
-			return @fire.file
-		else
+		if result == false || @fire.status != true
 			return String.new
+		else
+			return @fire.file
 		end
 	end
 

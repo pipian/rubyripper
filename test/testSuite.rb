@@ -57,11 +57,11 @@ require 'test/unit'
 # Load and run all test scripts
 require './TC_scanDiscCdrdao.rb'
 require './TC_scanDiscCdparanoia.rb'
+require './TC_scanDiscCdinfo.rb'
 
 #require './TC_dependency.rb'
 #require './TC_preferences.rb'
 #require './TC_freedbString.rb'
-#require './TC_scanDiscCdinfo.rb'
 #require './TC_freedbRecordParser.rb'
 #require './TC_getFreedbRecord.rb'
 #require './TC_saveFreedbRecord.rb'
