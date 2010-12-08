@@ -17,26 +17,35 @@
 
 require 'rubyripper/freedb/saveFreedbRecord.rb'
 
-# A class to test if to_be_tested_ruby_file does <X> correctly
+# A class to test SaveFreedbRecord class
 class TC_SaveFreedbRecord < Test::Unit::TestCase
 
-	# test for new location
-	def test_01newlocation
-		file = File.read(File.join($localdir, 'data/freedb/disc001'))
-		instance = SaveFreedbRecord.new(file, 'strange', 'ABCDEFGH')
-		assert(File.exists?(instance.outputFile))
-		assert_equal(file, File.read(instance.outputFile))
+	def setup
+		@save = SaveFreedbRecord.new
 	end
 
-	# test for existing location, the number is edited to ensure 01 runs first
-	def test_02existingLocation
-		file = File.read(File.join($localdir, 'data/freedb/disc002'))
-		instance = SaveFreedbRecord.new(file, 'strange', 'ABCDEFGH')
-		assert(File.exists?(instance.outputFile))
-		assert_not_equal(file, File.read(instance.outputFile))
-		
-		# clean up
-		File.delete(instance.outputFile)
-		Dir.rmdir(File.dirname(instance.outputFile))
+	# test for new location
+	def test_saveOnce
+		file = File.read(File.join($localdir, 'data/freedb/disc001'))
+		@save.save(file, 'strange', 'ABCDEFGH')
+		assert(File.exists?(@save.outputFile))
+		assert_equal(file, File.read(@save.outputFile))
+	end
+
+	# test for existing location, it shouldn't overwrite
+	def test_saveTwiceSameLocation
+		file001 = File.read(File.join($localdir, 'data/freedb/disc001'))
+		file002 = File.read(File.join($localdir, 'data/freedb/disc002'))
+		@save.save(file001, 'strange', 'ABCDEFGH')
+		@save.save(file002, 'strange', 'ABCDEFGH')
+
+		assert(File.exists?(@save.outputFile))
+		assert_not_equal(file002, File.read(@save.outputFile))
+	end
+	
+	# clean up
+	def teardown
+		File.delete(@save.outputFile)
+		Dir.rmdir(File.dirname(@save.outputFile))
 	end
 end

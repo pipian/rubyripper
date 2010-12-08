@@ -15,8 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require './mocks/FakeCleanPrefs.rb'
+require './mocks/FakeSavePrefs.rb'
+require './mocks/FakeLoadPrefs.rb'
+require './mocks/FakeDependency.rb'
 require 'rubyripper/preferences.rb'
-require 'rubyripper/dependency.rb'
 
 # This class tests the settings class
 class TC_Preferences < Test::Unit::TestCase

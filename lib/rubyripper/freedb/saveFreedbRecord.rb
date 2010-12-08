@@ -22,7 +22,7 @@ class SaveFreedbRecord
 	# * freedbRecord = the complete freedb record string with all metadata
 	# * category = the freedb category, needed for saving locally
 	# * discid = the discid, which is the filename
-	def initialize(freedbRecord, category, discid)
+	def save(freedbRecord, category, discid)
 		@freedbRecord = freedbRecord
 		@category = category
 		@discid = discid
