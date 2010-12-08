@@ -26,13 +26,10 @@ def _(txt)
 	return txt
 end
 
-# load all mock objects (faking objects)
-require './mocks.rb'
-
 # load two libs that are needed a lot and make one generic instance
-require 'rubyripper/preferences.rb'
-require 'rubyripper/dependency.rb'
-require 'rubyripper/cli/cliGetAnswer.rb'
+#require 'rubyripper/preferences.rb'
+#require 'rubyripper/dependency.rb'
+#require 'rubyripper/cli/cliGetAnswer.rb'
 
 $rr_version = 'test'
 
