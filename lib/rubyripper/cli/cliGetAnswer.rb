@@ -36,14 +36,13 @@ class GetBool < GetAnswer
 
 	# get a boolean value from the user
 	def initialize
-		super()
 		@valid = {_("yes") => true, _('y') => true, 
 _("no") => false, _("n") =>false}
 	end
 
 	# get the input from the user	
 	def get(question, default)
-		input = super(question, default)
+		input = super
 				
 		if !@valid.key?(input)
 			print("Please answer #{_('yes')} or #{_('no')}. Try again.\n")
@@ -59,7 +58,7 @@ class GetInt < GetAnswer
 
 	# get the input from the user	
 	def get(question, default)
-		input = super(question, default)
+		input = super
 		# 0 may be a valid response, but any string.to_i == 0
 		if input.to_i > 0 || input == "0"
 			return input.to_i
@@ -75,6 +74,6 @@ class GetString < GetAnswer
 
 	# get the input from the user	
 	def get(question, default)
-		super(question, default)
+		super
 	end
 end
