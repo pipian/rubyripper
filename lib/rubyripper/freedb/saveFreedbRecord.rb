@@ -18,7 +18,10 @@
 # class helping to store the retrieved freedb record
 # do this conform standards at location $HOME/.cddb/<category>/<discid>
 class SaveFreedbRecord
-	
+	def initialize(fileAndDir)
+		@file = fileAndDir
+	end	
+
 	# * freedbRecord = the complete freedb record string with all metadata
 	# * category = the freedb category, needed for saving locally
 	# * discid = the discid, which is the filename
@@ -62,15 +65,15 @@ private
 
 	# check if a dir exists, if not create it
 	def checkDir(dir)
-		if !File.directory?(dir)
-			Dir.mkdir(dir)
+		if !@file.directory?(dir)
+			@file.mkdir(dir)
 		end
 	end
 
 	# if $HOME/.cddb/<category>/<discid> does nog exist, create it
 	def saveDiscid
-		if !File.file?(@outputFile)
-			File.open(@outputFile, 'w') do |file|
+		if !@file.file?(@outputFile)
+			@file.open(@outputFile, 'w') do |file|
 				file.write(@freedbRecord)
 			end
 		end

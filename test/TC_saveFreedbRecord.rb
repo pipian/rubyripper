@@ -15,21 +15,29 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require './mocks/FakeFileAndDir.rb'
 require 'rubyripper/freedb/saveFreedbRecord.rb'
 
 # A class to test SaveFreedbRecord class
 class TC_SaveFreedbRecord < Test::Unit::TestCase
 
 	def setup
-		@save = SaveFreedbRecord.new
+		ENV['HOME'] = '/home/test'
+		@file = FakeFileAndDir.new
+		@save = SaveFreedbRecord.new(@file)
 	end
 
 	# test for new location
 	def test_saveOnce
 		file = File.read(File.join($localdir, 'data/freedb/disc001'))
 		@save.save(file, 'strange', 'ABCDEFGH')
-		assert(File.exists?(@save.outputFile))
-		assert_equal(file, File.read(@save.outputFile))
+		
+		assert(@file.directory?('/home/test'))
+		assert(@file.directory?('/home/test/.cddb'))
+		assert(@file.directory?('/home/test/.cddb/strange'))
+		assert(@file.file?('/home/test/.cddb/strange/ABCDEFGH'))
+		assert(@file.file?(@save.outputFile))
+		assert(file, @file.fileContent[0])
 	end
 
 	# test for existing location, it shouldn't overwrite
@@ -39,13 +47,6 @@ class TC_SaveFreedbRecord < Test::Unit::TestCase
 		@save.save(file001, 'strange', 'ABCDEFGH')
 		@save.save(file002, 'strange', 'ABCDEFGH')
 
-		assert(File.exists?(@save.outputFile))
-		assert_not_equal(file002, File.read(@save.outputFile))
-	end
-	
-	# clean up
-	def teardown
-		File.delete(@save.outputFile)
-		Dir.rmdir(File.dirname(@save.outputFile))
+		assert_not_equal(file002, @file.fileContent[0])
 	end
 end
