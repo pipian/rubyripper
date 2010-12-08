@@ -29,15 +29,20 @@ require 'tmpdir'
 
 class ScanDiscCdrdao
 	
-	# settings = Hash with all settings
-	# testRead = sample scans for cdrdao for unit testing purposes
-	def initialize(settings, testRead = false)
-		@settings = settings
-		@testRead = testRead
-		@cdrom = @settings['cdrom']
+	# prefences = instance of Preferences
+	# fireCommand = instance of fireCommand
+	def initialize(preferences, fireCommand)
+		@prefs = preferences
+		@fire = fireCommand
 		checkArguments()
 
-		@status = _('ok')
+		@cdrom = @prefs.get('cdrom')
+		@verbose = @prefs.get('verbose')
+		@status = 'ok'
+	end
+	
+	# scan the disc
+	def scan
 		@scan = Hash.new
 		@buildLog = Array.new
 
@@ -47,7 +52,7 @@ class ScanDiscCdrdao
 		@scan['trackNames'] = Hash.new
 		@scan['varArtists'] = Hash.new
 
-		@output = @testRead || getOutput()		
+		@output = getOutput()		
 
 		if isValidQuery()
 			parseQuery()
@@ -78,30 +83,32 @@ private
 
 	# check the parameters
 	def checkArguments
-		unless @settings.class == Hash
-			raise ArgumentError, "settings parameter must be a Hash"
+		unless @prefs.respond_to?(:get)
+			raise ArgumentError, "preferences must be a Preference instance!"
 		end
 
-		unless @testRead == false || @testRead.class == String
-			raise ArgumentError, "testRead parameter must be a string"
+		unless @fire.respond_to?(:launch)
+			raise ArgumentError, "fireCommand must be a FireCommand instance!"
 		end
 	end
 	
 	# get all the cdrdao info
 	def getOutput
 		# find a temporary location
-		@file = File.join(Dir.tmpdir, "temp_#{File.basename(@cdrom)}.toc")
-		File.delete(@file) if File.exist?(@file)
+		file = File.join(Dir.tmpdir, "temp_#{File.basename(@cdrom)}.toc")
 		
 		# build the command
-		command = "cdrdao read-toc --device #{@cdrom} \"#{@file}\""
-		command += " 2>&1" unless @settings['verbose']
-		puts "cdrdao scan is started:" if @settings['debug']		
-		puts command if @settings['debug']
+		command = "cdrdao read-toc --device #{@cdrom} \"#{file}\""
+		command += " 2>&1" unless @verbose
 
 		# fire the command
-		`#{command}`
-		if $?.succes? ; return File.read(@file) else return String.new end
+		@fire.launch(command, file)
+
+		if @fire.status == 'ok' 
+			return @fire.file
+		else
+			return String.new
+		end
 	end
 
 	# check if the output is valid

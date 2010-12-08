@@ -20,95 +20,104 @@ require 'rubyripper/disc/scanDiscCdrdao.rb'
 # A class to test if the Cd-info is correctly parsed
 class TC_ScanDiscCdrdao < Test::Unit::TestCase
 
+	def setup
+		@prefs = FakePreferences.new
+		@fire = FakeFireCommand.new
+		@cdrdao = ScanDiscCdrdao.new(@prefs, @fire)
+	end
+
 	# test if command failed
 	def test_Failed
-		failed = ScanDiscCdrdao.new($settings, String.new)
-		assert_equal(_('ERROR: Cdrdao exited unexpectedly.'), failed.status)
+		@fire.file = 'This is a test'
+		@fire.status = 'not good'
+		@cdrdao.scan()
+		assert_equal(_('ERROR: Cdrdao exited unexpectedly.'), @cdrdao.status)
 	end
 
 	# test is query001 is parsed (no disc)
 	def test_NoDisc
-		file = File.read(File.join($localdir, 'data/discs/001/cdrdao'))
-		disc = ScanDiscCdrdao.new($settings, file)
-		assert_equal(_('ERROR: No disc found'), disc.status)
+		@fire.file = File.read(File.join($localdir, 'data/discs/001/cdrdao'))
+		@cdrdao.scan()
+		assert_equal(_('ERROR: No disc found'), @cdrdao.status)
 	end
 
 	# test if query002 is parsed (invalid parameters)
 	def test_InvalidParameters
-		file = File.read(File.join($localdir, 'data/discs/002/cdrdao'))
-		disc = ScanDiscCdrdao.new($settings, file)
-		assert_equal(_('ERROR: Cdrdao doesn\'t recognize the parameters.'), disc.status)
+		@fire.file = File.read(File.join($localdir, 'data/discs/002/cdrdao'))
+		@cdrdao.scan()
+		assert_equal("cdrdao read-toc --device test \"/tmp/temp_test.toc\" 2>&1", @fire.last)
+		assert_equal(_('ERROR: Cdrdao doesn\'t recognize the parameters.'), @cdrdao.status)
 	end
 
 	# test if query003 is parsed (no valid disc drive)
 	def test_NoValidDiscDrive
-		file = File.read(File.join($localdir, 'data/discs/003/cdrdao'))
-		disc = ScanDiscCdrdao.new($settings, file)
-		assert_equal(_('ERROR: Not a valid cdrom drive'), disc.status)
+		@fire.file = File.read(File.join($localdir, 'data/discs/003/cdrdao'))
+		@cdrdao.scan()
+		assert_equal(_('ERROR: Not a valid cdrom drive'), @cdrdao.status)
 	end
 
 	# test if query004 is parsed (pure audio disc)
 	def	test_AudioDisc
-		file = File.read(File.join($localdir, 'data/discs/004/cdrdao'))
-		disc = ScanDiscCdrdao.new($settings, file)
-		assert_equal(_('ok'), disc.status)
-		assert_equal(0, disc.getInfo('preEmphasis').length)
-		assert_equal('CD_DA', disc.getInfo('discType'))
-		assert_equal(false, disc.getInfo('artist'))
-		assert_equal(false, disc.getInfo('album'))
-		assert_equal(0, disc.getInfo('trackNames').length)
-		assert_equal(0, disc.getInfo('varArtists').length)
-		assert_equal(false, disc.getInfo('silence'))
-		assert_equal(0, disc.getInfo('dataTracks').length)
-		assert_equal(0, disc.getInfo('preGap').length)
-		assert_equal(0, disc.getInfo('preEmphasis').length)
-		assert_equal(10, disc.getInfo('tracks'))
-		assert_equal(_("No pregaps, silences or pre-emphasis detected\n"),disc.getLog[0])
+		@fire.file = File.read(File.join($localdir, 'data/discs/004/cdrdao'))
+		@cdrdao.scan()
+		assert_equal('ok', @cdrdao.status)
+		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
+		assert_equal('CD_DA', @cdrdao.getInfo('discType'))
+		assert_equal(false, @cdrdao.getInfo('artist'))
+		assert_equal(false, @cdrdao.getInfo('album'))
+		assert_equal(0, @cdrdao.getInfo('trackNames').length)
+		assert_equal(0, @cdrdao.getInfo('varArtists').length)
+		assert_equal(false, @cdrdao.getInfo('silence'))
+		assert_equal(0, @cdrdao.getInfo('dataTracks').length)
+		assert_equal(0, @cdrdao.getInfo('preGap').length)
+		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
+		assert_equal(10, @cdrdao.getInfo('tracks'))
+		assert_equal(_("No pregaps, silences or pre-emphasis detected\n"),@cdrdao.getLog[0])
 	end
 
 	# test if query005 is parsed (audio disc with data track at the end)
 	def	test_AudioDiscWithDataTrack
-		file = File.read(File.join($localdir, 'data/discs/005/cdrdao'))
-		disc = ScanDiscCdrdao.new($settings, file)
-		assert_equal(_('ok'), disc.status)
-		assert_equal(0, disc.getInfo('preEmphasis').length)
-		assert_equal('CD_DA', disc.getInfo('discType'))
-		assert_equal(false, disc.getInfo('artist'))
-		assert_equal(false, disc.getInfo('album'))
-		assert_equal(0, disc.getInfo('trackNames').length)
-		assert_equal(0, disc.getInfo('varArtists').length)
-		assert_equal(false, disc.getInfo('silence'))
-		assert_equal(0, disc.getInfo('dataTracks').length)
-		assert_equal(0, disc.getInfo('preEmphasis').length)
-		assert_equal(12, disc.getInfo('tracks'))
-		assert_equal(false, disc.getLog.empty?)
+		@fire.file = File.read(File.join($localdir, 'data/discs/005/cdrdao'))
+		@cdrdao.scan()
+		assert_equal('ok', @cdrdao.status)
+		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
+		assert_equal('CD_DA', @cdrdao.getInfo('discType'))
+		assert_equal(false, @cdrdao.getInfo('artist'))
+		assert_equal(false, @cdrdao.getInfo('album'))
+		assert_equal(0, @cdrdao.getInfo('trackNames').length)
+		assert_equal(0, @cdrdao.getInfo('varArtists').length)
+		assert_equal(false, @cdrdao.getInfo('silence'))
+		assert_equal(0, @cdrdao.getInfo('dataTracks').length)
+		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
+		assert_equal(12, @cdrdao.getInfo('tracks'))
+		assert_equal(false, @cdrdao.getLog.empty?)
 
 		{4 => 35, 7 => 32, 10 => 05, 11 => 20}.each do |key, value|
-			assert_equal(value, disc.getInfo('preGap')[key])
+			assert_equal(value, @cdrdao.getInfo('preGap')[key])
 		end
 	end
 
 	# test if query006 is parsed (audio disc with cd-text)
 	def test_AudioDiscCdText
-		file = File.read(File.join($localdir, 'data/discs/006/cdrdao'))
-		disc = ScanDiscCdrdao.new($settings, file)
-		assert_equal(_('ok'), disc.status)
-		assert_equal(0, disc.getInfo('preEmphasis').length)
-		assert_equal('CD_DA', disc.getInfo('discType'))
-		assert_equal('SYSTEM OF A DOWN', disc.getInfo('artist'))
-		assert_equal('STEAL THIS ALBUM!', disc.getInfo('album'))
-		assert_equal(0, disc.getInfo('varArtists').length)
-		assert_equal(false, disc.getInfo('silence'))
-		assert_equal(0, disc.getInfo('dataTracks').length)
-		assert_equal(0, disc.getInfo('preGap').length)
-		assert_equal(0, disc.getInfo('preEmphasis').length)
-		assert_equal(16, disc.getInfo('tracks'))
-		assert_equal(false, disc.getLog.empty?)
+		@fire.file = File.read(File.join($localdir, 'data/discs/006/cdrdao'))
+		@cdrdao.scan()
+		assert_equal('ok', @cdrdao.status)
+		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
+		assert_equal('CD_DA', @cdrdao.getInfo('discType'))
+		assert_equal('SYSTEM OF A DOWN', @cdrdao.getInfo('artist'))
+		assert_equal('STEAL THIS ALBUM!', @cdrdao.getInfo('album'))
+		assert_equal(0, @cdrdao.getInfo('varArtists').length)
+		assert_equal(false, @cdrdao.getInfo('silence'))
+		assert_equal(0, @cdrdao.getInfo('dataTracks').length)
+		assert_equal(0, @cdrdao.getInfo('preGap').length)
+		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
+		assert_equal(16, @cdrdao.getInfo('tracks'))
+		assert_equal(false, @cdrdao.getLog.empty?)
 
 		{1=>"CHIC 'N' STEW", 2=>"INNERVISION", 3=>"BUBBLES", 4=>"BOOM!", 
 5=>"N\\334GUNS", 6=>"A.D.D.", 7=>"MR. JACK", 8=>"I-E-A-I-A-I-O", 9=>"36", 
 10=>"PICTURES", 11=>"HIGHWAY SONG", 12=>"F**K THE SYSTEM", 13=>"EGO BRAIN", 14=>"THETAWAVES", 15=>"ROULETTE", 16=>"STREAMLINE"}.each do |key, value|
-			assert_equal(value, disc.getInfo('trackNames')[key])
+			assert_equal(value, @cdrdao.getInfo('trackNames')[key])
 		end
 	end
 end

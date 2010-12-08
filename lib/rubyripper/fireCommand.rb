@@ -19,4 +19,17 @@
 # A seperate class allows unified checking of exit status
 # Also it allows for better unit testing, since it is easily mocked
 class FireCommand
+
+	# return output for command
+	def launch(command, filename)
+		File.delete(filename) if File.exist?(filename)
+	end
+
+	# return exit status for command
+	def status
+	end
+
+	# return created file with command
+	def file
+	end
 end

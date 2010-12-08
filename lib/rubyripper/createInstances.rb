@@ -36,9 +36,9 @@ Encodings.new, Logging.new)
 private:
 	# create all generic classes first
 	def createGeneric
-		@preferences = Preferences.new(LoadPrefs.new, SavePrefs.new, 
-CleanPrefs.new)
 		@dependency = Dependency.new
+		@preferences = Preferences.new(LoadPrefs.new, SavePrefs.new, 
+CleanPrefs.new, @dependency)
 		@fireCommand = FireCommand.new(@dependency)
 	end
 

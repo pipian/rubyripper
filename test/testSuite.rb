@@ -36,15 +36,15 @@ require 'rubyripper/cli/cliGetAnswer.rb'
 
 $rr_version = 'test'
 
-$objects = Hash.new
-$objects['deps'] = Dependency.new(verbose=false,runtime=false)
-$objects['settings'] = Preferences.new($objects, File.join($localdir, 'data/settings/settings001'))
-$objects['getString'] = GetString.new
-$objects['getInt'] = GetInt.new
-$objects['getBool'] = GetBool.new
-$objects['gui'] = FakeGui.new
-$settings = $objects['settings'].getSettings()
-$deps = $objects['deps']
+#$objects = Hash.new
+#$objects['deps'] = Dependency.new(verbose=false,runtime=false)
+#$objects['settings'] = Preferences.new($objects, File.join($localdir, 'data/settings/settings001'))
+#$objects['getString'] = GetString.new
+#$objects['getInt'] = GetInt.new
+#$objects['getBool'] = GetBool.new
+#$objects['gui'] = FakeGui.new
+#$settings = $objects['settings'].getSettings()
+#$deps = $objects['deps']
 
 # define a boolean type to test against
 module Boolean; end
@@ -58,14 +58,14 @@ class FalseClass; include Boolean; end
 require 'test/unit'
 
 # Load and run all test scripts
-require './TC_dependency.rb'
-require './TC_preferences.rb'
-require './TC_freedbString.rb'
-require './TC_scanDiscCdinfo.rb'
-require './TC_scanDiscCdparanoia.rb'
+#require './TC_dependency.rb'
+#require './TC_preferences.rb'
+#require './TC_freedbString.rb'
+#require './TC_scanDiscCdinfo.rb'
+#require './TC_scanDiscCdparanoia.rb'
 require './TC_scanDiscCdrdao.rb'
-require './TC_freedbRecordParser.rb'
-require './TC_getFreedbRecord.rb'
-require './TC_saveFreedbRecord.rb'
-require './TC_loadFreedbRecord.rb'
-require './TC_cliGetAnswer.rb'
+#require './TC_freedbRecordParser.rb'
+#require './TC_getFreedbRecord.rb'
+#require './TC_saveFreedbRecord.rb'
+#require './TC_loadFreedbRecord.rb'
+#require './TC_cliGetAnswer.rb'

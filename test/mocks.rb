@@ -124,3 +124,43 @@ class FakeConnection
 		end
 	end
 end
+
+class FakePreferences
+	def initialize
+		@preferences = {'verbose' => false, 'debug' => false, 'cdrom' => 'test'}
+	end
+
+	def set(item, value)
+		@preferences[item] = value
+	end
+
+	def get(item)
+		return @preferences[item]
+	end
+end
+
+class FakeFireCommand
+attr_accessor :status, :file
+
+	def initialize
+		@answers = Array.new
+		@commands = Array.new
+		@status = 'ok'
+		@file = String.new
+		@filename = String.new
+	end
+
+	def add(answer)
+		@answers << answer
+	end
+
+	def last
+		return @commands[-1]
+	end
+
+	def launch(command, file)
+		@commands << command
+		@filename = file
+		return @answers.pop() if !@answers.empty?
+	end
+end

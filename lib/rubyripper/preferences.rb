@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+
 # The settings class is responsible for:
 # * Managing the location of the settings file
 # * Loading the settings
@@ -24,13 +25,21 @@ class Preferences
 
 	# * deps = instance of Dependency class
 	# * configFileInput = the location of a custom configFile
-	def initialize(objects, configFileInput = false)
-		@configFileInput = configFileInput
-		@deps = objects['deps']
+	def initialize(loadPrefs, savePrefs, cleanPrefs, deps)
+		@loadPrefs = loadPrefs
+		@savePrefs = savePrefs
+		@cleanPrefs = cleanPrefs
+		@deps = deps
 		checkArguments()
 
 		@settings = Hash.new()
 		@configFound = false
+	end
+
+	# load the actual configfile
+	def loadConfigFile(configFileInput = false)
+		@configFileInput = configFileInput
+		# TODO		
 		setDefaultSettings()
 		findConfigFile()
 		findOtherFiles()
