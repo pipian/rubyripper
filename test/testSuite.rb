@@ -30,7 +30,7 @@ end
 require './mocks.rb'
 
 # load two libs that are needed a lot and make one generic instance
-require 'rubyripper/settings.rb'
+require 'rubyripper/preferences.rb'
 require 'rubyripper/dependency.rb'
 require 'rubyripper/cli/cliGetAnswer.rb'
 
@@ -38,7 +38,7 @@ $rr_version = 'test'
 
 $objects = Hash.new
 $objects['deps'] = Dependency.new(verbose=false,runtime=false)
-$objects['settings'] = Settings.new($objects, File.join($localdir, 'data/settings/settings001'))
+$objects['settings'] = Preferences.new($objects, File.join($localdir, 'data/settings/settings001'))
 $objects['getString'] = GetString.new
 $objects['getInt'] = GetInt.new
 $objects['getBool'] = GetBool.new
@@ -59,7 +59,7 @@ require 'test/unit'
 
 # Load and run all test scripts
 require './TC_dependency.rb'
-require './TC_settings.rb'
+require './TC_preferences.rb'
 require './TC_freedbString.rb'
 require './TC_scanDiscCdinfo.rb'
 require './TC_scanDiscCdparanoia.rb'

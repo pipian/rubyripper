@@ -20,7 +20,7 @@
 # * Loading the settings
 # * Saving the settings
 # * Finding the default help programs like browser, editor, etcetera
-class Settings
+class Preferences
 
 	# * deps = instance of Dependency class
 	# * configFileInput = the location of a custom configFile

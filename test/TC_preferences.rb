@@ -15,11 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/settings.rb'
+require 'rubyripper/preferences.rb'
 require 'rubyripper/dependency.rb'
 
 # This class tests the settings class
-class TC_Settings < Test::Unit::TestCase
+class TC_Preferences < Test::Unit::TestCase
 	
 	# create some test instances
 	def setup
@@ -28,10 +28,10 @@ class TC_Settings < Test::Unit::TestCase
 		@file002 = File.join($localdir, 'data/settings/settings002')
 		@file003 = File.join($localdir, 'data/settings/settings003')
 		
-		@instFailed = Settings.new($objects, @failed)
-		@inst001 = Settings.new($objects, @file001)
-		@inst002 = Settings.new($objects, @file002)
-		@inst003 = Settings.new($objects, @file003)
+		@instFailed = Preferences.new($objects, @failed)
+		@inst001 = Preferences.new($objects, @file001)
+		@inst002 = Preferences.new($objects, @file002)
+		@inst003 = Preferences.new($objects, @file003)
 
 		@boolKeys = ["flac", "vorbis", "wav", "other", 'mp3', "playlist", 
 "verbose", "debug", "eject", 'ripHiddenAudio', "firstHit", "freedb", "noLog", 
