@@ -17,4 +17,7 @@
 
 # This class will try to save the Rubyripper config file
 class SavePrefs
+	def save(hash, location)
+		
+	end
 end

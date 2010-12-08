@@ -17,4 +17,6 @@
 
 # This class will try to load the Rubyripper config file
 class LoadPrefs
+	def get(configFile=false)
+	end
 end

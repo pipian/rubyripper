@@ -25,10 +25,10 @@ class Preferences
 
 	# * deps = instance of Dependency class
 	# * configFileInput = the location of a custom configFile
-	def initialize(loadPrefs, savePrefs, cleanPrefs, deps)
-		@loadPrefs = loadPrefs
-		@savePrefs = savePrefs
-		@cleanPrefs = cleanPrefs
+	def initialize(loadPrefs, savePrefs, filePrefs, deps)
+		@load = loadPrefs
+		@save = savePrefs
+		@file = filePrefs
 		@deps = deps
 		checkArguments()
 
@@ -39,11 +39,11 @@ class Preferences
 	# load the actual configfile
 	def loadConfigFile(configFileInput = false)
 		@configFileInput = configFileInput
-		# TODO		
+
 		setDefaultSettings()
-		findConfigFile()
-		findOtherFiles()
-		migrationCheck()
+		@configFile = @file.config(configFileInput)
+		settings = @load.get(@configFile)
+				
 		loadSettings()
 	end
 
@@ -104,9 +104,9 @@ private
 			"hostname" => "my_secret.com", # hostname freedb
 			"firstHit" => true, # always choose 1st option
 			"freedb" => true, # enable freedb
-			"editor" => @deps.getHelpApp('editor'), #default editor
-			"filemanager" => @deps.getHelpApp('filemanager'), #default file manager
-			"browser" => @deps.getHelpApp('browser'), #default browser
+			"editor" => @deps.get('editor'), #default editor
+			"filemanager" => @deps.get('filemanager'), #default file manager
+			"browser" => @deps.get('browser'), #default browser
 			"noLog" => false, #delete log if no errors?
 			"createCue" => true, #create cuesheet
 			"image" => false, #save to single file
@@ -130,16 +130,6 @@ private
 			@configFile = File.join(dir, 'rubyripper/settings')
 			createDirs(File.dirname(@configFile))
 		end
-	end
-
-	# find the location fo the other files
-	def findOtherFiles
-		dir = ENV['XDG_CACHE_HOME'] || File.join(ENV['HOME'], '.cache')
-		@cacheFile = File.join(dir, 'rubyripper/freedb.yaml')
-		createDirs(File.dirname(@cacheFile))
-
-		#store the location in the settings for use later on
-		@defaultSettings['freedbCache'] = @cacheFile
 	end
 
 	# help function to create dirs

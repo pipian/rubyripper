@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# fake to be CleanPrefs class
-class FakeCleanPrefs
+# fake to be FilePrefs class
+class FakeFilePrefs
+	def clean
+	end
 end
