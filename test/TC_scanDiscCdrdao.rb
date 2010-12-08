@@ -23,7 +23,8 @@ require 'rubyripper/disc/scanDiscCdrdao.rb'
 class TC_ScanDiscCdrdao < Test::Unit::TestCase
 
 	def setup
-		@prefs = FakePreferences.new
+		settings = {'verbose' => false, 'debug' => false, 'cdrom' => 'test'}
+		@prefs = FakePreferences.new(settings)
 		@fire = FakeFireCommand.new
 		@cdrdao = ScanDiscCdrdao.new(@prefs, @fire)
 	end
@@ -63,17 +64,17 @@ class TC_ScanDiscCdrdao < Test::Unit::TestCase
 		@fire.file = File.read(File.join($localdir, 'data/discs/004/cdrdao'))
 		@cdrdao.scan()
 		assert_equal('ok', @cdrdao.status)
-		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
-		assert_equal('CD_DA', @cdrdao.getInfo('discType'))
-		assert_equal(false, @cdrdao.getInfo('artist'))
-		assert_equal(false, @cdrdao.getInfo('album'))
-		assert_equal(0, @cdrdao.getInfo('trackNames').length)
-		assert_equal(0, @cdrdao.getInfo('varArtists').length)
-		assert_equal(false, @cdrdao.getInfo('silence'))
-		assert_equal(0, @cdrdao.getInfo('dataTracks').length)
-		assert_equal(0, @cdrdao.getInfo('preGap').length)
-		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
-		assert_equal(10, @cdrdao.getInfo('tracks'))
+		assert_equal(0, @cdrdao.get('preEmphasis').length)
+		assert_equal('CD_DA', @cdrdao.get('discType'))
+		assert_equal(false, @cdrdao.get('artist'))
+		assert_equal(false, @cdrdao.get('album'))
+		assert_equal(0, @cdrdao.get('trackNames').length)
+		assert_equal(0, @cdrdao.get('varArtists').length)
+		assert_equal(false, @cdrdao.get('silence'))
+		assert_equal(0, @cdrdao.get('dataTracks').length)
+		assert_equal(0, @cdrdao.get('preGap').length)
+		assert_equal(0, @cdrdao.get('preEmphasis').length)
+		assert_equal(10, @cdrdao.get('tracks'))
 		assert_equal(_("No pregaps, silences or pre-emphasis detected\n"),@cdrdao.getLog[0])
 	end
 
@@ -82,20 +83,20 @@ class TC_ScanDiscCdrdao < Test::Unit::TestCase
 		@fire.file = File.read(File.join($localdir, 'data/discs/005/cdrdao'))
 		@cdrdao.scan()
 		assert_equal('ok', @cdrdao.status)
-		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
-		assert_equal('CD_DA', @cdrdao.getInfo('discType'))
-		assert_equal(false, @cdrdao.getInfo('artist'))
-		assert_equal(false, @cdrdao.getInfo('album'))
-		assert_equal(0, @cdrdao.getInfo('trackNames').length)
-		assert_equal(0, @cdrdao.getInfo('varArtists').length)
-		assert_equal(false, @cdrdao.getInfo('silence'))
-		assert_equal(0, @cdrdao.getInfo('dataTracks').length)
-		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
-		assert_equal(12, @cdrdao.getInfo('tracks'))
+		assert_equal(0, @cdrdao.get('preEmphasis').length)
+		assert_equal('CD_DA', @cdrdao.get('discType'))
+		assert_equal(false, @cdrdao.get('artist'))
+		assert_equal(false, @cdrdao.get('album'))
+		assert_equal(0, @cdrdao.get('trackNames').length)
+		assert_equal(0, @cdrdao.get('varArtists').length)
+		assert_equal(false, @cdrdao.get('silence'))
+		assert_equal(0, @cdrdao.get('dataTracks').length)
+		assert_equal(0, @cdrdao.get('preEmphasis').length)
+		assert_equal(12, @cdrdao.get('tracks'))
 		assert_equal(false, @cdrdao.getLog.empty?)
 
 		{4 => 35, 7 => 32, 10 => 05, 11 => 20}.each do |key, value|
-			assert_equal(value, @cdrdao.getInfo('preGap')[key])
+			assert_equal(value, @cdrdao.get('preGap')[key])
 		end
 	end
 
@@ -104,22 +105,22 @@ class TC_ScanDiscCdrdao < Test::Unit::TestCase
 		@fire.file = File.read(File.join($localdir, 'data/discs/006/cdrdao'))
 		@cdrdao.scan()
 		assert_equal('ok', @cdrdao.status)
-		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
-		assert_equal('CD_DA', @cdrdao.getInfo('discType'))
-		assert_equal('SYSTEM OF A DOWN', @cdrdao.getInfo('artist'))
-		assert_equal('STEAL THIS ALBUM!', @cdrdao.getInfo('album'))
-		assert_equal(0, @cdrdao.getInfo('varArtists').length)
-		assert_equal(false, @cdrdao.getInfo('silence'))
-		assert_equal(0, @cdrdao.getInfo('dataTracks').length)
-		assert_equal(0, @cdrdao.getInfo('preGap').length)
-		assert_equal(0, @cdrdao.getInfo('preEmphasis').length)
-		assert_equal(16, @cdrdao.getInfo('tracks'))
+		assert_equal(0, @cdrdao.get('preEmphasis').length)
+		assert_equal('CD_DA', @cdrdao.get('discType'))
+		assert_equal('SYSTEM OF A DOWN', @cdrdao.get('artist'))
+		assert_equal('STEAL THIS ALBUM!', @cdrdao.get('album'))
+		assert_equal(0, @cdrdao.get('varArtists').length)
+		assert_equal(false, @cdrdao.get('silence'))
+		assert_equal(0, @cdrdao.get('dataTracks').length)
+		assert_equal(0, @cdrdao.get('preGap').length)
+		assert_equal(0, @cdrdao.get('preEmphasis').length)
+		assert_equal(16, @cdrdao.get('tracks'))
 		assert_equal(false, @cdrdao.getLog.empty?)
 
 		{1=>"CHIC 'N' STEW", 2=>"INNERVISION", 3=>"BUBBLES", 4=>"BOOM!", 
 5=>"N\\334GUNS", 6=>"A.D.D.", 7=>"MR. JACK", 8=>"I-E-A-I-A-I-O", 9=>"36", 
 10=>"PICTURES", 11=>"HIGHWAY SONG", 12=>"F**K THE SYSTEM", 13=>"EGO BRAIN", 14=>"THETAWAVES", 15=>"ROULETTE", 16=>"STREAMLINE"}.each do |key, value|
-			assert_equal(value, @cdrdao.getInfo('trackNames')[key])
+			assert_equal(value, @cdrdao.get('trackNames')[key])
 		end
 	end
 end

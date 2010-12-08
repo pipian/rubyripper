@@ -20,16 +20,37 @@
 # Also it allows for better unit testing, since it is easily mocked
 class FireCommand
 
+	# * deps = instance of Dependency
+	def initialize(dependency)
+		@deps = dependency
+		@status = ''
+		@filename = ''
+	end
+
 	# return output for command
-	def launch(command, filename)
-		File.delete(filename) if File.exist?(filename)
+	def launch(program, command, filename=false)
+		output = false
+
+		if @deps.get(program)
+			@filename = filename
+			if @filename != false
+				File.delete(@filename) if File.exist?(@filename)
+			end
+
+			output = `#{command}`
+			@status = $?.success?
+		end
+
+		return output
 	end
 
 	# return exit status for command
 	def status
+		return @status
 	end
 
 	# return created file with command
 	def file
+		return File.read(@filename) if File.exists?(@filename)
 	end
 end

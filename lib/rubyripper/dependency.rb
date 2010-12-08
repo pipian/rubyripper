@@ -37,11 +37,15 @@ class Dependency
 		forceDepsRuntime() if runtime == true
 	end
 
-	# return true if the Program is found: getDep('Cdparanoia')
-	def getDep(key) ; return @deps[key] ; end
-
-	# return a string with the application: getHelpApp('Browser')
-	def getHelpApp(key) ; return @helpApps[key] ; end
+	# return true if the Program is found: get('cdparanoia') => true
+	# return program if it is a helpapp: get('browser') => firefox
+	def get(key)
+		if @deps.key?(key)
+			return @deps[key]
+		elsif @helpApps.key?(key)
+			return @helpApps[key]
+		end
+	end
 
 private
 	# check the arguments

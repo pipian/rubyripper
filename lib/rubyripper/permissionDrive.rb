@@ -18,24 +18,25 @@
 # check the permissions of the drive
 class PermissionDrive
 
+	# * dependency = instance of Dependency class
+	def initialize(dependency)
+		@deps = dependency
+		@status = 'ok'
+	end
+
 	# * cdrom = location of cdrom drive
 	# * query = cdparanoia query
-	# * deps = instance of Dependency class
-	def initialize(cdrom='/dev/cdrom', query, deps)
-		@cdrom = cdrom		
+	def checkPermission(cdrom, query)
+		@cdrom = cdrom
 		@query = query
-		@deps = deps
-
-		@status = _('ok')
 		
 		checkDevice()
 		if @query.include?('generic device: ')
 			checkGenericDevice()
 		end
-	end
 
-	# if succesfull, return _('ok')
-	def status ; return @status end
+		return @status
+	end
 
 private
 

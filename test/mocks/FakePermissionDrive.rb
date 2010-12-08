@@ -15,28 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-class FakeFireCommand
-attr_accessor :status, :file
+# fake the PermissionDrive class
+class FakePermissionDrive
+attr_reader :cdrom, :query
 
-	def initialize
-		@answers = Array.new
-		@commands = Array.new
-		@status = true
-		@file = String.new
-		@filename = String.new
+	def initialize(status='ok')
+		@status = status
+		@cdrom = ''
+		@query = ''
 	end
 
-	def add(answer)
-		@answers << answer
-	end
-
-	def last
-		return @commands[-1]
-	end
-
-	def launch(program, command, file=false)
-		@commands << command
-		@filename = file
-		return @answers.pop() if !@answers.empty?
+	def checkPermission(cdrom, query)
+		@cdrom = cdrom
+		@query = query
+		return @status
 	end
 end

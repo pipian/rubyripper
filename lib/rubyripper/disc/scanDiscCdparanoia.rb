@@ -23,21 +23,36 @@ require 'rubyripper/permissionDrive.rb'
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
 
-	# * deps = instance of Dependency class
-	# * settings = hash with all settings
-	# * testRead = a string with all cdparanoia output used for unit testing
-	def initialize(deps, settings, testRead = false)
-		@deps = deps
-		@settings = settings
-		checkArguments()		
-		setDefaultVariables()
-		
-		@status = 'ok'
-		query = testRead || `cdparanoia -d #{@cdrom} -vQ 2>&1`
+	# * preferences is an instance of Preferences
+	# * fireCommand is an instance of FireCommand
+	# * permissionDrive is an instance of PermissionDrive
+	def initialize(preferences, fireCommand, permissionDrive)
+		@prefs = preferences
+		@fire = fireCommand
+		@perm = permissionDrive
+		checkArguments()
+	
+		@cdrom = @prefs.get('cdrom')
+		@ripHidden = @prefs.get('ripHiddenAudio')
+		@minLength = @prefs.get('minLengthHiddenTrack')
+
+		@status = 'ok'		
+		@disc = Hash.new
+		@disc['audiotracks'] = 0
+		@disc['startSector'] = Hash.new
+		@disc['lengthSector'] = Hash.new
+		@disc['lengthText'] = Hash.new
+		@disc['dataTracks'] = Array.new
+		@disc['multipleDriveSupport'] = true
+	end
+	
+	# scan the disc for input
+	def	scan		
+		query = @fire.launch('cdparanoia', "cdparanoia -d #{@cdrom} -vQ 2>&1")
 		
 		# some versions of cdparanoia don't support the cdrom parameter
 		if query.include?('USAGE')
-			query = testRead || `cdparanoia -vQ 2>&1`
+			query = @fire.launch('cdparanoia', "cdparanoia -vQ 2>&1")
 			@disc['multipleDriveSupport'] = false
 		end
 		
@@ -47,13 +62,13 @@ class ScanDiscCdparanoia
 			checkOffsetFirstTrack()
 		end
 		
-		if @status == 'ok' && !testRead
-			@status = PermissionDrive.new(@cdrom, query, @deps).status
+		if @status == 'ok'
+			@status = @perm.checkPermission(@cdrom, query)
 		end
 	end
 
-	# return the settings variable
-	def getInfo(key=false)
+	# return the disc variable
+	def get(key=false)
 		if key == false
 			return @disc
 		else
@@ -130,24 +145,17 @@ private
 
 	# check the parameters
 	def checkArguments
-		unless @deps.class == Dependency
-			raise ArgumentError, "deps parameter must be a Dependency class"
+		unless @prefs.respond_to?(:get)
+			raise ArgumentError, "prefs parameter must be a Preferences class"
 		end
-		unless @settings.class == Hash
-			raise ArgumentError, "prefs parameter must be a Hash"
-		end
-	end
 
-	# setting some default variables
-	def setDefaultVariables
-		@cdrom = @settings['cdrom']
-		@disc = Hash.new
-		@disc['audiotracks'] = 0
-		@disc['startSector'] = Hash.new
-		@disc['lengthSector'] = Hash.new
-		@disc['lengthText'] = Hash.new
-		@disc['dataTracks'] = Array.new
-		@disc['multipleDriveSupport'] = true
+		unless @fire.respond_to?(:launch)
+			raise ArgumentError, "fire parameter must be a FireCommand class"
+		end
+
+		unless @perm.respond_to?(:checkPermission)
+			raise ArgumentError, "perm parameter must be a PermissionDrive class"
+		end
 	end
 
 	# check the query result for errors
@@ -215,10 +223,10 @@ Please put an audio disc in first...") %[@cdrom]
 			end
 		#do nothing extra when hidden audio shouldn't be ripped
 		#in the cuesheet this part will be marked as a pregap (silence).
-		elsif @settings['ripHiddenAudio'] == false
+		elsif @ripHidden == false
 		# if size of hiddenAudio is bigger than minimum length, make track 0
 		elsif (@disc['startSector'][1] != 0 && 
-			@disc['startSector'][1] / 75.0 > @settings['minLengthHiddenTrack'])
+			@disc['startSector'][1] / 75.0 > @minLength)
 			@disc['startSector'][0] = 0
 			@disc['lengthSector'][0] = @disc['startSector'][1]
 		# otherwise prepend it to the first track

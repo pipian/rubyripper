@@ -67,7 +67,7 @@ class ScanDiscCdrdao
 	def status ; return @status ; end
 	
 	# return the scan variable
-	def getInfo(key=false)
+	def get(key=false)
 		if key == false
 			return @scan
 		else
@@ -102,9 +102,9 @@ private
 		command += " 2>&1" unless @verbose
 
 		# fire the command
-		@fire.launch(command, file)
+		@fire.launch('cdrdao', command, file)
 
-		if @fire.status == 'ok' 
+		if @fire.status == true 
 			return @fire.file
 		else
 			return String.new

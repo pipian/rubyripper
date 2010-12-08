@@ -33,7 +33,7 @@ class CreateInstances
 Encodings.new, Logging.new)
 	end
 
-private:
+private
 	# create all generic classes first
 	def createGeneric
 		@dependency = Dependency.new
@@ -47,7 +47,7 @@ CleanPrefs.new, @dependency)
 		@scanDiscCdinfo = ScanDiscCdinfo.new(@preferences, @fireCommand)
 
 		@scanDiscCdparanoia = ScanDiscCdparanoia.new(@preferences, @fireCommmand 
-PermissionDrive.new)
+PermissionDrive.new(@dependency))
 
 		@scanDiscCdrdao = ScanDiscCdrdao.new(@preferences, @fireCommand, Cuesheet.new)
 		@disc = Disc.new(@

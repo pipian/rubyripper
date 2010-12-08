@@ -24,18 +24,25 @@ class ScanDiscCdinfo
 
 	# * cdrom = a string with the location of the drive
 	# * testRead = a string with output of cd-info for unit testing purposes
-	def initialize(cdrom = '/dev/cdrom', testRead = false)		
-		@cdrom = cdrom
+	def initialize(preferences, fireCommand)
+		@prefs = preferences
+		@fire = fireCommand
 		
 		checkArguments()
-		@settings = Hash.new
-		@settings['startSector'] = Hash.new
-		@settings['dataTracks'] = Array.new
-		
+
+		@cdrom = @prefs.get('cdrom')
+	
+		@disc = Hash.new
+		@disc['startSector'] = Hash.new
+		@disc['dataTracks'] = Array.new
 		@status = 'ok'
-		query = testRead || `cd-info -C #{@cdrom}`
+	end
+
+	# scan the contents of the disc
+	def scan
+		query = @fire.launch('cd-info', "cd-info -C #{@cdrom}")
 		
-		if isValidQuery(query)
+		if query && isValidQuery(query)
 			parseQuery(query)
 			addExtraInfo()
 		end
@@ -47,10 +54,10 @@ class ScanDiscCdinfo
 	# return the settings variable
 	def getInfo(key=false)
 		if key == false
-			return @settings
+			return @disc
 		else
-			if @settings.key?(key)
-				return @settings[key]
+			if @disc.key?(key)
+				return @disc[key]
 			else
 				return false
 			end
@@ -61,8 +68,12 @@ private
 
 	# check the parameters
 	def checkArguments
-		unless @cdrom.class == String
-			raise ArgumentError, "cdrom parameter must be a string"
+		unless @prefs.respond_to?(:get)
+			raise ArgumentError, "preferences must be a Preference instance!"
+		end
+
+		unless @fire.respond_to?(:launch)
+			raise ArgumentError, "fireCommand must be a FireCommand instance!"
 		end
 	end
 
@@ -102,53 +113,53 @@ private
 	def parseQuery(query)
 		currentTrack = 0
 		query.each_line do |line|
-			@settings['version'] = line if line =~ /cd-info version/			
-			@settings['vendor'] = $'.strip if line =~ /Vendor\s+:\s/
-			@settings['model'] = $'.strip if line =~ /Model\s+:\s/
-			@settings['revision'] = $'.strip if line =~ /Revision\s+:\s/
-			@settings['discMode'] = $'.strip if line =~ /Disc mode is listed as:\s/
+			@disc['version'] = line if line =~ /cd-info version/			
+			@disc['vendor'] = $'.strip if line =~ /Vendor\s+:\s/
+			@disc['model'] = $'.strip if line =~ /Model\s+:\s/
+			@disc['revision'] = $'.strip if line =~ /Revision\s+:\s/
+			@disc['discMode'] = $'.strip if line =~ /Disc mode is listed as:\s/
 			
 			# discover a track			
 			if line =~ /\s+\d+:\s/
 				currentTrack += 1
 				trackinfo = $'.split(/\s+/)
-				@settings['startSector'][currentTrack] = toSectors(trackinfo[0])
-				@settings['dataTracks'] << currentTrack if trackinfo[2] == "data"
+				@disc['startSector'][currentTrack] = toSectors(trackinfo[0])
+				@disc['dataTracks'] << currentTrack if trackinfo[2] == "data"
 			end
 
 			if line =~ /leadout/
 				line =~ /\d\d:\d\d:\d\d/
-				@settings['totalSectors'] = toSectors($&)
+				@disc['totalSectors'] = toSectors($&)
 				break
 			end
 		end
-		@settings['tracks'] = currentTrack
+		@disc['tracks'] = currentTrack
 	end
 
 	# Add some extra info that is calculated
 	def addExtraInfo
-		@settings['devicename'] = "#{@settings['vendor']} "
-		@settings['devicename'] += "#{@settings['model']} "
-		@settings['devicename'] += "#{@settings['revision']}"
-		@settings['playtime'] = toTime(@settings['totalSectors'])[0,5]
-		@settings['audiotracks'] = @settings['tracks'] - @settings['dataTracks'].length
-		(1..@settings['tracks']).each do |track|
-			if not @settings['dataTracks'].include?(track)
-				@settings['firstAudioTrack'] = track
+		@disc['devicename'] = "#{@disc['vendor']} "
+		@disc['devicename'] += "#{@disc['model']} "
+		@disc['devicename'] += "#{@disc['revision']}"
+		@disc['playtime'] = toTime(@disc['totalSectors'])[0,5]
+		@disc['audiotracks'] = @disc['tracks'] - @disc['dataTracks'].length
+		(1..@disc['tracks']).each do |track|
+			if not @disc['dataTracks'].include?(track)
+				@disc['firstAudioTrack'] = track
 				break
 			end 
 		end		
 
 		# add some track info
-		@settings['lengthSector'] = Hash.new
-		@settings['lengthText'] = Hash.new
-		@settings['startSector'].each do |key, value|
-			if key == @settings['tracks']
-				@settings['lengthSector'][key] = @settings['totalSectors'] - @settings['startSector'][key]
+		@disc['lengthSector'] = Hash.new
+		@disc['lengthText'] = Hash.new
+		@disc['startSector'].each do |key, value|
+			if key == @disc['tracks']
+				@disc['lengthSector'][key] = @disc['totalSectors'] - @disc['startSector'][key]
 			else
-				@settings['lengthSector'][key] = @settings['startSector'][key + 1] - value
+				@disc['lengthSector'][key] = @disc['startSector'][key + 1] - value
 			end
-			@settings['lengthText'][key] = toTime(@settings['lengthSector'][key])
+			@disc['lengthText'][key] = toTime(@disc['lengthSector'][key])
 		end
 	end
 end

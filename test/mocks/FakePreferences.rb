@@ -17,8 +17,8 @@
 
 # fake the preferences class
 class FakePreferences
-	def initialize
-		@preferences = {'verbose' => false, 'debug' => false, 'cdrom' => 'test'}
+	def initialize(hash)
+		@preferences = hash
 	end
 
 	def set(item, value)
