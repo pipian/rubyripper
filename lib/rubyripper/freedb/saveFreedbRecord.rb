@@ -30,10 +30,6 @@ class SaveFreedbRecord
 		@category = category
 		@discid = discid
 		checkArguments()
-		
-		setNames()
-		checkDir(@baseDir)
-		checkDir(@categoryDir)
 		saveDiscid()
 	end
 	
@@ -56,26 +52,10 @@ private
 		end
 	end
 
-	# set the dir names
-	def setNames
-		@baseDir = File.join(ENV['HOME'], '.cddb')
-		@categoryDir = File.join(@baseDir, @category)
-		@outputFile = File.join(@categoryDir, @discid)
-	end
-
-	# check if a dir exists, if not create it
-	def checkDir(dir)
-		if !@file.directory?(dir)
-			@file.mkdir(dir)
-		end
-	end
-
 	# if $HOME/.cddb/<category>/<discid> does nog exist, create it
 	def saveDiscid
-		if !@file.file?(@outputFile)
-			@file.open(@outputFile, 'w') do |file|
-				file.write(@freedbRecord)
-			end
-		end
+		@outputFile = File.join(ENV['HOME'], '.cddb', @category,
+@discid)
+		@file.write(@outputFile, @freedbRecord, force=false)
 	end
 end

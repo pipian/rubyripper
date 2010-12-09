@@ -37,8 +37,9 @@ private
 	# create all generic classes first
 	def createGeneric
 		@dependency = Dependency.new
-		@preferences = Preferences.new(LoadPrefs.new, SavePrefs.new, 
-CleanPrefs.new, @dependency)
+		@fileAndDir = FileAndDir.new
+		@preferences = Preferences.new(LoadPrefs.new, 
+SavePrefs.new(@fileAndDir), CleanPrefs.new, @dependency)
 		@fireCommand = FireCommand.new(@dependency)
 	end
 

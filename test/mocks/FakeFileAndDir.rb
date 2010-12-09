@@ -17,41 +17,22 @@
 
 # This class will fake the file and directory operations of Ruby
 class FakeFileAndDir
-attr_reader :locations, :fileContent
+attr_reader :filenames, :fileContent
 
 	def initialize
 		@fileContent = Array.new
-		@dirnames = [ENV['HOME']]
 		@filenames = Array.new
 	end
 
-	# file including dir
-	def addFile(filename)
-		@filenames << filename
-	end
+	def write(filename, content, force=false)
+		if @filenames.include?(filename) && force == false
+			status = 'FileExists'
+		else
+			@filenames << filename
+			@fileContent << content
+			status = 'ok'
+		end
 
-	def mkdir(dir)
-		@dirnames << dir
-	end
-
-	def exists?(filenames)
-		return @filenames.include?(location)
-	end
-
-	def file?(file)
-		return @filenames.include?(file)
-	end
-
-	def directory?(dir)
-		return @dirnames.include?(dir)
-	end
-
-	def write(content)
-		@fileContent << content
-	end
-
-	def open(file, writemodus)
-		@filenames << file
-		yield(self)
+		return status
 	end
 end

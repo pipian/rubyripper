@@ -32,12 +32,9 @@ class TC_SaveFreedbRecord < Test::Unit::TestCase
 		file = File.read(File.join($localdir, 'data/freedb/disc001'))
 		@save.save(file, 'strange', 'ABCDEFGH')
 		
-		assert(@file.directory?('/home/test'))
-		assert(@file.directory?('/home/test/.cddb'))
-		assert(@file.directory?('/home/test/.cddb/strange'))
-		assert(@file.file?('/home/test/.cddb/strange/ABCDEFGH'))
-		assert(@file.file?(@save.outputFile))
-		assert(file, @file.fileContent[0])
+		assert_equal('/home/test/.cddb/strange/ABCDEFGH', 
+@file.filenames[0])
+		assert_equal(file, @file.fileContent[0])
 	end
 
 	# test for existing location, it shouldn't overwrite
@@ -48,5 +45,6 @@ class TC_SaveFreedbRecord < Test::Unit::TestCase
 		@save.save(file002, 'strange', 'ABCDEFGH')
 
 		assert_not_equal(file002, @file.fileContent[0])
+		assert_equal(1, @file.fileContent.size)
 	end
 end
