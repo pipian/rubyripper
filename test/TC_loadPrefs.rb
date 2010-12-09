@@ -22,16 +22,16 @@ require 'rubyripper/preferences/loadPrefs.rb'
 class TC_LoadPrefs < Test::Unit::TestCase
 
 	def setup
-		ENV['XDG_CONFIG_HOME'] = '/home/test/.config'
 		@file = FakeFileAndDir.new 
 		@load = LoadPrefs.new(@file)
+		@default = '/home/test/.config/rubyripper/settings'
 	end
 
 	# test in case the file is invalid and there is no home backup
 	def test_FakeFileNoHome
 		@file.readLines << ''		
 		filename = File.join($localdir, 'data/settings/doesNotExist')
-		@load.loadConfig(filename)
+		@load.loadConfig(@default, filename)
 		
 		assert_equal(false, @load.configFound)
 		assert_equal('/home/test/.config/rubyripper/settings',
@@ -44,7 +44,7 @@ class TC_LoadPrefs < Test::Unit::TestCase
 		@file.readLines << "test=true\nfaking=false\nempty=\'\'\n\
 time=0\ntea=1"		
 		filename = File.join($localdir, 'data/settings/doesNotExist')
-		@load.loadConfig(filename)
+		@load.loadConfig(@default, filename)
 		
 		assert_equal(false, @load.configFound)
 		assert_equal('/home/test/.config/rubyripper/settings',
@@ -63,7 +63,7 @@ time=0\ntea=1"
 		filename = File.join($localdir, 'data/settings/settings001')
 		@file.readLines << File.read(filename)
 		@file.filenames << filename
-		@load.loadConfig(filename)
+		@load.loadConfig(@default, filename)
 
 		assert_equal(true, @load.configFound)
 		assert_equal(filename, @file.filenames[-1])

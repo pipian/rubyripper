@@ -34,31 +34,37 @@ class Preferences
 		@deps = dependency
 		checkArguments()
 
-		@settings = Hash.new()
-		@configFound = false
+		@prefs = Hash.new()
 	end
 
 	# load the actual configfile
-	def loadConfigFile(configFileInput = false)
-		@configFileInput = configFileInput
-
+	def loadConfig(configFileInput = false)
 		setDefaultSettings()
-		@configFile = @file.config(configFileInput)
-		settings = @load.get(@configFile)
-				
-		loadSettings()
+		setDefaultPath()
+
+		@file.cleanup()
+		@load.loadConfig(@default, configFileInput)
+		update()
+		save()
 	end
 
-	# return the settings hash
-	def getSettings ; return @settings ; end
+	# return the preferences hash
+	def get ; return @prefs ; end
+
+	# update the preferences
+	def set(prefs)
+		@prefs.each do |key, value|
+			@prefs[key] = prefs[key] if prefs.key?(key)
+		end
+
+		save()
+	end
 
 	# return if the specified configfile is found
-	def isConfigFound ; return @configFound ; end
+	def isConfigFound ; return @load.configFound ; end
 
 	# save the updated settings
-	# * config = hash with updated settings
-	# * test = true when used while unit testing (prevents writing to files)
-	def save(config) ; setSettings(config) ; end
+	def save ; @save.save(@prefs, @load.configFile) ; end
 
 private
 
@@ -73,9 +79,15 @@ private
 		end
 	end
 
+	# store the default locations
+	def setDefaultPath
+		dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+		@default = File.join(dir, 'rubyripper/settings')
+	end
+
 	# setup the the default settings
 	def setDefaultSettings
-		@defaultSettings = {"flac" => false,
+		@prefs = {"flac" => false,
 			"settingsFlac" => "--best -V", #passed to flac
 			"vorbis" => true, 
 			"settingsVorbis" => "-q 4", #passed to vorbis
@@ -122,33 +134,20 @@ private
 		}
 	end
 
-				# only load a setting that is included in the default
-				if @defaultSettings.key?(key)
-					@settings[key] = value
-				else
-					puts "WARNING: invalid setting: #{key}"
-				end
-
-			# check if settings are missing
-			@defaultSettings.each do |key, value|
-				if not @settings.has_key?(key)
-					@settings[key] = value
-					puts "WARNING: setting #{key} was missing in config file!"
-				end
+	# update the settings with the info from loadPrefs
+	# also check if @load has all the keys
+	def update
+		@load.getAll().each do |key, value|
+			if @prefs.key?(key)
+				@prefs[key] = value
+			else
+				puts "WARNING: invalid setting: #{key}"
 			end
-
-	# update the settings to the config file
-	# * settings = hash with updated settings
-	# * test = if true don't write changes to the settings file
-	def setSettings(settings)
-		unless (settings.class == Hash)
-			raise ArgumentError, "Settings parameter must be a Hash."
 		end
 
-		# update the settings
-		@settings.each do |key, value|
-			if settings.has_key?(key)
-				@settings[key] = settings[key]
+		@prefs.each do |key, value|
+			if @load.get(key) == nil
+				puts "WARNING: #{key} is missing in config file!"
 			end
 		end
 	end

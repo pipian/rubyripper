@@ -24,6 +24,7 @@ class LoadPrefs
 		@file = fileAndDir
 		@settings = Hash.new
 		@configFound = false
+		@configFile = String.new
 	end
 
 	# return the setting, if unknown return nil
@@ -35,25 +36,22 @@ class LoadPrefs
 	# if config is found
 	def configFound ; return @configFound ; end
 
+	# return configFile
+	def configFile ; return @configFile ; end
+
 	# load the configFile
-	def loadConfig(filename = false)
-		setDefaultPath()
-		filename = findFile(filename)
+	def loadConfig(default, filename = false)
+		filename = findFile(default, filename)
 		loadFile(filename)
+		@configFile = filename
 	end
 
 private
 
-	# store the default locations
-	def setDefaultPath
-		dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
-		@default = File.join(dir, 'rubyripper/settings')
-	end
-
 	# find the location of the config file
-	def findFile(filename)
+	def findFile(default, filename)
 		filename = @file.exists?(filename) if filename.class == String
-		filename == false ? filename = @default : @configFound = true
+		filename == false ? filename = default : @configFound = true
 		return filename
 	end
 

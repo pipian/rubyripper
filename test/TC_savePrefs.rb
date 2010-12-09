@@ -15,18 +15,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# This class will try to save the Rubyripper config file
-class SavePrefs
-	def initialize(fileAndDir)
-		@file = fileAndDir
+require './mocks/FakeFileAndDir.rb'
+require 'rubyripper/preferences/savePrefs.rb'
+
+# A class to test if the Cd-info is correctly parsed
+class TC_SavePrefs < Test::Unit::TestCase
+
+	def setup
+		@file = FakeFileAndDir.new 
+		@save = SavePrefs.new(@file)
 	end
 
-	def save(preferences, configFile)
-		content = String.new
-		preferences.sort.each do |key, value|
-			content << "#{key}=#{value}\n"
-		end
-
-		@file.write(configFile, content, force=true)
+	# test in case of normal behaviour
+	def test_NormalBehaviour
+		preferences = {'test'=>true, 'coffee' => 'nice'}
+		configFile = '/home/test/.config/rubyripper/settings'		
+		@save.save(preferences, configFile)
+		
+		assert_equal(configFile, @file.filenames[0])
+		assert_equal("coffee=nice\ntest=true\n", @file.fileContent[0])
 	end
 end
