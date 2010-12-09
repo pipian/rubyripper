@@ -17,11 +17,25 @@
 
 # This class will fake the file and directory operations of Ruby
 class FakeFileAndDir
-attr_reader :filenames, :fileContent
+attr_accessor :filenames, :fileContent, :readLines
 
 	def initialize
 		@fileContent = Array.new
 		@filenames = Array.new
+		@readLines = Array.new
+	end
+
+	def exists?(filename)
+		if @filenames.include?(filename)
+			return filename
+		else
+			return false
+		end
+	end
+
+	def read(filename)
+		@filenames << filename
+		return @readLines.pop()
 	end
 
 	def write(filename, content, force=false)

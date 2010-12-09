@@ -15,6 +15,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# This class will cleanup previous Rubyripper files
-class CleanPrefs
+# This class will try to save the Rubyripper config file
+class SavePrefs
+	def save(hash, location)
+		
+	end
+
+		# update the config file, but do not update when unit testing
+		if test == false
+			file = File.new(@configFile, 'w')
+			@settings.each do |key, value|
+				file.puts "#{key}=#{value}"
+			end
+			file.close()
+		end
 end

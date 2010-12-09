@@ -190,6 +190,7 @@ calculation unless %s is installed.") % ['Discid'],
 		@helpApps['filemanager'] = filemanager()
 		@helpApps['editor'] = editor()
 		@helpApps['browser'] = browser()
+		@helpApps['cdrom'] = cdrom()
 	end
 
 	# determine default file manager
@@ -239,5 +240,19 @@ calculation unless %s is installed.") % ['Discid'],
 		else
 			return 'echo'
 		end
+	end
+	
+	# determine default drive
+	def cdrom #default values for cdrom drives under differenty os'es
+		drive = 'Unknown!'
+		system = RUBY_PLATFORM
+		if system.include?('openbsd')
+			drive = '/dev/cd0c' # as provided in issue 324
+		elsif system.include?('linux') || system.include?('bsd')
+			drive = '/dev/cdrom'
+		elsif system.include?('darwin')
+			drive = '/dev/disk1'
+		end
+		return drive
 	end
 end

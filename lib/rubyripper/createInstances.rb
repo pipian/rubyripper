@@ -38,8 +38,8 @@ private
 	def createGeneric
 		@dependency = Dependency.new
 		@fileAndDir = FileAndDir.new
-		@preferences = Preferences.new(LoadPrefs.new, 
-SavePrefs.new(@fileAndDir), CleanPrefs.new, @dependency)
+		@preferences = Preferences.new(LoadPrefs.new(@fileAndDir), 
+SavePrefs.new(@fileAndDir), FilePrefs.new(@fileAndDir), @dependency)
 		@fireCommand = FireCommand.new(@dependency)
 	end
 

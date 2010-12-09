@@ -15,17 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require './mocks/FakeCleanPrefs.rb'
+require './mocks/FakeFilePrefs.rb'
 require './mocks/FakeSavePrefs.rb'
 require './mocks/FakeLoadPrefs.rb'
 require './mocks/FakeDependency.rb'
-require 'rubyripper/preferences.rb'
+require 'rubyripper/preferences/preferences.rb'
 
 # This class tests the settings class
 class TC_Preferences < Test::Unit::TestCase
 	
 	# create some test instances
 	def setup
+		setupKeys() unless defined?(@boolKeys)
+
 		@failed = File.join($localdir, 'data/settings/doesNotExist')
 		@file001 = File.join($localdir, 'data/settings/settings001')
 		@file002 = File.join($localdir, 'data/settings/settings002')
@@ -35,7 +37,10 @@ class TC_Preferences < Test::Unit::TestCase
 		@inst001 = Preferences.new($objects, @file001)
 		@inst002 = Preferences.new($objects, @file002)
 		@inst003 = Preferences.new($objects, @file003)
+	end
 
+	# set all keys
+	def setupKeys
 		@boolKeys = ["flac", "vorbis", "wav", "other", 'mp3', "playlist", 
 "verbose", "debug", "eject", 'ripHiddenAudio', "firstHit", "freedb", "noLog", 
 "createCue", "image", 'gainTagsOnly', 'noSpaces', 'noCapitals']

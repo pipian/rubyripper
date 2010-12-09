@@ -23,7 +23,11 @@ class FileAndDir
 	end
 
 	def exists?(filename)
-		return File.exists?(filename)
+		if File.exists?(file = File.expand_path(filename))
+			return file
+		else
+			return false
+		end
 	end
 
 	def file?(file)
@@ -48,6 +52,15 @@ class FileAndDir
 		# now create the dirs, starting with the main parent
 		while !dirs.empty?
 			Dir.mkdir(dirs.pop())
+		end
+	end
+
+	# * filename = Name of the existing file
+	def read(filename)
+		if !File.file?(filename)
+			return String.new
+		else
+			return File.read(filename)
 		end
 	end
 

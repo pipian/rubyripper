@@ -59,7 +59,7 @@ require './TC_scanDiscCdrdao.rb'
 require './TC_scanDiscCdparanoia.rb'
 require './TC_scanDiscCdinfo.rb'
 require './TC_saveFreedbRecord.rb'
-
+require './TC_loadPrefs.rb'
 #require './TC_dependency.rb'
 #require './TC_preferences.rb'
 #require './TC_freedbString.rb'
