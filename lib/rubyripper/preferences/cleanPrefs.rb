@@ -15,43 +15,33 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# This class will fake the file and directory operations of Ruby
-class FakeFileAndDir
-attr_accessor :filenames, :fileContent, :readLines, :removed
-
-	def initialize
-		@fileContent = Array.new
-		@filenames = Array.new
-		@readLines = Array.new
-		@removed = Array.new
+# This class will cleanup previous Rubyripper files
+class CleanPrefs
+	def initialize(fileAndDir)
+		@file = fileAndDir
 	end
 
-	def exists?(filename)
-		if @filenames.include?(filename)
-			return filename
-		else
-			return false
+	# clean up the old config files
+	def cleanup
+		setOldConfigs()
+		removeOldFiles()
+	end
+
+private
+
+	# set the filenames to search for
+	def setOldConfigs
+		@oldFiles = Array.new
+		@oldFiles << File.join(ENV['HOME'], '.rubyripper')
+		@oldFiles << File.join(@oldFiles[0], 'settings')
+		@oldFiles << File.join(@oldFiles[0], 'freedb.yaml')
+		@oldFiles << File.join(ENV['HOME'], '.rubyripper_settings')
+	end
+
+	# remove old files
+	def removeOldFiles
+		while @oldFiles.length > 0
+			@file.remove(@oldFiles.pop)
 		end
-	end
-
-	def remove(item)
-		@removed << item
-	end
-
-	def read(filename)
-		@filenames << filename
-		return @readLines.pop()
-	end
-
-	def write(filename, content, force=false)
-		if @filenames.include?(filename) && force == false
-			status = 'FileExists'
-		else
-			@filenames << filename
-			@fileContent << content
-			status = 'ok'
-		end
-
-		return status
 	end
 end

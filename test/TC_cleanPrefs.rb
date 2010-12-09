@@ -15,43 +15,24 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# This class will fake the file and directory operations of Ruby
-class FakeFileAndDir
-attr_accessor :filenames, :fileContent, :readLines, :removed
+require './mocks/FakeFileAndDir.rb'
+require 'rubyripper/preferences/cleanPrefs.rb'
 
-	def initialize
-		@fileContent = Array.new
-		@filenames = Array.new
-		@readLines = Array.new
-		@removed = Array.new
+# A class to test if the Cd-info is correctly parsed
+class TC_CleanPrefs < Test::Unit::TestCase
+
+	def setup
+		@file = FakeFileAndDir.new 
+		@clean = CleanPrefs.new(@file)
+		ENV['HOME'] = '/home/test'
 	end
 
-	def exists?(filename)
-		if @filenames.include?(filename)
-			return filename
-		else
-			return false
-		end
-	end
-
-	def remove(item)
-		@removed << item
-	end
-
-	def read(filename)
-		@filenames << filename
-		return @readLines.pop()
-	end
-
-	def write(filename, content, force=false)
-		if @filenames.include?(filename) && force == false
-			status = 'FileExists'
-		else
-			@filenames << filename
-			@fileContent << content
-			status = 'ok'
-		end
-
-		return status
+	# test in case of normal behaviour
+	def test_cleanup
+		@clean.cleanup()
+		assert_equal('/home/test/.rubyripper_settings', @file.removed[0])
+		assert_equal('/home/test/.rubyripper/freedb.yaml', @file.removed[1])
+		assert_equal('/home/test/.rubyripper/settings', @file.removed[2])
+		assert_equal('/home/test/.rubyripper', @file.removed[3])
 	end
 end

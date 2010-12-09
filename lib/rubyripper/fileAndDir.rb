@@ -38,6 +38,19 @@ class FileAndDir
 		return File.directory?(dir)
 	end
 
+	# remove the thing, no matter if file or directory
+	def remove(item)
+		if File.exists?(item)
+			if File.file?(item)
+				File.delete(item)
+			elsif File.directory?(item)
+				if Dir.entries(item) == 2
+					Dir.delete(item)
+				end
+			end
+		end
+	end
+
 	# create any directories that are needed for the filename
 	def createDirs(filename)
 		dirs = Array.new
