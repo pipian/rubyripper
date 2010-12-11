@@ -17,17 +17,27 @@
 
 # This class will fake the file and directory operations of Ruby
 class FakeFileAndDir
-attr_accessor :filenames, :fileContent, :readLines, :removed
+attr_reader :usage
+attr_accessor :data
 
 	def initialize
-		@fileContent = Array.new
-		@filenames = Array.new
-		@readLines = Array.new
-		@removed = Array.new
+		@data = Hash.new
+		@data['glob'] = Array.new
+		@data['read'] = Array.new
+		@data['write'] = Array.new
+		@data['exists'] = Array.new
+
+		@usage = Hash.new
+		@usage['exists?'] = Array.new
+		@usage['remove'] = Array.new
+		@usage['glob'] = Array.new
+		@usage['read'] = Array.new
+		@usage['write'] = Array.new
 	end
 
 	def exists?(filename)
-		if @filenames.include?(filename)
+		@usage['exists?'] << filename
+		if @data['exists'].include?(filename)
 			return filename
 		else
 			return false
@@ -35,20 +45,25 @@ attr_accessor :filenames, :fileContent, :readLines, :removed
 	end
 
 	def remove(item)
-		@removed << item
+		@usage['remove'] << item
 	end
 
-	def read(filename)
-		@filenames << filename
-		return @readLines.pop()
+	def glob(query)
+		@usage['glob'] << query
+		return @data['glob'].pop()
+	end
+
+	def read(filename, encoding='r')
+		@usage['read'] << filename
+		return @data['read'].pop()
 	end
 
 	def write(filename, content, force=false)
-		if @filenames.include?(filename) && force == false
+		if @data['exists'].include?(filename) && force == false
 			status = 'FileExists'
 		else
-			@filenames << filename
-			@fileContent << content
+			@usage['write'] << [filename, content, force]
+			@data['exists'] << filename
 			status = 'ok'
 		end
 

@@ -17,4 +17,21 @@
 
 # fake to be LoadPrefs class
 class FakeLoadPrefs
+attr_accessor :configFound, :configFile
+
+	def set(prefs)
+		@prefs = prefs
+	end
+	
+	def found(bool)
+		@configFound = bool
+	end
+
+	def loadConfig(default, configfile)
+		@configFile = default
+	end
+
+	def getAll ; return @prefs ; end
+
+	def get(pref) ; return @prefs[pref] ; end
 end

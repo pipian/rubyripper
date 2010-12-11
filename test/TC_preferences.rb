@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require './mocks/FakeOutput.rb'
 require './mocks/FakeCleanPrefs.rb'
 require './mocks/FakeSavePrefs.rb'
 require './mocks/FakeLoadPrefs.rb'
@@ -26,113 +27,62 @@ class TC_Preferences < Test::Unit::TestCase
 	
 	# create some test instances
 	def setup
-		setupKeys() unless defined?(@boolKeys)
+		$stdout, @backup = FakeOutput.new, $stdout
+		@load = FakeLoadPrefs.new()
+		@save = FakeSavePrefs.new()
+		@clean = FakeCleanPrefs.new()
+		@deps = FakeDependency.new({'cdrom'=>'testDrive', 
+'editor' => 'paper', 'browser' => 'netscape', 'filemanager' => 'explorer'})
+		@prefs = Preferences.new(@load, @save, @clean, @deps)
+	end
 
-		@failed = File.join($localdir, 'data/settings/doesNotExist')
-		@file001 = File.join($localdir, 'data/settings/settings001')
-		@file002 = File.join($localdir, 'data/settings/settings002')
-		@file003 = File.join($localdir, 'data/settings/settings003')
+	# when the test is over reset the standard output
+	def teardown
+		$stdout = @backup
+	end
+
+	# let's do some simple tests first
+	def test_LoadProperly
+		@load.configFound = false
+		@load.set({'username'=>'test', 'firstHit'=>true})
+		@prefs.loadConfig()
+
+		assert_equal(false, @prefs.isConfigFound)
+		assert_equal('test', @prefs.get['username'])
+		assert_equal(true, @prefs.get['firstHit'])
+		assert_equal('testDrive', @prefs.get['cdrom'])
+		assert_equal('paper', @prefs.get['editor'])
+		assert_equal('netscape', @prefs.get['browser'])
+		assert_equal('explorer', @prefs.get['filemanager'])
+		assert_equal(44, @prefs.get.length)
+
+		assert_equal('test', @save.prefs['username'])
+		assert_equal(true, @save.prefs['firstHit'])
+		assert_equal(44, @prefs.get.length)
+
+		assert_equal(true, @clean.cleanup)
+	end
+
+	# and what if the keys don't exist?
+	def test_LoadWithNotExistingKeys
+		@load.configFound = true
+		@load.set({'crazy'=>true, 'weird'=>false})
+		@prefs.loadConfig()
+
+		assert_equal(44, @prefs.get.length)
+		assert_equal(true, @prefs.isConfigFound)
+	end
+
+	# now test if the settings are updated
+	def test_SetPreferences
+		@load.configFound = true
+		@load.set(Hash.new)
+		@prefs.loadConfig()
 		
-		@instFailed = Preferences.new($objects, @failed)
-		@inst001 = Preferences.new($objects, @file001)
-		@inst002 = Preferences.new($objects, @file002)
-		@inst003 = Preferences.new($objects, @file003)
-	end
-
-	# set all keys
-	def setupKeys
-		@boolKeys = ["flac", "vorbis", "wav", "other", 'mp3', "playlist", 
-"verbose", "debug", "eject", 'ripHiddenAudio', "firstHit", "freedb", "noLog", 
-"createCue", "image", 'gainTagsOnly', 'noSpaces', 'noCapitals']
-
-		@textKeys = ["settingsFlac", "settingsVorbis", "settingsMp3", 
-"settingsOther", "cdrom", "rippersettings", 'basedir', 'namingNormal',
-'basedir', 'namingVarious', 'namingImage', "site", "username", "hostname", 
-"editor", "filemanager", "browser", 'normalizer', 'gain', 'preGaps', 'preEmphasis']
-
-		@numberKeys = ["offset", "maxThreads", "maxTries", 
-'minLengthHiddenTrack', "reqMatchesErrors", "reqMatchesAll"]
-
-		@allKeys = @boolKeys + @textKeys + @numberKeys
-	end
-
-	# load them all at once to prevent the setup penalty
-	def testSuite
-		if_failed()
-		instance001()
-		instance002()
-		instance003()
-	end
-
-	# defaul test for each instance
-	def verifyAllKeys(instance, test)
-		@allKeys.each do |key|
-			assert(instance.getSettings().has_key?(key), "#{test}: #{key} is missing")
-		end
-
-		assert_equal(@allKeys.length, instance.getSettings().length)
-	end
-
-	# test when the input app has failed (no valid inputfile)
-	def if_failed
-		assert(!@instFailed.isConfigFound)
-
-		# the settings should be set from the defaults
-		verifyAllKeys(@instFailed, 'if_failed')
-	end
-
-	# test if inst001 passes (all boolean values true)
-	def instance001
-		assert(@inst001.isConfigFound)
-		verifyAllKeys(@inst001, 'instance001')
-
-		@boolKeys.each do |key|
-			assert_equal(true, @inst001.getSettings()[key], "#{key} must be true")
-		end
-
-		# test the save function
-		settingsHash = Hash.new
-		@boolKeys.each{|key| settingsHash[key] = false}
-		@inst001.save(settingsHash, true)
-		
-		@boolKeys.each do |key|
-			assert_equal(false, @inst001.getSettings()[key], "#{key} must be false")
-		end
-	end
-
-	# test if inst002 passes (all boolean values false, all text = 'test', 
-	# all numbers = 1001)
-	def	instance002
-		assert(@inst002.isConfigFound)
-		verifyAllKeys(@inst002, 'instance002')
-
-		@boolKeys.each do |key|
-			assert_equal(false, @inst002.getSettings()[key], "#{key} must be false")
-		end
-
-		@textKeys.each do |key|
-			assert_equal('test', @inst002.getSettings()[key], "#{key} must be 'test'")
-		end
-
-		@numberKeys.each do |key|
-			assert_equal(1, @inst002.getSettings()[key], "#{key} must be 1")
-		end
-
-		# test the save function
-		settingsHash = Hash.new
-		@boolKeys.each{|key| settingsHash[key] = true}
-		@inst002.save(settingsHash, true)
-		
-		@boolKeys.each do |key|
-			assert_equal(true, @inst002.getSettings()[key], "#{key} must be true")
-		end
-	end
-
-	# test inst003 passes (1 nonsense key)
-	def	instance003
-		assert_equal(true, @inst003.isConfigFound)
-		verifyAllKeys(@inst003, 'instance003')
-
-		assert_equal(false, @inst003.getSettings.key?('testIllegalSetting'))
+		@prefs.set({'editor'=>'gedit', 'maxThreads'=>5, 'nuts'=>true})
+		assert_equal('gedit', @prefs.get['editor'])
+		assert_equal(5, @prefs.get['maxThreads'])
+		assert_equal(false, @prefs.get.key?('nuts'))
+		assert_equal('gedit', @save.prefs['editor'])
 	end
 end

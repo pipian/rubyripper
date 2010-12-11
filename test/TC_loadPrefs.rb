@@ -29,26 +29,26 @@ class TC_LoadPrefs < Test::Unit::TestCase
 
 	# test in case the file is invalid and there is no home backup
 	def test_FakeFileNoHome
-		@file.readLines << ''		
+		@file.data['read'] << ''
 		filename = File.join($localdir, 'data/settings/doesNotExist')
 		@load.loadConfig(@default, filename)
 		
 		assert_equal(false, @load.configFound)
 		assert_equal('/home/test/.config/rubyripper/settings',
-@file.filenames[0])
+@load.configFile)
 		assert_equal(0, @load.getAll.length)
 	end
 
 	# test in case the file is invalid and there is a home backup
 	def test_FakeFileWithHome
-		@file.readLines << "test=true\nfaking=false\nempty=\'\'\n\
+		@file.data['read'] << "test=true\nfaking=false\nempty=\'\'\n\
 time=0\ntea=1"		
 		filename = File.join($localdir, 'data/settings/doesNotExist')
 		@load.loadConfig(@default, filename)
 		
 		assert_equal(false, @load.configFound)
 		assert_equal('/home/test/.config/rubyripper/settings',
-@file.filenames[0])
+@file.usage['read'][0])
 		assert_equal(5, @load.getAll.length)
 
 		assert_equal(true, @load.get('test'))
@@ -61,12 +61,12 @@ time=0\ntea=1"
 	# test in case the file is found
 	def test_RealFile
 		filename = File.join($localdir, 'data/settings/settings001')
-		@file.readLines << File.read(filename)
-		@file.filenames << filename
+		@file.data['read'] << File.read(filename)
+		@file.data['exists'] << filename
 		@load.loadConfig(@default, filename)
 
 		assert_equal(true, @load.configFound)
-		assert_equal(filename, @file.filenames[-1])
+		assert_equal(filename, @file.usage['read'][0])
 		assert_equal(45, @load.getAll.length)
 
 		# just test the different types

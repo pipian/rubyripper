@@ -38,6 +38,10 @@ class FileAndDir
 		return File.directory?(dir)
 	end
 
+	def glob(query)
+		return Dir.glob(query)
+	end
+
 	# remove the thing, no matter if file or directory
 	def remove(item)
 		if File.exists?(item)
@@ -69,11 +73,15 @@ class FileAndDir
 	end
 
 	# * filename = Name of the existing file
-	def read(filename)
+	def read(filename, encoding='r')
 		if !File.file?(filename)
 			return String.new
 		else
-			return File.read(filename)
+			content = String.new
+			File.open(filename, encoding) do |file|
+				content = file.read()
+			end
+			return content
 		end
 	end
 

@@ -15,8 +15,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# fake to be FilePrefs class
-class FakeFilePrefs
-	def clean
+# fake to be CleanPrefs class
+class FakeCleanPrefs
+attr_reader :cleanup
+
+	def initialize
+		@cleanup = false
+	end
+
+	def cleanup
+		@cleanup = true
 	end
 end

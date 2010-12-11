@@ -15,59 +15,71 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require './mocks/FakeFileAndDir.rb'
 require 'rubyripper/freedb/loadFreedbRecord.rb'
-require 'rubyripper/freedb/saveFreedbRecord.rb'
 
 # A class to test if loadFreedbRecord succesfully finds and loads a local file
 class TC_LoadFreedbRecord < Test::Unit::TestCase
 
 	# first set a file ready
 	def setup
-		@file001 = File.read(File.join($localdir, 'data/freedb/disc001'))
-		@file006 = File.read(File.join($localdir, 'data/freedb/disc006'))
-		@inst001 = SaveFreedbRecord.new(@file001, 'strange', 'ABCDEFGH')
-		@inst002 = SaveFreedbRecord.new(@file001, 'strange', '01234567')
-		@inst003 = SaveFreedbRecord.new(@file001, 'weird', '01234567')
-		@inst004 = SaveFreedbRecord.new(@file006, 'weird', 'ZZYYXXWW')
+		@file = FakeFileAndDir.new()
+		@load = LoadFreedbRecord.new(@file)
 	end
 
 	# test if no files are found
 	def test_noFilesFound
-		disc000 = LoadFreedbRecord.new('nonsense')
-		assert_equal('noRecords', disc000.status)
-		assert_equal(String.new, disc000.freedbRecord)
+		@file.data['glob'] << Array.new
+		@load.scan('nonsense')
+
+		assert_equal('noRecords', @load.status)
+		assert_equal(String.new, @load.freedbRecord)
 	end
 
 	# test if only one file found
 	def test_oneFileFound
-		disc001 = LoadFreedbRecord.new('ABCDEFGH')
-		assert_equal('ok', disc001.status)
-		assert_equal(@file001, disc001.freedbRecord)
+		@file.data['glob'] << ['/test/ABCDEFGH']
+		@file.data['read'] << 'sampleText'
+		@load.scan('ABCDEFGH')
+
+		assert_equal('ok', @load.status)
+		assert_equal('sampleText', @load.freedbRecord)
+		assert_equal('/test/ABCDEFGH', @file.usage['read'][0])	
 	end
 
 	# test if two files are found
 	def test_twoFilesFound
-		disc002 = LoadFreedbRecord.new('01234567')
-		assert_equal('ok', disc002.status)
-		assert_equal(@file001, disc002.freedbRecord)	
+		@file.data['glob'] << ['/test/jazz/ABCDEFGH', '/test/blues/ABCDEFGH']
+		@file.data['read'] << 'sampleText'
+		@load.scan('ABCDEFGH')
+
+		assert_equal('ok', @load.status)
+		assert_equal('sampleText', @load.freedbRecord)
+		assert_equal('/test/jazz/ABCDEFGH', @file.usage['read'][0])	
 	end
 
-	# test if file with ISO-8859-1 encoding is converted to UTF-8
+	# When importing directly in UTF-8 fails, try with ISO-8859-1 encoding
 	def test_88591_encoding
-		disc004 = LoadFreedbRecord.new('ZZYYXXWW')
-		assert_equal('ok', disc004.status)
-		assert_equal(true, disc004.freedbRecord.valid_encoding?)	
-		assert_equal('UTF-8', disc004.freedbRecord.encoding.name)
-		assert(disc004.freedbRecord.length > 0)
+		@file.data['glob'] << ['/test/blues/ABCDEFGH']
+		@file.data['read'] << "validEncoding"
+		@file.data['read'] << "hello red \xE8".force_encoding("UTF-8")
+
+		@load.scan('ABCDEFGH')
+
+		assert_equal('ok', @load.status)
+		assert_equal('validEncoding', @load.freedbRecord)
+		assert_equal('/test/blues/ABCDEFGH', @file.usage['read'][0])	
 	end
-		
-	# after all is done, clean up the files
-	def teardown
-		File.delete(@inst001.outputFile)
-		File.delete(@inst002.outputFile)
-		Dir.rmdir(File.dirname(@inst002.outputFile))
-		File.delete(@inst003.outputFile)
-		File.delete(@inst004.outputFile)
-		Dir.rmdir(File.dirname(@inst004.outputFile))
+
+	# When importing fails twice, set status to InvalidEncoding
+	def test_importing_fails
+		@file.data['glob'] << ['/test/blues/ABCDEFGH']
+		@file.data['read'] << "hello red \xE8".force_encoding("UTF-8")
+		@file.data['read'] << "hello red \xE8".force_encoding("UTF-8")
+		@load.scan('ABCDEFGH')
+
+		assert_equal('InvalidEncoding', @load.status)
+		assert_equal('', @load.freedbRecord)
+		assert_equal('/test/blues/ABCDEFGH', @file.usage['read'][0])	
 	end
 end

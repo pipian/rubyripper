@@ -15,17 +15,27 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require './mocks/FakeOutput.rb'
+require './mocks/FakeInput.rb'
 require 'rubyripper/cli/cliGetAnswer.rb'
 
 # A class to test if the class returns proper answers
 class TC_GetAnswer < Test::Unit::TestCase
 	
+	# overriding input and output
+	def setup
+		$stdout, @backup_out = FakeOutput.new, $stdout
+		$stdin, @backup_in = FakeInput.new, $stdin
+	end
+
+	# restore input and output
+	def teardown
+		$stdout = @backup_out
+		$stdin = @backup_in
+	end
+
 	# test if the input mock works properly
 	def test_00InputMock
-		oldin, oldout = $stdin, $stdout
-
-		# with zero lines in it
-		$stdin = Input.new
 		
 		# with one line in it
 		$stdin.add(text = 'hello world!')
@@ -39,15 +49,11 @@ class TC_GetAnswer < Test::Unit::TestCase
 		assert_equal(text2, $stdin.gets)
 		assert_equal('', $stdin.gets)
 
-		$stdin, $stdout = oldin, oldout 
+		#$stdin, $stdout = oldin, oldout 
 	end
 
 	# test if the output mock works properyly
 	def test_OutputMock
-		oldin, oldout = $stdin, $stdout
-
-		# with zero lines in it
-		$stdout = Output.new
 		assert_equal(nil, $stdout.gets)
 		
 		# with one line in it
@@ -62,15 +68,10 @@ class TC_GetAnswer < Test::Unit::TestCase
 		assert_equal(text1, $stdout.gets)
 		assert_equal(nil, $stdout.gets)
 
-		$stdin, $stdout = oldin, oldout 
 	end
 
 	# test GetInt class
 	def test_GetInt
-		oldin, oldout = $stdin, $stdout
-
-		$stdin = Input.new
-		$stdout = Output.new # prevents printing to the screen
 		@int = GetInt.new
 
 		# test in case an integer 0-10 is typed
@@ -86,16 +87,10 @@ class TC_GetAnswer < Test::Unit::TestCase
 
 		# test in case nothing is given, the default is used
 		assert_equal(100, @int.get('question', 100))
-
-		$stdin, $stdout = oldin, oldout
 	end
 
 	# test GetBool class
 	def test_GetBool
-		oldin, oldout = $stdin, $stdout
-
-		$stdin = Input.new
-		$stdout = Output.new # prevents printing to the screen
 		@bool = GetBool.new
 
 		valid = {_("yes") => true, _('y') => true, 
@@ -114,16 +109,10 @@ _("no") => false, _("n") =>false}
 
 		# test in case nothing is given, the default is used
 		assert_equal(false, @bool.get('question', 'n')) 
-
-		$stdin, $stdout = oldin, oldout
 	end
 
 	# test GetString class
 	def test_GetString
-		oldin, oldout = $stdin, $stdout
-
-		$stdin = Input.new
-		$stdout = Output.new # prevents printing to the screen
 		@string = GetString.new
 		strings = ['goodbye', 'oh', 'cruel', 'world']
 
@@ -135,7 +124,5 @@ _("no") => false, _("n") =>false}
 
 		# test in case nothing is given, the default is used
 		assert_equal('happy', @string.get('question', 'happy'))
-
-		$stdin, $stdout = oldin, oldout
 	end
 end

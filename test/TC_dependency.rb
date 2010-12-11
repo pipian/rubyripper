@@ -22,19 +22,19 @@ class TC_Dependency < Test::Unit::TestCase
 
 	# test is inst001 passes
 	def test_DependencyKeys
-		inst001 = Dependency.new()
+		@deps = Dependency.new()
 		keysDep = ['cdparanoia', 'ruby-gtk2', 'ruby-gettext', 'discid', 
 'cd-discid', 'eject', 'flac', 'vorbis', 'lame', 'wavegain', 'vorbisgain',
 'mp3gain', 'normalize', 'cdrdao', 'cd-info', 'ls', 'diskutil']
-		keysHelpApp = ['filemanager', 'editor', 'browser']
+		keysHelpApp = ['filemanager', 'editor', 'browser','cdrom']
 		
 		keysDep.each do |key|
-			assert_kind_of(Boolean, inst001.getDep(key), "#{key} must be boolean")
+			assert_kind_of(Boolean, @deps.get(key), "#{key} must be boolean")
 		end
 
 		keysHelpApp.each do |key|
-			assert_kind_of(String, inst001.getHelpApp(key), "#{key} must be string")
-			assert(inst001.getHelpApp(key).length > 0, "#{key} may not be empty")
+			assert_kind_of(String, @deps.get(key), "#{key} must be string")
+			assert(@deps.get(key).length > 0, "#{key} may not be empty")
 		end
 	end
 end

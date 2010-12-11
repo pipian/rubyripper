@@ -30,9 +30,9 @@ class TC_CleanPrefs < Test::Unit::TestCase
 	# test in case of normal behaviour
 	def test_cleanup
 		@clean.cleanup()
-		assert_equal('/home/test/.rubyripper_settings', @file.removed[0])
-		assert_equal('/home/test/.rubyripper/freedb.yaml', @file.removed[1])
-		assert_equal('/home/test/.rubyripper/settings', @file.removed[2])
-		assert_equal('/home/test/.rubyripper', @file.removed[3])
+		assert_equal('/home/test/.rubyripper_settings', @file.usage['remove'][0])
+		assert_equal('/home/test/.rubyripper/freedb.yaml', @file.usage['remove'][1])
+		assert_equal('/home/test/.rubyripper/settings', @file.usage['remove'][2])
+		assert_equal('/home/test/.rubyripper', @file.usage['remove'][3])
 	end
 end

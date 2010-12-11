@@ -19,12 +19,18 @@
 class LoadFreedbRecord
 	
 	# * discid = the discid as calculated for the freedb server
-	def initialize(discid)
-		@discid = discid
+	def initialize(fileAndDir)
+		@file = fileAndDir		
 		checkArguments()
 
 		@freedbRecord = ''
 		@status = 'noRecords'
+
+	end
+
+	# look for local entries
+	def scan(discid)
+		@discid = discid
 		scanLocal()
 	end
 
@@ -36,22 +42,20 @@ class LoadFreedbRecord
 private
 	# check the arguments for the type
 	def checkArguments
-		unless @discid.class == String && @discid.length == 8
-			raise ArgumentError, "discid must be a string of 8 characters"
+		unless @file.respond_to?(:read)
+			raise ArgumentError, "instance of FileAndDir is mandatory"
 		end
 	end
 
 	# Find all matches in the cddb directory
 	def scanLocal
 		dir = File.join(ENV['HOME'], '.cddb')
-		@matches = Dir.glob("#{dir}/*/#{@discid}")
-
-		if @matches.size > 0
+		matches = @file.glob("#{dir}/*/#{@discid}")
+		
+		if matches.size > 0
+			@status = 'ok'
 			begin
-				@freedbRecord = getFile(@matches[0])
-				@status = 'ok'
-			rescue EncodingError
-				@status = 'Cannot determine file encoding'
+				@freedbRecord = getFile(matches[0])
 			end
 		end
 	end
@@ -63,23 +67,19 @@ private
 	def getFile(path)
 		freedb = String.new
 		if freedb.respond_to?(:encoding)
-			File.open(path, 'r:utf-8') do |file|
-				freedb = file.read()
-			end
-		
+			freedb = @file.read(path, 'r:utf-8')
 			return freedb if freedb.valid_encoding?
 	
-			File.open(path, 'r:iso-8859-1') do |file|
-				freedb = file.read()
-			end
+			freedb = @file.read(path, 'r:iso-8859-1')
 			
 			if not freedb.valid_encoding?
-				raise EncodingError, 'The encoding of the freedb file can not be determined'
+				@status = 'InvalidEncoding'
+				return ''
 			end
-
-			return freedb.encode('UTF-8')
+			
+			return freedb.encode('UTF-8')	
 		else
-			freedb = File.read(path)
+			freedb = @file.read(path)
 		end
 	end
 end

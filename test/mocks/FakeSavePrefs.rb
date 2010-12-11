@@ -17,4 +17,14 @@
 
 # fake to be SavePrefs class
 class FakeSavePrefs
+attr_reader :prefs, :configFile
+	def initialize
+		@prefs = ''
+		@configFile = ''
+	end
+
+	def save(prefs, configFile)
+		@prefs = prefs
+		@configFile = configFile
+	end
 end

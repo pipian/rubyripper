@@ -17,20 +17,17 @@
 
 
 # The settings class is responsible for:
-# * Managing the location of the settings file
-# * Loading the settings
-# * Saving the settings
-# * Finding the default help programs like browser, editor, etcetera
+# managing the settings during a session
 class Preferences
 
 	# * loadPrefs = instance of LoadPrefs
 	# * savePrefs = instance of SavePrefs
 	# * filePrefs = instance of FilePrefs
 	# * dependency = instance of Dependency
-	def initialize(loadPrefs, savePrefs, filePrefs, dependency)
+	def initialize(loadPrefs, savePrefs, cleanPrefs, dependency)
 		@load = loadPrefs
 		@save = savePrefs
-		@file = filePrefs
+		@clean = cleanPrefs
 		@deps = dependency
 		checkArguments()
 
@@ -42,7 +39,7 @@ class Preferences
 		setDefaultSettings()
 		setDefaultPath()
 
-		@file.cleanup()
+		@clean.cleanup()
 		@load.loadConfig(@default, configFileInput)
 		update()
 		save()
@@ -63,21 +60,27 @@ class Preferences
 	# return if the specified configfile is found
 	def isConfigFound ; return @load.configFound ; end
 
-	# save the updated settings
-	def save ; @save.save(@prefs, @load.configFile) ; end
-
 private
 
 	# check the arguments
 	def checkArguments
-		unless (@configFileInput == false || @configFileInput.class == String)
-			raise ArgumentError, "ConfigfileInput parameter must be false or a string"
+		unless @load.respond_to?(:loadConfig)
+			raise ArgumentError, "loadPrefs must be an instance of LoadPrefs"
+		end
+		unless @save.respond_to?(:save)
+			raise ArgumentError, "savePrefs must be an instance of SavePrefs"
+		end
+		unless @clean.respond_to?(:cleanup)
+			raise ArgumentError, "cleanPrefs must be an instance of CleanPrefs"
 		end
 
-		unless @deps.class == Dependency
+		unless @deps.respond_to?(:get)
 			raise ArgumentError, "deps parameter must be of Dependency class"
 		end
 	end
+
+	# save the updated settings
+	def save ; @save.save(@prefs, @load.configFile) ; end
 
 	# store the default locations
 	def setDefaultPath
@@ -97,7 +100,7 @@ private
 			"other" => false, #any other codec
 			"settingsOther" => '', #the complete command
 			"playlist" => true,
-			"cdrom" => cdrom_drive(),
+			"cdrom" => @deps.get('cdrom'),
 			"offset" => 0,
 			"maxThreads" => 2, #number of encoding proces while ripping
 			"rippersettings" => '', #passed to cdparanoia

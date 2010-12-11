@@ -32,7 +32,7 @@ class TC_SavePrefs < Test::Unit::TestCase
 		configFile = '/home/test/.config/rubyripper/settings'		
 		@save.save(preferences, configFile)
 		
-		assert_equal(configFile, @file.filenames[0])
-		assert_equal("coffee=nice\ntest=true\n", @file.fileContent[0])
+		assert_equal(configFile, @file.usage['write'][0][0])
+		assert_equal("coffee=nice\ntest=true\n", @file.usage['write'][0][1])
 	end
 end
