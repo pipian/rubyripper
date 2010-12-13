@@ -20,12 +20,17 @@ class FakeScanDiscCdparanoia
 
 	# * startSector = hash with startsectors
 	# * lengthSector = hash with startsectors
-	def initialize(startSector, lengthSector)
+	def initialize(startSector=Hash.new, lengthSector=Hash.new)
 		@startSector = startSector
 		@lengthSector = lengthSector
 	end
 
-	def getInfo(key)
+	def set(startSector, lengthSector)
+		@startSector = startSector
+		@lengthSector = lengthSector
+	end
+
+	def get(key)
 		if key == 'startSector'
 			return @startSector
 		else

@@ -26,22 +26,7 @@ def _(txt)
 	return txt
 end
 
-# load two libs that are needed a lot and make one generic instance
-#require 'rubyripper/preferences.rb'
-#require 'rubyripper/dependency.rb'
-#require 'rubyripper/cli/cliGetAnswer.rb'
-
 $rr_version = 'test'
-
-#$objects = Hash.new
-#$objects['deps'] = Dependency.new(verbose=false,runtime=false)
-#$objects['settings'] = Preferences.new($objects, File.join($localdir, 'data/settings/settings001'))
-#$objects['getString'] = GetString.new
-#$objects['getInt'] = GetInt.new
-#$objects['getBool'] = GetBool.new
-#$objects['gui'] = FakeGui.new
-#$settings = $objects['settings'].getSettings()
-#$deps = $objects['deps']
 
 # define a boolean type to test against
 module Boolean; end
@@ -67,6 +52,6 @@ require './TC_loadFreedbRecord.rb'
 require './TC_dependency.rb'
 require './TC_cliGetAnswer.rb'
 require './TC_freedbRecordParser.rb'
+require './TC_getFreedbRecord.rb'
 
-#require './TC_getFreedbRecord.rb'
 #require './TC_freedbString.rb'

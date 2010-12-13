@@ -46,7 +46,11 @@ class Preferences
 	end
 
 	# return the preferences hash
-	def get ; return @prefs ; end
+	def get(key=false)
+		if key == false ; return @prefs
+		else return @prefs[key]
+		end
+	end
 
 	# update the preferences
 	def set(prefs)

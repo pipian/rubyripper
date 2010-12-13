@@ -31,7 +31,7 @@ attr_accessor :status, :file
 	end
 
 	def last
-		return @commands[-1]
+		@commands.pop()
 	end
 
 	def launch(program, command, file=false)

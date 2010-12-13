@@ -52,7 +52,7 @@ class ScanDiscCdinfo
 	def status ; return @status ; end
 
 	# return the settings variable
-	def getInfo(key=false)
+	def get(key=false)
 		if key == false
 			return @disc
 		else

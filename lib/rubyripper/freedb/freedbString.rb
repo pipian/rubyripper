@@ -23,24 +23,23 @@ class FreedbString
 	# * deps = instance of Dependency class
 	# * cdrom = string with location of the cdrom drive
 	# * disc = instance of scanDiscCdparanoia
-	# * test = false, 'manual' for testing the auto generation or the complete
-	# freedbstring, faking a helpprogram
-	def initialize(deps, settings, disc, test=false)
-		@deps = deps
-		@cdrom = settings['cdrom']
-		@startSector = disc.getInfo('startSector')
-		@lengthSector = disc.getInfo('lengthSector')
-		@test = test
-
+	def initialize(dependency, preferences, scanDiscCdparanoia, fireCommand, scanDiscCdinfo)
+		@deps = dependency
+		@prefs = preferences
+		@disc = scanDiscCdparanoia
+		@fire = fireCommand
+		@cdinfo = scanDiscCdinfo
 		checkArguments()
+		
+		@cdrom = @prefs['cdrom']
+		@startSector = @disc.get('startSector')
+		@lengthSector = @disc.get('lengthSector')
 		@audiotracks = @lengthSector.keys.length		
 		@freedbString = ''
 
 		if autoCalcFreedb() == false
-			if test == false
-				puts _("warning: discid or cd-discid isn't found on your system!)")
-				puts _("Using fallback...")
-			end
+			puts _("warning: discid or cd-discid isn't found on your system!)")
+			puts _("Using fallback...")
 			manualCalcFreedb()
 		else
 			@discid = @freedbString.split()[0]
@@ -63,37 +62,36 @@ private
 		unless @deps.class == Dependency
 			raise ArgumentError, "deps parameter must be a Dependency class"
 		end
-		unless @cdrom.class == String
-			raise ArgumentError, "cdrom parameter must be a string"
+		unless @prefs.respond_to?(:get)
+			raise ArgumentError, "prefs parameter must be a Preferences class"
 		end
-		unless @startSector.class == Hash
-			raise ArgumentError, "startSector parameter must be a hash"
+		unless @disc.respond_to?(:get)
+			raise ArgumentError, "disc parameter must be a ScanDiscCdparanoia class"
 		end
-		unless @lengthSector.class == Hash
-			raise ArgumentError, "lengthSector parameter must be a hash"
+		unless @fire.respond_to?(:launch)
+			raise ArgumentError, "fire parameter must be a FireCommand class"
+		end
+		unless @cdinfo.respond_to?(:get)
+			raise ArgumentError, "cd-info parameter must be a ScanDiscCdinfo class"
 		end
 	end
 
 	# try to fetch freedb string with help programs
 	def autoCalcFreedb
 		# mac OS needs to unmount the disc first
-		if RUBY_PLATFORM.include?('darwin') && @deps.getDep('diskutil')
-			`diskutil unmount #{@cdrom}`			
+		if RUBY_PLATFORM.include?('darwin') && @deps.get('diskutil')
+			@fire('diskutil', "diskutil unmount #{@cdrom}")			
 		end
 			
-		if @test == 'manual'
-			@freedbString = ''
-		elsif @test != false
-			@freedbString = @test
-		elsif @deps.getDep('discid')
-			@freedbString = `discid #{@cdrom}`
-		elsif @deps.getDep('cd-discid')
-			@freedbString = `cd-discid #{@cdrom}`
+		if @deps.get('discid')
+			@freedbString = @fire.launch('discid', "discid #{@cdrom}")
+		elsif @deps.get('cd-discid')
+			@freedbString = @fire.launch('cd-discid', "cd-discid #{@cdrom}")
 		end
 		
 		# mac OS needs to mount the disc again
-		if RUBY_PLATFORM.include?('darwin') && @deps.getDep('diskutil')
-			`diskutil mount #{@cdrom}`					
+		if RUBY_PLATFORM.include?('darwin') && @deps.get('diskutil')
+			@fire('diskutil', "diskutil mount #{@cdrom}")					
 		end
 
 		return !@freedbString.empty?
@@ -101,20 +99,19 @@ private
 
 	# try to calculate it ourselves
 	def manualCalcFreedb
-		tryCdinfo() if not @test
+		tryCdinfo()
 		setDiscId()
 		buildFreedbString()
 	end
 
 	# try to use Cd-info to read the toc reliably
 	def tryCdinfo
-		if @deps.getOptionalDeps('cd-info')
-			require 'rubyripper/scanDiscCdinfo.rb'
-			output = ScanDiscCdinfo.new()
-			if output.status == _('ok')
-				@startSector = output.getInfo('startSector')
-				@lengthSector = output.getInfo('lengthSector')
-				@audiotracks = output.getInfo('tracks')
+		if @deps.get('cd-info')
+			@cdinfo.scan
+			if @cdinfo.status == 'ok'
+				@startSector = @cdinfo.getInfo('startSector')
+				@lengthSector = @cdinfo.getInfo('lengthSector')
+				@audiotracks = @cdinfo.getInfo('tracks')
 			end
 		end
 	end

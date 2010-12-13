@@ -24,15 +24,20 @@ require 'cgi' #for translating characters to HTTP codes, space = %20 for instanc
 class GetFreedbRecord
 
 	# freedbString = the identifying message for the disc in the freedb database
-	# settings = hash with all settings
+	# preferences = instance of preferences
 	# server = instance of the CgiHttpHandler class
-	def initialize(freedbString, settings, server)
+	def initialize(freedbString, preferences, server)
 		@freedbString = freedbString
-		@settings = settings
+		@prefs = preferences
 		@server = server
 		checkArguments()	
 
+		@site = @prefs.get('site')
+		@hostname = @prefs.get('hostname')
+		@username = @prefs.get('username')
+		@firstHit = @prefs.get('firstHit')
 		@status = ['ok', _('ok')]
+
 		@freedbRecord = String.new
 		@category = String.new
 		@finalDiscId = String.new
@@ -75,8 +80,8 @@ private
 			raise ArgumentError, "freedbString must be a string"		
 		end
 
-		unless @settings.class == Hash
-			raise ArgumentError, "settings must be a hash"
+		unless @prefs.respond_to?(:get)
+			raise ArgumentError, "preferences must be an instance of Preferences"
 		end
 
 		unless @server.respond_to?(:configConnection)
@@ -86,7 +91,7 @@ private
 
 	# handle the initial connection with the freedb server
 	def handleConnection
-		@url = URI.parse(@settings['site'])
+		@url = URI.parse(@site)
 		@server.configConnection(@url)
 		
 		reply = queryFreedbForMatches()
@@ -97,7 +102,7 @@ private
 	# There can be none, one or multiple hits, depending on the return code
 	def queryFreedbForMatches()
 		query = @url.path + "?cmd=cddb+query+" + CGI.escape("#{@freedbString}") +
-"&hello=" + CGI.escape("#{@settings['username']} #{@settings['hostname']} \
+"&hello=" + CGI.escape("#{@username} #{@hostname} \
 rubyripper #{$rr_version}") + "&proto=6"
 		
 		# http requests return all output at once, even if multiple lines		
@@ -142,7 +147,7 @@ values are used.")]
 		@choices.pop if @choices[-1] == '.'
 		
 		# simulate one record found if firstHit == true
-		if @settings['firstHit'] == true
+		if @firstHit == true
 			reply = "200 #{@choices[0]}"			
 			oneRecordFound(reply)
 		else
@@ -165,7 +170,7 @@ Return code is not supported.") % [reply[0..2]]]
 	# retrieve the record
 	def getRecord(category, discid)
 		query = "#{@url.path}?cmd=cddb+read+" + CGI.escape("#{category} #{discid}") + 
-"&hello=" + CGI.escape("#{@settings['username']} #{@settings['hostname']} \
+"&hello=" + CGI.escape("#{@username} #{@hostname} \
 rubyripper #{$rr_version}") + "&proto=6"
 
 		reply = @server.get(query)
