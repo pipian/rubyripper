@@ -24,6 +24,10 @@ class FakeScanDiscCdparanoia
 		@startSector = startSector
 		@lengthSector = lengthSector
 	end
+	
+	def scan ; end
+
+	def status ; return 'ok' ; end
 
 	def set(startSector, lengthSector)
 		@startSector = startSector
@@ -33,6 +37,8 @@ class FakeScanDiscCdparanoia
 	def get(key)
 		if key == 'startSector'
 			return @startSector
+		elsif key == 'tracks'
+			@startSector.length
 		else
 			return @lengthSector
 		end

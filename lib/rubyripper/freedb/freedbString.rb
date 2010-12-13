@@ -31,11 +31,12 @@ class FreedbString
 		@cdinfo = scanDiscCdinfo
 		checkArguments()
 		
-		@cdrom = @prefs['cdrom']
+		@cdrom = @prefs.get('cdrom')
 		@startSector = @disc.get('startSector')
 		@lengthSector = @disc.get('lengthSector')
-		@audiotracks = @lengthSector.keys.length		
+		@audiotracks = @lengthSector.keys.length
 		@freedbString = ''
+		@discid = ''
 
 		if autoCalcFreedb() == false
 			puts _("warning: discid or cd-discid isn't found on your system!)")
@@ -47,19 +48,15 @@ class FreedbString
 	end
 
 	# return the freedb identification string
-	def getFreedbString
-		return @freedbString
-	end
+	def getFreedbString ; return @freedbString ; end
 
 	# return the discid (part of the freedb identification string)
-	def getDiscId
-		return @discid
-	end
+	def getDiscId ; return @discid ; end
 
 private
 	# check the arguments
 	def checkArguments
-		unless @deps.class == Dependency
+		unless @deps.respond_to?(:get)
 			raise ArgumentError, "deps parameter must be a Dependency class"
 		end
 		unless @prefs.respond_to?(:get)
@@ -80,7 +77,7 @@ private
 	def autoCalcFreedb
 		# mac OS needs to unmount the disc first
 		if RUBY_PLATFORM.include?('darwin') && @deps.get('diskutil')
-			@fire('diskutil', "diskutil unmount #{@cdrom}")			
+			@fire.launch('diskutil', "diskutil unmount #{@cdrom}")	
 		end
 			
 		if @deps.get('discid')
@@ -91,7 +88,7 @@ private
 		
 		# mac OS needs to mount the disc again
 		if RUBY_PLATFORM.include?('darwin') && @deps.get('diskutil')
-			@fire('diskutil', "diskutil mount #{@cdrom}")					
+			@fire.launch('diskutil', "diskutil mount #{@cdrom}")					
 		end
 
 		return !@freedbString.empty?
@@ -99,9 +96,10 @@ private
 
 	# try to calculate it ourselves
 	def manualCalcFreedb
-		tryCdinfo()
-		setDiscId()
-		buildFreedbString()
+		if tryCdinfo()
+			setDiscId()
+			buildFreedbString()
+		end
 	end
 
 	# try to use Cd-info to read the toc reliably
@@ -109,11 +107,13 @@ private
 		if @deps.get('cd-info')
 			@cdinfo.scan
 			if @cdinfo.status == 'ok'
-				@startSector = @cdinfo.getInfo('startSector')
-				@lengthSector = @cdinfo.getInfo('lengthSector')
-				@audiotracks = @cdinfo.getInfo('tracks')
+				@startSector = @cdinfo.get('startSector')
+				@lengthSector = @cdinfo.get('lengthSector')
+				@audiotracks = @cdinfo.get('tracks')
+				return true
 			end
 		end
+		return false
 	end
 
 	# The freedb checksum is calculated as follows:

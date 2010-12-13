@@ -53,5 +53,4 @@ require './TC_dependency.rb'
 require './TC_cliGetAnswer.rb'
 require './TC_freedbRecordParser.rb'
 require './TC_getFreedbRecord.rb'
-
-#require './TC_freedbString.rb'
+require './TC_freedbString.rb'
