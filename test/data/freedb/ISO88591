@@ -1,0 +1,28 @@
+# xmcd CD database file
+#
+# Track frame offsets:
+#	150
+#	25324
+#	44858
+#	76057
+#
+# Disc length: 1374 seconds
+#
+# Revision: 0
+# Processed by: cddbd v1.5.2PL0 Copyright (c) Steve Scherf et al.
+# Submitted via: CDex 1.70beta2
+#
+DISCID=2b055c04
+DTITLE=Tuhonvarjo / Syvyyden Syli
+DYEAR=2010
+DGENRE=Metal
+TTITLE0=Syvyyden Syli
+TTITLE1=Tyhjyys
+TTITLE2=Joutsenen Siivillä
+TTITLE3=Surumarssi
+EXTD= YEAR: 2010
+EXTT0=
+EXTT1=
+EXTT2=
+EXTT3=
+PLAYORDER=

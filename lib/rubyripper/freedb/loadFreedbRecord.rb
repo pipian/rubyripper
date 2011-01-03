@@ -24,6 +24,7 @@ class LoadFreedbRecord
 		checkArguments()
 
 		@freedbRecord = ''
+		@encoding = String.new
 		@status = 'noRecords'
 
 	end
@@ -34,7 +35,16 @@ class LoadFreedbRecord
 		scanLocal()
 	end
 
+	# directly read a given cddb file, usefull for system testing
+	def read(filename)
+		@freedbRecord = getFile(filename)
+	end
+
+	# return the record
 	def freedbRecord ; return @freedbRecord ; end
+
+	# return the encoding found
+	def encoding ; return @encoding end
 
 	# return the status
 	def status ; return @status ; end
@@ -67,19 +77,22 @@ private
 	def getFile(path)
 		freedb = String.new
 		if freedb.respond_to?(:encoding)
-			freedb = @file.read(path, 'r:utf-8')
-			return freedb if freedb.valid_encoding?
-	
-			freedb = @file.read(path, 'r:iso-8859-1')
-			
-			if not freedb.valid_encoding?
+			['r:UTF-8', 'r:GB18030', 'r:ISO-8859-1'].each do |encoding|
+				newfreedb = @file.read(path, encoding)
+				freedb = newfreedb unless newfreedb == nil
+				@encoding = encoding
+				break if freedb.valid_encoding?
+			end
+
+			if !freedb.valid_encoding?
 				@status = 'InvalidEncoding'
 				return ''
+			else
+				return freedb.encode('UTF-8')
 			end
-			
-			return freedb.encode('UTF-8')	
 		else
 			freedb = @file.read(path)
+			return freedb
 		end
 	end
 end
