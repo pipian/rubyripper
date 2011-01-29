@@ -23,18 +23,12 @@ $:.insert(0, File.join($localdir, '../lib'))
 
 # Try to find the rubyripper lib files
 begin
-	require 'rubyripper/base.rb'
+	require 'rubyripper/instanceHelper.rb'
 rescue LoadError
 	puts 'The rubyripper lib files can\'t be found!'
 	puts 'Perhaps you need to add the directory to the RUBYLIB variable?'
 	exit()
 end
-
-require 'rubyripper/dependency.rb'
-require 'rubyripper/cli/cliSettings.rb'
-require 'rubyripper/cli/cliMetadata.rb'
-require 'rubyripper/cli/cliGetAnswer.rb'
-# TODO require 'rubyripper/cli/cliTracklist.rb'
 
 # The class that initiates the commandline interface
 class CommandLineInterface
@@ -49,23 +43,8 @@ class CommandLineInterface
 	end
 
 	def setObjects
-		# verify if all dependencies are found
-		@objects['deps'] = Dependency.new(verbose=true, runtime=true)
-	
-		# save all answer machines in a Hash and pass them (better for testing)
-		@objects['getString'] = GetString.new
-		@objects['getInt'] = GetInt.new
-		@objects['getBool'] = GetBool.new
-
-		# set the gui
-		@objects['gui'] = self
-
-		# get the settings
-		@objects['settingsCli'] = CliSettings.new(@objects)
-		@objects['disc'] = Disc.new(@objects)
-
-		# show the discinfo
-		@objects['discCli'] = CliMetadata.new(@objects)
+		@instanceHelper = InstanceHelper.new()
+		@instanceHelper.createAll('cli')
 
 		#getDiscInfo()
 		#selectTracks()

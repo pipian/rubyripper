@@ -22,7 +22,7 @@ class Preferences
 
 	# * loadPrefs = instance of LoadPrefs
 	# * savePrefs = instance of SavePrefs
-	# * filePrefs = instance of FilePrefs
+	# * cleanPrefs = instance of CleanPrefs
 	# * dependency = instance of Dependency
 	def initialize(loadPrefs, savePrefs, cleanPrefs, dependency)
 		@load = loadPrefs

@@ -15,10 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/freedb/freedbString.rb'
-require 'rubyripper/freedb/loadFreedbRecord.rb'
-require 'rubyripper/freedb/freedbRecordParser.rb'
-
 # This class is responsible for getting all metadata of the disc and tracks
 class Metadata
 

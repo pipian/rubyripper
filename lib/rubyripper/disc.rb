@@ -15,8 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc/scanDiscCdparanoia.rb'
-require 'rubyripper/metadata.rb'
+# TODO require 'rubyripper/metadata.rb'
 
 # The Disc class manages the different scans of the disc
 # This is mainly done with the help of cdparanoia
@@ -31,7 +30,7 @@ class Disc
 	# * settings = hash with all settings
 	# * gui = instance of a gui, with :update function
 	# * deps = instance of Dependency class
-	def initialize(objects)
+	def initialize(scanDiscParanoia, metadata)
 		@settings = objects['settingsCli'].settings
 		@gui = objects['gui']
 		@deps = objects['deps']
@@ -114,7 +113,7 @@ least needs the update function"
 	# start the Advanced toc instance
 	def advancedToc
 		@tocStarted = true
-		@toc = AdvancedToc.new(@settings)
+		@toc = ScanDiscCdrdao.new(@settings)
 	end
 
 	# update the Disc class with actual settings and make a cuesheet

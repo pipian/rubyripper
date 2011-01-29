@@ -31,9 +31,10 @@ class ScanDiscCdrdao
 	
 	# prefences = instance of Preferences
 	# fireCommand = instance of fireCommand
-	def initialize(preferences, fireCommand)
+	def initialize(preferences, fireCommand, cuesheet=false)
 		@prefs = preferences
 		@fire = fireCommand
+		@cue = cuesheet
 		checkArguments()
 
 		@cdrom = @prefs.get('cdrom')

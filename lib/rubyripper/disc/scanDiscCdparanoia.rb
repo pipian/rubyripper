@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/permissionDrive.rb'
-
 # A class that interprets the toc with the info of cdparanoia
 # It's purpose is pure for ripping the correct audio, not for
 # creating the freedb string. Cd-info is better for that.

@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'optparse'
-require 'rubyripper/settings.rb'
+#require 'rubyripper/settings.rb'
 
 # CliSettings class is responsible for showing and editing the settings
 # It also interpretes the parameters when loaded
