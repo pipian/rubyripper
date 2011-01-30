@@ -20,7 +20,7 @@ class CliGetAnswer
 
 	# get the input from the user	
 	def get(question, default)
-		print(question + " [#{default}] ")
+		print(question + " [#{default}] : ")
 		input = $stdin.gets.strip
 		
 		if input.empty?
@@ -59,8 +59,10 @@ class CliGetInt < CliGetAnswer
 	# get the input from the user	
 	def get(question, default)
 		input = super
+		if input == default
+			return default
 		# 0 may be a valid response, but any string.to_i == 0
-		if input.to_i > 0 || input == "0"
+		elsif input.to_i > 0 || input == "0"
 			return input.to_i
 		else
 			print("Please enter an integer value. Try again.\n")

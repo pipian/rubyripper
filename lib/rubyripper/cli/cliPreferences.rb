@@ -184,34 +184,38 @@ sets.htm.\n   **Your drive model is shown in the logfile.")
 	def editSettings
 		showSettings()
 		while (number = @int.get(_("Please type the number of the setting you \
-wish to change : "), 99)) != 99
-			if number == 1 ; setCodec('flac')
-			elsif number == 2 ; setCodec('vorbis')
-			elsif number == 3 ; setCodec('mp3')
+wish to change"), 99)) != 99
+			if number == 1 ; setCodec('flac', 'settingsFlac', '--best -V')
+			elsif number == 2 ; setCodec('vorbis', 'settingsVorbis', '-q 4')
+			elsif number == 3 ; setCodec('mp3', 'settingsMp3', '-V 3 --id3v2-only')
 			elsif number == 4 ; switchBool('wav', _('wav'))
-			elsif number == 5 ; setCodec('other')
+			elsif number == 5 ; setCodec('other', 'settingsOther', '')
 			elsif number == 6 ; switchBool('playlist', _('playlist'))
-			elsif number == 7 ; @prefs.get['maxThreads'] = @int.get(_("How many \
-encoding threads would you like? : "), 1)
+			elsif number == 7 ; @prefs.set('maxThreads',
+@int.get(_("How many encoding threads would you like?"), 1))
 			elsif number == 8 ; setCdrom()
-			elsif number == 9 ; @prefs.set['rippersettings'] = @string.get(_("Which \
-options to pass to cdparanoia? : "), "")
-			elsif number == 10 ; @prefs.set['reqMatchesAll'] = @int.get(_("How \
-many times must all chunks be matched? : "), 2)
-			elsif number == 11 ; @prefs.set['reqMatchesErrors'] = @int.get(_("How many times must erroneous chunks be matched? : "), 3)
-			elsif number == 12 ; @prefs.set['maxTries'] = @int.get(_("What \
-should be the maximum number of tries? : "), 5)
+			elsif number == 9 ; @prefs.set('rippersettings',
+@string.get(_("Which options to pass to cdparanoia?"), ""))
+			elsif number == 10 ; @prefs.set('reqMatchesAll',
+@int.get(_("How many times must all chunks be matched?"), 2))
+			elsif number == 11 ; @prefs.set('reqMatchesErrors',
+@int.get(_("How many times must erroneous chunks be matched?"), 3))
+			elsif number == 12 ; @prefs.set('maxTries', 
+@int.get(_("What should be the maximum number of tries?"), 5))
 			elsif number == 13 ; switchBool('eject', _('eject'))
-			elsif number == 14 ; @prefs.set['basedir'] = @string.get(_("Please \
-enter your directory for your encodings: "), "")
+			elsif number == 14 ; @prefs.set('basedir', @string.get(_("Please \
+enter your directory for your encodings"), ""))
 			elsif number == 15 ; setDir('normal')
 			elsif number == 16 ; setDir('various')
 			elsif number == 17 ; switchBool('freedb', _('freedb'))
 			elsif number == 18 ; switchBool('firstHit', _('first hit'))
-			elsif number == 19 ; @prefs.set['site'] = @string.get(_("Freedb mirror: "), "freedb.org")
-			elsif number == 20 ; @prefs.set['username'] = @string.get(_("Username : "), "anonymous")
-			elsif number == 21 ; @prefs.set['hostname'] = @string.get(_("Hostname : "), "my_secret.com")
-			elsif number == 88 ; @options['file'] = @string.get(_("Config file : "), @options['file'])
+			elsif number == 19 ; @prefs.set('site',
+@string.get(_("Freedb mirror"), "http://freedb.freedb.org/~cddb/cddb.cgi"))
+			elsif number == 20 ; @prefs.set('username',
+@string.get(_("Username"), "anonymous"))
+			elsif number == 21 ; @prefs.set('hostname',
+@string.get(_("Hostname"), "my_secret.com"))
+			elsif number == 88 ; @options['file'] = @string.get(_("Config file"), @options['file'])
 			else puts _("Number %s is not an option!\nPlease try again.") % [number]
 			end
 			puts ""
@@ -222,7 +226,7 @@ enter your directory for your encodings: "), "")
 	end
 	
 	# update if codec is used and with what setting
-	def setCodec(codec)
+	def setCodec(codec, preference, default)
 		@prefs.set(codec, @bool.get("Do you want to enable #{codec} encoding?", _("y")))
 		if @prefs.get(codec)
 			if @bool.get(_("Do you want to change the encoding parameters for %s?)" % [codec]), _("n"))
@@ -231,16 +235,16 @@ enter your directory for your encodings: "), "")
 %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't \
 forget extension)")
 				end
-				@prefs.set(codec + 'settings', @string.get(_("Encoding \
-paramaters for %s : ") % [codec], ""))
+				@prefs.set(preference,
+@string.get(_("Encoding paramaters for \%s") % [codec], default))
 			end
 		end
 	end
 	
 	# set cdrom drive and it's offset
 	def setCdrom
-		@settings['cdrom'] = @string.get(_("Cdrom device : "), @prefs.get('cdrom'))
-		@settings['offset'] = @int.get(_("Offset for drive : "), 0)
+		@prefs.set('cdrom', @string.get(_("Cdrom device"), @prefs.get('cdrom')))
+		@prefs.set('offset', @int.get(_("Offset for drive"), 0))
 	end
 
 	# set the naming schemes
@@ -254,8 +258,8 @@ paramaters for %s : ") % [codec], ""))
 		end
 
 		puts _("\n%a = Artist\n%b = Album\n%g = Genre\n%y = Year\n%f = Codec\n%n = Tracknumber\n%t = Trackname\n%va = Various Artist\n")
-		answer = @string.get(_("New %s naming scheme (q to quit) : \
-") % [variable], "%f/%a (%y) %b/%n - %t") 
+		answer = @string.get(_("New %s naming scheme (q to quit)") % [variable],
+"%f/%a (%y) %b/%n - %t") 
 		
 		if answer != ('q')
 			if variable == 'normal'
