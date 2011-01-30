@@ -30,36 +30,42 @@ class Preferences
 		@clean = cleanPrefs
 		@deps = dependency
 		checkArguments()
-
 		@prefs = Hash.new()
 	end
 
 	# load the actual configfile
-	def loadConfig(configFileInput = false)
+	def loadConfig(configFile = false)
 		setDefaultSettings()
 		setDefaultPath()
 
 		@clean.cleanup()
-		@load.loadConfig(@default, configFileInput)
+		@load.loadConfig(@defaultConfigFile, configFile)
 		update()
 		save()
 	end
 
-	# return the preferences hash
-	def get(key=false)
-		if key == false ; return @prefs
-		else return @prefs[key]
+	# return the preference
+	def get(preference)
+		if @prefs.key?(preference)
+			return @prefs[preference]
+		else
+			puts "WARNING: #{preference} key does not exist!"
+			return nil
 		end
 	end
 
-	# update the preferences
-	def set(prefs)
-		@prefs.each do |key, value|
-			@prefs[key] = prefs[key] if prefs.key?(key)
+	# set the preference
+	def set(preference, value)
+		if @prefs.key?(preference)
+			@prefs[preference] = value
+		else
+			puts "WARNING: #{preference} key does not exist!"
+			return nil
 		end
-
-		save()
 	end
+
+	# save the updated settings to the configfile
+	def save ; @save.save(@prefs, @load.configFile) ; end
 
 	# return if the specified configfile is found
 	def isConfigFound ; return @load.configFound ; end
@@ -83,13 +89,10 @@ private
 		end
 	end
 
-	# save the updated settings
-	def save ; @save.save(@prefs, @load.configFile) ; end
-
 	# store the default locations
 	def setDefaultPath
 		dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
-		@default = File.join(dir, 'rubyripper/settings')
+		@defaultConfigFile = File.join(dir, 'rubyripper/settings')
 	end
 
 	# setup the the default settings

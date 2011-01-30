@@ -33,20 +33,20 @@ class InstanceHelper
 
 	# get a specific object
 	def get(className)
+		if !@classes.key?(className)
+			puts "WARNING: #{className} does not exist!"
+		end
 		return @classes[className]
 	end
 
 	# set classes based on the frontend
 	def createAll(frontend)
+		@classes['frontend'] = frontend
 		preferences()
-		metadata()
-		disc()
-
-		if frontend == 'cli'
-			startupCli()
-		elsif frontend == 'gtk2'
-			startupGtk2()
-		end
+		#metadata()
+		#disc()
+		#ripping()
+		setFrontend()
 	end
 
 private
@@ -64,7 +64,7 @@ private
 		@classes['loadPrefs'] = LoadPrefs.new(get('fileAndDir'))
 		@classes['savePrefs'] = SavePrefs.new(get('fileAndDir'))
 		@classes['cleanPrefs'] = CleanPrefs.new(get('fileAndDir'))
-		@classes['dependency'] = Dependency.new
+		@classes['dependency'] = Dependency.new()
 		@classes['preferences'] = Preferences.new(get('loadPrefs'),
 get('savePrefs'), get('cleanPrefs'), get('dependency'))
 	end
@@ -74,13 +74,23 @@ get('savePrefs'), get('cleanPrefs'), get('dependency'))
 	# object is passed to the disc object
 	def metadata
 		require 'rubyripper/freedb/loadFreedbRecord.rb'
+		require 'rubyripper/freedb/saveFreedbRecord.rb'
+		require 'rubyripper/freedb/cgiHttpHandler.rb'
+		require 'rubyripper/freedb/getFreedbRecord.rb'
+
 		require 'rubyripper/freedb/freedbRecordParser.rb'
 		require 'rubyripper/metadata.rb'
 
-		#TODO @classes['metadata'] = 
-		#@metadata = Metadata.new(LoadFreedbRecord.new, SaveFreedbRecord.new,
-#GetFreedbRecord.new, CgiHttpHandler.new(@preferences), FreedbRecordParser.new,
-#@freedbString)
+		@classes['loadFreedbRecord'] = LoadFreedbRecord.new(get('fileAndDir'))
+		@classes['saveFreedbRecord'] = SaveFreedbRecord.new(get('fileAndDir'))
+		@classes['cgiHttpHandler'] = CgiHttpHandler.new(get('preferences'))
+		@classes['getFreedbRecord'] = GetFreedbRecord.new(get('preferences'), 
+get('cgiHttpHandler'))
+		
+		@classes['freedbRecordParser'] = FreedbRecordParser.new()
+
+		@classes['metadata'] = Metadata.new(get('loadFreedbRecord'), 
+get('saveFreedbRecord'), get('getFreedbRecord'), get('freedbRecordParser'))
 	end
 
 	# load all necessary files and setup disc objects
@@ -114,40 +124,47 @@ get('scanDiscCdinfo'))
 get('metadata'), get('scanDiscCdrdao'), get('freedbString'))
 	end
 
-	# Load all objects for the Gtk2 interface
-	def startupGtk2
+	# Load all objects for the actual ripping
+	def ripping
+		#TODO
+#		@rubyripper = Rubyripper.new(FileManager.new, Ripping.new, 
+#Encodings.new, Logging.new)
+	end
+
+	def setFrontend
+		if !@classes['frontend'].respond_to?('name')
+			puts "WARNING: 'name' method not found in instanceHelper.rb"
+		elsif @classes['frontend'].name == 'cli'
+			startupCli()
+		elsif @classes['frontend'].name == 'gtk2'
+			startupGtk2()
+		else
+			puts "WARNING: #{@classes['frontend'].name} is not defined \
+in instanceHelper.rb"
+		end
 	end
 
 	# Load all objects for the Cli interface
 	def startupCli
-		#require 'rubyripper/dependency.rb'
-		#require 'rubyripper/cli/cliSettings.rb'
-		#require 'rubyripper/cli/cliMetadata.rb'
-		#require 'rubyripper/cli/cliGetAnswer.rb'
-# TODO require 'rubyripper/cli/cliTracklist.rb'
-		# verify if all dependencies are found
-#		@objects['deps'] = Dependency.new(verbose=true, runtime=true)
-	
-		# save all answer machines in a Hash and pass them (better for testing)
-#		@objects['getString'] = GetString.new
-#		@objects['getInt'] = GetInt.new
-#		@objects['getBool'] = GetBool.new
+		require 'rubyripper/cli/cliGetAnswer.rb'
+		require 'rubyripper/cli/cliPreferences.rb'
+		require 'rubyripper/cli/cliMetadata.rb'
+		require 'rubyripper/cli/cliTracklist.rb'
 
-		# set the gui
-#		@objects['gui'] = self
+		@classes['cliGetBool'] = CliGetBool.new()
+		@classes['cliGetInt'] = CliGetInt.new()
+		@classes['cliGetString'] = CliGetString.new()
+		@classes['cliPreferences'] = CliPreferences.new(get('preferences'))
 
-		# get the settings
-#		@objects['settingsCli'] = CliSettings.new(@objects)
-#		@objects['disc'] = Disc.new(@objects)
-
-		# show the discinfo
-#		@objects['discCli'] = CliMetadata.new(@objects)
+# TODO		@classes['cliMetadata'] = CliMetadata.new(get('disc'), 
+# TODO get('preferences'), get('cliGetBool'), get('cliGetInt'), get('cliGetString'))
+		
+# TODO		@classes['cliTracklist'] = CliTracklist.new(get('preferences'), 
+# TODO get('disc'))
 	end
 
-	# create instances for the ripping process
-	#def createRipper(gui)
-	#	@classes['filemanager'] = FileManager.new()
-	#	@rubyripper = Rubyripper.new(FileManager.new, Ripping.new, 
-#Encodings.new, Logging.new)
-#	end
+	# Load all objects for the Gtk2 interface
+	def startupGtk2
+		#TODO
+	end
 end

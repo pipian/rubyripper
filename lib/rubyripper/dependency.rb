@@ -17,10 +17,11 @@
 
 # The Dependency class is responsible for all dependency checking
 class Dependency
-	
-	# * verbose = print extra info to the terminal?
-	# * runtime = if forced dependency not found, exit? 
-	def initialize(verbose = false, runtime = false)
+
+	# verify all dependencies are met
+	# * verbose = print extra info to the terminal. Used in configure script.
+	# * runtime = exit when needed deps aren't met
+	def verifyDeps(verbose=false, runtime=true)
 		@verbose = verbose
 		@runtime = runtime
 
@@ -91,8 +92,6 @@ calculation unless %s is installed.") % ['Discid'],
 			'ls' => _("Show rights in case of problems")
 		}
 	end
-
-
 
 	# convert the arrays to hashes (they were array's to prevent random sorting)
 	def arrayToHash(array)

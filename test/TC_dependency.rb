@@ -23,6 +23,7 @@ class TC_Dependency < Test::Unit::TestCase
 	# test is inst001 passes
 	def test_DependencyKeys
 		@deps = Dependency.new()
+		@deps.verifyDeps()
 		keysDep = ['cdparanoia', 'ruby-gtk2', 'ruby-gettext', 'discid', 
 'cd-discid', 'eject', 'flac', 'vorbis', 'lame', 'wavegain', 'vorbisgain',
 'mp3gain', 'normalize', 'cdrdao', 'cd-info', 'ls', 'diskutil']

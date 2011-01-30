@@ -20,7 +20,7 @@ require './mocks/FakeInput.rb'
 require 'rubyripper/cli/cliGetAnswer.rb'
 
 # A class to test if the class returns proper answers
-class TC_GetAnswer < Test::Unit::TestCase
+class TC_CliGetAnswer < Test::Unit::TestCase
 	
 	# overriding input and output
 	def setup
@@ -72,7 +72,7 @@ class TC_GetAnswer < Test::Unit::TestCase
 
 	# test GetInt class
 	def test_GetInt
-		@int = GetInt.new
+		@int = CliGetInt.new
 
 		# test in case an integer 0-10 is typed
 		(0..10).each do |number|
@@ -91,7 +91,7 @@ class TC_GetAnswer < Test::Unit::TestCase
 
 	# test GetBool class
 	def test_GetBool
-		@bool = GetBool.new
+		@bool = CliGetBool.new
 
 		valid = {_("yes") => true, _('y') => true, 
 _("no") => false, _("n") =>false}
@@ -113,7 +113,7 @@ _("no") => false, _("n") =>false}
 
 	# test GetString class
 	def test_GetString
-		@string = GetString.new
+		@string = CliGetString.new
 		strings = ['goodbye', 'oh', 'cruel', 'world']
 
 		# test for valid input

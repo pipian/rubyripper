@@ -38,17 +38,32 @@ class CommandLineInterface
 		@rippingLog = ""
 		@rippingProgress = 0.0
 		@encodingProgress = 0.0
-		@objects = Hash.new
-		setObjects()
+		main()
 	end
 
-	def setObjects
-		@instanceHelper = InstanceHelper.new()
-		@instanceHelper.createAll('cli')
+	# Start the program logic
+	def main
+		@inst = InstanceHelper.new()
+		@inst.createAll(self)
 
-		#getDiscInfo()
-		#selectTracks()
+		# verify all dependencies are met
+		@inst.get('dependency').verifyDeps()
+
+		# load preferences and if needed act upon
+		@inst.get('cliPreferences').readPrefs()
+
+		# query for a disc, show the metadata and if needed edit it
+		# TODO @inst.get('cliMetadata').showDisc()
+
+		# choose which tracks are to be ripped
+		# TODO @inst.get('cliTracklist').chooseTracks()
+
+		# start the actual ripping part
+		# TODO
 	end
+
+	# Name of the frontend, used in InstanceHelper class
+	def name ; return 'cli' ; end
 
 	# The only function where the lib files are reporting to
 	def update(modus, value=false)

@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # return an answer from the user, typed into the screen
-class GetAnswer
+class CliGetAnswer
 
 	# get the input from the user	
 	def get(question, default)
@@ -32,7 +32,7 @@ class GetAnswer
 end
 
 # return a boolean value from the user, subclasses from GetAnswer
-class GetBool < GetAnswer
+class CliGetBool < CliGetAnswer
 
 	# get a boolean value from the user
 	def initialize
@@ -54,7 +54,7 @@ _("no") => false, _("n") =>false}
 end
 
 # return an integer value from the user, subclasses from GetAnswer
-class GetInt < GetAnswer
+class CliGetInt < CliGetAnswer
 
 	# get the input from the user	
 	def get(question, default)
@@ -70,7 +70,7 @@ class GetInt < GetAnswer
 end
 
 # return an answer from the user, typed into the screen
-class GetString < GetAnswer
+class CliGetString < CliGetAnswer
 
 	# get the input from the user	
 	def get(question, default)

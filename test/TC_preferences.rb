@@ -48,17 +48,15 @@ class TC_Preferences < Test::Unit::TestCase
 		@prefs.loadConfig()
 
 		assert_equal(false, @prefs.isConfigFound)
-		assert_equal('test', @prefs.get['username'])
-		assert_equal(true, @prefs.get['firstHit'])
-		assert_equal('testDrive', @prefs.get['cdrom'])
-		assert_equal('paper', @prefs.get['editor'])
-		assert_equal('netscape', @prefs.get['browser'])
-		assert_equal('explorer', @prefs.get['filemanager'])
-		assert_equal(44, @prefs.get.length)
+		assert_equal('test', @prefs.get('username'))
+		assert_equal(true, @prefs.get('firstHit'))
+		assert_equal('testDrive', @prefs.get('cdrom'))
+		assert_equal('paper', @prefs.get('editor'))
+		assert_equal('netscape', @prefs.get('browser'))
+		assert_equal('explorer', @prefs.get('filemanager'))
 
 		assert_equal('test', @save.prefs['username'])
 		assert_equal(true, @save.prefs['firstHit'])
-		assert_equal(44, @prefs.get.length)
 
 		assert_equal(true, @clean.cleanup)
 	end
@@ -69,7 +67,8 @@ class TC_Preferences < Test::Unit::TestCase
 		@load.set({'crazy'=>true, 'weird'=>false})
 		@prefs.loadConfig()
 
-		assert_equal(44, @prefs.get.length)
+		assert_equal(nil, @prefs.get('crazy'))
+		assert_equal(nil, @prefs.get('weird'))
 		assert_equal(true, @prefs.isConfigFound)
 	end
 
@@ -79,10 +78,12 @@ class TC_Preferences < Test::Unit::TestCase
 		@load.set(Hash.new)
 		@prefs.loadConfig()
 		
-		@prefs.set({'editor'=>'gedit', 'maxThreads'=>5, 'nuts'=>true})
-		assert_equal('gedit', @prefs.get['editor'])
-		assert_equal(5, @prefs.get['maxThreads'])
-		assert_equal(false, @prefs.get.key?('nuts'))
+		@prefs.set('editor', 'gedit')
+		@prefs.set('maxThreads', 5)
+		assert_equal(nil, @prefs.set('nuts', true))
+		assert_equal('gedit', @prefs.get('editor'))
+		assert_equal(5, @prefs.get('maxThreads'))
+		assert_equal(nil, @prefs.get('nuts'))
 		assert_equal('gedit', @save.prefs['editor'])
 	end
 end
