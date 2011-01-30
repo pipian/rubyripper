@@ -154,7 +154,8 @@ in instanceHelper.rb"
 		@classes['cliGetBool'] = CliGetBool.new()
 		@classes['cliGetInt'] = CliGetInt.new()
 		@classes['cliGetString'] = CliGetString.new()
-		@classes['cliPreferences'] = CliPreferences.new(get('preferences'))
+		@classes['cliPreferences'] = CliPreferences.new(get('preferences'),
+get('cliGetInt'), get('cliGetBool'), get('cliGetString'))
 
 # TODO		@classes['cliMetadata'] = CliMetadata.new(get('disc'), 
 # TODO get('preferences'), get('cliGetBool'), get('cliGetInt'), get('cliGetString'))

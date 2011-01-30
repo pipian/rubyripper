@@ -21,14 +21,14 @@ require 'optparse'
 # CliPreferences is responsible for showing and editing the preferences
 # It also interpretes the parameters when loaded
 class CliPreferences
-	
+
 	# * preferences = instance of Preferences class
 	# * cliGetInt = instance of CliGetInt class
 	# * cliGetBool = instance of CliGetBool class
 	# * cliGetString = instance of CliGetString class
 	def initialize(preferences, cliGetInt, cliGetBool, cliGetString)
 		@prefs = preferences
-		@int = cliGetInt				
+		@int = cliGetInt
 		@bool = cliGetBool
 		@string = cliGetString
 	end
@@ -128,16 +128,16 @@ private
 		puts ""
 		puts _("** ENCODING **")
  		puts _("1)  flac [%s], settings: %s") % [showBool('flac'),
-@prefs.get('flacsettings')]
+@prefs.get('settingsFlac')]
  		puts _("2)  vorbis [%s], settings: %s") % [showBool('vorbis'),
-@prefs.get('vorbissettings')]
+@prefs.get('settingsVorbis')]
  		puts _("3)  mp3 [%s], settings: %s") % [showBool('mp3'),
-@prefs.get('mp3settings')]
+@prefs.get('settingsMp3')]
  		puts _("4)  wav [%s]") % [showBool('wav')]
  		puts _("5)  other [%s], settings: %s") % [showBool('other'), 
-@prefs.get('othersettings')]
+@prefs.get('settingsOther')]
  		puts _("6)  playlist support [%s]") % [showBool('playlist')]
- 		puts _("7)  encode while ripping [%s]")  % [@prefs.get('maxThreads')]
+ 		puts _("7)  maximum extra encoding threads [%s]")  % [@prefs.get('maxThreads')]
  		puts ""
  		puts _("** RIPPING **")
  		puts _("8)  cdrom : %s with offset %s") % [@prefs.get('cdrom'),
