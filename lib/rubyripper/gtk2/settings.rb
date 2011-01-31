@@ -87,9 +87,9 @@ attr_reader :display
 		@freedb_hostname_entry.text = @settings['hostname']
 #other
 		@basedir_entry.text = @settings['basedir']
-		@naming_normal_entry.text = @settings['naming_normal']
-		@naming_various_entry.text = @settings['naming_various']
-		@naming_image_entry.text = @settings['naming_image']
+		@naming_normal_entry.text = @settings['namingNormal']
+		@naming_various_entry.text = @settings['namingVarious']
+		@naming_image_entry.text = @settings['namingImage']
 		@verbose.active = @settings['verbose']
 		@debug.active = @settings['debug']
 		@editor_entry.text = @settings['editor']
@@ -146,9 +146,9 @@ attr_reader :display
 		@settings['hostname'] = @freedb_hostname_entry.text
 #other
 		@settings['basedir'] = @basedir_entry.text
-		@settings['naming_normal'] = @naming_normal_entry.text
-		@settings['naming_various'] = @naming_various_entry.text
-		@settings['naming_image'] = @naming_image_entry.text
+		@settings['namingNormal'] = @naming_normal_entry.text
+		@settings['namingVarious'] = @naming_various_entry.text
+		@settings['namingImage'] = @naming_image_entry.text
 		@settings['verbose'] = @verbose.active?
 		@settings['debug'] = @debug.active?
 		@settings['editor'] = @editor_entry.text

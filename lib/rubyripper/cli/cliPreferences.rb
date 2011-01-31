@@ -136,8 +136,15 @@ private
 		choices.each_index do |index|
 			puts " #{index+1}) #{choices[index][1]}"
 		end
+
 		choice = @int.get("\nWhich one do you prefer?", 1)
-		return choices[choice - 1][0]
+
+		if choice > choices.size
+			puts _("Number #{choice} is not a valid choice, try again")
+			multipleChoice(choices)
+		else
+			return choices[choice - 1][0]
+		end
 	end
 
 	# show a menu for the different settings
@@ -279,9 +286,11 @@ sets.htm.\n   **Your drive model is shown in the logfile.")
 		puts ' 8) ' + _("Other codec %s") % [showBool('other')]
 		puts ' 9) ' + _("Commandline passed") + ": %s" % [@prefs.get('settingsOther')]
 		puts '10) ' + _("Playlist support %s") %[showBool('playlist')]
-		puts '11) ' + _("Maximum extra encoding threads") + ": %s" %[@prefs.get('maxThreads')]
+		puts '11) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.get('maxThreads')]
 		puts '12) ' + _("Replace spaces with underscores %s") % [showBool('noSpaces')]
 		puts '13) ' + _("Downsize all capital letters in filenames %s") %[showBool('noCapitals')]
+		puts '14) ' + _("Normalize program") + ": %s" % [@prefs.get('normalizer')]
+		puts '15) ' + _("Normalize modus") + ": %s" % [@prefs.get('gain')]
 		puts '99) ' + _("Back to settings main menu")
 		puts ""
 		@int.get("Please type the number of the setting you wish to change", 99)
@@ -314,6 +323,15 @@ forget extension)")
 @prefs.set('maxThreads', @int.get(_("Maximum extra encoding threads"), 2))
 			elsif choice == 12 ; switchBool('noSpaces')
 			elsif choice == 13 ; switchBool('noCapitals')
+			elsif choice == 14
+				choices = [['none', _("Don't normalize the audio")],
+					['replaygain', _('Use replaygain')],
+					['normalize', _('Use normalize')]]
+				@prefs.set('normalizer', multipleChoice(choices)) 
+			elsif choice == 15
+				choices = [['album', _('Use album based gain')],
+					['track', _('Use track based gain')]]
+				@prefs.set('gain', multipleChoice(choices)) 
 			else
 				puts _("Number #{choice} is not a valid choice, try again.")
 			end
