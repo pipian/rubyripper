@@ -393,6 +393,7 @@ forget extension)")
 		@int.get("Please type the number of the setting you wish to change", 99)
 	end
 
+	# loop through the other menu
 	def loopSubMenuOther
 		choice = showSubMenuOther()
 		if choice == 99

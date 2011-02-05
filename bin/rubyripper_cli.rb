@@ -38,28 +38,8 @@ class CommandLineInterface
 		@rippingLog = ""
 		@rippingProgress = 0.0
 		@encodingProgress = 0.0
-		main()
-	end
-
-	# Start the program logic
-	def main
-		@inst = InstanceHelper.new()
-		@inst.createAll(self)
-
-		# verify all dependencies are met
-		@inst.get('dependency').verifyDeps()
-
-		# load preferences and if needed act upon
-		@inst.get('cliPreferences').readPrefs()
-
-		# query for a disc, show the metadata and if needed edit it
-		# TODO @inst.get('cliMetadata').showDisc()
-
-		# choose which tracks are to be ripped
-		# TODO @inst.get('cliTracklist').chooseTracks()
-
-		# start the actual ripping part
-		# TODO
+		prepare()
+		loopMainMenu()
 	end
 
 	# Name of the frontend, used in InstanceHelper class
@@ -88,6 +68,65 @@ class CommandLineInterface
 
 private
 
+	# Build the object tree, check if dependencies are met and load the preferences
+	def prepare
+		puts "Rubyripper version #{$rr_version}"
+
+		@inst = InstanceHelper.new()
+		@inst.createAll(self)
+
+		# verify all dependencies are met
+		@inst.get('dependency').verifyDeps()
+
+		# load preferences and if needed act upon
+		@inst.get('cliPreferences').readPrefs()
+	
+		# for the main menu we need the cliGetInt object
+		@int = @inst.get('cliGetInt')
+
+		# try to find an audio disc and display the results in the screen
+		# TODO
+	end
+
+	# Display the different options
+	def showMainMenu
+		puts ""
+		puts _("*** RUBYRIPPER MAIN MENU ***")
+		puts ""
+		puts ' 1) ' + _('Change preferences')
+		puts ' 2) ' + _('Edit the metadata')
+		puts ' 3) ' + _('Select tracks to rip (default = all)')
+		puts ' 4) ' + _('Rip the disc!')
+		puts '99) ' + _("Exit rubyripper")
+		puts ""
+		@int.get("Please type the number of your choice", 4)
+	end
+	
+	#  Loop through the main menu
+	def loopMainMenu
+		choice = showMainMenu()
+		if choice == 99
+			puts _("Thanks for using rubyripper.")
+			puts _("Have a nice day!")
+			exit()
+		else
+			if choice == 1 ; @inst.get('cliPreferences').edit()
+			elsif choice == 2
+				puts 'TODO: implement the metadata menu'
+				# TODO @inst.get('cliMetadata').showDisc()
+			elsif choice == 3
+				puts 'TODO: implement the track selection menu'
+				# TODO @inst.get('cliTracklist').chooseTracks()
+			elsif choice == 4
+				puts 'TODO: implement the rip action'
+				# TODO
+			else
+				puts _("Number #{choice} is not a valid choice, try again")
+			end
+			loopMainMenu()
+		end
+	end
+	
 	# Show the disc info and include error handling
 	def getDiscInfo()
 		if @discCli.getError
