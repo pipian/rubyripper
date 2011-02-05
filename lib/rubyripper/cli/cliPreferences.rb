@@ -43,7 +43,7 @@ class CliPreferences
 	def defaults ; return @options['defaults'] ; end
 
 	# show the preferences menu
-	def show ; showMainMenu() ; end
+	def show ; loopMainMenu() ; end
 
 private
 
