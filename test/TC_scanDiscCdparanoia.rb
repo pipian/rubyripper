@@ -15,7 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require './mocks/FakePreferences.rb'
 require './mocks/FakeFireCommand.rb'
 require './mocks/FakePermissionDrive.rb'
 require 'rubyripper/disc/scanDiscCdparanoia.rb'
@@ -24,17 +23,15 @@ require 'rubyripper/disc/scanDiscCdparanoia.rb'
 class TC_ScanDiscCdparanoia < Test::Unit::TestCase
 
 	def setup
-		settings = {'cdrom' => 'testDrive', 'ripHiddenAudio' => true, 'minLengthHiddenTrack' => 2}
-		@prefs = FakePreferences.new(settings)
 		@fire = FakeFireCommand.new
 		@perm = FakePermissionDrive.new
-		@disc = ScanDiscCdparanoia.new(@prefs, @fire, @perm)
+		@disc = ScanDiscCdparanoia.new(@fire, @perm)
 	end
 
 	# test if there is no disc
 	def test_NoDisc
 		@fire.add(File.read(File.join($localdir, 'data/discs/001/cdparanoia')))
-		@disc.scan()
+		@disc.scan(cdrom='testDrive', ripHiddenAudio=true, minLengthHiddenTrack=2)
 
 		assert_equal(_("No disc found in drive testDrive.\n\nPlease put an \
 audio disc in first..."), @disc.status)
@@ -44,7 +41,7 @@ audio disc in first..."), @disc.status)
 	def test_WrongParameters
 		@fire.add(File.read(File.join($localdir, 'data/discs/002/cdparanoia')))
 		@fire.add(File.read(File.join($localdir, 'data/discs/002/cdparanoia')))
-		@disc.scan()
+		@disc.scan(cdrom='testDrive', ripHiddenAudio=true, minLengthHiddenTrack=2)
 		
 		assert_equal(_('ERROR: Cdparanoia doesn\'t recognize the parameters.'),
 @disc.status)
@@ -54,14 +51,14 @@ audio disc in first..."), @disc.status)
 	# test if drive is unknown
 	def test_DriveUnknown
 		@fire.add(File.read(File.join($localdir, 'data/discs/003/cdparanoia')))
-		@disc.scan()
+		@disc.scan(cdrom='testDrive', ripHiddenAudio=true, minLengthHiddenTrack=2)
 		assert_equal(_('ERROR: drive testDrive is not found'), @disc.status)
 	end
 
 	# test pure audio disc
 	def	test_PureAudioDisc
 		@fire.add(File.read(File.join($localdir, 'data/discs/004/cdparanoia')))
-		@disc.scan()
+		@disc.scan(cdrom='testDrive', ripHiddenAudio=true, minLengthHiddenTrack=2)
 		assert_equal(10, @disc.get('audiotracks'))
 		assert_equal("HL-DT-ST DVDRAM GH22NS40 NL01", @disc.get('devicename'))
 		assert_equal("36:12", @disc.get('playtime'))
@@ -93,7 +90,7 @@ audio disc in first..."), @disc.status)
 	# test for audio disc with a data track at the end
 	def	test_AudioDiscWithDataTrack
 		@fire.add(File.read(File.join($localdir, 'data/discs/005/cdparanoia')))
-		@disc.scan()
+		@disc.scan(cdrom='testDrive', ripHiddenAudio=true, minLengthHiddenTrack=2)
 		assert_equal(12, @disc.get('audiotracks'))
 		assert_equal("HL-DT-ST DVDRAM GH22NS40 NL01", @disc.get('devicename'))
 		assert_equal("58:37", @disc.get('playtime'))

@@ -85,7 +85,7 @@ private
 		@int = @inst.get('cliGetInt')
 
 		# try to find an audio disc and display the results in the screen
-		# TODO
+		@inst.get('cliMetadata').show()
 	end
 
 	# Display the different options
@@ -94,10 +94,10 @@ private
 		puts _("*** RUBYRIPPER MAIN MENU ***")
 		puts ""
 		puts ' 1) ' + _('Change preferences')
-		puts ' 2) ' + _('Edit the metadata')
-		puts ' 3) ' + _('Select tracks to rip (default = all)')
+		puts ' 2) ' + _('Change metadata')
+		puts ' 3) ' + _('Change tracks to rip (default = all)')
 		puts ' 4) ' + _('Rip the disc!')
-		puts '99) ' + _("Exit rubyripper")
+		puts '99) ' + _("Exit rubyripper...")
 		puts ""
 		@int.get("Please type the number of your choice", 4)
 	end
@@ -110,10 +110,8 @@ private
 			puts _("Have a nice day!")
 			exit()
 		else
-			if choice == 1 ; @inst.get('cliPreferences').edit()
-			elsif choice == 2
-				puts 'TODO: implement the metadata menu'
-				# TODO @inst.get('cliMetadata').showDisc()
+			if choice == 1 ; @inst.get('cliPreferences').show()
+			elsif choice == 2 ; @inst.get('cliMetadata').show()
 			elsif choice == 3
 				puts 'TODO: implement the track selection menu'
 				# TODO @inst.get('cliTracklist').chooseTracks()

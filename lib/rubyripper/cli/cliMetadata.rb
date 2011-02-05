@@ -15,50 +15,53 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc.rb'
-
 # Metadata class is responsible for showing and editing the metadata
-
 class CliMetadata
 	
-	# * settings = hash with settings
-	# * gui = instance of the user interface
-	# * deps = instance of dependency class
-	# * defaults = if true, skip all questions
-	def initialize(objects) #settings, gui, deps, defaults, answers, disc)
-		@objects = objects		
-		@settings = objects['cliSettings'].settings
-		@gui = objects['gui']
-		@deps = objects['deps']
-		@defaults = objects['cliSettings'].defaults
-		@int = objects['getInt']
-		@bool = objects['getBool']
-		@string = objects['getString']
-		@disc = objects['disc']
-		checkArguments()
+	# setup the different objects
+	def initialize(scanDiscCdparanoia, metadata, preferences, cliGetBool, cliGetInt, cliGetString)
+		@cd = scanDiscCdparanoia
+		@md = metadata
+		@prefs = preferences
+		@bool = cliGetBool
+		@int = cliGetInt
+		@string = cliGetString
+	end
 
-		@error = ''
-		@status = false
-		getDiscInfo()
+	# show the metadata to the screen
+	def show
+		refreshDisc(false)
+		showDisc()
 	end
 
 	# return the disc object
-	def disc ; return @disc ; end
-
+	# def disc ; return @disc ; end
 	# return status when finished
-	def status ; return @status ; end
-
+	#def status ; return @status ; end
 	# return any problems reported
-	def error ; return @error ; end
+	#def error ; return @error ; end
 
 private
-	# make sure the proper values are passed
-	def checkArguments
-		['cliSettings', 'gui', 'deps', 'getInt', 'getBool', 
-'getString', 'disc'].each do |key|
-			unless @objects.key?(key)
-				raise ArgumentError, "Objects must have key #{key}"
-			end
+
+	# read the disc contents
+	# if force == true, scan the disc even if it was already known
+	def refreshDisc(force)
+		if @cd.get('audiotracks') == 0 || force == true
+			@cd.scan(@prefs.get('cdrom'), @prefs.get('ripHiddenAudio'),
+@prefs.get('minLengthHiddenTrack'))
+		end
+	end
+
+	# show the contents of the audio disc
+	def showDisc
+		puts ""
+
+		if @cd.get('audiotracks') == 0
+			puts "No audio disc detected..."
+		else
+			puts _("AUDIO DISC FOUND")
+			puts _("Number of tracks: %s") % [@cd.get('audiotracks')]
+			puts _("Total playtime: %s") % [@cd.get('playtime')]
 		end
 	end
 
@@ -68,9 +71,7 @@ private
 		@md = @disc.md
 		
 		# When a disc is found
-		if @cd.getInfo('audiotracks') != 0
-			puts _("Audio-disc found, number of tracks : %s, total playlength \
-: %s") % [@cd.getInfo('audiotracks'), @cd.getInfo('playtime')]
+
 			showFreedb()
 			# When freedb is enabled 
 			#if @settings['freedb']
@@ -80,10 +81,10 @@ private
 			#	showFreedb()
 			#end
 		# When no disc is found
-		else 
-			puts "ERROR: No disc found."
-			exit()
-		end
+		#else 
+		#	puts "ERROR: No disc found."
+		#	exit()
+		#end
 	end
 
 	# Fetch the cddb info, if choice is true, multiple discs were available

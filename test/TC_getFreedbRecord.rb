@@ -40,7 +40,8 @@ fakestation+rubyripper+test&proto=6"
 		read = ''
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test to verify input for FakeHttpConnection
 		readRequest = nil
@@ -61,7 +62,8 @@ fakestation+rubyripper+test&proto=6"
 		read = "210 metal 7F087C01\n" + @file001 + "\n."
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test to verify input for FakeHttpConnection
 		readRequest = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
@@ -90,7 +92,8 @@ country 7F087C0D Artist D / Album D\n."
 		read = "210 blues 7F087C0A\n" + @file001 + "\n."
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test, user has to choose first before record is shown
 		assert_equal(true, mock.config)
@@ -150,7 +153,8 @@ Joe+fakestation+rubyripper+test&proto=6"
 		@preferences['firstHit'] = true
 		mock.update(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 		assert_equal(@file001, instance.freedbRecord)
 		assert_equal('ok', instance.status[0])
 
@@ -167,7 +171,8 @@ Joe+fakestation+rubyripper+test&proto=6"
 		read = ''
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test
 		assert_equal('databaseCorrupt', instance.status[0])
@@ -182,7 +187,8 @@ Joe+fakestation+rubyripper+test&proto=6"
 		read = ''
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test
 		assert_equal('unknownReturnCode', instance.status[0])
@@ -199,7 +205,8 @@ Return code is not supported.", instance.status[1])
 		read = "401 Specified CDDB entry not found"
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test
 		assert_equal('cddbEntryNotFound', instance.status[0])
@@ -214,7 +221,8 @@ Return code is not supported.", instance.status[1])
 		read = "402 Server error"
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test
 		assert_equal('serverError', instance.status[0])
@@ -229,7 +237,8 @@ Return code is not supported.", instance.status[1])
 		read = "403 Server error"
 		mock = FakeHttpConnection.new(query, read)
 		@prefs = FakePreferences.new(@preferences)
-		instance = GetFreedbRecord.new(@freedbString, @prefs, mock)
+		instance = GetFreedbRecord.new(@prefs, mock)
+		instance.handleConnection(@freedbString)
 
 		# execute test
 		assert_equal('databaseCorrupt', instance.status[0])

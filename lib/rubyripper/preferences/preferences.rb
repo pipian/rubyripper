@@ -49,7 +49,7 @@ class Preferences
 		if @prefs.key?(preference)
 			return @prefs[preference]
 		else
-			puts "WARNING: #{preference} key does not exist!"
+			puts "WARNING: #{preference} key does not exist! (get preferences)"
 			return nil
 		end
 	end
@@ -59,7 +59,7 @@ class Preferences
 		if @prefs.key?(preference)
 			@prefs[preference] = value
 		else
-			puts "WARNING: #{preference} key does not exist!"
+			puts "WARNING: #{preference} key does not exist! (set preferences)"
 			return nil
 		end
 	end

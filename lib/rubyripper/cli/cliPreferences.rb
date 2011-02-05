@@ -42,8 +42,8 @@ class CliPreferences
 	# return true if user has chosen for defaults
 	def defaults ; return @options['defaults'] ; end
 
-	# edit the current settings
-	def edit ; showMainMenu() ; end
+	# show the preferences menu
+	def show ; showMainMenu() ; end
 
 private
 

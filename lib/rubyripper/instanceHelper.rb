@@ -34,7 +34,7 @@ class InstanceHelper
 	# get a specific object
 	def get(className)
 		if !@classes.key?(className)
-			puts "WARNING: #{className} does not exist!"
+			puts "WARNING: #{className} does not exist! (instanceHelper)"
 		end
 		return @classes[className]
 	end
@@ -43,8 +43,8 @@ class InstanceHelper
 	def createAll(frontend)
 		@classes['frontend'] = frontend
 		preferences()
-		#metadata()
-		#disc()
+		metadata()
+		disc()
 		#ripping()
 		setFrontend()
 	end
@@ -73,24 +73,27 @@ get('savePrefs'), get('cleanPrefs'), get('dependency'))
 	# do this before the disc object, because the metadata
 	# object is passed to the disc object
 	def metadata
-		require 'rubyripper/freedb/loadFreedbRecord.rb'
-		require 'rubyripper/freedb/saveFreedbRecord.rb'
-		require 'rubyripper/freedb/cgiHttpHandler.rb'
-		require 'rubyripper/freedb/getFreedbRecord.rb'
-
-		require 'rubyripper/freedb/freedbRecordParser.rb'
-		require 'rubyripper/metadata.rb'
-
-		@classes['loadFreedbRecord'] = LoadFreedbRecord.new(get('fileAndDir'))
-		@classes['saveFreedbRecord'] = SaveFreedbRecord.new(get('fileAndDir'))
-		@classes['cgiHttpHandler'] = CgiHttpHandler.new(get('preferences'))
-		@classes['getFreedbRecord'] = GetFreedbRecord.new(get('preferences'), 
-get('cgiHttpHandler'))
+#		require 'rubyripper/freedb/loadFreedbRecord.rb'
+#		require 'rubyripper/freedb/saveFreedbRecord.rb'
+#		require 'rubyripper/freedb/cgiHttpHandler.rb'
+#		require 'rubyripper/freedb/getFreedbRecord.rb'
+#
+#		require 'rubyripper/freedb/freedbRecordParser.rb'
+#		require 'rubyripper/metadata.rb'
+#
+#		@classes['loadFreedbRecord'] = LoadFreedbRecord.new(get('fileAndDir'))
+#		@classes['saveFreedbRecord'] = SaveFreedbRecord.new(get('fileAndDir'))
+#		@classes['cgiHttpHandler'] = CgiHttpHandler.new(get('preferences'))
+#		@classes['getFreedbRecord'] = GetFreedbRecord.new(get('preferences'), 
+#get('cgiHttpHandler'))
+#		
+#		@classes['freedbRecordParser'] = FreedbRecordParser.new()
+#
+#		@classes['metadata'] = Metadata.new(get('loadFreedbRecord'), 
+#get('saveFreedbRecord'), get('getFreedbRecord'), get('freedbRecordParser'))
 		
-		@classes['freedbRecordParser'] = FreedbRecordParser.new()
-
-		@classes['metadata'] = Metadata.new(get('loadFreedbRecord'), 
-get('saveFreedbRecord'), get('getFreedbRecord'), get('freedbRecordParser'))
+		# TODO			
+		@classes['metadata'] = nil
 	end
 
 	# load all necessary files and setup disc objects
@@ -98,30 +101,30 @@ get('saveFreedbRecord'), get('getFreedbRecord'), get('freedbRecordParser'))
 		require 'rubyripper/fireCommand.rb'
 		require 'rubyripper/permissionDrive.rb'
 		require 'rubyripper/disc/scanDiscCdparanoia.rb'
-		require 'rubyripper/disc/cuesheet.rb'
-		require 'rubyripper/disc/scanDiscCdrdao.rb'
-		require 'rubyripper/disc/scanDiscCdinfo.rb'
-		require 'rubyripper/freedb/freedbString.rb'
+#		require 'rubyripper/disc/cuesheet.rb'
+#		require 'rubyripper/disc/scanDiscCdrdao.rb'
+#		require 'rubyripper/disc/scanDiscCdinfo.rb'
+#		require 'rubyripper/freedb/freedbString.rb'
 		require 'rubyripper/disc.rb'
 
 		@classes['fireCommand'] = FireCommand.new(get('dependency'))
-		@classes['permissionDrive'] = PermissionDrive.new()
-		@classes['scanDiscCdparanoia'] = ScanDiscCdparanoia.new(
-get('preferences'), get('fireCommand'), get('permissionDrive'))
+		@classes['permissionDrive'] = PermissionDrive.new(get('dependency'))
+		@classes['scanDiscCdparanoia'] = ScanDiscCdparanoia.new(get('fireCommand'),
+get('permissionDrive'))
 
-		@classes['cuesheet'] = Cuesheet.new()
-		@classes['scanDiscCrdao'] = ScanDiscCdrdao.new(get('preferences'),
-get('fireCommand'), get('cuesheet'))
+#		@classes['cuesheet'] = Cuesheet.new()
+#		@classes['scanDiscCrdao'] = ScanDiscCdrdao.new(get('preferences'),
+#get('fireCommand'), get('cuesheet'))
 
-		@classes['scanDiscCdinfo'] = ScanDiscCdinfo.new(get('preferences'),
-get('fireCommand'))
+#		@classes['scanDiscCdinfo'] = ScanDiscCdinfo.new(get('preferences'),
+#get('fireCommand'))
 
-		@classes['freedbString'] = FreedbString.new(get('dependency'),
-get('preferences'), get('scanDiscCdparanoia'), get('fireCommand'),
-get('scanDiscCdinfo'))
+#		@classes['freedbString'] = FreedbString.new(get('dependency'),
+#get('preferences'), get('scanDiscCdparanoia'), get('fireCommand'),
+#get('scanDiscCdinfo'))
 
-		@classes['disc'] = Disc.new(get('scanDiscCdparanoia'),
-get('metadata'), get('scanDiscCdrdao'), get('freedbString'))
+#		@classes['disc'] = Disc.new(get('scanDiscCdparanoia'),
+#get('metadata'), get('scanDiscCdrdao'), get('freedbString'))
 	end
 
 	# Load all objects for the actual ripping
@@ -157,8 +160,9 @@ in instanceHelper.rb"
 		@classes['cliPreferences'] = CliPreferences.new(get('preferences'),
 get('cliGetInt'), get('cliGetBool'), get('cliGetString'))
 
-# TODO		@classes['cliMetadata'] = CliMetadata.new(get('disc'), 
-# TODO get('preferences'), get('cliGetBool'), get('cliGetInt'), get('cliGetString'))
+		@classes['cliMetadata'] = CliMetadata.new(get('scanDiscCdparanoia'),
+get('metadata'), get('preferences'), get('cliGetBool'), get('cliGetInt'),
+get('cliGetString'))
 		
 # TODO		@classes['cliTracklist'] = CliTracklist.new(get('preferences'), 
 # TODO get('disc'))

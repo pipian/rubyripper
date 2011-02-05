@@ -24,18 +24,13 @@ class ScanDiscCdparanoia
 	# * preferences is an instance of Preferences
 	# * fireCommand is an instance of FireCommand
 	# * permissionDrive is an instance of PermissionDrive
-	def initialize(preferences, fireCommand, permissionDrive)
-		@prefs = preferences
+	def initialize(fireCommand, permissionDrive)
 		@fire = fireCommand
 		@perm = permissionDrive
-		checkArguments()
-	
-		@cdrom = @prefs.get('cdrom')
-		@ripHidden = @prefs.get('ripHiddenAudio')
-		@minLength = @prefs.get('minLengthHiddenTrack')
 
-		@status = 'ok'		
+		@status = 'ok'
 		@disc = Hash.new
+		@disc['playtime'] = _('Unknown')
 		@disc['audiotracks'] = 0
 		@disc['startSector'] = Hash.new
 		@disc['lengthSector'] = Hash.new
@@ -45,7 +40,11 @@ class ScanDiscCdparanoia
 	end
 	
 	# scan the disc for input
-	def	scan		
+	def	scan(cdrom, ripHiddenAudio, minLengthHiddenTrack)
+		@cdrom = cdrom
+		@ripHidden = ripHiddenAudio
+		@minLength = minLengthHiddenTrack
+
 		query = @fire.launch('cdparanoia', "cdparanoia -d #{@cdrom} -vQ 2>&1")
 		
 		# some versions of cdparanoia don't support the cdrom parameter
@@ -66,15 +65,12 @@ class ScanDiscCdparanoia
 	end
 
 	# return the disc variable
-	def get(key=false)
-		if key == false
-			return @disc
+	def get(key)
+		if @disc.key?(key)
+			return @disc[key]
 		else
-			if @disc.key?(key)
-				return @disc[key]
-			else
-				return false
-			end
+			puts "WARNING: #{key} key does not exist! (scanDiscCdparanoia)"
+			return nil
 		end
 	end
 
@@ -140,21 +136,6 @@ class ScanDiscCdparanoia
 	end
 
 private
-
-	# check the parameters
-	def checkArguments
-		unless @prefs.respond_to?(:get)
-			raise ArgumentError, "prefs parameter must be a Preferences class"
-		end
-
-		unless @fire.respond_to?(:launch)
-			raise ArgumentError, "fire parameter must be a FireCommand class"
-		end
-
-		unless @perm.respond_to?(:checkPermission)
-			raise ArgumentError, "perm parameter must be a PermissionDrive class"
-		end
-	end
 
 	# check the query result for errors
 	def isValidQuery(query)
