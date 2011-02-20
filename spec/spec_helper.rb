@@ -15,32 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# class helping to store the retrieved freedb record
-# do this conform standards at location $HOME/.cddb/<category>/<discid>
-class SaveFreedbRecord
-	def initialize(fileAndDir)
-		@file = fileAndDir
-	end	
-
-	# * freedbRecord = the complete freedb record string with all metadata
-	# * category = the freedb category string, needed for saving locally
-	# * discid = the discid string, which is the filename
-	def save(freedbRecord, category, discid)
-		@freedbRecord = freedbRecord
-		@category = category
-		@discid = discid
-		saveDiscid()
-	end
-	
-	# return the file location
-	def outputFile ; return @outputFile ; end
-
-private
-
-	# if $HOME/.cddb/<category>/<discid> does nog exist, create it
-	def saveDiscid
-		@outputFile = File.join(ENV['HOME'], '.cddb', @category,
-@discid)
-		@file.write(@outputFile, @freedbRecord, force=false)
-	end
+# Help function for translations
+def _(txt)
+    return txt
 end
+
+$rr_version = 'test'
+
+require 'rubyripper/freedb/saveFreedbRecord'
+require 'rubyripper/freedb/loadFreedbRecord'
+require 'rubyripper/freedb/getFreedbRecord'
+

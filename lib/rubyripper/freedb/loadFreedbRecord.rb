@@ -20,13 +20,10 @@ class LoadFreedbRecord
 	
 	# * discid = the discid as calculated for the freedb server
 	def initialize(fileAndDir)
-		@file = fileAndDir		
-		checkArguments()
-
-		@freedbRecord = ''
-		@encoding = String.new
+		@file = fileAndDir
+        @encoding = nil
+		@freedbRecord = nil
 		@status = 'noRecords'
-
 	end
 
 	# look for local entries
@@ -35,27 +32,21 @@ class LoadFreedbRecord
 		scanLocal()
 	end
 
-	# directly read a given cddb file, usefull for system testing
+	# directly read a given cddb file, usefull for testing
 	def read(filename)
 		@freedbRecord = getFile(filename)
 	end
-
-	# return the record
+    
+    # return the encoding found, usefull for testing
+    def encoding ; return @encoding end
+	
+    # return the record
 	def freedbRecord ; return @freedbRecord ; end
-
-	# return the encoding found
-	def encoding ; return @encoding end
 
 	# return the status
 	def status ; return @status ; end
 
 private
-	# check the arguments for the type
-	def checkArguments
-		unless @file.respond_to?(:read)
-			raise ArgumentError, "instance of FileAndDir is mandatory"
-		end
-	end
 
 	# Find all matches in the cddb directory
 	def scanLocal
@@ -64,35 +55,32 @@ private
 		
 		if matches.size > 0
 			@status = 'ok'
-			begin
-				@freedbRecord = getFile(matches[0])
-			end
+			@freedbRecord = getFile(matches[0])
 		end
 	end
 
-	# file helper because of different encoding madness, it should be UTF-8
-	# The only plausible way to test this is reloading the file
-	# String manipulation afterwards seems not possible
-	# Ruby 1.8 does not have encoding support yet
-	def getFile(path)
-		freedb = String.new
-		if freedb.respond_to?(:encoding)
-			['r:UTF-8', 'r:GB18030', 'r:ISO-8859-1'].each do |encoding|
-				newfreedb = @file.read(path, encoding)
-				freedb = newfreedb unless newfreedb == nil
-				@encoding = encoding
-				break if freedb.valid_encoding?
-			end
+  # file helper because of different encoding madness, it should be UTF-8
+  # The only plausible way to test this is reloading the file
+  # String manipulation afterwards seems not possible
+  # Ruby 1.8 does not have encoding support yet
+  def getFile(path)
+    freedb = String.new
+    if freedb.respond_to?(:encoding)
+      ['r:UTF-8', 'r:GB18030', 'r:ISO-8859-1'].each do |encoding|
+        @encoding = encoding
+        freedb = @file.read(path, encoding)
+        break if freedb.valid_encoding? && freedb != nil
+      end
 
-			if !freedb.valid_encoding?
-				@status = 'InvalidEncoding'
-				return ''
-			else
-				return freedb.encode('UTF-8')
-			end
-		else
-			freedb = @file.read(path)
-			return freedb
-		end
-	end
+      if freedb == nil || !freedb.valid_encoding?
+        @status = 'invalidEncoding'
+        return nil
+      else
+        return freedb.encode('UTF-8')
+      end
+    else
+      freedb = @file.read(path)
+      return freedb
+    end
+  end
 end

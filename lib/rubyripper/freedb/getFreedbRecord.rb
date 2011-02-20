@@ -22,171 +22,129 @@ require 'cgi' #for translating characters to HTTP codes, space = %20 for instanc
 # See http://ftp.freedb.org/pub/freedb/latest/CDDBPROTO for protocol
 
 class GetFreedbRecord
+  attr_reader :status, :freedbRecord, :choices, :category, :finalDiscId
 
-	# freedbString = the identifying message for the disc in the freedb database
-	# preferences = instance of preferences
-	# server = instance of the CgiHttpHandler class
-	def initialize(preferences, server)
-		@prefs = preferences
-		@server = server
-		@freedbString = ''
-		@status = ['ok', _('ok')]
+  def initialize(preferences, server)
+    @prefs = preferences
+    @server = server
+  end
 
-		@freedbRecord = String.new
-		@category = String.new
-		@finalDiscId = String.new
-		@choices = Array.new
-	end
+  # handle the initial connection with the freedb server
+  def handleConnection(freedbString)
+    @freedbString = freedbString
+    @server.config()
+    reply = queryFreedbForMatches()
+    analyzeQueryResult(reply)
+  end
 
-	# handle the initial connection with the freedb server
-	def handleConnection(freedbString)
-		@freedbString = freedbString
-		@url = URI.parse(@prefs.get('site'))
-		@server.configConnection(@url)
-		
-		reply = queryFreedbForMatches()
-		analyzeQueryResult(reply)
-	end
-
-	# if succesfull, return _('ok')
-	def status ; return @status ; end
-
-	# return the freedb metadata string
-	def freedbRecord ; return @freedbRecord ; end
-
-	# return the different choices
-	def getChoices ; return @choices ; end
-
-	# return the category for chosen disc
-	def category ; return @category ; end
-
-	# return the discid for chosen disc
-	def discId ; return @finalDiscId ; end
-
-	# choose number in the array [0-XX] which result you want to return
-	def choose(number)
-		if @choices.empty?
-			raise ArgumentError, "ERROR, There are no choices!"
-		elsif @choices[number] == nil
-			raise ArgumentError, "ERROR, There is no option #{number}"
-		end
-		
-		# fake single record found now		
-		reply = "200 #{@choices[number]}"
-		oneRecordFound(reply)		
-	end
+  # choose number in the array [0-XX] which result you want to return
+  def choose(number)
+    if @choices.nil?
+      @status = 'noChoices'
+    elsif @choices[number].nil?
+      @status = "choiceNotValid: #{number}"
+    else
+      # simulate having found a single record in a query
+      reply = "200 #{@choices[number]}"
+      oneRecordFound(reply)
+    end
+  end
 
 private
 
-	# Query the freedb database for available matches.
-	# There can be none, one or multiple hits, depending on the return code
-	def queryFreedbForMatches()
-		query = @url.path + "?cmd=cddb+query+" + CGI.escape("#{@freedbString}") +
-"&hello=" + CGI.escape("#{@prefs.get('username')} #{@prefs.get('hostname')} \
-rubyripper #{$rr_version}") + "&proto=6"
-		
-		# http requests return all output at once, even if multiple lines		
-		reply = @server.get(query)
-		return reply
-	end
-
-	# analyze the reponse code and assign neccesary action
-	def analyzeQueryResult(reply)
-		code = reply[0..2].to_i
-
-		if code == 200
-			oneRecordFound(reply)
-		elsif code == 211 || code == 210
-			multipleRecordsFound(reply)
-		elsif code == 202
-			noRecordsFound()
-		elsif code == 403
-			databaseCorrupt()
-		else
-			unknownCode(reply)
-		end
-	end
-	
-	# in case no records are found
-	def noRecordsFound()
-		@status = ["noMatches", _("No match in Freedb database. Default \
-values are used.")]
-	end
-
-	# in case a single record is found
-	def oneRecordFound(reply)
-		code, category, discid = reply.split()
-		getRecord(category, discid)
-	end
-
-	# in case multiple records are found, skip header
-	def multipleRecordsFound(reply)
-		reply.split("\n")[1..-1].each do |line|
-			@choices << line
-		end
-		@choices.pop if @choices[-1] == '.'
-		
-		# simulate one record found if firstHit == true
-		if @prefs.get('firstHit') == true
-			reply = "200 #{@choices[0]}"			
-			oneRecordFound(reply)
-		else
-			@status = ['multipleRecords', _("Multiple records are found!")]
-		end
-	end
-
-	# in case the database is corrupt
-	def databaseCorrupt()
-		@status = ["databaseCorrupt", _("The database is corrupt and cannot\
-return values")]
-	end
-
-	# in case the return code is unknown
-	def unknownCode(reply)
-		@status = ["unknownReturnCode", _("cddb_query return code = %s.\n\
-Return code is not supported.") % [reply[0..2]]]
-	end
-
-	# retrieve the record
-	def getRecord(category, discid)
-		query = "#{@url.path}?cmd=cddb+read+" + CGI.escape("#{category} #{discid}") + 
+  # Query the freedb database for available matches.
+  # There can be none, one or multiple hits, depending on the return code
+  def queryFreedbForMatches()
+    query = @server.path + "?cmd=cddb+query+" + CGI.escape("#{@freedbString}") +
 "&hello=" + CGI.escape("#{@prefs.get('username')} #{@prefs.get('hostname')} \
 rubyripper #{$rr_version}") + "&proto=6"
 
-		reply = @server.get(query)
-		
-		if reply[0..2] == '210'
-			code, @category, @finalDiscId = reply.split()
-			cleanup(reply)
-			@status = ['ok', _('ok')]
-		else
-			errorReading(reply)
-		end
-	end
+    # http requests return all output at once, even if multiple lines
+    return @server.get(query)
+  end
 
-	# remove the header and footer of the reply
-	# first line is confirmation message, last line may be just a dot(.)
-	def cleanup(reply)
-		reply = reply.split("\n")[1..-1] # remove the header
-		@freedbRecord = reply.join("\n")
-		@freedbRecord = @freedbRecord[0..-3] if @freedbRecord[-2..-1] = "\n."
-	end
+  # analyze the reponse code and assign neccesary action
+  def analyzeQueryResult(reply)
+    code = reply[0..2].to_i
 
-	# error handling for read command
-	def errorReading(reply)
-		code = reply[0..2].to_i
+    case code
+    when 200 ; oneRecordFound(reply)
+    when 211 || 210 ; multipleRecordsFound(reply)
+    when 202 ; noRecordsFound()
+    when 403 ; databaseCorrupt()
+    else ; unknownCode(code)
+    end
+  end
 
-		if code == 401
-			@status = ['cddbEntryNotFound', _('The disc can\'t be found!')]
-		elsif code == 402
-			@status = ['serverError', _('The Freedb server reports unknown problem')]
-		elsif code == 403
-			databaseCorrupt()
-		else
-			unknownCode(reply)
-		end
-	end
-end	
+  # in case no records are found
+  def noRecordsFound() ; @status = "noMatches" ; end
+
+  # in case a single record is found
+  def oneRecordFound(reply)
+    code, category, discid = reply.split()
+    getRecord(category, discid)
+  end
+
+  # in case multiple records are found, skip header
+  def multipleRecordsFound(reply)
+    @choices = Array.new
+    reply.split("\n")[1..-1].each do |line|
+      @choices << line
+    end
+    @choices.pop if @choices[-1] == '.'
+
+    # simulate one record found if firstHit == true
+    if @prefs.get('firstHit') == true
+      reply = "200 #{@choices[0]}"
+      oneRecordFound(reply)
+    else
+      @status = 'multipleRecords'
+    end
+  end
+
+  # in case the database is corrupt
+  def databaseCorrupt() ; @status = "databaseCorrupt" ; end
+
+  # in case the return code is unknown
+  def unknownCode(code) ; @status = "unknownReturnCode: #{code}" ; end
+
+  # retrieve the record
+  def getRecord(category, discid)
+    query = "#{@server.path}?cmd=cddb+read+" + CGI.escape("#{category} #{discid}") +
+"&hello=" + CGI.escape("#{@prefs.get('username')} #{@prefs.get('hostname')} \
+rubyripper #{$rr_version}") + "&proto=6"
+
+    reply = @server.get(query)
+
+    if reply[0..2] == '210'
+      code, @category, @finalDiscId = reply.split()
+      cleanup(reply)
+      @status = 'ok'
+    else
+      errorReading(reply)
+    end
+  end
+
+  # remove the header and footer of the reply
+  # first line is confirmation message, last line may be just a dot(.)
+  def cleanup(reply)
+    reply = reply.split("\n")[1..-1] # remove the header
+    @freedbRecord = reply.join("\n")
+    @freedbRecord = @freedbRecord[0..-3] if @freedbRecord[-2..-1] = "\n."
+  end
+
+  # error handling for read command
+  def errorReading(reply)
+    code = reply[0..2].to_i
+
+    case code
+    when 401 ; @status = 'cddbEntryNotFound'
+    when 402 ; @status = 'serverError'
+    when 403 ; databaseCorrupt()
+    else ; unknownCode(code)
+    end
+  end
+end
 
 
 #	# save it locally for later use TODO

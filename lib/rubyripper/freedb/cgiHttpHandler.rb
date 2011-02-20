@@ -22,32 +22,30 @@ require 'net/http' #automatically loads the 'uri' library
 
 # This class handles all connectivity with a http server
 class CgiHttpHandler
-	
-	# the settings file have all necessary info in them
-	def initialize(settings)
-		@getLogger = Array.new
-	end
-	
-	# first configure the connection (with proxy if needed)
-	# * url = URI instance of url to freedb server
-	def configConnection(url)		
-		if ENV['http_proxy']
-			proxy = URI.parse(ENV['http_proxy'])
-			@connection = Net::HTTP.new(url.host, url.port, proxy.host,
-				proxy.port, proxy.user,
-				proxy.password ? CGI.unescape(proxy.password) : '')
-		else
-			@connection = Net::HTTP.new(url.host, url.port)
-		end
-	end
+  attr_reader :path
+  
+  def initialize(preferences)
+    @prefs = preferences
+    @path = nil
+  end
 
-	# ask for a single line from the server	
-	def get(query)
-		@getLogger << query
-		responsCode, answer = @connection.get(query)
-		return answer
-	end
+  # first configure the connection (with proxy if needed)
+  def config
+    url = URI.parse(@prefs.get('site'))
+    @path = url.path
+    
+    if ENV['http_proxy']
+      proxy = URI.parse(ENV['http_proxy'])
+      @connection = Net::HTTP.new(url.host, url.port, proxy.host,
+      proxy.port, proxy.user, proxy.password ? CGI.unescape(proxy.password) : '')
+    else
+      @connection = Net::HTTP.new(url.host, url.port)
+    end
+  end
 
-	# request all logs
-	def getLogger ; return @getLogger end
+  # ask for a single line from the server
+  def get(query)
+    responsCode, answer = @connection.get(query)
+    return answer
+  end
 end
