@@ -19,6 +19,21 @@ require 'spec_helper'
 
 describe GetFreedbRecord do
 
+  # helper function to return the query message in the stub
+  def setQueryReply(query=nil)
+    query ||= '200 blues 7F087C0A Some random artist / Some random album'
+    http.stub(:get).with(@query_disc).exactly(1).times.and_return query
+  end
+
+  # helper function to return the read message in the stub
+  def setReadReply(category="blues", discid="7F087C0A", response=nil)
+    request = "/~cddb/cddb.cgi?cmd=cddb+read+#{category}+#{discid}&hello=\
+Joe+fakestation+rubyripper+test&proto=6"
+    response ||= "210 metal 7F087C01\n" + @file + "\n."
+
+    http.stub(:get).with(request).exactly(1).times.and_return response
+  end
+
   before(:all) do
     @disc = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
@@ -36,7 +51,6 @@ fakestation+rubyripper+test&proto=6"
      prefs.stub(:get).with('hostname').and_return 'fakestation'
      prefs.stub(:get).with('username').and_return 'Joe'
      prefs.stub(:get).with('firstHit').and_return false
-     prefs.stub(:get).with('debug').and_return false
      http.stub(:path).and_return "/~cddb/cddb.cgi"
      http.stub(:config).exactly(1).times
   end
@@ -51,8 +65,7 @@ fakestation+rubyripper+test&proto=6"
 
   context "After firing a query for a disc to the freedb server" do
     it "should handle the response in case no disc is reported" do
-      query = '202 No match found'
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
+      setQueryReply('202 No match found')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'noMatches'
@@ -63,8 +76,7 @@ fakestation+rubyripper+test&proto=6"
     end
 
     it "should handle the error message when the database is corrupt" do
-      query = '403 Database entry is corrupt'
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
+      setQueryReply('403 Database entry is corrupt')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'databaseCorrupt'
@@ -75,8 +87,7 @@ fakestation+rubyripper+test&proto=6"
     end
 
     it "should handle an unknown reply message" do
-      query = '666 The number of the beast'
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
+      setQueryReply('666 The number of the beast')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'unknownReturnCode: 666'
@@ -87,13 +98,8 @@ fakestation+rubyripper+test&proto=6"
     end
     
     it "should handle the response in case 1 record is reported" do
-      query = '200 blues 7F087C0A Some random artist / Some random album'
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = "210 metal 7F087C01\n" + @file + "\n."
-      
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+      setQueryReply()
+      setReadReply()
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'ok'
@@ -109,13 +115,9 @@ Joe+fakestation+rubyripper+test&proto=6"
       prefs.stub(:get).with('firstHit').and_return true
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
-      query = "211 code close matches found\n#{choices}"
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = "210 metal 7F087C01\n" + @file + "\n."
 
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+      setQueryReply("211 code close matches found\n#{choices}")
+      setReadReply()
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'ok'
@@ -129,13 +131,9 @@ Joe+fakestation+rubyripper+test&proto=6"
     it "should allow choosing the first disc" do
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
-      query = "211 code close matches found\n#{choices}"
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = "210 metal 7F087C01\n" + @file + "\n."
 
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+      setQueryReply("211 code close matches found\n#{choices}")
+      setReadReply()
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'multipleRecords'
@@ -154,13 +152,9 @@ Joe+fakestation+rubyripper+test&proto=6"
     it "should allow choosing the second disc" do
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
-      query = "211 code close matches found\n#{choices}"
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+rock+7F087C0B&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = "210 metal 7F087C01\n" + @file + "\n."
 
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+      setQueryReply("211 code close matches found\n#{choices}")
+      setReadReply('rock', '7F087C0B')
       getFreedb.handleConnection(@disc)
 
       # choose the second disc
@@ -174,13 +168,12 @@ Joe+fakestation+rubyripper+test&proto=6"
     it "should allow choosing an invalid choice without crashing" do
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
-      query = "211 code close matches found\n#{choices}"
 
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
+      setQueryReply("211 code close matches found\n#{choices}")
       getFreedb.handleConnection(@disc)
-      getFreedb.status.should == 'multipleRecords'
 
       # choose an unknown
+      getFreedb.status.should == 'multipleRecords'
       getFreedb.choose(4)
       getFreedb.status.should == 'choiceNotValid: 4'
       getFreedb.freedbRecord.should == nil
@@ -191,13 +184,8 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
   context "When requesting a specific disc and an error is returned" do
     it "should handle the response when the disc is not found" do
-      query = '200 blues 7F087C0A Some random artist / Some random album'
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = '401 Cddb entry not found'
-
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+      setQueryReply()
+      setReadReply('blues', '7F087C0A', '401 Cddb entry not found')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'cddbEntryNotFound'
@@ -205,41 +193,26 @@ Joe+fakestation+rubyripper+test&proto=6"
     end
 
     it "should handle an unknown response code" do
-      query = '200 blues 7F087C0A Some random artist / Some random album'
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = '666 The number of the beast'
-
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+      setQueryReply()
+      setReadReply('blues', '7F087C0A', '666 The number of the beast')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'unknownReturnCode: 666'
       getFreedb.freedbRecord.should == nil
     end
 
-    it "should handle a server (403) error response on the server" do
-      query = '200 blues 7F087C0A Some random artist / Some random album'
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = '402 There is a temporary server error'
-
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+    it "should handle a server (402) error response on the server" do
+      setQueryReply()
+      setReadReply('blues', '7F087C0A', '402 There is a temporary server error')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'serverError'
       getFreedb.freedbRecord.should == nil
     end
 
-    it "should handle a database (404) error response on the server" do
-      query = '200 blues 7F087C0A Some random artist / Some random album'
-      request = "/~cddb/cddb.cgi?cmd=cddb+read+blues+7F087C0A&hello=\
-Joe+fakestation+rubyripper+test&proto=6"
-      read = '403 Database inconsistency error'
-
-      http.stub(:get).with(@query_disc).exactly(1).times.and_return query
-      http.stub(:get).with(request).exactly(1).times.and_return read
+    it "should handle a database (403) error response on the server" do
+      setQueryReply()
+      setReadReply('blues', '7F087C0A', '403 Database inconsistency error')
       getFreedb.handleConnection(@disc)
 
       getFreedb.status.should == 'databaseCorrupt'

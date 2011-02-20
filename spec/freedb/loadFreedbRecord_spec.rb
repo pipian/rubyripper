@@ -24,6 +24,7 @@ describe LoadFreedbRecord do
     @discid = '12345678'
     @freedb = 'A UTF-8 record that conforms to freedb standards'
     @nonUTF8 = "hello red \xE8".force_encoding("UTF-8")
+    @result = ['/some/samplefile/12345678']
   end
   
   let(:file){double('fileAndDir').as_null_object}
@@ -41,9 +42,8 @@ describe LoadFreedbRecord do
   
   context "When one record is found" do
     it "should load the file and set the status to ok" do
-      result = ['/at/some/place/far/far/away/12345678']
-      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(result)
-      file.should_receive(:read).with(result[0], 'r:UTF-8').and_return(@freedb)
+      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(@result)
+      file.should_receive(:read).with(@result[0], 'r:UTF-8').and_return(@freedb)
       
       load.scan('12345678')
       load.status.should == 'ok'
@@ -65,10 +65,9 @@ describe LoadFreedbRecord do
   
   context "When the record is not encoded in UTF-8" do
     it "should try to read a GB18030 file to UTF-8 format" do
-      result = ['spec/testdata/freedb/encodings/GB18030']
-      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(result)
-      file.should_receive(:read).with(result[0], 'r:UTF-8').and_return(@nonUTF8)
-      file.should_receive(:read).with(result[0], 'r:GB18030').and_return(@freedb)
+      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(@result)
+      file.should_receive(:read).with(@result[0], 'r:UTF-8').and_return(@nonUTF8)
+      file.should_receive(:read).with(@result[0], 'r:GB18030').and_return(@freedb)
 
       load.scan('12345678')
       load.status.should == 'ok'
@@ -76,11 +75,10 @@ describe LoadFreedbRecord do
     end
                                 
     it "should try to read a ISO-8859-1 file in UTF-8" do
-      result = ['spec/testdata/freedb/encodings/ISO88591']
-      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(result)
-      file.should_receive(:read).with(result[0], 'r:UTF-8').and_return(@nonUTF8)
-      file.should_receive(:read).with(result[0], 'r:GB18030').and_return(@nonUTF8)
-      file.should_receive(:read).with(result[0], 'r:ISO-8859-1').and_return(@freedb)
+      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(@result)
+      file.should_receive(:read).with(@result[0], 'r:UTF-8').and_return(@nonUTF8)
+      file.should_receive(:read).with(@result[0], 'r:GB18030').and_return(@nonUTF8)
+      file.should_receive(:read).with(@result[0], 'r:ISO-8859-1').and_return(@freedb)
 
       load.scan('12345678')
       load.status.should == 'ok'
@@ -90,11 +88,10 @@ describe LoadFreedbRecord do
 
   context "When the conversion failed" do
     it "should set the status accordingly and return nothing" do
-      result = ['spec/testdata/freedb/encodings/ISO88591']
-      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(result)
-      file.should_receive(:read).with(result[0], 'r:UTF-8').and_return(@nonUTF8)
-      file.should_receive(:read).with(result[0], 'r:GB18030').and_return(@nonUTF8)
-      file.should_receive(:read).with(result[0], 'r:ISO-8859-1').and_return(@nonUTF8)
+      file.should_receive(:glob).with("#{@dir}/*/#{@discid}").and_return(@result)
+      file.should_receive(:read).with(@result[0], 'r:UTF-8').and_return(@nonUTF8)
+      file.should_receive(:read).with(@result[0], 'r:GB18030').and_return(@nonUTF8)
+      file.should_receive(:read).with(@result[0], 'r:ISO-8859-1').and_return(@nonUTF8)
 
       load.scan('12345678')
       load.status.should == 'invalidEncoding'
