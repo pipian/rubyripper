@@ -15,15 +15,17 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# Help function for translations
-def _(txt)
-    return txt
+require 'spec_helper'
+
+describe CgiHttpHandler do
+
+  let(:prefs) {double('Preferences').as_null_object}
+  
+  it "should return the path correctly and configure only once" do
+    site = "http://freedb.freedb.org/~cddb/cddb.cgi"
+    prefs.stub(:get).with("site").exactly(1).times.and_return(site)
+    @cgi = CgiHttpHandler.new(prefs)
+    @cgi.path.should == "/~cddb/cddb.cgi"
+    @cgi.path.should == "/~cddb/cddb.cgi"
+  end
 end
-
-$rr_version = 'test'
-
-require 'rubyripper/freedb/saveFreedbRecord'
-require 'rubyripper/freedb/loadFreedbRecord'
-require 'rubyripper/freedb/getFreedbRecord'
-require 'rubyripper/freedb/cgiHttpHandler'
-

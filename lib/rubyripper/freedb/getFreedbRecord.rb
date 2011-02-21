@@ -32,9 +32,7 @@ class GetFreedbRecord
   # handle the initial connection with the freedb server
   def handleConnection(freedbString)
     @freedbString = freedbString
-    @server.config()
-    reply = queryFreedbForMatches()
-    analyzeQueryResult(reply)
+    analyzeQueryResult(queryFreedbForMatches())
   end
 
   # choose number in the array [0-XX] which result you want to return

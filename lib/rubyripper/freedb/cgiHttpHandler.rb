@@ -18,22 +18,28 @@
 # TODO require 'timeout' # in case of no connection
 
 require 'net/http' #automatically loads the 'uri' library
-#require 'cgi' #for translating characters to HTTP codes, space = %20 for instance
 
 # This class handles all connectivity with a http server
 class CgiHttpHandler
-  attr_reader :path
-  
-  def initialize(preferences)
-    @prefs = preferences
-    @path = nil
+
+  # preferences is needed for the freedb server adress
+  def initialize(preferences) ; @prefs = preferences ; end
+
+  # return the path for the specified url in preferences
+  def path ; return @path ||= config ; end
+
+  # fire up a CGI command to the server
+  def get(query)
+    config() if @connection.nil?
+    responsCode, answer = @connection.get(query)
+    return answer
   end
 
+private
   # first configure the connection (with proxy if needed)
   def config
     url = URI.parse(@prefs.get('site'))
-    @path = url.path
-    
+
     if ENV['http_proxy']
       proxy = URI.parse(ENV['http_proxy'])
       @connection = Net::HTTP.new(url.host, url.port, proxy.host,
@@ -41,11 +47,6 @@ class CgiHttpHandler
     else
       @connection = Net::HTTP.new(url.host, url.port)
     end
-  end
-
-  # ask for a single line from the server
-  def get(query)
-    responsCode, answer = @connection.get(query)
-    return answer
+    @path = url.path
   end
 end
