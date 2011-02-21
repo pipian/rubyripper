@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -44,8 +44,9 @@ require './TC_scanDiscCdrdao.rb'
 require './TC_scanDiscCdparanoia.rb'
 require './TC_scanDiscCdinfo.rb'
 require './TC_cleanPrefs.rb'
+require './TC_savePrefs.rb'
+require './TC_loadPrefs.rb'
 require './TC_preferences.rb'
 require './TC_dependency.rb'
 require './TC_cliGetAnswer.rb'
-require './TC_freedbRecordParser.rb'
 require './TC_freedbString.rb'

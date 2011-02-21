@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -23,12 +23,24 @@ attr_reader :metadata, :status
   # freedbRecord = A string with the complete freedb metadata message
   def parse(freedbRecord)
     @freedbRecord = freedbRecord
-    @metadata = {'tracklist'=> Hash.new, 'varArtist' => Hash.new}
+
     if recordIsValid?()
+      @metadata = {'tracklist'=> Hash.new, 'varArtist' => Hash.new}
       analyzeResult()
       scanForVarious()
       @status = 'ok'
     end
+  end
+
+  # revert the auto splitting feature
+  def undoVarArtist
+    @metadata['tracklist'] = @metadata['oldTracklist']
+    @metadata.delete('oldTracklist')
+  end
+
+  # and split yet again unless it is already splitted
+  def redoVarArtist
+    scanForVarious() unless @metadata.key?('oldTracklist')
   end
 
 private
@@ -38,12 +50,12 @@ private
     if !@freedbRecord.valid_encoding?
       @status = 'noValidEncoding'
     elsif @freedbRecord.encoding.name != 'UTF-8'
-      @status = 'notUTF8Encoded'
+      @status = 'noUTF8Encoding'
     end
     return @status.nil?
   end
 
-  # analyze the output
+  # scan each line for usefull input
   def analyzeResult
     discTitle = String.new
     @freedbRecord.each_line do |line|
@@ -51,30 +63,29 @@ private
         next
       elsif line =~ /DISCID=/
         @metadata['discid'] = $'.strip()
-        # a disc title can span two lines
       elsif line =~ /DTITLE=/
-        discTitle += $'.strip()
+        discTitle = addValue(discTitle, $'.strip())
       elsif line =~ /DYEAR=/
         @metadata['year'] = $'.rstrip() if $'.strip().length > 0
       elsif line =~ /DGENRE=/
         @metadata['genre'] = $'.strip()
-        # a track title can span two lines
       elsif line =~ /TTITLE\d+=/
         track = $&[6..-2].to_i + 1
-        trackname = $'.rstrip()
-        if @metadata['tracklist'].key?(track)
-          # the first line is rstripped, so give an extra space when
-          # the next line starts with a capital
-          trackname = ' ' + trackname if trackname[0] =~ /[A-Z]/
-          @metadata['tracklist'][track] << trackname
-        else
-          @metadata['tracklist'][track] = trackname
-        end
+        @metadata['tracklist'][track] = addValue(@metadata['tracklist'][track], $'.rstrip())
       elsif line =~ /EXTD=/
         @metadata['extraDiscInfo'] = $'.strip() if $'.strip().length > 0
       end
     end
     @metadata['artist'], @metadata['album'] = discTitle.split(/\s\/\s/)
+  end
+
+   # if multiple rows can occur add a space again before the 2nd line
+  def addValue(var, value)
+    if var == nil || var.empty?
+      var = value
+    else
+      var = "#{var} #{value}"
+    end
   end
 
   # try to detect various artists, separator can be ' / ' || ' - ' || ': '
@@ -83,7 +94,7 @@ private
     @metadata['tracklist'].each do |key, value|
       if value =~ /\s\/\s/
       elsif value =~ /\s-\s/
-      elsif value =~ /:\s/
+      elsif value =~ /\s*:\s/
       else
         various = false
         break
@@ -96,7 +107,7 @@ private
       @metadata['tracklist'].each do |key, value|
         if value =~ /\s\/\s/
         elsif value =~ /\s-\s/
-        elsif value =~ /:\s/
+        elsif value =~ /\s*:\s/
         end
         # $` = part before the matching part, $' = part after the matching part
         @metadata['varArtist'][key], @metadata['tracklist'][key] = $`, $'
