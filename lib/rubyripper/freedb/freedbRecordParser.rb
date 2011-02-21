@@ -20,36 +20,33 @@ class FreedbRecordParser
 attr_reader :metadata, :status
 
   # setup actions to analyze the result
-  # freedbResult = A string with the complete freedb metadata message
-  def initialize(freedbResult)
-    @freedbResult = freedbResult
-    @status = 'ok'
-    @metadata = Hash.new
-    @metadata['tracklist'] = Hash.new
-    @metadata['varArtist'] = Hash.new
-    if isValidQuery()
+  # freedbRecord = A string with the complete freedb metadata message
+  def parse(freedbRecord)
+    @freedbRecord = freedbRecord
+    @metadata = {'tracklist'=> Hash.new, 'varArtist' => Hash.new}
+    if recordIsValid?()
       analyzeResult()
       scanForVarious()
+      @status = 'ok'
     end
   end
 
 private
 
-  # check if the format is recognized
-  def isValidQuery
-    if !@freedbResult.valid_encoding?
-      @status = _('ERROR: The freedb string has no valid encoding')
-    elsif @freedbResult.encoding.name != 'UTF-8'
-      @status = _("ERROR: The freedb string is not UTF-8 encoded\
-format = #{@freedbResult.encoding.name}")
+  # check if the string is ready for analyzing
+  def recordIsValid?
+    if !@freedbRecord.valid_encoding?
+      @status = 'noValidEncoding'
+    elsif @freedbRecord.encoding.name != 'UTF-8'
+      @status = 'notUTF8Encoded'
     end
-    return @status == 'ok'
+    return @status.nil?
   end
 
   # analyze the output
   def analyzeResult
     discTitle = String.new
-    @freedbResult.each_line do |line|
+    @freedbRecord.each_line do |line|
       if line[0] == '#'
         next
       elsif line =~ /DISCID=/
