@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -17,6 +17,7 @@
 
 # The Dependency class is responsible for all dependency checking
 class Dependency
+attr_reader :platform
 
 	# verify all dependencies are met
 	# * verbose = print extra info to the terminal. Used in configure script.
@@ -24,6 +25,7 @@ class Dependency
 	def verifyDeps(verbose=false, runtime=true)
 		@verbose = verbose
 		@runtime = runtime
+        @platform = RUBY_PLATFORM
 
 		checkArguments()
 		setConsequence()
@@ -33,7 +35,7 @@ class Dependency
 		@deps = arrayToHash(@forcedDeps + @optionalDeps)
 
 		checkHelpApps()
-	
+
 		showInfo() if verbose == true
 		forceDepsRuntime() if runtime == true
 	end
@@ -99,8 +101,8 @@ calculation unless %s is installed.") % ['Discid'],
 		array.each{|k,v| returnHash[k]=v}
 		return returnHash
 	end
-	
-	# check if all the forced dependencies are there	
+
+	# check if all the forced dependencies are there
 	def checkForcedDeps()
 		@forcedDeps = Array.new
 		@forcedDeps << ['cdparanoia', isInstalled('cdparanoia')]
@@ -119,7 +121,7 @@ calculation unless %s is installed.") % ['Discid'],
 		@optionalDeps << ['flac', isInstalled('flac')]
 		@optionalDeps << ['vorbis', isInstalled('oggenc')]
 		@optionalDeps << ['lame', isInstalled('lame')]
-		
+
 		# replaygain / normalize
 		@optionalDeps << ['wavegain', isInstalled('wavegain')]
 		@optionalDeps << ['vorbisgain', isInstalled('vorbisgain')]
@@ -127,7 +129,7 @@ calculation unless %s is installed.") % ['Discid'],
 		@optionalDeps << ['normalize', isInstalled('normalize')]
 
 		# extra apps
-		@optionalDeps << ['cdrdao', isInstalled('cdrdao')]		
+		@optionalDeps << ['cdrdao', isInstalled('cdrdao')]
 		@optionalDeps << ['cd-info', isInstalled('cd-info')]
 		@optionalDeps << ['ls', isInstalled('ls')]
 		@optionalDeps << ['diskutil', isInstalled('diskutil')]
@@ -182,7 +184,7 @@ calculation unless %s is installed.") % ['Discid'],
 			exit()
 		end
 	end
-	
+
 	# find the default local apps for opening files, html, etc.
 	def checkHelpApps
 		@helpApps = Hash.new
@@ -217,7 +219,7 @@ calculation unless %s is installed.") % ['Discid'],
 			return 'gedit' #Gnome editor
 		elsif ENV.key?('EDITOR')
 			return ENV['EDITOR']
-		else	
+		else
 			return 'echo'
 		end
 	end
@@ -240,7 +242,7 @@ calculation unless %s is installed.") % ['Discid'],
 			return 'echo'
 		end
 	end
-	
+
 	# determine default drive
 	def cdrom #default values for cdrom drives under differenty os'es
 		drive = 'Unknown!'
