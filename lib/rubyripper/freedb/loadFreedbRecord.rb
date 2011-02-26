@@ -18,46 +18,46 @@
 # A class that tries to locally find an entry in $HOME/.cddb
 class LoadFreedbRecord
 
-	# * discid = the discid as calculated for the freedb server
-	def initialize(fileAndDir)
-		@file = fileAndDir
-        @encoding = nil
-		@freedbRecord = nil
-		@status = 'noRecords'
-	end
+  # * discid = the discid as calculated for the freedb server
+  def initialize(fileAndDir)
+    @file = fileAndDir
+    @encoding = nil
+    @freedbRecord = nil
+    @status = 'noRecords'
+  end
 
-	# look for local entries
-	def scan(discid)
-		@discid = discid
-		scanLocal()
-	end
+  # look for local entries
+  def scan(discid)
+    @discid = discid
+    scanLocal()
+  end
 
-	# directly read a given cddb file, usefull for testing
-	def read(filename)
-		@freedbRecord = getFile(filename)
-	end
+  # directly read a given cddb file, usefull for testing
+  def read(filename)
+    @freedbRecord = getFile(filename)
+  end
 
-    # return the encoding found, usefull for testing
-    def encoding ; return @encoding end
+  # return the encoding found, usefull for testing
+  def encoding ; return @encoding end
 
-    # return the record
-	def freedbRecord ; return @freedbRecord ; end
+  # return the record
+  def freedbRecord ; return @freedbRecord ; end
 
-	# return the status
-	def status ; return @status ; end
+  # return the status
+  def status ; return @status ; end
 
 private
 
-	# Find all matches in the cddb directory
-	def scanLocal
-		dir = File.join(ENV['HOME'], '.cddb')
-		matches = @file.glob("#{dir}/*/#{@discid}")
+  # Find all matches in the cddb directory
+  def scanLocal
+    dir = File.join(ENV['HOME'], '.cddb')
+    matches = @file.glob("#{dir}/*/#{@discid}")
 
-		if matches.size > 0
-			@status = 'ok'
-			@freedbRecord = getFile(matches[0])
-		end
-	end
+    if matches.size > 0
+      @status = 'ok'
+      @freedbRecord = getFile(matches[0])
+    end
+  end
 
   # file helper because of different encoding madness, it should be UTF-8
   # The only plausible way to test this is reloading the file

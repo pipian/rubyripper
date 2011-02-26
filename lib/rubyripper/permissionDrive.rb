@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -29,7 +29,7 @@ class PermissionDrive
 	def checkPermission(cdrom, query)
 		@cdrom = cdrom
 		@query = query
-		
+
 		checkDevice()
 		if @query.include?('generic device: ')
 			checkGenericDevice()
@@ -50,19 +50,19 @@ private
 				@cdrom = link
 			end
 		end
-		
+
 		unless File.blockdev?(@cdrom) #is it a real device?
 			@status = _("ERROR: Cdrom drive %s does not exist on your system!\n\
 Please configure your cdrom drive first.") % [@cdrom]
 			return false
 		end
-			
+
 		unless (File.readable?(@cdrom) && File.writable?(@cdrom))
 			@status = _("You don't have read and write permission for device\n
 %s on your system! These permissions are necessary for\n
 cdparanoiato scan your drive. You might want to add yourself\n
 to the necessary group with gpasswd.") % [@cdrom]
-			if @deps.getDeps('ls')
+			if @deps.installed?('ls')
 				permission = `ls -l #{@cdrom}`
 				@status +=	_("\n\nls -l shows %s") % [permission]
 			end
@@ -77,22 +77,22 @@ to the necessary group with gpasswd.") % [@cdrom]
 				break #end the loop
 			end
 		end
-		
+
 		unless ((File.chardev?(device) || File.blockdev?(device)) && File.readable?(device) && File.writable?(device))
 			permission = nil
-			if File.chardev?(device) && @deps.getDeps['ls']
+			if File.chardev?(device) && @deps.installed?('ls')
 				permission = `ls -l #{device}`
 			end
-			
+
 			@status = _("You don't have read and write permission\n"\
 			"for device %s on your system! These permissions are\n"\
 			"necessary for cdparanoia to scan your drive.\n\n%s\n"\
 			"You might want to add yourself to the necessary group with gpasswd")\
 			%[device, "#{if permission ; "ls -l shows #{permission}" end}"]
-			
+
 			return false
 		end
-		
+
 		return true
 	end
 end

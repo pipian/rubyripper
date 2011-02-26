@@ -15,18 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# Help function for translations
-def _(txt)
-  return txt
+require 'spec_helper'
+
+describe ScanDiscCdparanoia do
+  context "Given a new disc needs to be queried" do
+    it "should "
+  end
 end
-
-$rr_version = 'test'
-
-require 'rubyripper/freedb/saveFreedbRecord'
-require 'rubyripper/freedb/loadFreedbRecord'
-require 'rubyripper/freedb/getFreedbRecord'
-require 'rubyripper/freedb/cgiHttpHandler'
-require 'rubyripper/freedb/freedbRecordParser'
-require 'rubyripper/freedb/freedbString.rb'
-require 'rubyripper/disc/scanDiscCdparanoia'
-

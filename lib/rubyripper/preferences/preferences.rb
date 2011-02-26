@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -99,15 +99,15 @@ private
 	def setDefaultSettings
 		@prefs = {"flac" => false,
 			"settingsFlac" => "--best -V", #passed to flac
-			"vorbis" => true, 
+			"vorbis" => true,
 			"settingsVorbis" => "-q 4", #passed to vorbis
 			"mp3" => false,
 			"settingsMp3" => "-V 3 --id3v2-only", #passed to lame
-			"wav" => false, 
+			"wav" => false,
 			"other" => false, #any other codec
 			"settingsOther" => '', #the complete command
 			"playlist" => true,
-			"cdrom" => @deps.get('cdrom'),
+			"cdrom" => @deps.cdrom,
 			"offset" => 0,
 			"maxThreads" => 2, #number of encoding proces while ripping
 			"rippersettings" => '', #passed to cdparanoia
@@ -128,9 +128,9 @@ private
 			"hostname" => "my_secret.com", # hostname freedb
 			"firstHit" => true, # always choose 1st option
 			"freedb" => true, # enable freedb
-			"editor" => @deps.get('editor'), #default editor
-			"filemanager" => @deps.get('filemanager'), #default file manager
-			"browser" => @deps.get('browser'), #default browser
+			"editor" => @deps.editor, #default editor
+			"filemanager" => @deps.filemanager, #default file manager
+			"browser" => @deps.browser, #default browser
 			"noLog" => false, #delete log if no errors?
 			"createCue" => true, #create cuesheet
 			"image" => false, #save to single file

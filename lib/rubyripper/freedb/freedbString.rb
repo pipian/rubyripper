@@ -49,9 +49,9 @@ private
   def autoCalcFreedb
     unmountDiscDarwin() if @deps.platform.include?('darwin')
 
-    if @deps.get('discid')
+    if @deps.installed?('discid')
       @freedbString = @fire.launch("discid #{@prefs.get('cdrom')}")
-    elsif @deps.get('cd-discid')
+    elsif @deps.installed?('cd-discid')
       @freedbString = @fire.launch("cd-discid #{@prefs.get('cdrom')}")
     end
 
@@ -82,7 +82,7 @@ private
 
   # Cd-info reads the toc more reliably than cdparanoia
   def tryCdinfo
-    if @deps.get('cd-info')
+    if @deps.installed?('cd-info')
       @cdinfo.scan
       if @cdinfo.status == 'ok'
         @startSector = @cdinfo.get('startSector')

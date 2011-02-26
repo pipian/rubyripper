@@ -31,7 +31,7 @@ attr_reader :status
     output = nil
     program = command.split[0]
 
-    if @deps.get(program)
+    if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
       output = `#{command}`
       @status = $?.success?

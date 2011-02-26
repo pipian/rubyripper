@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -55,7 +55,7 @@ class Disc
 		#TODO
 	end
 
-private	
+private
 	# check for valid arguments
 	def checkArguments()
 		unless @settings.class == Hash
@@ -102,7 +102,7 @@ least needs the update function"
 
 	# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
 	def prepareToc
-		if @settings['create_cue'] && @deps.getOptionalDeps['Cdrdao']
+		if @settings['create_cue'] && @deps.installed?('cdrdao')
 			@cdrdaoThread = Thread.new{advancedToc()}
 		elsif @settings['create_cue']
 			puts "Cdrdao not found. Advanced TOC analysis / cuesheet is skipped."
@@ -119,21 +119,21 @@ least needs the update function"
 	# update the Disc class with actual settings and make a cuesheet
 	def updateSettings(settings)
 		@settings = settings
-		
+
 		# user may have enabled cuesheet after the disc was scanned
 		# @toc is still nil because the class isn't finished yet
 		prepareToc() if @tocStarted == false
-		
+
 		# if the scanning thread is still active, wait for it to finish
 		@cdrdaoThread.join() if @cdrdaoThread != nil
-		
-		# update the length of the sectors + the start of the tracks if we're 
+
+		# update the length of the sectors + the start of the tracks if we're
 		# prepending the gaps
 		# also for the image since this is more easy with the cuesheet handling
 		if @settings['pregaps'] == "prepend" || @settings['image']
 			prependGaps()
 		end
-		
+
 		# only make a cuesheet when the toc class is there
 		@cue = Cuesheet.new(@settings, @toc) if @toc != nil
 	end
