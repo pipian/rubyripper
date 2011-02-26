@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -27,11 +27,11 @@ class ScanDiscCdinfo
 	def initialize(preferences, fireCommand)
 		@prefs = preferences
 		@fire = fireCommand
-		
+
 		checkArguments()
 
 		@cdrom = @prefs.get('cdrom')
-	
+
 		@disc = Hash.new
 		@disc['startSector'] = Hash.new
 		@disc['dataTracks'] = Array.new
@@ -41,7 +41,7 @@ class ScanDiscCdinfo
 	# scan the contents of the disc
 	def scan
 		query = @fire.launch('cd-info', "cd-info -C #{@cdrom}")
-		
+
 		if isValidQuery(query)
 			parseQuery(query)
 			addExtraInfo()
@@ -80,7 +80,7 @@ private
 	# check the query result for errors
 	def isValidQuery(query)
 		if query == false
-			@status = 'notInstalled'		
+			@status = 'notInstalled'
 		elsif query.include?('WARN: Can\'t get file status')
 			@status = _('ERROR: Not a valid cdrom drive')
 		elsif query.include?('Usage:')
@@ -88,7 +88,7 @@ private
 		elsif query.include?('WARN: error in ioctl')
 			@status = _('ERROR: No disc found')
 		end
-		
+
 		return @status == 'ok'
 	end
 
@@ -115,13 +115,13 @@ private
 	def parseQuery(query)
 		currentTrack = 0
 		query.each_line do |line|
-			@disc['version'] = line if line =~ /cd-info version/			
+			@disc['version'] = line if line =~ /cd-info version/
 			@disc['vendor'] = $'.strip if line =~ /Vendor\s+:\s/
 			@disc['model'] = $'.strip if line =~ /Model\s+:\s/
 			@disc['revision'] = $'.strip if line =~ /Revision\s+:\s/
 			@disc['discMode'] = $'.strip if line =~ /Disc mode is listed as:\s/
-			
-			# discover a track			
+
+			# discover a track
 			if line =~ /\s+\d+:\s/
 				currentTrack += 1
 				trackinfo = $'.split(/\s+/)
@@ -149,8 +149,8 @@ private
 			if not @disc['dataTracks'].include?(track)
 				@disc['firstAudioTrack'] = track
 				break
-			end 
-		end		
+			end
+		end
 
 		# add some track info
 		@disc['lengthSector'] = Hash.new

@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -96,7 +96,7 @@ fakestation+rubyripper+test&proto=6"
       getFreedb.category.should == nil
       getFreedb.finalDiscId == nil
     end
-    
+
     it "should handle the response in case 1 record is reported" do
       setQueryReply()
       setReadReply()
@@ -109,7 +109,7 @@ fakestation+rubyripper+test&proto=6"
       getFreedb.finalDiscId == '7F087C01'
     end
   end
-    
+
   context "when multiple records are reported" do
     it "should take the first when firstHit preference is true" do
       prefs.stub(:get).with('firstHit').and_return true
@@ -127,7 +127,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       getFreedb.category.should == 'metal'
       getFreedb.finalDiscId == '7F087C01'
     end
-      
+
     it "should allow choosing the first disc" do
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
@@ -148,7 +148,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       getFreedb.category.should == 'metal'
       getFreedb.finalDiscId == '7F087C01'
     end
-      
+
     it "should allow choosing the second disc" do
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
@@ -164,7 +164,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       getFreedb.category.should == 'metal'
       getFreedb.finalDiscId == '7F087C01'
     end
-      
+
     it "should allow choosing an invalid choice without crashing" do
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."

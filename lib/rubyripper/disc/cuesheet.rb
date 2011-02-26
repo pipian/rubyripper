@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -71,7 +71,7 @@ class Cuesheet
 					@cuesheet << "FLAGS PRE"
 					puts "Added PRE(emphasis) flag for track #{track}." if @settings['debug']
 				end
-				
+
 				# do not put Track 00 AUDIO, but instead only mention the filename
 				if track == 0
 					writeFileLine(track)
@@ -89,7 +89,7 @@ class Cuesheet
 					writeFileLine(track)
 					trackinfo(track)
 				else
-					trackinfo(track)	
+					trackinfo(track)
 				end
 			end
 		end
@@ -99,11 +99,11 @@ class Cuesheet
 	def writeFileLine(track)
 		@cuesheet << "FILE \"#{File.basename(@settings['Out'].getFile(track, @codec))}\" #{@filetype[@codec]}"
 	end
-	
+
 	# write the info for a single track
 	def trackinfo(track)
 		@cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
-		
+
 		if track == 1 && @settings['ripHiddenAudio'] == false && @settings['cd'].getStartSector(1) > 0
 			@cuesheet << "  PREGAP #{time(@settings['cd'].getStartSector(1))}"
 		end
@@ -114,17 +114,17 @@ class Cuesheet
 		else
 			@cuesheet << "    PERFORMER \"#{@settings['Out'].getVarArtist(track)}\""
 		end
-		
+
 		trackindex(track)
 	end
-	
+
 	def trackindex(track)
 		if @settings['image']
 			# There is a different handling for track 1 and the rest
 			if track == 1 && @settings['cd'].getStartSector(1) > 0
 				@cuesheet << "    INDEX 00 #{time(0)}"
 				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track))}"
-			elsif @toc.getPregap(track) > 0 
+			elsif @toc.getPregap(track) > 0
 				@cuesheet << "    INDEX 00 #{time(@settings['cd'].getStartSector(track))}"
 				@cuesheet << "    INDEX 01 #{time(@settings['cd'].getStartSector(track) + @toc.getPregap(track))}"
 			else # no pregap
@@ -142,7 +142,7 @@ class Cuesheet
 				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
 			elsif track == 1 && @settings['cd'].getStartSector(0)
 				@cuesheet << "    INDEX 01 #{time(0)}"
-			elsif @settings['pregaps'] == "prepend" && @toc.getPregap(track) > 0 
+			elsif @settings['pregaps'] == "prepend" && @toc.getPregap(track) > 0
 				@cuesheet << "    INDEX 00 #{time(0)}"
 				@cuesheet << "    INDEX 01 #{time(@toc.getPregap(track))}"
 			elsif track == 0 # hidden track needs index 00

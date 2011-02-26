@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -17,7 +17,7 @@
 
 # A class that tries to locally find an entry in $HOME/.cddb
 class LoadFreedbRecord
-	
+
 	# * discid = the discid as calculated for the freedb server
 	def initialize(fileAndDir)
 		@file = fileAndDir
@@ -36,10 +36,10 @@ class LoadFreedbRecord
 	def read(filename)
 		@freedbRecord = getFile(filename)
 	end
-    
+
     # return the encoding found, usefull for testing
     def encoding ; return @encoding end
-	
+
     # return the record
 	def freedbRecord ; return @freedbRecord ; end
 
@@ -52,7 +52,7 @@ private
 	def scanLocal
 		dir = File.join(ENV['HOME'], '.cddb')
 		matches = @file.glob("#{dir}/*/#{@discid}")
-		
+
 		if matches.size > 0
 			@status = 'ok'
 			@freedbRecord = getFile(matches[0])

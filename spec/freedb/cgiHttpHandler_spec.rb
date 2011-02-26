@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -20,7 +20,7 @@ require 'spec_helper'
 describe CgiHttpHandler do
 
   let(:prefs) {double('Preferences').as_null_object}
-  
+
   it "should return the path correctly and configure only once" do
     site = "http://freedb.freedb.org/~cddb/cddb.cgi"
     prefs.stub(:get).with("site").exactly(1).times.and_return(site)

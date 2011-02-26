@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -18,7 +18,7 @@
 require 'tmpdir'
 
 # The scanDiscCdrdao class helps detecting all special audio-cd
-# features as hidden tracks, pregaps, etcetera. It does so by 
+# features as hidden tracks, pregaps, etcetera. It does so by
 # analyzing the output of cdrdao's TOC output. The class is only
 # opened when the user has the cuesheet enabled. This is so because
 # there is not much of an advantage of detecting pregaps when
@@ -28,7 +28,7 @@ require 'tmpdir'
 # The scanning will take about 1 - 2 minutes.
 
 class ScanDiscCdrdao
-	
+
 	# prefences = instance of Preferences
 	# fireCommand = instance of fireCommand
 	def initialize(preferences, fireCommand, cuesheet=false)
@@ -41,7 +41,7 @@ class ScanDiscCdrdao
 		@verbose = @prefs.get('verbose')
 		@status = 'ok'
 	end
-	
+
 	# scan the disc
 	def scan
 		@scan = Hash.new
@@ -53,7 +53,7 @@ class ScanDiscCdrdao
 		@scan['trackNames'] = Hash.new
 		@scan['varArtists'] = Hash.new
 
-		@output = getOutput()		
+		@output = getOutput()
 
 		if isValidQuery()
 			parseQuery()
@@ -66,7 +66,7 @@ class ScanDiscCdrdao
 
 	# return the status, _('ok') is good
 	def status ; return @status ; end
-	
+
 	# return the scan variable
 	def get(key=false)
 		if key == false
@@ -92,12 +92,12 @@ private
 			raise ArgumentError, "fireCommand must be a FireCommand instance!"
 		end
 	end
-	
+
 	# get all the cdrdao info
 	def getOutput
 		# find a temporary location
 		file = File.join(Dir.tmpdir, "temp_#{File.basename(@cdrom)}.toc")
-		
+
 		# build the command
 		command = "cdrdao read-toc --device #{@cdrom} \"#{file}\""
 		command += " 2>&1" unless @verbose
@@ -146,7 +146,7 @@ private
 			elsif track == 0 && line =~ /TITLE /
 				@scan['artist'], @scan['album'] = $'.strip()[1..-2].split(/\s\s+/)
 			elsif track == 0 && line =~ /SILENCE /
-				@scan['silence'] = toSectors($'.strip)	
+				@scan['silence'] = toSectors($'.strip)
 			elsif line =~ /Track/
 				track += 1
 			elsif line =~ /TRACK DATA/
@@ -160,7 +160,7 @@ private
 			elsif track > 0 && line =~ /PERFORMER /
 				if $'.strip().length > 2
 					@scan['varArtists'][track] = $'[1..-2] #exclude quotes
-				end 
+				end
 			end
 		end
 		@scan['tracks'] = track
@@ -173,7 +173,7 @@ private
 			return true
 		end
 
-		@buildLog << _("Silence detected for disc : %s sectors\n") % [@scan['silence']] 
+		@buildLog << _("Silence detected for disc : %s sectors\n") % [@scan['silence']]
 
 		(1..@scan['tracks']).each do |track|
 			# pregap detected?
@@ -194,12 +194,12 @@ private
 	# return the pregap if found, otherwise return 0
 	def getPregap(track)
 		if @pregap.key?(track)
-			return @pregap[track] 
+			return @pregap[track]
 		else
 			return 0
 		end
 	end
-	
+
 	# return if a track has pre-emphasis
 	def hasPreEmph(track)
 		if @preEmphasis.key?(track)

@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -29,7 +29,7 @@ describe FreedbRecordParser do
       parser.status.should == 'noValidEncoding'
       parser.metadata.should == nil
     end
-    
+
     it "should detect if the encoding is not UTF-8 and abort" do
       latin1 = "some_crazy_text".encode('ISO-8859-1')
       parser.parse(latin1)
@@ -155,7 +155,7 @@ EASYBEATS - Friday on my Mind\nTTITLE4=THE EASYBEATS / Friday on my Mind".encode
 EASYBEATS / Friday on my Mind".encode('UTF-8')
         parser.parse(record)
         parser.undoVarArtist()
-      
+
         parser.metadata['tracklist'][3].should == 'MUNGO JERRY / In The Summertime'
         parser.metadata['tracklist'][4].should == 'THE EASYBEATS / Friday on my Mind'
         parser.metadata['oldTracklist'].should == nil

@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -24,14 +24,14 @@ require 'rubyripper/preferences/preferences.rb'
 
 # This class tests the settings class
 class TC_Preferences < Test::Unit::TestCase
-	
+
 	# create some test instances
 	def setup
 		$stdout, @backup = FakeOutput.new, $stdout
 		@load = FakeLoadPrefs.new()
 		@save = FakeSavePrefs.new()
 		@clean = FakeCleanPrefs.new()
-		@deps = FakeDependency.new({'cdrom'=>'testDrive', 
+		@deps = FakeDependency.new({'cdrom'=>'testDrive',
 'editor' => 'paper', 'browser' => 'netscape', 'filemanager' => 'explorer'})
 		@prefs = Preferences.new(@load, @save, @clean, @deps)
 	end
@@ -77,7 +77,7 @@ class TC_Preferences < Test::Unit::TestCase
 		@load.configFound = true
 		@load.set(Hash.new)
 		@prefs.loadConfig()
-		
+
 		@prefs.set('editor', 'gedit')
 		@prefs.set('maxThreads', 5)
 		assert_equal(nil, @prefs.set('nuts', true))

@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -22,7 +22,7 @@ require 'rubyripper/preferences/loadPrefs.rb'
 class TC_LoadPrefs < Test::Unit::TestCase
 
 	def setup
-		@file = FakeFileAndDir.new 
+		@file = FakeFileAndDir.new
 		@load = LoadPrefs.new(@file)
 		@default = '/home/test/.config/rubyripper/settings'
 	end
@@ -32,7 +32,7 @@ class TC_LoadPrefs < Test::Unit::TestCase
 		@file.data['read'] << ''
 		filename = File.join($localdir, 'data/settings/doesNotExist')
 		@load.loadConfig(@default, filename)
-		
+
 		assert_equal(false, @load.configFound)
 		assert_equal('/home/test/.config/rubyripper/settings',
 @load.configFile)
@@ -42,10 +42,10 @@ class TC_LoadPrefs < Test::Unit::TestCase
 	# test in case the file is invalid and there is a home backup
 	def test_FakeFileWithHome
 		@file.data['read'] << "test=true\nfaking=false\nempty=\'\'\n\
-time=0\ntea=1"		
+time=0\ntea=1"
 		filename = File.join($localdir, 'data/settings/doesNotExist')
 		@load.loadConfig(@default, filename)
-		
+
 		assert_equal(false, @load.configFound)
 		assert_equal('/home/test/.config/rubyripper/settings',
 @file.usage['read'][0])
@@ -55,7 +55,7 @@ time=0\ntea=1"
 		assert_equal(false, @load.get('faking'))
 		assert_equal(true, @load.get('empty').empty?)
 		assert_equal(0, @load.get('time'))
-		assert_equal(1, @load.get('tea'))		
+		assert_equal(1, @load.get('tea'))
 	end
 
 	# test in case the file is found

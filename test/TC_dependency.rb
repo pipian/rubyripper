@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -24,11 +24,11 @@ class TC_Dependency < Test::Unit::TestCase
 	def test_DependencyKeys
 		@deps = Dependency.new()
 		@deps.verifyDeps()
-		keysDep = ['cdparanoia', 'ruby-gtk2', 'ruby-gettext', 'discid', 
+		keysDep = ['cdparanoia', 'ruby-gtk2', 'ruby-gettext', 'discid',
 'cd-discid', 'eject', 'flac', 'vorbis', 'lame', 'wavegain', 'vorbisgain',
 'mp3gain', 'normalize', 'cdrdao', 'cd-info', 'ls', 'diskutil']
 		keysHelpApp = ['filemanager', 'editor', 'browser','cdrom']
-		
+
 		keysDep.each do |key|
 			assert_kind_of(Boolean, @deps.get(key), "#{key} must be boolean")
 		end

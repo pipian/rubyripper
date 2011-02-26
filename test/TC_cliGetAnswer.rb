@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -21,7 +21,7 @@ require 'rubyripper/cli/cliGetAnswer.rb'
 
 # A class to test if the class returns proper answers
 class TC_CliGetAnswer < Test::Unit::TestCase
-	
+
 	# overriding input and output
 	def setup
 		$stdout, @backup_out = FakeOutput.new, $stdout
@@ -36,7 +36,7 @@ class TC_CliGetAnswer < Test::Unit::TestCase
 
 	# test if the input mock works properly
 	def test_00InputMock
-		
+
 		# with one line in it
 		$stdin.add(text = 'hello world!')
 		assert_equal(text, $stdin.gets)
@@ -49,13 +49,13 @@ class TC_CliGetAnswer < Test::Unit::TestCase
 		assert_equal(text2, $stdin.gets)
 		assert_equal('', $stdin.gets)
 
-		#$stdin, $stdout = oldin, oldout 
+		#$stdin, $stdout = oldin, oldout
 	end
 
 	# test if the output mock works properyly
 	def test_OutputMock
 		assert_equal(nil, $stdout.gets)
-		
+
 		# with one line in it
 		print text="Hello World!"
 		assert_equal(text, $stdout.gets)
@@ -93,9 +93,9 @@ class TC_CliGetAnswer < Test::Unit::TestCase
 	def test_GetBool
 		@bool = CliGetBool.new
 
-		valid = {_("yes") => true, _('y') => true, 
+		valid = {_("yes") => true, _('y') => true,
 _("no") => false, _("n") =>false}
-		
+
 		# test for valid input
 		valid.each do |key, value|
 			$stdin.add(key)
@@ -108,7 +108,7 @@ _("no") => false, _("n") =>false}
 		assert_equal(true, @bool.get('question', 'n'))
 
 		# test in case nothing is given, the default is used
-		assert_equal(false, @bool.get('question', 'n')) 
+		assert_equal(false, @bool.get('question', 'n'))
 	end
 
 	# test GetString class

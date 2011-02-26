@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -20,7 +20,7 @@
 class SaveFreedbRecord
 	def initialize(fileAndDir)
 		@file = fileAndDir
-	end	
+	end
 
 	# * freedbRecord = the complete freedb record string with all metadata
 	# * category = the freedb category string, needed for saving locally
@@ -31,7 +31,7 @@ class SaveFreedbRecord
 		@discid = discid
 		saveDiscid()
 	end
-	
+
 	# return the file location
 	def outputFile ; return @outputFile ; end
 

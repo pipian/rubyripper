@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -38,7 +38,7 @@ class ScanDiscCdparanoia
 		@disc['dataTracks'] = Array.new
 		@disc['multipleDriveSupport'] = true
 	end
-	
+
 	# scan the disc for input
 	def	scan(cdrom, ripHiddenAudio, minLengthHiddenTrack)
 		@cdrom = cdrom
@@ -46,19 +46,19 @@ class ScanDiscCdparanoia
 		@minLength = minLengthHiddenTrack
 
 		query = @fire.launch('cdparanoia', "cdparanoia -d #{@cdrom} -vQ 2>&1")
-		
+
 		# some versions of cdparanoia don't support the cdrom parameter
 		if query.include?('USAGE')
 			query = @fire.launch('cdparanoia', "cdparanoia -vQ 2>&1")
 			@disc['multipleDriveSupport'] = false
 		end
-		
+
 		if isValidQuery(query)
 			parseQuery(query)
 			addExtraInfo()
 			checkOffsetFirstTrack()
 		end
-		
+
 		if @status == 'ok'
 			@status = @perm.checkPermission(@cdrom, query)
 		end
@@ -86,7 +86,7 @@ class ScanDiscCdparanoia
 			@disc['lengthSector'][track - 1] -= pregap
 			@disc['startSector'][track] -= pregap
 			@disc['lengthSector'][track] += pregap
-		end          
+		end
 	end
 
 	# return the startSector, example for track 1 getStartSector(1)
@@ -147,7 +147,7 @@ Please put an audio disc in first...") %[@cdrom]
 		elsif query.include?('No such file or directory')
 			@status = _('ERROR: drive %s is not found') %[@cdrom]
 		end
-		
+
 		return @status == 'ok'
 	end
 
@@ -180,17 +180,17 @@ Please put an audio disc in first...") %[@cdrom]
 		end
 		@disc['totalSectors'] = 0
 		@disc['lengthSector'].each_value do |value|
-			@disc['totalSectors'] += value		
+			@disc['totalSectors'] += value
 		end
 	end
 
 	# When a data track is the first track on a disc, cdparanoia is acting
 	# strange: In the query it is showing as a start for 1s track the offset of
 	# the data track. When ripping this offset isn't used however !! To allow
-	# a correct rip of this disc all startSectors have to be corrected. See 
+	# a correct rip of this disc all startSectors have to be corrected. See
 	# also issue 196.
-	
-	# If there is no data track at the start, but we do have an offset this 
+
+	# If there is no data track at the start, but we do have an offset this
 	# means some hidden audio part. This part is marked as track 0. You can
 	# only assess this on a cd-player by rewinding from 1st track on.
 	def checkOffsetFirstTrack()
@@ -204,7 +204,7 @@ Please put an audio disc in first...") %[@cdrom]
 		#in the cuesheet this part will be marked as a pregap (silence).
 		elsif @ripHidden == false
 		# if size of hiddenAudio is bigger than minimum length, make track 0
-		elsif (@disc['startSector'][1] != 0 && 
+		elsif (@disc['startSector'][1] != 0 &&
 			@disc['startSector'][1] / 75.0 > @minLength)
 			@disc['startSector'][0] = 0
 			@disc['lengthSector'][0] = @disc['startSector'][1]
