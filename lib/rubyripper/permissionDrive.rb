@@ -26,7 +26,7 @@ class PermissionDrive
 
 	# * cdrom = location of cdrom drive
 	# * query = cdparanoia query
-	def checkPermission(cdrom, query)
+	def check(cdrom, query)
 		@cdrom = cdrom
 		@query = query
 

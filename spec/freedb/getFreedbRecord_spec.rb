@@ -22,7 +22,7 @@ describe GetFreedbRecord do
   # helper function to return the query message in the stub
   def setQueryReply(query=nil)
     query ||= '200 blues 7F087C0A Some random artist / Some random album'
-    http.stub(:get).with(@query_disc).exactly(1).times.and_return query
+    http.should_receive(:get).with(@query_disc).and_return query
   end
 
   # helper function to return the read message in the stub
@@ -31,7 +31,7 @@ describe GetFreedbRecord do
 Joe+fakestation+rubyripper+test&proto=6"
     response ||= "210 metal 7F087C01\n" + @file + "\n."
 
-    http.stub(:get).with(request).exactly(1).times.and_return response
+    http.should_receive(:get).with(request).and_return response
   end
 
   before(:all) do
@@ -47,23 +47,24 @@ fakestation+rubyripper+test&proto=6"
   let(:http) {double('CgiHttpHandler').as_null_object}
   let(:getFreedb) {GetFreedbRecord.new(prefs, http)}
 
-  before(:each) do
-     prefs.stub(:get).with('hostname').and_return 'fakestation'
-     prefs.stub(:get).with('username').and_return 'Joe'
-     prefs.stub(:get).with('firstHit').and_return false
-     http.stub(:path).and_return "/~cddb/cddb.cgi"
-     http.stub(:config).exactly(1).times
-  end
-
-  it "should not crash if there are no choices but the caller still chooses" do
-    getFreedb.choose(0)
-    getFreedb.status.should == 'noChoices'
-    getFreedb.freedbRecord.should == nil
-    getFreedb.category.should == nil
-    getFreedb.finalDiscId == nil
+  context "Given there is only an empty instance" do
+    it "should not crash if there are no choices but the caller still chooses" do
+      getFreedb.choose(0)
+      getFreedb.status.should == 'noChoices'
+      getFreedb.freedbRecord.should == nil
+      getFreedb.category.should == nil
+      getFreedb.finalDiscId == nil
+    end
   end
 
   context "After firing a query for a disc to the freedb server" do
+
+    before(:each) do
+      prefs.should_receive(:get).with('hostname').at_least(:once).and_return 'fakestation'
+      prefs.should_receive(:get).with('username').at_least(:once).and_return 'Joe'
+      http.should_receive(:path).at_least(:once).and_return "/~cddb/cddb.cgi"
+    end
+
     it "should handle the response in case no disc is reported" do
       setQueryReply('202 No match found')
       getFreedb.handleConnection(@disc)
@@ -108,10 +109,8 @@ fakestation+rubyripper+test&proto=6"
       getFreedb.category.should == 'metal'
       getFreedb.finalDiscId == '7F087C01'
     end
-  end
 
-  context "when multiple records are reported" do
-    it "should take the first when firstHit preference is true" do
+    it "should get the first response if multiple are reported when firstHit preference is true" do
       prefs.stub(:get).with('firstHit').and_return true
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
@@ -128,95 +127,100 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       getFreedb.finalDiscId == '7F087C01'
     end
 
-    it "should allow choosing the first disc" do
-      choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
+    context "when multiple records are reported and the user wishes to choose" do
+      before(:each){prefs.stub(:get).with('firstHit').and_return false}
+
+      it "should allow choosing the first disc" do
+        prefs.stub(:get).with('firstHit').and_return false
+        choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
-      setQueryReply("211 code close matches found\n#{choices}")
-      setReadReply()
-      getFreedb.handleConnection(@disc)
+        setQueryReply("211 code close matches found\n#{choices}")
+        setReadReply()
+        getFreedb.handleConnection(@disc)
 
-      getFreedb.status.should == 'multipleRecords'
-      getFreedb.freedbRecord.should == nil
-      getFreedb.choices.should == choices[0..-3].split("\n")
-      getFreedb.choices.length.should == 4
+        getFreedb.status.should == 'multipleRecords'
+        getFreedb.freedbRecord.should == nil
+        getFreedb.choices.should == choices[0..-3].split("\n")
+        getFreedb.choices.length.should == 4
 
-      # choose the first disc
-      getFreedb.choose(0)
-      getFreedb.status.should == 'ok'
-      getFreedb.freedbRecord.should == @file
-      getFreedb.category.should == 'metal'
-      getFreedb.finalDiscId == '7F087C01'
-    end
+        # choose the first disc
+        getFreedb.choose(0)
+        getFreedb.status.should == 'ok'
+        getFreedb.freedbRecord.should == @file
+        getFreedb.category.should == 'metal'
+        getFreedb.finalDiscId == '7F087C01'
+      end
 
-    it "should allow choosing the second disc" do
-      choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
+      it "should allow choosing the second disc" do
+        choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
-      setQueryReply("211 code close matches found\n#{choices}")
-      setReadReply('rock', '7F087C0B')
-      getFreedb.handleConnection(@disc)
+        setQueryReply("211 code close matches found\n#{choices}")
+        setReadReply('rock', '7F087C0B')
+        getFreedb.handleConnection(@disc)
 
-      # choose the second disc
-      getFreedb.choose(1)
-      getFreedb.status.should == 'ok'
-      getFreedb.freedbRecord.should == @file
-      getFreedb.category.should == 'metal'
-      getFreedb.finalDiscId == '7F087C01'
-    end
+        # choose the second disc
+        getFreedb.choose(1)
+        getFreedb.status.should == 'ok'
+        getFreedb.freedbRecord.should == @file
+        getFreedb.category.should == 'metal'
+        getFreedb.finalDiscId == '7F087C01'
+      end
 
-    it "should allow choosing an invalid choice without crashing" do
-      choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
+      it "should allow choosing an invalid choice without crashing" do
+        choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
-      setQueryReply("211 code close matches found\n#{choices}")
-      getFreedb.handleConnection(@disc)
+        setQueryReply("211 code close matches found\n#{choices}")
+        getFreedb.handleConnection(@disc)
 
-      # choose an unknown
-      getFreedb.status.should == 'multipleRecords'
-      getFreedb.choose(4)
-      getFreedb.status.should == 'choiceNotValid: 4'
-      getFreedb.freedbRecord.should == nil
-      getFreedb.category.should == nil
-      getFreedb.finalDiscId == nil
-    end
-  end
-
-  context "When requesting a specific disc and an error is returned" do
-    it "should handle the response when the disc is not found" do
-      setQueryReply()
-      setReadReply('blues', '7F087C0A', '401 Cddb entry not found')
-      getFreedb.handleConnection(@disc)
-
-      getFreedb.status.should == 'cddbEntryNotFound'
-      getFreedb.freedbRecord.should == nil
+        # choose an unknown
+        getFreedb.status.should == 'multipleRecords'
+        getFreedb.choose(4)
+        getFreedb.status.should == 'choiceNotValid: 4'
+        getFreedb.freedbRecord.should == nil
+        getFreedb.category.should == nil
+        getFreedb.finalDiscId == nil
+      end
     end
 
-    it "should handle an unknown response code" do
-      setQueryReply()
-      setReadReply('blues', '7F087C0A', '666 The number of the beast')
-      getFreedb.handleConnection(@disc)
+    context "When requesting a specific disc and an error is returned" do
+      it "should handle the response when the disc is not found" do
+        setQueryReply()
+        setReadReply('blues', '7F087C0A', '401 Cddb entry not found')
+        getFreedb.handleConnection(@disc)
 
-      getFreedb.status.should == 'unknownReturnCode: 666'
-      getFreedb.freedbRecord.should == nil
-    end
+        getFreedb.status.should == 'cddbEntryNotFound'
+        getFreedb.freedbRecord.should == nil
+      end
 
-    it "should handle a server (402) error response on the server" do
-      setQueryReply()
-      setReadReply('blues', '7F087C0A', '402 There is a temporary server error')
-      getFreedb.handleConnection(@disc)
+      it "should handle an unknown response code" do
+        setQueryReply()
+        setReadReply('blues', '7F087C0A', '666 The number of the beast')
+        getFreedb.handleConnection(@disc)
 
-      getFreedb.status.should == 'serverError'
-      getFreedb.freedbRecord.should == nil
-    end
+        getFreedb.status.should == 'unknownReturnCode: 666'
+        getFreedb.freedbRecord.should == nil
+      end
 
-    it "should handle a database (403) error response on the server" do
-      setQueryReply()
-      setReadReply('blues', '7F087C0A', '403 Database inconsistency error')
-      getFreedb.handleConnection(@disc)
+      it "should handle a server (402) error response on the server" do
+        setQueryReply()
+        setReadReply('blues', '7F087C0A', '402 There is a temporary server error')
+        getFreedb.handleConnection(@disc)
 
-      getFreedb.status.should == 'databaseCorrupt'
-      getFreedb.freedbRecord.should == nil
+        getFreedb.status.should == 'serverError'
+        getFreedb.freedbRecord.should == nil
+      end
+
+      it "should handle a database (403) error response on the server" do
+        setQueryReply()
+        setReadReply('blues', '7F087C0A', '403 Database inconsistency error')
+        getFreedb.handleConnection(@disc)
+
+        getFreedb.status.should == 'databaseCorrupt'
+        getFreedb.freedbRecord.should == nil
+      end
     end
   end
 end

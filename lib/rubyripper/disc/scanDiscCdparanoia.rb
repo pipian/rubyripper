@@ -20,148 +20,143 @@
 # creating the freedb string. Cd-info is better for that.
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
+  attr_reader :status, :playtime, :audiotracks, :devicename, :audiotracks,
+      :firstAudioTrack
 
   # * preferences is an instance of Preferences
   # * fireCommand is an instance of FireCommand
   # * permissionDrive is an instance of PermissionDrive
-  def initialize(fireCommand, permissionDrive)
+  def initialize(fireCommand, permissionDrive, preferences)
     @fire = fireCommand
     @perm = permissionDrive
-
-    @status = 'ok'
-    @disc = Hash.new
-    @disc['playtime'] = _('Unknown')
-    @disc['audiotracks'] = 0
-    @disc['startSector'] = Hash.new
-    @disc['lengthSector'] = Hash.new
-    @disc['lengthText'] = Hash.new
-    @disc['dataTracks'] = Array.new
-    @disc['multipleDriveSupport'] = true
+    @prefs = preferences
   end
 
   # scan the disc for input
-  def scan(cdrom, ripHiddenAudio, minLengthHiddenTrack)
-    @cdrom = cdrom
-    @ripHidden = ripHiddenAudio
-    @minLength = minLengthHiddenTrack
-
-    query = @fire.launch('cdparanoia', "cdparanoia -d #{@cdrom} -vQ 2>&1")
-
-    # some versions of cdparanoia don't support the cdrom parameter
-    if query.include?('USAGE')
-      query = @fire.launch('cdparanoia', "cdparanoia -vQ 2>&1")
-      @disc['multipleDriveSupport'] = false
-    end
-
-    if isValidQuery(query)
-      parseQuery(query)
-      addExtraInfo()
-      checkOffsetFirstTrack()
-    end
-
-    if @status == 'ok'
-      @status = @perm.checkPermission(@cdrom, query)
-    end
-  end
-
-  # return the disc variable
-  def get(key) ; return @disc[key] end
-
-  # return the status, 'ok' is good
-  def status ; return @status ; end
-
-  # prepend the gaps, so rewrite the toc info
-  # notice that cdparanoia appends by default
-  # * scanCdrdao = instance of ScanDiscCdrdao
-  def prependGaps(scanCdrdao)
-    (2..@disc['audiotracks']).each do |track|
-      pregap = scanCdrdao.getPregap(track)
-      @disc['lengthSector'][track - 1] -= pregap
-      @disc['startSector'][track] -= pregap
-      @disc['lengthSector'][track] += pregap
-    end
-  end
+  def scan ; readDisc() ; end
 
   # return the startSector, example for track 1 getStartSector(1)
   # if image, return the start sector for the lowest tracknumber
   def getStartSector(track)
+    assertDiscFound('getStartSector')
     case track
-      when 'image' then @disc['startSector'][@disc['startSector'].keys.sort[0]]
-      else @disc['startSector'][track]
+      when 'image' then @startSector[@startSector.keys.sort[0]]
+      else @startSector[track]
     end
   end
 
   # return the sectors, example for track 1 getLengthSector(1)
   def getLengthSector(track)
+    assertDiscFound('getLengthSector')
     case track
-      when 'image' then @disc['totalSectors']
-      else @disc['lengthSector'][track]
+      when 'image' then @totalSectors
+      else @lengthSector[track]
     end
   end
 
   # return the length in text, example for track 1 getLengthSector(1)
   def getLengthText(track)
+    assertDiscFound('getLengthText')
     case track
-      when 'image' then @disc['playtime']
-      else @disc['lengthText'][track]
+      when 'image' then @playtime
+      else @lengthText[track]
     end
   end
 
   # return the length in bytes, example for track 1 getFileSize(1)
   def getFileSize(track)
+    assertDiscFound('getFileSize')
     case track
-      when 'image' then 44 + @disc['totalSectors'] * 2352
-      else 44 + @disc['lengthSector'][track] * 2352
+      when 'image' then 44 + @totalSectors * 2352
+      else (44 + @lengthSector[track] * 2352) if @lengthSector.key?(track)
     end
   end
 
-private
+  # prepend the gaps, so rewrite the toc info
+  # notice that cdparanoia appends by default
+  # * scanCdrdao = instance of ScanDiscCdrdao
+  def prependGaps(scanCdrdao)
+    assertDiscFound('prependGaps')
+    (2..@audiotracks).each do |track|
+      pregap = scanCdrdao.getPregap(track)
+      @lengthSector[track - 1] -= pregap
+      @startSector[track] -= pregap
+      @lengthSector[track] += pregap
+    end
+  end
+
+  private
+
+  # verify a disc is found
+  def assertDiscFound(name)
+    raise "Can't #{name} when scanDiscCdparanoia status is not ok!" unless @status == 'ok'
+  end
+
+  def readDisc
+    query = @fire.launch("cdparanoia -d #{@prefs.get('cdrom')} -vQ 2>&1")
+
+    # some versions of cdparanoia don't support the cdrom parameter
+    query = @fire.launch("cdparanoia -vQ 2>&1") if query.include?('USAGE')
+
+    if isValidQuery(query)
+      parseQuery(query)
+      addExtraInfo()
+      checkOffsetFirstTrack()
+      @status = @perm.check(@prefs.get('cdrom'), query)
+    end
+  end
 
   # check the query result for errors
   def isValidQuery(query)
-    if query.include?('Unable to open disc')
-      @status = _("No disc found in drive %s.\n\n\
-Please put an audio disc in first...") %[@cdrom]
-    elsif query.include?('USAGE')
-      @status = _('ERROR: %s doesn\'t recognize the parameters.') %['Cdparanoia']
-    elsif query.include?('No such file or directory')
-      @status = _('ERROR: drive %s is not found') %[@cdrom]
+    case query
+      when /Unable to open disc/ then @status = 'noDiscInDrive'
+      when /USAGE/ then @status = 'wrongParameters'
+      when /No such file or directory/ then @status = 'unknownDrive'
     end
 
-    return @status == 'ok'
+    return @status.nil?
+  end
+
+  def setupDisc
+    @startSector = Hash.new
+    @lengthSector = Hash.new
+    @lengthText = Hash.new
+    @dataTracks = Array.new
+  end
+
+  # store the variables of the line
+  def addTrack(line, currentTrack)
+    tracknumber, lengthSector, lengthText, startSector = line.split
+
+    @firstAudioTrack = tracknumber[0..-2].to_i if currentTrack == 1
+    @lengthSector[currentTrack] = lengthSector.to_i
+    @startSector[currentTrack] = startSector.to_i
+    @lengthText[currentTrack] = lengthText[1..-5]
   end
 
   # store the info of the query in variables
   def parseQuery(query)
+    setupDisc()
     currentTrack = 0
     query.each_line do |line|
       if line[0,5] =~ /\s+\d+\./
         currentTrack += 1
-        tracknumber, lengthSector, lengthText, startSector = line.split
-        if currentTrack == 1
-          @disc['firstAudioTrack'] = tracknumber[0..-2].to_i
-        end
-        @disc['lengthSector'][currentTrack] = lengthSector.to_i
-        @disc['startSector'][currentTrack] = startSector.to_i
-        @disc['lengthText'][currentTrack] = lengthText[1..-2]
+        addTrack(line, currentTrack)
       elsif line =~ /CDROM\D*:/
-        @disc['devicename'] = $'.strip()
+        @devicename = $'.strip()
       elsif line[0,5] == "TOTAL"
-        @disc['playtime'] = line.split()[2][1,5]
+        @playtime = line.split()[2][1,5]
       end
     end
-    @disc['audiotracks'] = currentTrack
+    @audiotracks = currentTrack
   end
 
-  # add some extra variables and add corrections
+  # add some extra variables
   def addExtraInfo
-    if @disc['audioTracks'] == 0
-      @status = _('ERROR: No audio tracks found!')
-    end
-    @disc['totalSectors'] = 0
-    @disc['lengthSector'].each_value do |value|
-      @disc['totalSectors'] += value
-    end
+    @status = _('ERROR: No audio tracks found!') if @audioTracks == 0
+
+    @totalSectors = 0
+    @lengthSector.each_value{|value| @totalSectors += value}
   end
 
   # When a data track is the first track on a disc, cdparanoia is acting
@@ -175,23 +170,20 @@ Please put an audio disc in first...") %[@cdrom]
   # only assess this on a cd-player by rewinding from 1st track on.
   def checkOffsetFirstTrack()
     # correct the startSectors when a disc starts with data
-    if @disc['firstAudioTrack'] != 1
-      dataOffset = @disc['startSector'][1]
-      @disc['startSector'].each_key do |key, value|
-        @disc['startSector'][key] -= dataOffset
-      end
+    if @firstAudioTrack != 1
+      dataOffset = @startSector[1]
+      @startSector.each_key{|key| @startSector[key] -= dataOffset}
       #do nothing extra when hidden audio shouldn't be ripped
       #in the cuesheet this part will be marked as a pregap (silence).
-    elsif @ripHidden == false
+    elsif @prefs.get('ripHiddenAudio') == false
       # if size of hiddenAudio is bigger than minimum length, make track 0
-    elsif (@disc['startSector'][1] != 0 &&
-           @disc['startSector'][1] / 75.0 > @minLength)
-      @disc['startSector'][0] = 0
-      @disc['lengthSector'][0] = @disc['startSector'][1]
+    elsif (@startSector[1] != 0 && @startSector[1] / 75.0 > @prefs.get('minLengthHiddenTrack'))
+      @startSector[0] = 0
+      @lengthSector[0] = @startSector[1]
       # otherwise prepend it to the first track
-    elsif @disc['startSector'][1] != 0
-      @disc['lengthSector'][1] += @disc['startSector'][1]
-      @disc['startSector'][1] = 0
+    elsif @startSector[1] != 0
+      @lengthSector[1] += @startSector[1]
+      @startSector[1] = 0
     end
   end
 end

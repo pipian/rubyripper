@@ -29,15 +29,15 @@ describe FreedbString do
     @freedb = FreedbString.new(deps, prefs, scan, fire, cdinfo)
     @freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
-    prefs.stub(:get).with('cdrom').and_return('/dev/cdrom')
-    prefs.stub(:get).with('debug').and_return false
-    deps.stub(:platform).and_return('i686-linux')
+    prefs.should_receive(:get).with('cdrom').at_least(:once).and_return('/dev/cdrom')
   end
 
   context "When a help program for creating a freedbstring exists" do
+
     it "should first try to use discid" do
-      deps.stub(:get).with('discid').exactly(1).times.and_return true
-      fire.stub(:launch).with('discid /dev/cdrom').and_return @freedbString
+      deps.should_receive(:platform).twice.and_return('i686-linux')
+      deps.should_receive(:installed?).with('discid').and_return true
+      fire.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
       @freedb.get()
 
       @freedb.freedbString.should == @freedbString
@@ -45,9 +45,10 @@ describe FreedbString do
     end
 
     it "should then try to use cd-discid" do
-      deps.stub(:get).with('discid').exactly(1).times.and_return false
-      deps.stub(:get).with('cd-discid').exactly(1).times.and_return true
-      fire.stub(:launch).with('cd-discid /dev/cdrom').and_return @freedbString
+      deps.should_receive(:platform).twice.and_return('i686-linux')
+      deps.should_receive(:installed?).with('discid').and_return false
+      deps.should_receive(:installed?).with('cd-discid').and_return true
+      fire.should_receive(:launch).with('cd-discid /dev/cdrom').and_return @freedbString
       @freedb.get()
 
       @freedb.freedbString.should == @freedbString
@@ -56,11 +57,11 @@ describe FreedbString do
 
     context "When the platform is DARWIN (a.k.a. OS X)" do
       it "should unmount the disc properly and mount it afterwards" do
-        deps.stub(:platform).and_return('i686-darwin')
-        deps.stub(:get).with('discid').exactly(1).times.and_return true
-        fire.stub(:launch).with('diskutil unmount /dev/cdrom').exactly(1).times
-        fire.stub(:launch).with('discid /dev/cdrom').and_return @freedbString
-        fire.stub(:launch).with('diskutil mount /dev/cdrom').exactly(1).times
+        deps.should_receive(:platform).twice.and_return('i686-darwin')
+        deps.should_receive(:installed?).with('discid').and_return true
+        fire.should_receive(:launch).with('diskutil unmount /dev/cdrom')
+        fire.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
+        fire.should_receive(:launch).with('diskutil mount /dev/cdrom')
         @freedb.get()
 
         @freedb.freedbString.should == @freedbString
@@ -75,14 +76,15 @@ describe FreedbString do
 7=>87182, 8=>106732, 9=>122218, 10=>124080}
       @length = {1=>13209, 2=>23330, 3=>16958, 4=>14675, 5=>12925,
 6=>6085, 7=>19550, 8=>15486, 9=>1862, 10=>38839}
-      deps.stub(:get).with('discid').exactly(1).times.and_return false
-      deps.stub(:get).with('cd-discid').exactly(1).times.and_return false
-      scan.stub(:get).with('startSector').exactly(1).times.and_return @start
-      scan.stub(:get).with('lengthSector').exactly(1).times.and_return @length
+      prefs.should_receive(:get).with('debug').and_return false
+      deps.should_receive(:installed?).with('discid').and_return false
+      deps.should_receive(:installed?).with('cd-discid').and_return false
+      scan.should_receive(:get).with('startSector').and_return @start
+      scan.should_receive(:get).with('lengthSector').and_return @length
     end
 
     it "should try to read values from cd-info, but skip to cdparanoia" do
-      deps.stub(:get).with('cd-info').and_return false
+      deps.should_receive(:installed?).with('cd-info').and_return false
       @freedb.get()
 
       @freedb.freedbString.should == @freedbString
@@ -90,12 +92,12 @@ describe FreedbString do
     end
 
     it "should read cd-info values when possible" do
-      deps.stub(:get).with('cd-info').and_return true
-      cdinfo.stub(:scan).and_return true
-      cdinfo.stub(:status).and_return 'ok'
-      cdinfo.stub(:get).with('startSector').exactly(1).times.and_return @start
-      cdinfo.stub(:get).with('lengthSector').exactly(1).times.and_return @length
-      cdinfo.stub(:get).with('tracks').exactly(1).times.and_return 10
+      deps.should_receive(:installed?).with('cd-info').and_return true
+      cdinfo.should_receive(:scan).and_return true
+      cdinfo.should_receive(:status).and_return 'ok'
+      cdinfo.should_receive(:get).with('startSector').and_return @start
+      cdinfo.should_receive(:get).with('lengthSector').and_return @length
+      cdinfo.should_receive(:get).with('tracks').and_return 10
       @freedb.get()
 
       @freedb.freedbString.should == @freedbString

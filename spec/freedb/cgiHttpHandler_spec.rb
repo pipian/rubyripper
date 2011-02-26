@@ -23,7 +23,7 @@ describe CgiHttpHandler do
 
   it "should return the path correctly and configure only once" do
     site = "http://freedb.freedb.org/~cddb/cddb.cgi"
-    prefs.stub(:get).with("site").exactly(1).times.and_return(site)
+    prefs.should_receive(:get).with("site").and_return(site)
     @cgi = CgiHttpHandler.new(prefs)
     @cgi.path.should == "/~cddb/cddb.cgi"
     @cgi.path.should == "/~cddb/cddb.cgi"
