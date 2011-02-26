@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -19,9 +19,9 @@
 
 class Encode
 	attr_writer :cancelled
-	
+
 	require 'thread'
-	
+
 	def initialize(settings)
 		@settings = settings
 		@cancelled = false
@@ -33,8 +33,8 @@ class Encode
 
 		# Set the charset environment variable to UTF-8. Oggenc needs this.
 		# Perhaps others need it as well.
-		ENV['CHARSET'] = "UTF-8" 
-		
+		ENV['CHARSET'] = "UTF-8"
+
 		@codecs = 0 # number of codecs
 		['flac','vorbis','mp3','wav','other'].each do |codec|
 			@codecs += 1 if @settings[codec]
@@ -44,7 +44,7 @@ class Encode
 		@tasks = Hash.new
 		@settings['tracksToRip'].each{|track| @tasks[track] = @codecs}
 	end
-	
+
 	# is called when a track is ripped succesfully
 	def addTrack(track)
 		if normalize(track)
@@ -71,10 +71,10 @@ class Encode
 				end
 			end
 		end
-		
+
 		#give the signal we're finished
 		if track == @settings['tracksToRip'][-1] && @cancelled == false
-			@threads.each{|thread| thread.join()}	
+			@threads.each{|thread| thread.join()}
 			finished()
 		end
 	end
@@ -97,7 +97,7 @@ class Encode
 		end
 		return continue
 	end
-	
+
 	# call the specific codec function for the track
 	def encodeTrack(track, codec)
 		if codec == 'flac' ; doFlac(track)
@@ -106,7 +106,7 @@ class Encode
 		elsif codec == 'wav' ; doWav(track)
 		elsif codec == 'other' && @settings['othersettings'] != nil ; doOther(track)
 		end
-		
+
 		@lock.synchronize do
 			File.delete(@out.getTempFile(track, 1)) if (@tasks[track] -= 1) == 0
 			updateProgress(@settings['percentages'][track] / @codecs)
@@ -119,7 +119,7 @@ class Encode
 		@settings['log'].encPerc(@progress)
 	end
 
-	
+
 	def finished
 		puts "Inside the finished function" if @settings['debug']
 		@progress = 1.0 ; @settings['log'].encPerc(@progress)
@@ -132,7 +132,7 @@ class Encode
 			@settings['instance'].update("finished", true)
 		end
 	end
-	
+
 	def replaygain(filename, codec, track)
 		if @settings['normalize'] == "replaygain"
 			command = ''
@@ -159,14 +159,14 @@ class Encode
 		flac(filename, track)
 		replaygain(filename, 'flac', track)
 	end
-		
+
 	def doVorbis(track)
 		filename = @out.getFile(track, 'vorbis')
 		if !@settings['vorbissettings'] ; @settings['vorbissettings'] = '-q 6' end
 		vorbis(filename, track)
 		replaygain(filename, 'vorbis', track)
 	end
-		
+
 	def doMp3(track)
 		@possible_lame_tags = ['A CAPPELLA', 'ACID', 'ACID JAZZ', 'ACID PUNK', 'ACOUSTIC', 'ALTERNATIVE', 'ALT. ROCK', 'AMBIENT', 'ANIME', 'AVANTGARDE', \
 'BALLAD', 'BASS', 'BEAT', 'BEBOB', 'BIG BAND', 'BLACK METAL', 'BLUEGRASS', 'BLUES', 'BOOTY BASS', 'BRITPOP', 'CABARET', 'CELTIC', 'CHAMBER MUSIC', 'CHANSON', \
@@ -182,21 +182,21 @@ class Encode
 'TOP 40', 'TRAILER', 'TRANCE', 'TRIBAL', 'TRIP-HOP', 'VOCAL']
 		filename = @out.getFile(track, 'mp3')
 		if !@settings['mp3settings'] ; @settings['mp3settings'] = "--preset fast standard" end
-		
-		# lame versions before 3.98 didn't support other genre tags than the 
+
+		# lame versions before 3.98 didn't support other genre tags than the
 		# ones defined above, so change it to 'other' to prevent crashes
 		lameVersion = `lame --version`[20,4].split('.') # for example [3, 98]
-		if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 && 
+		if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 &&
 		!@possible_lame_tags.include?(@out.genre.upcase))
-		    genre = 'other' 
+		    genre = 'other'
 		else
 		    genre = @out.genre
 		end
-		
+
 		mp3(filename, genre, track)
 		replaygain(filename, 'mp3', track)
 	end
-		
+
 	def doWav(track)
 		filename = @out.getFile(track, 'wav')
 		wav(filename, track)
@@ -226,7 +226,7 @@ class Encode
 		command.gsub!('%o', @out.getFile(track, 'other'))
 		checkCommand(command, track, 'other')
 	end
-	
+
 	def flac(filename, track)
 		tags = String.new
 		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
@@ -235,7 +235,7 @@ class Encode
 		tags += "--tag GENRE=\"#{@out.genre}\" "
 		tags += "--tag DISCID=\"#{@settings['cd'].discId}\" "
 		tags += "--tag DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
-		
+
 		 # Handle tags for single file images differently
 		if @settings['image']
 			tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
@@ -251,7 +251,7 @@ class Encode
 			end
 			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
 			tags += "--tag TRACKNUMBER=#{track} "
-			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "			
+			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "
 		end
 
 		command = String.new
@@ -262,7 +262,7 @@ class Encode
 
 		checkCommand(command, track, 'flac')
 	end
-	
+
 	def vorbis(filename, track)
 		tags = String.new
 		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
@@ -292,10 +292,10 @@ class Encode
 		command += "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
 #{tags} \"#{@out.getTempFile(track, 1)}\""
 		command += " 2>&1" unless @settings['verbose']
-	
+
 		checkCommand(command, track, 'vorbis')
 	end
-	
+
 	def mp3(filename, genre, track)
 		tags = String.new
 		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
@@ -322,7 +322,7 @@ class Encode
 		# set UTF-8 tags (not the filename) to latin because of a lame bug.
 		begin
 			require 'iconv'
-			tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)		
+			tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)
 		rescue
 			puts "couldn't convert to ISO-8859-1 succesfully"
 		end
@@ -340,10 +340,10 @@ class Encode
 		command += "lame #{@settings['mp3settings']} #{tags}\"\
 #{inputWavFile}\" \"#{filename}\""
 		command += " 2>&1" unless @settings['verbose']
-	
+
 		checkCommand(command, track, 'mp3')
 	end
-	
+
 	def wav(filename, track)
 		begin
 			FileUtils.cp(@out.getTempFile(track, 1), filename)
@@ -352,13 +352,13 @@ class Encode
 			puts "If this is not the case, you might have a shortage of disk space.."
 		end
 	end
-	
+
 	def checkCommand(command, track, codec)
 		puts "command = #{command}" if @settings['debug']
 
 		exec = IO.popen("nice -n 6 #{command}") #execute command
 		exec.readlines() #get all the output
-		
+
 		if Process.waitpid2(exec.pid)[1].exitstatus != 0
 			@settings['log'].add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
 			@settings['log'].encodingErrors = true

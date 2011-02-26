@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -59,18 +59,18 @@ private
 	def readPreferences()
 		# if file is still false it will be ignored by @prefs
 		@prefs.loadConfig(configFile = @options['file'])
-		
+
 		# in case the configfile is missing
 		if @options['file'] != false && !@prefs.isConfigFound
 			puts "WARNING: the provided configfile is not found."
 			puts "The default settings are used instead."
 		end
-		
+
 		if @options['configure']
 			loopMainMenu()
 		end
 	end
-	
+
 	# First define the different options
 	def setParseOptions
 		@opts = OptionParser.new(banner = nil, width = 20, indent = ' ' * 2) do |opts|
@@ -183,7 +183,7 @@ private
 
 	# show the ripping submenu
 	def showSubMenuRipping
-		puts ''		
+		puts ''
 		puts _("** SECURE RIPPING SETTINGS **")
 		puts ''
  		puts ' 1) ' + _("Ripping drive") + ": %s" %[@prefs.get('cdrom')]
@@ -221,7 +221,7 @@ sets.htm.\n   **Your drive model is shown in the logfile.")
 			elsif choice == 6
 @prefs.set('maxTries', @int.get(_("Maximum trials"), 5))
 			elsif choice == 7 ; switchBool('eject')
-			elsif choice == 8 ; switchBool('noLog') 
+			elsif choice == 8 ; switchBool('noLog')
 			else
 				puts _("Number #{choice} is not a valid choice, try again.")
 			end
@@ -231,7 +231,7 @@ sets.htm.\n   **Your drive model is shown in the logfile.")
 
 	# show the toc (disc table of contents) submenu
 	def showSubMenuToc
-		puts ''		
+		puts ''
 		puts _("** TOC ANALYSIS SETTINGS **")
 		puts ''
  		puts ' 1) ' + _("Create a cuesheet %s") % [showBool('createCue')]
@@ -258,7 +258,7 @@ sets.htm.\n   **Your drive model is shown in the logfile.")
 @prefs.set('minLengthHiddenTrack', @int.get(_("Minimum seconds hidden track"), 2))
 			elsif choice == 5
 				choices = [['prepend', _('Prepend pregaps to next track')],
-					['append', _('Append pregaps to previous track')]] 
+					['append', _('Append pregaps to previous track')]]
 				@prefs.set('preGaps', multipleChoice(choices))
 			elsif choice == 6
 				choices = [['cue', _('Write pre-emphasis tag to the cuesheet')],
@@ -273,7 +273,7 @@ sets.htm.\n   **Your drive model is shown in the logfile.")
 
 	# show the codec submenu
 	def showSubMenuCodecs
-		puts ''		
+		puts ''
 		puts _("** CODEC SETTINGS **")
 		puts ''
  		puts ' 1) ' + _("Flac %s") % [showBool('flac')]
@@ -327,21 +327,21 @@ forget extension)")
 				choices = [['none', _("Don't normalize the audio")],
 					['replaygain', _('Use replaygain')],
 					['normalize', _('Use normalize')]]
-				@prefs.set('normalizer', multipleChoice(choices)) 
+				@prefs.set('normalizer', multipleChoice(choices))
 			elsif choice == 15
 				choices = [['album', _('Use album based gain')],
 					['track', _('Use track based gain')]]
-				@prefs.set('gain', multipleChoice(choices)) 
+				@prefs.set('gain', multipleChoice(choices))
 			else
 				puts _("Number #{choice} is not a valid choice, try again.")
 			end
 			loopSubMenuCodecs()
 		end
 	end
-	
+
 	# show the freedb menu
 	def showSubMenuFreedb
-		puts ''		
+		puts ''
 		puts _("** FREEDB SETTINGS **")
 		puts ''
  		puts ' 1) ' + _("Fetch cd info with freedb %s") % [showBool('freedb')]
@@ -423,19 +423,19 @@ forget extension)")
 
 		if filescheme == 'namingNormal'
 			puts getExampleFilenameNormal(@prefs.get('basedir'), @prefs.get(filescheme))
-		else 
+		else
 			puts getExampleFilenameVarious(@prefs.get('basedir'), @prefs.get(filescheme))
 		end
 
 		puts _("\n%a = Artist\n%b = Album\n%g = Genre\n%y = Year\n%f = Codec\n%n = Tracknumber\n%t = Trackname\n%va = Various Artist\n\n")
 		answer = @string.get(_("New %s naming scheme (q to quit)") % [filescheme],
-"%f/%a (%y) %b/%n - %t") 
-		
+"%f/%a (%y) %b/%n - %t")
+
 		if answer != 'q'
 			if filescheme == 'namingNormal'
 				puts _("An example filename is now:\n\n\t%s") % [getExampleFilenameNormal(@prefs.get('basedir'), answer)]
 				@prefs.set(filescheme, answer)
-			else 
+			else
 				puts _("An example filename is now:\n\n\t%s") % [getExampleFilenameVarious(@prefs.get('basedir'), answer)]
 				@prefs.set(filescheme, answer)
 			end

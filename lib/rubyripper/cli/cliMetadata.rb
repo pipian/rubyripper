@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -17,7 +17,7 @@
 
 # Metadata class is responsible for showing and editing the metadata
 class CliMetadata
-	
+
 	# setup the different objects
 	def initialize(scanDiscCdparanoia, metadata, preferences, cliGetBool, cliGetInt, cliGetString)
 		@cd = scanDiscCdparanoia
@@ -69,11 +69,11 @@ private
 	def getDiscInfo
 		@cd = @disc.scan
 		@md = @disc.md
-		
+
 		# When a disc is found
 
 			showFreedb()
-			# When freedb is enabled 
+			# When freedb is enabled
 			#if @settings['freedb']
 			#	puts _("Fetching freedb info...")
 			#	handleFreedb()
@@ -81,7 +81,7 @@ private
 			#	showFreedb()
 			#end
 		# When no disc is found
-		#else 
+		#else
 		#	puts "ERROR: No disc found."
 		#	exit()
 		#end
@@ -90,7 +90,7 @@ private
 	# Fetch the cddb info, if choice is true, multiple discs were available
 	#def handleFreedb(choice = false)
 	#	status = @cd.getFreedbInfo(choice)
-	#	
+	#
 	#	if status == true #success
 	#		showFreedb()
 	#	elsif status[0] == "choices"
@@ -129,7 +129,7 @@ private
 		print _("Year:") ; print " #{@md.year}\n"
 		puts ""
 		puts _("TRACK INFO")
-		
+
 		showTracks()
 		if @defaults
 			@status = "default"
@@ -178,7 +178,7 @@ private
 		puts "2) " + _("Album:") + " #{@md.album}"
 		puts "3) " + _("Genre:") + " #{@md.genre}"
 		puts "4) " + _("Year:") + " #{@md.year}"
-		
+
 		if @md.varArtists.empty?
 			puts "5) " + _("Mark disc as various artist")
 		else
@@ -186,7 +186,7 @@ private
 		end
 
 		puts "99) " + _("Finished editing disc info\n\n")
-		
+
 		answer = ''
 		while answer != 99
 			answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
@@ -209,7 +209,7 @@ private
 			end
 		end
 	end
-	
+
 	# Unmark the disc as various artist
 	def unsetVarArtist
 		@md.undoVarArtist()
@@ -223,7 +223,7 @@ private
 
 		while true
 			answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
-		
+
 			if answer == 99 ; break
 			elsif (answer.to_i > 0 && answer.to_i <= @cd.getInfo('audiotracks'))
 				string = @string.get("Track #{answer} : ", @md.trackname(answer))

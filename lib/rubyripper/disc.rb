@@ -58,7 +58,6 @@ class Disc
   end
 end
 
-
 # private
 #
 # 	# the overall function to search for a disc

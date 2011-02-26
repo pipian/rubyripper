@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -84,15 +84,15 @@ get('savePrefs'), get('cleanPrefs'), get('dependency'))
 #		@classes['loadFreedbRecord'] = LoadFreedbRecord.new(get('fileAndDir'))
 #		@classes['saveFreedbRecord'] = SaveFreedbRecord.new(get('fileAndDir'))
 #		@classes['cgiHttpHandler'] = CgiHttpHandler.new(get('preferences'))
-#		@classes['getFreedbRecord'] = GetFreedbRecord.new(get('preferences'), 
+#		@classes['getFreedbRecord'] = GetFreedbRecord.new(get('preferences'),
 #get('cgiHttpHandler'))
-#		
+#
 #		@classes['freedbRecordParser'] = FreedbRecordParser.new()
 #
-#		@classes['metadata'] = Metadata.new(get('loadFreedbRecord'), 
+#		@classes['metadata'] = Metadata.new(get('loadFreedbRecord'),
 #get('saveFreedbRecord'), get('getFreedbRecord'), get('freedbRecordParser'))
-		
-		# TODO			
+
+		# TODO
 		@classes['metadata'] = nil
 	end
 
@@ -130,7 +130,7 @@ get('permissionDrive'))
 	# Load all objects for the actual ripping
 	def ripping
 		#TODO
-#		@rubyripper = Rubyripper.new(FileManager.new, Ripping.new, 
+#		@rubyripper = Rubyripper.new(FileManager.new, Ripping.new,
 #Encodings.new, Logging.new)
 	end
 
@@ -163,8 +163,8 @@ get('cliGetInt'), get('cliGetBool'), get('cliGetString'))
 		@classes['cliMetadata'] = CliMetadata.new(get('scanDiscCdparanoia'),
 get('metadata'), get('preferences'), get('cliGetBool'), get('cliGetInt'),
 get('cliGetString'))
-		
-# TODO		@classes['cliTracklist'] = CliTracklist.new(get('preferences'), 
+
+# TODO		@classes['cliTracklist'] = CliTracklist.new(get('preferences'),
 # TODO get('disc'))
 	end
 

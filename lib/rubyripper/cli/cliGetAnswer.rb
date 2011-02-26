@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -18,11 +18,11 @@
 # return an answer from the user, typed into the screen
 class CliGetAnswer
 
-	# get the input from the user	
+	# get the input from the user
 	def get(question, default)
 		print(question + " [#{default}] : ")
 		input = $stdin.gets.strip
-		
+
 		if input.empty?
 			return default
 		else
@@ -36,14 +36,14 @@ class CliGetBool < CliGetAnswer
 
 	# get a boolean value from the user
 	def initialize
-		@valid = {_("yes") => true, _('y') => true, 
+		@valid = {_("yes") => true, _('y') => true,
 _("no") => false, _("n") =>false}
 	end
 
-	# get the input from the user	
+	# get the input from the user
 	def get(question, default)
 		input = super
-				
+
 		if !@valid.key?(input)
 			print("Please answer #{_('yes')} or #{_('no')}. Try again.\n")
 			get(question, default)
@@ -56,7 +56,7 @@ end
 # return an integer value from the user, subclasses from GetAnswer
 class CliGetInt < CliGetAnswer
 
-	# get the input from the user	
+	# get the input from the user
 	def get(question, default)
 		input = super
 		if input == default
@@ -74,7 +74,7 @@ end
 # return an answer from the user, typed into the screen
 class CliGetString < CliGetAnswer
 
-	# get the input from the user	
+	# get the input from the user
 	def get(question, default)
 		super
 	end

@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -38,9 +38,9 @@ end
 def getExampleFilenameNormal(basedir, layout)
 	filename = File.expand_path(File.join(basedir, layout))
 	filename = _("Example filename: %s.ext") % [filename]
-	{'%a' => 'Judas Priest', '%b' => 'Sin After Sin', '%f' => 'codec', 
-	'%g' => 'Rock', '%y' => '1977', '%n' =>'01', '%t' => 'Sinner', 
-	'%i' =>'inputfile', '%o' => 'outputfile'}.each do |key, value| 
+	{'%a' => 'Judas Priest', '%b' => 'Sin After Sin', '%f' => 'codec',
+	'%g' => 'Rock', '%y' => '1977', '%n' =>'01', '%t' => 'Sinner',
+	'%i' =>'inputfile', '%o' => 'outputfile'}.each do |key, value|
 		filename.gsub!(key,value)
 	end
 	return filename
@@ -51,7 +51,7 @@ def getExampleFilenameVarious(basedir, layout)
 	filename = File.expand_path(File.join(basedir, layout))
 	filename = _("Example filename: %s.ext") % [filename]
 	{'%va' => 'Various Artists', '%b' => 'TMF Rockzone', '%f' => 'codec',
-	'%g' => "Rock", '%y' => '1999', '%n' => '01', '%a' => 'Kid Rock', 
+	'%g' => "Rock", '%y' => '1999', '%n' => '01', '%a' => 'Kid Rock',
 	'%t' => 'Cowboy'}.each do |key, value|
 		filename.gsub!(key,value)
 	end

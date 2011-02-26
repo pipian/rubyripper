@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# OutputFile is a helpclass that defines all the names of the directories, 
+# OutputFile is a helpclass that defines all the names of the directories,
 # filenames and tags. It filters out special characters that are not
 # well supported in the different platforms. It also offers some help
 # functions to create the output dirs and to get a preview of the output.
@@ -25,7 +25,7 @@
 
 class OutputFile
 attr_reader :status, :artist, :album, :year, :genre
-	
+
 	def initialize(settings)
 		@settings = settings
 		@md = @settings['cd'].md
@@ -46,7 +46,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		@tracklist = Hash.new
 		@varArtists = Hash.new
 		@otherExtension = String.new
-		
+
 		splitDirFile()
 		checkNames()
 		setDirectory()
@@ -62,7 +62,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		else
 			fileScheme = @settings['naming_various']
 		end
-		
+
 		# the basedir is added later on, since we don't want to change it
 		@dirName, @fileName = File.split(fileScheme)
 	end
@@ -76,7 +76,7 @@ attr_reader :status, :artist, :album, :year, :genre
 # 5) Check if %t exists in single file rip scheme
 
 	def checkNames
-		if @dirName.include?("/%b") && @md.album[0,1] == '.' 
+		if @dirName.include?("/%b") && @md.album[0,1] == '.'
  			@dirName.sub!(/\.*/, '')
  		end
 
@@ -92,7 +92,7 @@ attr_reader :status, :artist, :album, :year, :genre
 				puts "Warning: '%n' in the filescheme for image rips makes no sense!"
 				puts "This is automatically removed"
 			end
-			
+
 			if @fileName.include?('%va')
 				@fileName.gsub!('%va', '')
 				puts "Warning: '%va' in the filescheme for image rips makes no sense!"
@@ -133,7 +133,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		if @md.discNumber != false
 			dirName = File.join(dirName, "CD #{sprintf("%02d", @md.discNumber)}")
 		end
-		
+
 		dirName = fileFilter(dirName, true)
 		return File.expand_path(File.join(@settings['basedir'], dirName))
 	end
@@ -150,7 +150,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		createFiles()
 		@status = true
 	end
-	
+
 	def findExtensionOther
 		if @settings['other']
 			@settings['othersettings'] =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
@@ -174,7 +174,7 @@ attr_reader :status, :artist, :album, :year, :genre
 			dir = directory
 			# search for the first existing directory
 			while not File.directory?(dir) ; dir = File.dirname(dir) end
-			
+
 			if not File.writable?(dir)
 				@status = ["error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir]]
  				return false
@@ -189,7 +189,7 @@ attr_reader :status, :artist, :album, :year, :genre
 			puts dir if @settings['debug']
 			if File.directory?(dir)
 				@status = ["dir_exists", dir]
-				return false			
+				return false
 			end
 		end
 		return true
@@ -231,13 +231,13 @@ attr_reader :status, :artist, :album, :year, :genre
 	# give the filename for given codec and track
 	def giveFileName(codec, track=0)
 		file = @fileName.dup
-		
+
 		# the artist should always refer to the artist that is valid for the track
 		if getVarArtist(track + 1) == '' ; artist = @md.artist ; varArtist = ''
 		else artist = getVarArtist(track + 1) ; varArtist = @md.artist end
-		
+
 		{'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
-		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => varArtist, 
+		'%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => varArtist,
 		'%t' => getTrackname(track + 1)}.each do |key, value|
 			file.gsub!(key, value)
 		end
@@ -249,7 +249,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		elsif codec == 'wav' ; file += '.wav'
 		elsif codec == 'other' ; file += @otherExtension
 		end
-		
+
 		filename = fileFilter(file)
 		puts filename if @settings['debug']
 		return filename
@@ -291,7 +291,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		var.gsub!('|', '') #no pipe allowed in FAT
 		var.gsub!('\\', '') #the \\ means a normal \
  		var.gsub!('"', '')
- 		
+
 		allFilter(var)
 
 		if @settings['noSpaces'] ; var.gsub!(" ", "_") end
@@ -303,7 +303,7 @@ attr_reader :status, :artist, :album, :year, :genre
 	def tagFilter(var)
 		allFilter(var)
 
-		#Add a slash before the double quote chars, 
+		#Add a slash before the double quote chars,
 		#otherwise the shell will complain
 		var.gsub!('"', '\"')
 		return var.strip
@@ -312,8 +312,8 @@ attr_reader :status, :artist, :album, :year, :genre
 	# characters that will be changed for tags and filenames
 	def allFilter(var)
 		var.gsub!('`', "'")
-		
-		# replace any underscores with spaces, some freedb info got 
+
+		# replace any underscores with spaces, some freedb info got
 		# underscores instead of spaces
 		if not @settings['noSpaces'] ; var.gsub!('_', ' ') end
 
@@ -323,11 +323,11 @@ attr_reader :status, :artist, :album, :year, :genre
 			var.force_encoding("ASCII-8BIT")
 		end
 
-		# replace utf-8 single quotes with latin single quote 
-		var.gsub!(/\342\200\230|\342\200\231/, "'") 
-		
+		# replace utf-8 single quotes with latin single quote
+		var.gsub!(/\342\200\230|\342\200\231/, "'")
+
 		# replace utf-8 double quotes with latin double quote
-		var.gsub!(/\342\200\234|\342\200\235/, '"') 
+		var.gsub!(/\342\200\234|\342\200\235/, '"')
 
 		if var.respond_to?(:encoding)
 			# restore the old encoding
@@ -346,7 +346,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		@dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
 		attemptDirCreation()
  	end
- 	
+
 	# remove the existing dir, starting with the files in it
  	def overwriteDir
  		@dir.values.each{|dir| cleanDir(dir) if File.directory?(dir)}
@@ -365,9 +365,9 @@ attr_reader :status, :artist, :album, :year, :genre
 
 	# create Playlist for each codec
 	def createPlaylist(codec)
-		playlist = File.new(File.join(@dir[codec], 
+		playlist = File.new(File.join(@dir[codec],
 			"#{@artistFile} - #{@albumFile} (#{codec}).m3u"), 'w')
-		
+
 		@settings['tracksToRip'].each do |track|
 			playlist.puts @file[codec][track]
 		end
@@ -388,10 +388,10 @@ attr_reader :status, :artist, :album, :year, :genre
 	# return the full filename of the track (starting with 1) or image
 	def getFile(track, codec)
 		if track == "image"
-			return File.join(@dir[codec], @image[codec])		
+			return File.join(@dir[codec], @image[codec])
 		else
 			return File.join(@dir[codec], @file[codec][track])
-		end	
+		end
 	end
 
 	# return the toc file of AdvancedToc class

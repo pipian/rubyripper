@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -27,7 +27,7 @@ attr_writer :encodingErrors
 	def initialize(settings) #gui is an instance of the graphical user interface used
 		@settings = settings
 		createLog()
-		
+
 		@problem_tracks = Hash.new # key = tracknumber, value = new dictionary with key = seconds_chunk, value = [amount_of_chunks, trials_needed]
 		@not_corrected_tracks = Array.new # Array of tracks that weren't corrected within the maximum amount of trials set by the user
 		@ripping_progress = 0.0
@@ -47,31 +47,31 @@ attr_writer :encodingErrors
 			end
 		end
 	end
-	
+
 	# update the ripping percentage of the gui
 	def ripPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
 		new_value <= 1.0 ? @ripping_progress = new_value : @ripping_progress = 1.0
 		@settings['instance'].update("ripping_progress", @ripping_progress)
 	end
-	
+
 	# update the encoding percentage of the gui
 	def encPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
 		new_value <= 1.0 ? @encoding_progress = new_value : @encoding_progress = 1.0
 		@settings['instance'].update("encoding_progress", @encoding_progress)
 	end
-	
+
 	# Add a message to the logging file + update the gui
 	def add(message, calling_function = false)
 		@logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
 		@settings['instance'].update("log_change", message)
 	end
-	
+
 	# Add a message to the logging file
 	def addLog(message, summary = false)
 		@logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
 		if summary ; @short_summary += message end
 	end
-	
+
 	def mismatch(track, trial, indexes_with_errors, size, length)
 		if !@problem_tracks.key?(track) #First time we encounter this track (Secure_rip->analyzeFiles() )
 			@problem_tracks[track] = Hash.new # create the Hash for the track
@@ -91,11 +91,11 @@ attr_writer :encodingErrors
 		end
 		if trial == 0; @not_corrected_tracks << track end #Reached maxtries and still got errors
 	end
-	
+
 	def summary(matches_all, matches_errors, maxtries) #Give an overview of errors
 		if @encodingErrors ; addLog(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
 		addLog(_("\nRIPPING SUMMARY\n\n"), true)
-		
+
 		addLog(_("All chunks were tried to match at least %s times.\n") % [matches_all], true)
 		if matches_all != matches_errors; addLog(_("Chunks that differed after %s trials,\nwere tried to match %s times.\n") % [matches_all, matches_errors], true) end
 
@@ -117,7 +117,7 @@ attr_writer :encodingErrors
 		end
 		@logfiles.each{|logfile| logfile.close} #close all the files
  	end
- 		
+
  	def position_analyse(matches_errors, maxtries) # Give an overview of suspicion position in the logfile
 		addLog(_("\nSUSPICIOUS POSITION ANALYSIS\n\n"))
 		addLog(_("Since there are 75 chunks per second, after making the notion of the\n"))
@@ -135,7 +135,7 @@ attr_writer :encodingErrors
 			end
 		end
 	end
-	
+
 	# delete the logfiles if no errors occured
 	def delLog
 		if @problem_tracks.empty? && !@encodingErrors

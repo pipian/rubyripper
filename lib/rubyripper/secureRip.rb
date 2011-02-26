@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -21,8 +21,8 @@
 # * Repairing the files if necessary
 
 class SecureRip
-	attr_writer :cancelled 
-	
+	attr_writer :cancelled
+
 	def initialize(settings, encoding)
 		@settings = settings
 		@encoding = encoding
@@ -37,18 +37,18 @@ class SecureRip
 
 	def ripTracks
 		@settings['log'].ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
-		
+
 		@settings['tracksToRip'].each do |track|
 			break if @cancelled == true
 			puts "Ripping track #{track}" if @settings['debug'] && track != 'image'
 			puts "Ripping image" if @settings['debug'] && track == 'image'
 			ripTrack(track)
 		end
-		
-		eject(@settings['cd'].cdrom) if @settings['eject'] 
+
+		eject(@settings['cd'].cdrom) if @settings['eject']
 	end
 
-	
+
 	# Due to a bug in cdparanoia the -Z setting has to be replaced for last track.
 	# This is only needed when an offset is set. See issue nr. 13.
 	def checkParanoiaSettings(track)
@@ -73,12 +73,12 @@ class SecureRip
 			if main(track)
 				deEmphasize(track)
 				@encoding.addTrack(track)
-			else 
+			else
 				return false
 			end #ready to encode
 		end
 	end
-	
+
 	# check if the track needs to be corrected
 	# the de-emphasized file needs another name
 	# when sox is finished move it back to the original name
@@ -96,9 +96,9 @@ class SecureRip
 
 	def sizeTest(track)
 		puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end}\
-		is #{@settings['cd'].getFileSize(track)} bytes." if @settings['debug'] 
+		is #{@settings['cd'].getFileSize(track)} bytes." if @settings['debug']
 
-		if installed('df')				
+		if installed('df')
 			freeDiskSpace = `LANG=C df \"#{@settings['Out'].getDir()}\"`.split()[10].to_i
 			puts "Free disk space is #{freeDiskSpace} MB" if @settings['debug']
 			if @settings['cd'].getFileSize(track) > freeDiskSpace*1000
@@ -108,11 +108,11 @@ class SecureRip
 		end
 		return true
 	end
-	
+
 	def main(track)
 		@reqMatchesAll.times{if not doNewTrial(track) ; return false end} # The amount of matches all sectors should match
 		analyzeFiles(track) #If there are differences, save them in the @errors hash
-				
+
 		while @errors.size > 0
 			if @trial > @settings['max_tries'] && @settings['max_tries'] != 0 # We would like to respect our users settings, wouldn't we?
 				@settings['log'].add(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
@@ -120,7 +120,7 @@ class SecureRip
 				@settings['log'].mismatch(track, 0, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) # zero means it is never solved.
 				break # break out loop and continue using trial1
 			end
-			
+
 			doNewTrial(track)
 			break if @cancelled == true
 
@@ -128,18 +128,18 @@ class SecureRip
 				correctErrorPos(track)
 			else
 				readErrorPos(track)
-			end 
+			end
 		end
-		
+
 		getDigest(track) # Get a MD5-digest for the logfile
 		@progress += @settings['percentages'][track]
 		@settings['log'].ripPerc(@progress)
 		return true
 	end
-	
+
 	def doNewTrial(track)
 		fileOk = false
-	
+
 		while (!@cancelled && !fileOk)
 			@trial += 1
 			rip(track)
@@ -151,7 +151,7 @@ class SecureRip
 		# when cancelled fileOk will still be false
 		return fileOk
 	end
-	
+
 	def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
 		if not File.exist?(@settings['Out'].getTempFile(track, @trial))
 			@settings['instance'].update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
@@ -159,7 +159,7 @@ class SecureRip
 		end
 		return true
 	end
-	
+
 	def testFileSize(track) #check if wavfile is of correct size
 		sizeDiff = @settings['cd'].getFileSize(track) - File.size(@settings['Out'].getTempFile(track, @trial))
 
@@ -169,8 +169,8 @@ class SecureRip
 		elsif sizeDiff < 0
 			puts "More sectors ripped than expected: #{sizeDiff / 2352} sector(s)" if @settings['debug']
 		elsif @settings['offset'] != 0 && (track == "image" || track == @settings['cd'].audiotracks)
-			@settings['log'].add(_("The ripped file misses %s sectors.\n") % [sizeDiff / 2352.0])			
-			@settings['log'].add(_("This is known behaviour for some drives when using an offset.\n"))		
+			@settings['log'].add(_("The ripped file misses %s sectors.\n") % [sizeDiff / 2352.0])
+			@settings['log'].add(_("This is known behaviour for some drives when using an offset.\n"))
 			@settings['log'].add(_("Notice that each sector is 1/75 second.\n"))
 		elsif @cancelled == false
 			if @settings['debug']
@@ -180,7 +180,7 @@ class SecureRip
 
 			#someone might get out of free diskspace meanwhile
 			@cancelled = true if not sizeTest(track)
-			
+
 			File.delete(@settings['Out'].getTempFile(track, @trial)) # Delete file with wrong filesize
 			@trial -= 1 # reset the counter because the filesize is not right
 			@settings['log'].add(_("Filesize is not correct! Trying another time\n"))
@@ -195,7 +195,7 @@ class SecureRip
 		@reqMatchesAll.times do |time|
 			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
 		end
-				
+
 		(@reqMatchesAll - 1).times do |time|
 			index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
 			while index + 44 < @settings['cd'].getFileSize(track)
@@ -207,12 +207,12 @@ class SecureRip
 				index += 2352
 			end
 		end
-		
+
 		files.each{|file| file.close}
-		
+
 		# Remove the files now we analyzed them. Differences are saved in memory.
 		(@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].getTempFile(track, time + 2))}
- 
+
 		if @errors.size == 0
 			@settings['log'].add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
 		else
@@ -220,8 +220,8 @@ class SecureRip
 			@settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
 		end
 	end
-	
-	# When required matches for mismatched sectors are bigger than there are 
+
+	# When required matches for mismatched sectors are bigger than there are
 	# trials to be tested, readErrorPos() just reads the mismatched sectors
 	# without analysing them.
 	# Wav-containter overhead = 44 bytes.
@@ -239,9 +239,9 @@ class SecureRip
 		File.delete(@settings['Out'].getTempFile(track, @trial))
 
 		# Give an update for the trials for later analysis
-		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) 
+		@settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track))
 	end
-	
+
 	# Let the errors 'wave' out. For each sector that isn't unique across
 	# different trials, try to find at least @reqMatchesErrors matches. If
 	# indeed this amount of matches is found, correct the sector in the
@@ -250,7 +250,7 @@ class SecureRip
 	def correctErrorPos(track)
 		file1 = File.new(@settings['Out'].getTempFile(track, 1), 'r+')
 		file2 = File.new(@settings['Out'].getTempFile(track, @trial), 'r')
-		
+
 		# Sort the hash keys to prevent jumping forward and backwards in the file
 		@errors.keys.sort.each do |start_chunk|
 			file2.pos = start_chunk + 44
@@ -271,7 +271,7 @@ class SecureRip
 
 		# Remove the file now we read it. Differences are saved in memory.
 		File.delete(@settings['Out'].getTempFile(track, @trial))
-		
+
 		#give an update of the amount of errors and trials
 		if @errors.size == 0
 			@settings['log'].add(_("Error(s) succesfully corrected, %s matches found for each chunk :)\n") % [@reqMatchesErrors])
@@ -280,11 +280,11 @@ class SecureRip
 			@settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesErrors])
 		end
 	end
-	
+
 	# add a timeout if a disc takes longer than 30 minutes to rip (this might save the hardware and the disc)
 	def cooldownNeeded
 		puts "Minutes ripping is #{(Time.now - @timeStarted) / 60}." if @settings['debug']
-		
+
 		if (((Time.now - @timeStarted) / 60) > 30 && @settings['maxThreads'] != 0)
 			@settings['log'].add(_("The drive is spinning for more than 30 minutes.\n"))
 			@settings['log'].add(_("Taking a timeout of 2 minutes to protect the hardware.\n"))
@@ -292,12 +292,12 @@ class SecureRip
 			@timeStarted = Time.now # reset time
 		end
 	end
-	
+
 	def rip(track) # set cdparanoia command + parameters
 		cooldownNeeded()
 
 		timeStarted = Time.now
-		
+
 		if track == "image"
 			@settings['log'].add(_("Starting to rip CD image, trial \#%s") % [@trial])
 		else
@@ -305,11 +305,11 @@ class SecureRip
 		end
 
 		command = "cdparanoia"
-		
+
 		if @settings['rippersettings'].size != 0
 			command += " #{@settings['rippersettings']}"
-		end 
-		
+		end
+
 		command += " [.#{@settings['cd'].getStartSector(track)}]-"
 
 		# for the last track tell cdparanoia to rip till end to prevent problems on some drives
@@ -327,7 +327,7 @@ class SecureRip
 		`#{command}` if @cancelled == false #Launch the cdparanoia command
 		@settings['log'].add(" (#{(Time.now - timeStarted).to_i} #{_("seconds")})\n")
 	end
-	
+
 	def getDigest(track)
 		digest = Digest::MD5.new()
 		file = File.open(@settings['Out'].getTempFile(track, 1), 'r')
