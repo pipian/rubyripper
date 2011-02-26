@@ -15,11 +15,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/fileAndDir'
+
 # class helping to store the retrieved freedb record
 # do this conform standards at location $HOME/.cddb/<category>/<discid>
 class SaveFreedbRecord
-	def initialize(fileAndDir)
-		@file = fileAndDir
+	def initialize(fileAndDir=nil)
+		@file = fileAndDir ? fileAndDir : FileAndDir.new()
 	end
 
 	# * freedbRecord = the complete freedb record string with all metadata

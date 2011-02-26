@@ -28,6 +28,28 @@ attr_reader :freedbString, :discid
     @cdinfo = scanDiscCdinfo
   end
 
+  # fetch the freedb string
+  def freedbString
+    @freedbString ||= getFreedbString
+  end
+
+  # fetch the discid
+  def discid
+    @discid ||= getDiscId
+  end
+
+private
+
+  def getFreedbString
+    get()
+    @freedbString
+  end
+
+  def getDiscId
+    get()
+    @discid
+  end
+
   # try to get the freedbstring
   def get
     autoCalcFreedb()
@@ -43,7 +65,7 @@ attr_reader :freedbString, :discid
     end
   end
 
-private
+
 
   # try to fetch freedb string with help programs
   def autoCalcFreedb

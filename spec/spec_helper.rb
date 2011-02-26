@@ -27,6 +27,6 @@ require 'rubyripper/freedb/loadFreedbRecord'
 require 'rubyripper/freedb/getFreedbRecord'
 require 'rubyripper/freedb/cgiHttpHandler'
 require 'rubyripper/freedb/freedbRecordParser'
+require 'rubyripper/disc'
 require 'rubyripper/disc/freedbString.rb'
 require 'rubyripper/disc/scanDiscCdparanoia'
-

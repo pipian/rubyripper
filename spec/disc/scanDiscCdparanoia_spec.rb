@@ -43,12 +43,10 @@ describe ScanDiscCdparanoia do
       lambda{disc.getLengthSector(1)}.should raise_exception(RuntimeError, /getLengthSector/)
       lambda{disc.getLengthText(1)}.should raise_exception(RuntimeError, /getLengthText/)
       lambda{disc.getFileSize(1)}.should raise_exception(RuntimeError, /getFileSize/)
-      lambda{disc.prependGaps(1)}.should raise_exception(RuntimeError, /prependGaps/)
       lambda{disc.getStartSector('image')}.should raise_exception(RuntimeError, /getStartSector/)
       lambda{disc.getLengthSector('image')}.should raise_exception(RuntimeError, /getLengthSector/)
       lambda{disc.getLengthText('image')}.should raise_exception(RuntimeError, /getLengthText/)
       lambda{disc.getFileSize('image')}.should raise_exception(RuntimeError, /getFileSize/)
-      lambda{disc.prependGaps('image')}.should raise_exception(RuntimeError, /prependGaps/)
     end
   end
 

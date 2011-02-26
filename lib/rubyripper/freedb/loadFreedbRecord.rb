@@ -15,12 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/fileAndDir'
+
 # A class that tries to locally find an entry in $HOME/.cddb
 class LoadFreedbRecord
 
   # * discid = the discid as calculated for the freedb server
-  def initialize(fileAndDir)
-    @file = fileAndDir
+  def initialize(fileAndDir=nil)
+    @file = fileAndDir ? fileAndDir : FileAndDir.new()
     @encoding = nil
     @freedbRecord = nil
     @status = 'noRecords'

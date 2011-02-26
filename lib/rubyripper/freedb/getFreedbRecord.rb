@@ -15,18 +15,21 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'net/http' #automatically loads the 'uri' library
-require 'cgi' #for translating characters to HTTP codes, space = %20 for instance
+# helper class to handle the http traffic
+require 'rubyripper/freedb/cgiHttpHandler.rb'
 
-# This class tries to fetch the metadata from the freedb server
-# See http://ftp.freedb.org/pub/freedb/latest/CDDBPROTO for protocol
+#for translating characters to HTTP codes, space = %20 for instance
+require 'cgi'
+
+# This class tries to implement the freedb HTTP protocol (read-only)
+# See http://ftp.freedb.org/pub/freedb/latest/CDDBPROTO for specs
 
 class GetFreedbRecord
   attr_reader :status, :freedbRecord, :choices, :category, :finalDiscId
 
-  def initialize(preferences, server)
+  def initialize(preferences, server=nil)
     @prefs = preferences
-    @server = server
+    @server = server ? server : CgiHttpHandler.new(@prefs)
   end
 
   # handle the initial connection with the freedb server

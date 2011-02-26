@@ -20,8 +20,7 @@
 # creating the freedb string. Cd-info is better for that.
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
-  attr_reader :status, :playtime, :audiotracks, :devicename, :audiotracks,
-      :firstAudioTrack
+  attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack
 
   # * preferences is an instance of Preferences
   # * fireCommand is an instance of FireCommand
@@ -32,8 +31,8 @@ class ScanDiscCdparanoia
     @prefs = preferences
   end
 
-  # scan the disc for input
-  def scan ; readDisc() ; end
+  # scan the disc for input and return the object
+  def scan ; readDisc() ; self ; end
 
   # return the startSector, example for track 1 getStartSector(1)
   # if image, return the start sector for the lowest tracknumber
@@ -75,15 +74,15 @@ class ScanDiscCdparanoia
   # prepend the gaps, so rewrite the toc info
   # notice that cdparanoia appends by default
   # * scanCdrdao = instance of ScanDiscCdrdao
-  def prependGaps(scanCdrdao)
-    assertDiscFound('prependGaps')
-    (2..@audiotracks).each do |track|
-      pregap = scanCdrdao.getPregap(track)
-      @lengthSector[track - 1] -= pregap
-      @startSector[track] -= pregap
-      @lengthSector[track] += pregap
-    end
-  end
+#   def prependGaps(scanCdrdao)
+#     assertDiscFound('prependGaps')
+#     (2..@audiotracks).each do |track|
+#       pregap = scanCdrdao.getPregap(track)
+#       @lengthSector[track - 1] -= pregap
+#       @startSector[track] -= pregap
+#       @lengthSector[track] += pregap
+#     end
+#   end
 
   private
 

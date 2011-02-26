@@ -38,7 +38,6 @@ describe FreedbString do
       deps.should_receive(:platform).twice.and_return('i686-linux')
       deps.should_receive(:installed?).with('discid').and_return true
       fire.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
-      @freedb.get()
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
@@ -49,7 +48,6 @@ describe FreedbString do
       deps.should_receive(:installed?).with('discid').and_return false
       deps.should_receive(:installed?).with('cd-discid').and_return true
       fire.should_receive(:launch).with('cd-discid /dev/cdrom').and_return @freedbString
-      @freedb.get()
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
@@ -62,7 +60,6 @@ describe FreedbString do
         fire.should_receive(:launch).with('diskutil unmount /dev/cdrom')
         fire.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
         fire.should_receive(:launch).with('diskutil mount /dev/cdrom')
-        @freedb.get()
 
         @freedb.freedbString.should == @freedbString
         @freedb.discid.should == "7F087C0A"
@@ -85,7 +82,6 @@ describe FreedbString do
 
     it "should try to read values from cd-info, but skip to cdparanoia" do
       deps.should_receive(:installed?).with('cd-info').and_return false
-      @freedb.get()
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
@@ -98,7 +94,6 @@ describe FreedbString do
       cdinfo.should_receive(:get).with('startSector').and_return @start
       cdinfo.should_receive(:get).with('lengthSector').and_return @length
       cdinfo.should_receive(:get).with('tracks').and_return 10
-      @freedb.get()
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
