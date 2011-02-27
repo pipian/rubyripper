@@ -24,6 +24,21 @@ class Metadata
     @disc = disc
     @deps = deps
   end
+
+  # get the metadata for the disc
+  def get
+    isLocalFileFound?
+  end
+
+  # tryLocalFirst
+  def isLocalFileFound?
+    require 'rubyripper/freedb/loadFreedbRecord'
+    @load = LoadFreedbRecord.new()
+    @load.scan(@disc.discid)
+    if @load.freedbRecord != nil && @load.status == 'ok'
+      @load.freedbRecord
+    end
+  end
 end
 # 		@status = 'ok'
 # 		@metadata = Hash.new()

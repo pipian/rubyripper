@@ -48,22 +48,22 @@ attr_reader :instances
 		@gtk_window = Gtk::Window.new('Rubyripper')
 		ICONDIR.each{|dir| if File.exist?(file = File.join(dir, 'rubyripper.png')) ; @gtk_window.icon = Gdk::Pixbuf.new(file) ; break end }
 		@gtk_window.set_default_size(530, 440) #width, height
-		
+
 		@hbox1 = Gtk::HBox.new(false,5)
 
 		create_buttonbox()
 		create_signals()
-		
+
 		@settingsClass = Settings.new()
 		@settings = @settingsClass.settings
 		welcome_message()
-		
+
 		@lock = Monitor.new()
 		@updateThread = nil
 		@gtk_window.show_all() #The user interface is up, now load the library
 		scan_drive()
 	end
-	
+
 	def create_buttonbox #left side of the window, above the statusbar
 		@vbuttonbox1 = Gtk::VButtonBox.new #child of @hbox1
 		@buttons = [Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new]
@@ -71,7 +71,7 @@ attr_reader :instances
 		@buttontext = [Gtk::Label.new('_'+_('Preferences'),true), Gtk::Label.new('_'+_("Scan drive"), true), Gtk::Label.new('_'+_("Open tray"),true), Gtk::Label.new('_'+_("Rip cd now!"),true), Gtk::Label.new('_'+_("Exit"),true)]
 		@buttonicons = [Gtk::Image.new(Gtk::Stock::PREFERENCES, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::REFRESH, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::GOTO_BOTTOM, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::CDROM, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::QUIT, Gtk::IconSize::LARGE_TOOLBAR)]
 		@vboxes = [Gtk::VBox.new, Gtk::VBox.new, Gtk::VBox.new,  Gtk::VBox.new, Gtk::VBox.new]
-		
+
 		index = 0
 		@vboxes.each do |vbox|
 			vbox.add(@buttonicons[index])
@@ -83,7 +83,7 @@ attr_reader :instances
 		@hbox1.pack_start(@vbuttonbox1,false,false,0) #pack the buttonbox into the mainwindow
 		@gtk_window.add(@hbox1)
 	end
-	
+
 	def create_signals
 		@gtk_window.signal_connect("destroy") {savePreferences(); exit()}
 		@gtk_window.signal_connect("delete_event") {savePreferences(); exit()}
@@ -94,7 +94,7 @@ attr_reader :instances
 		@buttons[3].signal_connect("clicked") {savePreferences(); start_rip()}
 		@buttons[4].signal_connect("clicked") {exitButton()}
 	end
-	
+
 	def exitButton
 		if @buttontext[4].text == _("Exit")
 			savePreferences(); exit()
@@ -136,10 +136,10 @@ attr_reader :instances
 		unless @current_instance == false
 			@hbox1.remove(@hbox1.children[-1])
 		end
-		
+
 		@current_instance = object.class.to_s #the name of the instance type
 		@hbox1.add(object.display)
-		
+
 		# update the Exit button to Abort button
 		if @current_instance == "RipStatus"
 			@buttontext[4].set_text('_' + _("Abort"), true)
@@ -148,7 +148,7 @@ attr_reader :instances
 
 		object.display.show_all()
 	end
-	
+
 	def welcome_message
 		@instances['ShortMessage'] = ShortMessage.new(@settings['cdrom'])
 		change_display(@instances['ShortMessage'])
@@ -179,7 +179,7 @@ attr_reader :instances
 		trial = 1
 
 		while trial < 10
-			@settings['cd'] = QuickScanDisc.new(@settings, self, 
+			@settings['cd'] = QuickScanDisc.new(@settings, self,
 				@settings.key?('cd') ? @settings['cd'].freedbString : '')
 			if @settings['cd'].audiotracks != 0
 				succes = true
@@ -192,26 +192,26 @@ attr_reader :instances
 		end
 		return succes
 	end
-	
+
 	def scan_drive
 		cancelTocScan()
 		@buttons.each{|button| button.sensitive = false}
 		Thread.new do
-			# Analyze audio-cd, don't look at freedb yet. 
+			# Analyze audio-cd, don't look at freedb yet.
 			#If the current freedb string is the same don't use yaml for metadata
 			if waitForDisc() # if true, a cd is found
 				if @buttontext[2].text != _("Open tray") # We know there's a cd inside so make sure that eject is shown instead of close tray
 					@buttontext[2].set_text('_'+_("Open tray"),true)
 					@buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
-				end	
-				
+				end
+
 				if @instances['GtkMetadata'] != false
 					@instances['GtkMetadata'].refreshDisc(@settings['cd'])
 				else
 					@instances['GtkMetadata'] = GtkMetadata.new(@settings['cd']) #build the cdinfo for the gui
 				end
 				change_display(@instances['GtkMetadata']) #show this info on the display
-				
+
 				if @settings['freedb'] ; handleFreedb() end
 				@buttons.each{|button| button.sensitive = true}
 			else
@@ -233,7 +233,7 @@ attr_reader :instances
 		end
 
 		status = @settings['cd'].md.status
-		
+
 		if status == true #success
 			@instances['GtkMetadata'].updateMetadata()
 			if @current_instance != 'GtkMetadata'
@@ -248,7 +248,7 @@ attr_reader :instances
 			puts "Unknown error with Metadata class."
 		end
 	end
-	
+
 	def handle_tray
 		@buttons.each{|button| button.sensitive = false}
 		Thread.new do
@@ -278,14 +278,14 @@ attr_reader :instances
  			end
 		end
 	end
-	
+
 	def start_rip
 		@buttons[0..3].each{|button| button.sensitive = false}
 		@instances['GtkMetadata'].save_updates(@settings['image'])
 		@settings['tracksToRip'] = @instances['GtkMetadata'].tracks_to_rip
 
 		@rubyripper = Rubyripper.new(@settings, self) # start a new instance, keep it out the Thread for later callbacks (yet_to_implement)
-		
+
 		status = @rubyripper.settingsOk
 		puts "status = #{status}" if @settings['debug']
 		if status == true
@@ -295,7 +295,7 @@ attr_reader :instances
 			update(status[0], status[1])
 		end
 	end
-	
+
 	def do_rip
 		@rubyripperThread = Thread.new do
 			@buttons[0..3].each{|button| button.sensitive = false}
@@ -309,7 +309,7 @@ attr_reader :instances
 			@rubyripper.startRip # fire away the start shot
 		end
 	end
-	
+
 	def showSummary(succes)
 		@buttons[0..3].each{|button| button.sensitive = true}
 		@instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary, succes)
@@ -317,7 +317,7 @@ attr_reader :instances
 		@instances['RipStatus'].reset()
 		@rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
 	end
-	
+
 	def update(modus, value=false)
 		@updateThread.join if @updateThread != nil # one gui update at a time please
 		@updateThread = Thread.new do

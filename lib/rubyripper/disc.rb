@@ -17,10 +17,10 @@
 
 require 'rubyripper/dependency'
 require 'rubyripper/fireCommand'
-require 'rubyripper/permissionDrive.rb'
-require 'rubyripper/disc/scanDiscCdparanoia.rb'
-require 'rubyripper/disc/scanDiscCdinfo.rb'
-require 'rubyripper/disc/freedbString.rb'
+require 'rubyripper/permissionDrive'
+require 'rubyripper/disc/scanDiscCdparanoia'
+require 'rubyripper/disc/scanDiscCdinfo'
+require 'rubyripper/disc/freedbString'
 
 class Disc
 
@@ -59,36 +59,6 @@ class Disc
 end
 
 # private
-#
-# 	# the overall function to search for a disc
-# 	def findDisc
-# 		@status = 'noDisc'
-# 		if isAudioDisc()
-# 			findMetadata()
-# 			#prepareToc() # use help of cdrdao to get info about pregaps etcetera
-# 		end
-# 	end
-#
-# 	# initiate the scanning of cdparanoia output and return true if a disc is found
-# 	def isAudioDisc
-# 		@scan = ScanDiscCdparanoia.new(@deps, @settings)
-# 		@status = @scan.status
-# 		return @status == 'ok'
-# 	end
-#
-# 	# get the freedb string and launch the freedb class
-# 	def findMetadata
-# 		@metadata = Metadata.new(@deps, @settings, @scan)
-# 	end
-#
-# 	# retrieve information of the disc retrieved by cdparanoia
-# 	def getDisc(key=false)
-# 		if key == false
-# 			return @disc.getInfo()
-# 		else
-# 			@disc.getInfo(key)
-# 		end
-# 	end
 #
 # 	# use cdrdao to scan for exact pregaps, hidden tracks, pre_emphasis
 # 	def prepareToc

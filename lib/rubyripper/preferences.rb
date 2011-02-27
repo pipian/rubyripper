@@ -17,33 +17,25 @@
 
 require 'rubyripper/fileAndDir'
 
-# This class will cleanup previous Rubyripper files
-class CleanPrefs
-  def initialize(fileAndDir=nil)
+# This class handles the preferences. It abstracts the detailed
+# helpclasses for the main program.
+class Preferences
+
+  # setup the instances
+  def initialize(dependency=nil, fileAndDir=nil, loadPrefs=nil,
+                 savePrefs=nil, cleanPrefs=nil, handlePrefs=nil)
+
+    @deps = dependency ? dependency : Dependency.new
     @file = fileAndDir ? fileAndDir : FileAndDir.new
+    @load = loadPrefs ? loadPrefs : LoadPrefs.new
+    @save = savePrefs ? savePrefs : SavePrefs.new
+    @clean = cleanPrefs ? cleanPrefs : CleanPrefs.new
+    @handle = handlePrefs ? handlePrefs : HandlePrefs.new
   end
 
-  # clean up the old config files
-  def cleanup
-    setOldConfigs()
-    removeOldFiles()
-  end
-
-private
-
-  # set the filenames to search for
-  def setOldConfigs
-    @oldFiles = Array.new
-    @oldFiles << File.join(ENV['HOME'], '.rubyripper')
-    @oldFiles << File.join(@oldFiles[0], 'settings')
-    @oldFiles << File.join(@oldFiles[0], 'freedb.yaml')
-    @oldFiles << File.join(ENV['HOME'], '.rubyripper_settings')
-  end
-
-  # remove old files
-  def removeOldFiles
-    while @oldFiles.length > 0
-      @file.remove(@oldFiles.pop)
-    end
-  end
+  def get(preference) ; @handle.get(preference) ; end
+  def set(preference, value) ; @handle.set(preference, value) ; end
+  def save ; @save.save(@handle.prefs, @load.configFile) ; end
+  def configFound? ; @load.configFound ; end
 end
+

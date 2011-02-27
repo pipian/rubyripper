@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -32,7 +32,7 @@ end
 
 # The class that initiates the commandline interface
 class CommandLineInterface
-	
+
 	# start up the interface
 	def initialize()
 		@rippingLog = ""
@@ -80,7 +80,7 @@ private
 
 		# load preferences and if needed act upon
 		@inst.get('cliPreferences').readPrefs()
-	
+
 		# for the main menu we need the cliGetInt object
 		@int = @inst.get('cliGetInt')
 
@@ -101,7 +101,7 @@ private
 		puts ""
 		@int.get("Please type the number of your choice", 4)
 	end
-	
+
 	#  Loop through the main menu
 	def loopMainMenu
 		choice = showMainMenu()
@@ -124,7 +124,7 @@ private
 			loopMainMenu()
 		end
 	end
-	
+
 	# Show the disc info and include error handling
 	def getDiscInfo()
 		if @discCli.getError
@@ -147,10 +147,10 @@ private
 	# get the tracks, verify the settings
 	def prepareRip()
 		@settings['tracksToRip'] = CliTracklist.new(@settings, @discInfo.getStatus)
-		
-		# starts some check if the settings are sane		
+
+		# starts some check if the settings are sane
 		@rubyripper = Rubyripper.new(@settings, self)
-		
+
 		status = @rubyripper.settingsOk
 		if status == true
 			@rubyripper.startRip()
@@ -158,7 +158,7 @@ private
 			update(status[0], status[1])
 		end
 	end
-	
+
 	# A dialog in case the output directory exists
 	def dirExists
 		puts _("The output directory already exists. What would you like to do?")
@@ -174,7 +174,7 @@ private
 		else cancelRip()
 		end
 	end
-end	
+end
 
 if __FILE__ == $0
 	CommandLineInterface.new()
