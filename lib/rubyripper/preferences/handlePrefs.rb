@@ -15,16 +15,19 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/dependency'
 
 # The settings class is responsible for:
 # managing the settings during a session
 class HandlePrefs
+  attr_reader :prefs
 
-  def initialize()
+  # setup the instances
+  def initialize(deps=nil)
+    @deps = deps ? deps : Dependency.new
     @prefs = Hash.new()
   end
 
-  # TODO load the configfile if not already done
   # return the preference
   def get(preference)
     if @prefs.key?(preference)
@@ -45,27 +48,8 @@ class HandlePrefs
     end
   end
 
-private
-
-  # load the actual configfile
-  def loadConfig(configFile = false)
-    setDefaultSettings()
-    setDefaultPath()
-
-    @clean.cleanup()
-    @load.loadConfig(@defaultConfigFile, configFile)
-    update()
-    save()
-  end
-
-  # store the default locations
-  def setDefaultPath
-    dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
-    @defaultConfigFile = File.join(dir, 'rubyripper/settings')
-  end
-
   # setup the the default settings
-  def setDefaultSettings
+  def setDefaults
     @prefs = {"flac" => false,
       "settingsFlac" => "--best -V", #passed to flac
       "vorbis" => true,
@@ -115,8 +99,8 @@ private
 
   # update the settings with the info from loadPrefs
   # also check if @load has all the keys
-  def update
-    @load.getAll().each do |key, value|
+  def update(results)
+    results.each do |key, value|
       if @prefs.key?(key)
         @prefs[key] = value
       else
@@ -124,8 +108,8 @@ private
       end
     end
 
-    @prefs.each do |key, value|
-      if @load.get(key) == nil
+    results.each do |key, value|
+      if results[key].nil?
         puts "WARNING: #{key} is missing in config file!"
       end
     end

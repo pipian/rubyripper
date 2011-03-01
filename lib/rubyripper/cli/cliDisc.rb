@@ -15,77 +15,74 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/disc'
+require 'rubyripper/cli/cliGetAnswer'
+
 # Metadata class is responsible for showing and editing the metadata
-class CliMetadata
+class CliDisc
 
-	# setup the different objects
-	def initialize(scanDiscCdparanoia, metadata, preferences, cliGetBool, cliGetInt, cliGetString)
-		@cd = scanDiscCdparanoia
-		@md = metadata
-		@prefs = preferences
-		@bool = cliGetBool
-		@int = cliGetInt
-		@string = cliGetString
-	end
+  # setup the different objects
+  def initialize(preferences, int=nil, bool=nil, string=nil)
+    @prefs = preferences
+    @int = int ? int : CliGetInt.new
+    @bool = bool ? bool : CliGetBool.new
+    @string = string ? string : CliGetString.new
+    @disc = Disc.new(@prefs)
+  end
 
-	# show the metadata to the screen
-	def show
-		refreshDisc(false)
-		showDisc()
-	end
+  # show the metadata to the screen
+  def show
+    refreshDisc()
+    showDisc()
+  end
 
-	# return the disc object
-	# def disc ; return @disc ; end
-	# return status when finished
-	#def status ; return @status ; end
-	# return any problems reported
-	#def error ; return @error ; end
+  # return the disc object
+  # def disc ; return @disc ; end
+  # return status when finished
+  #def status ; return @status ; end
+  # return any problems reported
+  #def error ; return @error ; end
 
 private
+  # return the metadata object
+  def md ; @disc.metadata ; end
 
-	# read the disc contents
-	# if force == true, scan the disc even if it was already known
-	def refreshDisc(force)
-		if @cd.get('audiotracks') == 0 || force == true
-			@cd.scan(@prefs.get('cdrom'), @prefs.get('ripHiddenAudio'),
-@prefs.get('minLengthHiddenTrack'))
-		end
-	end
+  # read the disc contents
+  def refreshDisc ; @disc.scan() ; end
 
-	# show the contents of the audio disc
-	def showDisc
-		puts ""
+  # show the contents of the audio disc
+  def showDisc
+    puts ""
 
-		if @cd.get('audiotracks') == 0
-			puts "No audio disc detected..."
-		else
-			puts _("AUDIO DISC FOUND")
-			puts _("Number of tracks: %s") % [@cd.get('audiotracks')]
-			puts _("Total playtime: %s") % [@cd.get('playtime')]
-		end
-	end
+    if @disc.status != 'ok'
+      puts _("The disc is not ready: [%s]") % [@disc.status]
+    else
+      puts _("AUDIO DISC FOUND")
+      puts _("Number of tracks: %s") % [@disc.audiotracks]
+      puts _("Total playtime: %s") % [@disc.playtime]
+    end
+  end
 
-	# Analyze the TOC of disc in drive
-	def getDiscInfo
-		@cd = @disc.scan
-		@md = @disc.md
+  # Analyze the TOC of disc in drive
+  def getDiscInfo
+    @cd = @disc.scan
+    @md = @disc.md
 
-		# When a disc is found
-
-			showFreedb()
-			# When freedb is enabled
-			#if @settings['freedb']
-			#	puts _("Fetching freedb info...")
-			#	handleFreedb()
-			#else
-			#	showFreedb()
-			#end
-		# When no disc is found
-		#else
-		#	puts "ERROR: No disc found."
-		#	exit()
-		#end
-	end
+    # When a disc is found
+    showFreedb()
+    # When freedb is enabled
+    #if @settings['freedb']
+    #puts _("Fetching freedb info...")
+    # handleFreedb()
+    #else
+    #showFreedb()
+    #end
+    #When no disc is found
+    #else
+    #puts "ERROR: No disc found."
+    #exit()
+    #end
+  end
 
 	# Fetch the cddb info, if choice is true, multiple discs were available
 	#def handleFreedb(choice = false)

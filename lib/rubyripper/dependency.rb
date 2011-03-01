@@ -21,7 +21,7 @@ class Dependency
   # verify all dependencies are met
   # * verbose = print extra info to the terminal. Used in configure script.
   # * runtime = exit when needed deps aren't met
-  def verifyDeps(verbose=false, runtime=true)
+  def verify(verbose=false, runtime=true)
     @verbose = verbose
     @runtime = runtime
     setConsequence()

@@ -15,7 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/dependency'
 require 'rubyripper/fileAndDir'
+require 'rubyripper/preferences/loadPrefs'
+require 'rubyripper/preferences/savePrefs'
+require 'rubyripper/preferences/cleanPrefs'
+require 'rubyripper/preferences/handlePrefs'
 
 # This class handles the preferences. It abstracts the detailed
 # helpclasses for the main program.
@@ -27,10 +32,26 @@ class Preferences
 
     @deps = dependency ? dependency : Dependency.new
     @file = fileAndDir ? fileAndDir : FileAndDir.new
-    @load = loadPrefs ? loadPrefs : LoadPrefs.new
-    @save = savePrefs ? savePrefs : SavePrefs.new
-    @clean = cleanPrefs ? cleanPrefs : CleanPrefs.new
-    @handle = handlePrefs ? handlePrefs : HandlePrefs.new
+    @load = loadPrefs ? loadPrefs : LoadPrefs.new(@file)
+    @save = savePrefs ? savePrefs : SavePrefs.new(@file)
+    @clean = cleanPrefs ? cleanPrefs : CleanPrefs.new(@file)
+    @handle = handlePrefs ? handlePrefs : HandlePrefs.new(@deps)
+  end
+
+  # The standard configfile
+  def defaultConfigFile
+    dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+    File.join(dir, 'rubyripper/settings')
+  end
+
+  # Since the program starts by loading the preferences, this is
+  # the right moment to have some initializing
+  def load(configFile)
+    @handle.setDefaults()
+    @clean.cleanup()
+    @load.parseFile(defaultConfigFile, configFile)
+    @handle.update(@load.results)
+    save()
   end
 
   def get(preference) ; @handle.get(preference) ; end

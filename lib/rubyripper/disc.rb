@@ -29,7 +29,7 @@ class Disc
     @prefs = preferences
     @deps = deps ? deps : Dependency.new
     @fire = fire ? fire : FireCommand.new(@deps)
-    @perm = perm ? perm : PermissionDrive.new
+    @perm = perm ? perm : PermissionDrive.new(@deps)
     @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@fire, @perm, @prefs)
     @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@prefs, @fire)
     @freedb = freedb ? freedb : FreedbString.new(@deps, @prefs, @cdpar, @fire, @cdinfo)

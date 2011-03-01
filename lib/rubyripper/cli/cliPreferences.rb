@@ -17,33 +17,32 @@
 
 # helper for interpreting commandline options
 require 'optparse'
+require 'rubyripper/preferences'
+require 'rubyripper/cli/cliGetAnswer'
 
 # CliPreferences is responsible for showing and editing the preferences
 # It also interpretes the parameters when loaded
 class CliPreferences
+  attr_reader :prefs
 
-	# * preferences = instance of Preferences class
-	# * cliGetInt = instance of CliGetInt class
-	# * cliGetBool = instance of CliGetBool class
-	# * cliGetString = instance of CliGetString class
-	def initialize(preferences, cliGetInt, cliGetBool, cliGetString)
-		@prefs = preferences
-		@int = cliGetInt
-		@bool = cliGetBool
-		@string = cliGetString
-	end
+  def initialize(int=nil, prefs=nil, bool=nil, string=nil)
+    @int = int ? int : CliGetInt.new
+    @prefs = prefs ? prefs : Preferences.new
+    @bool = bool ? bool : CliGetBool.new
+    @string = string ? string : CliGetString.new
+  end
 
-	# Read the preferences + startup options and decide if action is needed
-	def readPrefs
-		parseOptions()
-		readPreferences()
-	end
+  # Read the preferences + startup options and decide if action is needed
+  def read
+    parseOptions()
+    readPreferences()
+  end
 
-	# return true if user has chosen for defaults
-	def defaults ; return @options['defaults'] ; end
+  # return true if user has chosen for defaults
+  def defaults ; return @options['defaults'] ; end
 
-	# show the preferences menu
-	def show ; loopMainMenu() ; end
+  # show the preferences menu
+  def show ; loopMainMenu() ; end
 
 private
 
@@ -58,7 +57,7 @@ private
 	# Read the settings of the config file or the defaults
 	def readPreferences()
 		# if file is still false it will be ignored by @prefs
-		@prefs.loadConfig(configFile = @options['file'])
+		@prefs.load(configFile = @options['file'])
 
 		# in case the configfile is missing
 		if @options['file'] != false && !@prefs.isConfigFound

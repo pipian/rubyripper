@@ -20,29 +20,16 @@ require 'rubyripper/fileAndDir'
 # This class will try to load the Rubyripper config file
 # It does not validate if the keys are valid, this is done in preferences
 class LoadPrefs
+attr_reader :configFound, :configFile, :results
 
-  # * fileAndDir = instance of FileAndDir
+  # setting up instances
   def initialize(fileAndDir=nil)
-    @file = fileAndDir? fileAndDir : FileAndDir.new
-    @settings = Hash.new
-    @configFound = false
+    @file = fileAndDir ? fileAndDir : FileAndDir.new
     @configFile = String.new
   end
 
-  # return the setting, if unknown return nil
-  def get(setting) ; return @settings[setting] ; end
-
-  # return all settings
-  def getAll ; return @settings ; end
-
-  # if config is found
-  def configFound ; return @configFound ; end
-
-  # return configFile
-  def configFile ; return @configFile ; end
-
   # load the configFile
-  def loadConfig(default, filename = false)
+  def parseFile(default, filename = false)
     filename = findFile(default, filename)
     loadFile(filename)
     @configFile = filename
@@ -59,6 +46,8 @@ private
 
   # first the values found in the config file, then add any missing values
   def loadFile(filename)
+    @results = Hash.new
+
     @file.read(filename).each_line do |line|
       key, value = line.split('=', 2)
       # remove the trailing newline character
@@ -71,7 +60,7 @@ private
         # replace an integer string with an integer
       elsif value.to_i > 0 || value == '0' ; value = value.to_i
       end
-      @settings[key] = value
+      @results[key] = value
     end
   end
 end

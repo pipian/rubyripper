@@ -15,12 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/dependency'
+
 # check the permissions of the drive
 class PermissionDrive
 
 	# * dependency = instance of Dependency class
-	def initialize(dependency)
-		@deps = dependency
+	def initialize(deps)
+		@deps = deps ? deps : Dependency.new()
 		@status = 'ok'
 	end
 
