@@ -32,7 +32,7 @@ class ScanDiscCdparanoia
   end
 
   # scan the disc for input and return the object
-  def scan ; readDisc() ; self ; end
+  def scan ; readDisc() ; end
 
   # return the startSector, example for track 1 getStartSector(1)
   # if image, return the start sector for the lowest tracknumber
