@@ -51,13 +51,15 @@ class Freedb
   def genre ; @md.genre ; end
   def year ; @md.year ; end
   def extraDiscInfo ; @md.extraDiscInfo ; end
+  def trackname(number) ; @md.trackname(number) ; end
   def artist=(name) ; @md.artist = name ; end
   def album=(name) ; @md.album = name ; end
   def genre=(name) ; @md.genre = name ; end
   def year=(name) ; @md.year = name ; end
   def extraDiscInfo=(name) ; @md.extraDiscInfo = name ; end
+  def setTrackname(number, name) ; @md.setTrackname(number, name) ; end
   def discid ; @md.discid ; end
-  def trackname(number) ; @md.trackname(number) ; end
+
   def various? ; @md.various? ; end
   def getVarArtist(number) ; @md.getVarArtist(number) ; end
   def setVarArtist ; @md.setVarArtist ; end

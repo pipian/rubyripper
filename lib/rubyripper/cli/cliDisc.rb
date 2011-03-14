@@ -95,28 +95,66 @@ private
 
   # Present the disc info
   def showFreedb()
-    puts ""
-    puts _("DISC INFO")
-    print _("Artist:") ; print " #{@md.artist}\n"
-    print _("Album:") ; print " #{@md.album}\n"
-    print _("Genre:") ; print " #{@md.genre}\n"
-    print _("Year:") ; print " #{@md.year}\n"
-    print _("Extra disc info:") ; print " #{@md.extraDiscInfo}\n"
-    puts ""
-    puts _("TRACK INFO")
-
-    showTracks()
+    showDiscInfo()
+    showTrackInfo()
     showFreedbOptions() unless @defaults
   end
 
+  def showDiscInfo(edit=false)
+    puts "\nDISC INFO"
+    puts "1) " + _("Artist:") + " #{@md.artist}"
+    puts "2) " + _("Album:") + " #{@md.album}"
+    puts "3) " + _("Genre:") + " #{@md.genre}"
+    puts "4) " + _("Year:") + " #{@md.year}"
+    puts "5) " + _("Extra disc info:") + " #{@md.extraDiscInfo}"
+    puts "6) " + _("Marked as various disc? [%s]") % [@md.various? ? '*' : ' ']
+    puts "99) " + _("Finished editing disc info\n\n") if edit
+    editDiscInfo() if edit
+  end
+
+  # Edit metadata at the disc level
+  def editDiscInfo
+    case answer = @int.get(_("Please enter the number you'd like to edit:"), 99)
+      when 1 then @md.artist = @string.get(_("Artist:"), @md.artist)
+      when 2 then @md.album = @string.get(_("Album:"), @md.album)
+      when 3 then @md.genre = @string.get(_("Genre:"), @md.genre)
+      when 4 then @md.year = @string.get(_("Year:"), @md.year)
+      when 5 then @md.extraDiscInfo = @string.get(_("Extra disc info:"), @md.extraDiscInfo)
+      when 6 then @md.various? ? @md.unsetVarArtist() : @md.setVarArtist()
+      when 99 then showFreedbOptions() ; return true
+    end
+    editDiscInfo()
+  end
+
   # Present the track info
-  def showTracks()
+  def showTrackInfo(edit=false)
+    puts _("\nTRACK INFO")
     (1..@cd.audiotracks).each do |tracknumber|
       trackname = @md.trackname(tracknumber)
       trackname = "#{@md.getVarArtist(tracknumber)} - #{trackname}" if @md.various?
       puts "#{tracknumber}) #{trackname}"
     end
+
+    puts "" if edit
+    puts "99) " + _("Finished editing track info\n\n") if edit
+    editTrackInfo if edit
   end
+
+  # Edit metadata at the track level
+  def editTrackInfo()
+    case number = @int.get(_("Please enter the number you'd like to edit:"), 99)
+    when number > 0 && number <= @cd.audiotracks
+      @md.setTrackname(number, @string.get("Track #{number}:", @md.trackname(number)))
+      raise "TODO: fix various artist input" if @md.various?
+    when 99 then showFreedbOptions() ; return true
+    end
+    editTrackInfo()
+  end
+
+#        if not @md.varArtists.empty?
+#          string = @string.get("Artist for Track #{answer} : ",  @md.varArtist(answer))
+#          @md.setVarArtist(answer, string)
+#        end
 
   # Present choice: edit metadata, start rip or break off
   def showFreedbOptions()
@@ -130,74 +168,11 @@ private
     puts ""
 
     case answer = @int.get(_("Please enter the number of your choice: "), 1)
-    when 1 then @status = "chooseTracks"
-    when 2 then editDiscInfo()
-    when 3 then editTrackInfo()
-    when 4 then @status = "cancelRip"
-    else showFreedbOptions()
+      when 1 then @status = "chooseTracks"
+      when 2 then showDiscInfo(edit=true)
+      when 3 then showTrackInfo(edit=true)
+      when 4 then @status = "cancelRip"
+      else showFreedbOptions()
     end
-  end
-
-  def editDiscInfo
-    puts "1) " + _("Artist:") + " #{@md.artist}"
-    puts "2) " + _("Album:") + " #{@md.album}"
-    puts "3) " + _("Genre:") + " #{@md.genre}"
-    puts "4) " + _("Year:") + " #{@md.year}"
-    puts "5) " + _("Extra disc info:") + " #{@md.extraDiscInfo}"
-    puts "6) " + _("Mark disc as single artist") if @md.various?
-    puts "6) " + _("Mark disc as various artist") unless @md.various?
-    puts "99) " + _("Finished editing disc info\n\n")
-    inputEditDiscInfo()
-  end
-
-  # Edit metadata at the disc level
-  def inputEditDiscInfo
-    case answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
-      when 99 then showFreedb() ; return true
-      when 1 then @md.artist = @string.get(_("Artist:"), @md.artist)
-      when 2 then @md.album = @string.get(_("Album:"), @md.album)
-      when 3 then @md.genre = @string.get(_("Genre:"), @md.genre)
-      when 4 then @md.year = @string.get(_("Year:"), @md.year)
-      when 5 then @md.extraDiscInfo = @string.get(_("Extra disc info:"), @md.extraDiscInfo)
-      when 6 then @md.various? ? unsetVarArtist() : setVarArtist()
-    end
-    inputEditDiscInfo()
-  end
-
-  # Mark the disc as various artist
-  def setVarArtist
-    (1..@cd.audiotracks).each do |tracknumber|
-      if @md.getVarArtist[tracknumber] == nil
-        @md.varArtists[tracknumber] = _('Unknown')
-      end
-    end
-  end
-
-  # Unmark the disc as various artist
-  def unsetVarArtist ; @cd.metadata.undoVarArtist() ; end
-
-  # Edit metadata at the track level
-  def editTrackInfo()
-    showTracks()
-    puts ""
-    puts "99) " + _("Finished editing track info\n\n")
-
-    while true
-      answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
-
-      if answer == 99 ; break
-      elsif (answer.to_i > 0 && answer.to_i <= @cd.getInfo('audiotracks'))
-        string = @string.get("Track #{answer} : ", @md.trackname(answer))
-        @md.setTrackname(answer, string)
-        if not @md.varArtists.empty?
-          string = @string.get("Artist for Track #{answer} : ",  @md.varArtist(answer))
-          @md.setVarArtist(answer, string)
-        end
-      else
-        puts _("This is not a valid number. Try again")
-      end
-    end
-
-    showFreedb()
   end
 end

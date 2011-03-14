@@ -38,6 +38,10 @@ class Metadata
     @tracklist[number]
   end
 
+  def setTrackname(number, name)
+    @tracklist[number] = name
+  end
+
   def getVarArtist(number)
     return _('Unknown') unless @varArtist[number]
     @varArtist[number]
