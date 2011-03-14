@@ -33,7 +33,7 @@ class HandlePrefs
     if @prefs.key?(preference)
       return @prefs[preference]
     else
-      puts "WARNING: #{preference} key does not exist! (get preferences)"
+      raise "WARNING: #{preference} key does not exist! (get preferences)"
       return nil
     end
   end

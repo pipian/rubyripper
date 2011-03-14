@@ -96,12 +96,12 @@ private
   # Present the disc info
   def showFreedb()
     puts ""
-    puts _("FREEDB INFO\n\n")
     puts _("DISC INFO")
     print _("Artist:") ; print " #{@md.artist}\n"
     print _("Album:") ; print " #{@md.album}\n"
     print _("Genre:") ; print " #{@md.genre}\n"
     print _("Year:") ; print " #{@md.year}\n"
+    print _("Extra disc info:") ; print " #{@md.extraDiscInfo}\n"
     puts ""
     puts _("TRACK INFO")
 
@@ -129,44 +129,39 @@ private
     puts _("4) Cancel the rip and eject the disc")
     puts ""
 
-    answer = ''
-    while answer != 1 && answer != 4
-      answer = @int.get(_("Please enter the number of your choice: "), 1)
-      if answer == 1 ; @status = "chooseTracks"
-      elsif answer == 2 ; editDiscInfo()
-      elsif answer == 3 ; editTrackInfo()
-      elsif answer == 4 ; @status = "cancelRip"
-      end
+    case answer = @int.get(_("Please enter the number of your choice: "), 1)
+    when 1 then @status = "chooseTracks"
+    when 2 then editDiscInfo()
+    when 3 then editTrackInfo()
+    when 4 then @status = "cancelRip"
+    else showFreedbOptions()
     end
   end
 
-  # Edit metadata at the disc level
-  def editDiscInfo()
+  def editDiscInfo
     puts "1) " + _("Artist:") + " #{@md.artist}"
     puts "2) " + _("Album:") + " #{@md.album}"
     puts "3) " + _("Genre:") + " #{@md.genre}"
     puts "4) " + _("Year:") + " #{@md.year}"
-
-    if !@md.various?
-      puts "5) " + _("Mark disc as various artist")
-    else
-      puts "5) " + _("Mark disc as single artist")
-    end
-
+    puts "5) " + _("Extra disc info:") + " #{@md.extraDiscInfo}"
+    puts "6) " + _("Mark disc as single artist") if @md.various?
+    puts "6) " + _("Mark disc as various artist") unless @md.various?
     puts "99) " + _("Finished editing disc info\n\n")
+    inputEditDiscInfo()
+  end
 
-    answer = ''
-    while answer != 99
-      answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
-      if answer == 1 ; @md.artist = @string.get(_("Artist : "), @md.artist)
-      elsif answer == 2 ; @md.album = @string.get(_("Album : "), @md.album)
-      elsif answer == 3 ; @md.genre = @string.get(_("Genre : "), @md.genre)
-      elsif answer == 4 ; @md.year = @string.get(_("Year : "), @md.year)
-      elsif answer == 5 ; @md.various? ? unsetVarArtist() : setVarArtist()
-      end
+  # Edit metadata at the disc level
+  def inputEditDiscInfo
+    case answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
+      when 99 then showFreedb() ; return true
+      when 1 then @md.artist = @string.get(_("Artist:"), @md.artist)
+      when 2 then @md.album = @string.get(_("Album:"), @md.album)
+      when 3 then @md.genre = @string.get(_("Genre:"), @md.genre)
+      when 4 then @md.year = @string.get(_("Year:"), @md.year)
+      when 5 then @md.extraDiscInfo = @string.get(_("Extra disc info:"), @md.extraDiscInfo)
+      when 6 then @md.various? ? unsetVarArtist() : setVarArtist()
     end
-
-    showFreedb()
+    inputEditDiscInfo()
   end
 
   # Mark the disc as various artist
