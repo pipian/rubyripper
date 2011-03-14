@@ -27,7 +27,7 @@ class CliDisc
     @int = int ? int : CliGetInt.new
     @bool = bool ? bool : CliGetBool.new
     @string = string ? string : CliGetString.new
-    @disc = Disc.new(@prefs)
+    @cd = Disc.new(@prefs)
   end
 
   # show the metadata to the screen
@@ -44,44 +44,22 @@ class CliDisc
   #def error ; return @error ; end
 
 private
-  # return the metadata object
-  def md ; @disc.metadata ; end
-
   # read the disc contents
-  def refreshDisc ; @disc.scan() ; end
+  def refreshDisc ; @cd.scan() ; end
 
   # show the contents of the audio disc
   def showDisc
     puts ""
 
-    if @disc.status != 'ok'
-      puts _("The disc is not ready: [%s]") % [@disc.status]
+    if @cd.status != 'ok'
+      puts _("The disc is not ready: [%s]") % [@cd.status]
     else
       puts _("AUDIO DISC FOUND")
-      puts _("Number of tracks: %s") % [@disc.audiotracks]
-      puts _("Total playtime: %s") % [@disc.playtime]
+      puts _("Number of tracks: %s") % [@cd.audiotracks]
+      puts _("Total playtime: %s") % [@cd.playtime]
+      @md = @cd.metadata
+      showFreedb()
     end
-  end
-
-  # Analyze the TOC of disc in drive
-  def getDiscInfo
-    @cd = @disc.scan
-    @md = @disc.md
-
-    # When a disc is found
-    showFreedb()
-    # When freedb is enabled
-    #if @settings['freedb']
-    #puts _("Fetching freedb info...")
-    # handleFreedb()
-    #else
-    #showFreedb()
-    #end
-    #When no disc is found
-    #else
-    #puts "ERROR: No disc found."
-    #exit()
-    #end
   end
 
 	# Fetch the cddb info, if choice is true, multiple discs were available
@@ -115,125 +93,116 @@ private
 	#	end
 	#end
 
-	# Present the disc info
-	def showFreedb()
-		puts ""
-		puts _("FREEDB INFO\n\n")
-		puts _("DISC INFO")
-		print _("Artist:") ; print " #{@md.artist}\n"
-		print _("Album:") ; print " #{@md.album}\n"
-		print _("Genre:") ; print " #{@md.genre}\n"
-		print _("Year:") ; print " #{@md.year}\n"
-		puts ""
-		puts _("TRACK INFO")
+  # Present the disc info
+  def showFreedb()
+    puts ""
+    puts _("FREEDB INFO\n\n")
+    puts _("DISC INFO")
+    print _("Artist:") ; print " #{@md.artist}\n"
+    print _("Album:") ; print " #{@md.album}\n"
+    print _("Genre:") ; print " #{@md.genre}\n"
+    print _("Year:") ; print " #{@md.year}\n"
+    puts ""
+    puts _("TRACK INFO")
 
-		showTracks()
-		if @defaults
-			@status = "default"
-		else
-			showFreedbOptions()
-		end
-	end
+    showTracks()
+    showFreedbOptions() unless @defaults
+  end
 
-	# Present the track info
-	def showTracks()
-		@cd.getInfo('audiotracks').times do |index|
-			trackname = @md.trackname(index + 1)
-			if @md.varArtists
-				trackname = "#{@md.varArtist(index+1)} - #{trackname}"
-			end
+  # Present the track info
+  def showTracks()
+    (1..@cd.audiotracks).each do |tracknumber|
+      trackname = @md.trackname(tracknumber)
+      trackname = "#{@md.getVarArtist(tracknumber)} - #{trackname}" if @md.various?
+      puts "#{tracknumber}) #{trackname}"
+    end
+  end
 
-			puts "#{index +1 }) #{trackname}"
-		end
-	end
+  # Present choice: edit metadata, start rip or break off
+  def showFreedbOptions()
+    puts ""
+    puts _("What would you like to do?")
+    puts ""
+    puts _("1) Select the tracks to rip")
+    puts _("2) Edit the disc info")
+    puts _("3) Edit the track info")
+    puts _("4) Cancel the rip and eject the disc")
+    puts ""
 
-	# Present choice: edit metadata, start rip or break off
-	def showFreedbOptions()
-		puts ""
-		puts _("What would you like to do?")
-		puts ""
-		puts _("1) Select the tracks to rip")
-		puts _("2) Edit the disc info")
-		puts _("3) Edit the track info")
-		puts _("4) Cancel the rip and eject the disc")
-		puts ""
+    answer = ''
+    while answer != 1 && answer != 4
+      answer = @int.get(_("Please enter the number of your choice: "), 1)
+      if answer == 1 ; @status = "chooseTracks"
+      elsif answer == 2 ; editDiscInfo()
+      elsif answer == 3 ; editTrackInfo()
+      elsif answer == 4 ; @status = "cancelRip"
+      end
+    end
+  end
 
-		answer = ''
-		while answer != 1 && answer != 4
-			answer = @int.get(_("Please enter the number of your choice: "), 1)
-			if answer == 1 ; @status = "chooseTracks"
-			elsif answer == 2 ; editDiscInfo()
-			elsif answer == 3 ; editTrackInfo()
-			elsif answer == 4 ; @status = "cancelRip"
-			end
-		end
-	end
+  # Edit metadata at the disc level
+  def editDiscInfo()
+    puts "1) " + _("Artist:") + " #{@md.artist}"
+    puts "2) " + _("Album:") + " #{@md.album}"
+    puts "3) " + _("Genre:") + " #{@md.genre}"
+    puts "4) " + _("Year:") + " #{@md.year}"
 
-	# Edit metadata at the disc level
-	def editDiscInfo()
-		puts "1) " + _("Artist:") + " #{@md.artist}"
-		puts "2) " + _("Album:") + " #{@md.album}"
-		puts "3) " + _("Genre:") + " #{@md.genre}"
-		puts "4) " + _("Year:") + " #{@md.year}"
+    if !@md.various?
+      puts "5) " + _("Mark disc as various artist")
+    else
+      puts "5) " + _("Mark disc as single artist")
+    end
 
-		if @md.varArtists.empty?
-			puts "5) " + _("Mark disc as various artist")
-		else
-			puts "5) " + _("Mark disc as single artist")
-		end
+    puts "99) " + _("Finished editing disc info\n\n")
 
-		puts "99) " + _("Finished editing disc info\n\n")
+    answer = ''
+    while answer != 99
+      answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
+      if answer == 1 ; @md.artist = @string.get(_("Artist : "), @md.artist)
+      elsif answer == 2 ; @md.album = @string.get(_("Album : "), @md.album)
+      elsif answer == 3 ; @md.genre = @string.get(_("Genre : "), @md.genre)
+      elsif answer == 4 ; @md.year = @string.get(_("Year : "), @md.year)
+      elsif answer == 5 ; @md.various? ? unsetVarArtist() : setVarArtist()
+      end
+    end
 
-		answer = ''
-		while answer != 99
-			answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
-			if answer == 1 ; @md.artist = @string.get(_("Artist : "), @md.artist)
-			elsif answer == 2 ; @md.album = @string.get(_("Album : "), @md.album)
-			elsif answer == 3 ; @md.genre = @string.get(_("Genre : "), @md.genre)
-			elsif answer == 4 ; @md.year = @string.get(_("Year : "), @md.year)
-			elsif answer == 5 ; if @md.varArtists.empty? ; setVarArtist() else unsetVarArtist() end
-			end
-		end
+    showFreedb()
+  end
 
-		showFreedb()
-	end
+  # Mark the disc as various artist
+  def setVarArtist
+    (1..@cd.audiotracks).each do |tracknumber|
+      if @md.getVarArtist[tracknumber] == nil
+        @md.varArtists[tracknumber] = _('Unknown')
+      end
+    end
+  end
 
-	# Mark the disc as various artist
-	def setVarArtist
-		@cd.audiotracks.times do |time|
-			if @md.varArtists[time] == nil
-				@md.varArtists[time] = _('Unknown')
-			end
-		end
-	end
+  # Unmark the disc as various artist
+  def unsetVarArtist ; @cd.metadata.undoVarArtist() ; end
 
-	# Unmark the disc as various artist
-	def unsetVarArtist
-		@md.undoVarArtist()
-	end
+  # Edit metadata at the track level
+  def editTrackInfo()
+    showTracks()
+    puts ""
+    puts "99) " + _("Finished editing track info\n\n")
 
-	# Edit metadata at the track level
-	def editTrackInfo()
-		showTracks()
-		puts ""
-		puts "99) " + _("Finished editing track info\n\n")
+    while true
+      answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
 
-		while true
-			answer = @int.get(_("Please enter the number you'd like to edit: "), 99)
+      if answer == 99 ; break
+      elsif (answer.to_i > 0 && answer.to_i <= @cd.getInfo('audiotracks'))
+        string = @string.get("Track #{answer} : ", @md.trackname(answer))
+        @md.setTrackname(answer, string)
+        if not @md.varArtists.empty?
+          string = @string.get("Artist for Track #{answer} : ",  @md.varArtist(answer))
+          @md.setVarArtist(answer, string)
+        end
+      else
+        puts _("This is not a valid number. Try again")
+      end
+    end
 
-			if answer == 99 ; break
-			elsif (answer.to_i > 0 && answer.to_i <= @cd.getInfo('audiotracks'))
-				string = @string.get("Track #{answer} : ", @md.trackname(answer))
-				@md.setTrackname(answer, string)
-				if not @md.varArtists.empty?
-					string = @string.get("Artist for Track #{answer} : ",  @md.varArtist(answer))
-					@md.setVarArtist(answer, string)
-				end
-			else
-				puts _("This is not a valid number. Try again")
-			end
-		end
-
-		showFreedb()
-	end
+    showFreedb()
+  end
 end

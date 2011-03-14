@@ -23,6 +23,7 @@ require 'rubyripper/disc/scanDiscCdinfo'
 require 'rubyripper/disc/freedbString'
 
 class Disc
+attr_reader :metadata
 
   # initialize all needed dependencies
   def initialize(preferences, deps=nil, fire=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil)
@@ -35,8 +36,13 @@ class Disc
     @freedb = freedb ? freedb : FreedbString.new(@deps, @prefs, @cdpar, @fire, @cdinfo)
   end
 
+  # after a succesfull scan setup the metadata object
+  def scan
+    @cdpar.scan
+    setMetata() if @cdpar.status == 'ok'
+  end
+
   # helper functions for ScanDiscCdparanoia
-  def scan ; @cdpar.scan ; end
   def status ; @cdpar.status ; end
   def playtime ; @cdpar.playtime ; end
   def audiotracks ; @cdpar.audiotracks ; end
@@ -51,10 +57,14 @@ class Disc
   def freedbString ; @freedb.freedbString ; end
   def discid ; @freedb.discid ; end
 
+  # helper method to return the metadata
+  private
+
   # helper function to load metadata object
-  def metadata
-    require 'rubyripper/metadata'
-    @metadata = Metadata.new(@prefs, self, @deps)
+  def setMetata
+    require 'rubyripper/freedb'
+    @metadata = Freedb.new(self, @prefs, @deps)
+    @metadata.get()
   end
 end
 

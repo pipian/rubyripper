@@ -67,7 +67,7 @@ fakestation+rubyripper+test&proto=6"
 
     it "should handle the response in case no disc is reported" do
       setQueryReply('202 No match found')
-      getFreedb.handleConnection(@disc)
+      getFreedb.queryDisc(@disc)
 
       getFreedb.status.should == 'noMatches'
       getFreedb.freedbRecord.should == nil
@@ -78,7 +78,7 @@ fakestation+rubyripper+test&proto=6"
 
     it "should handle the error message when the database is corrupt" do
       setQueryReply('403 Database entry is corrupt')
-      getFreedb.handleConnection(@disc)
+      getFreedb.queryDisc(@disc)
 
       getFreedb.status.should == 'databaseCorrupt'
       getFreedb.freedbRecord.should == nil
@@ -89,7 +89,7 @@ fakestation+rubyripper+test&proto=6"
 
     it "should handle an unknown reply message" do
       setQueryReply('666 The number of the beast')
-      getFreedb.handleConnection(@disc)
+      getFreedb.queryDisc(@disc)
 
       getFreedb.status.should == 'unknownReturnCode: 666'
       getFreedb.freedbRecord.should == nil
@@ -101,7 +101,7 @@ fakestation+rubyripper+test&proto=6"
     it "should handle the response in case 1 record is reported" do
       setQueryReply()
       setReadReply()
-      getFreedb.handleConnection(@disc)
+      getFreedb.queryDisc(@disc)
 
       getFreedb.status.should == 'ok'
       getFreedb.freedbRecord.should == @file
@@ -117,7 +117,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
       setQueryReply("211 code close matches found\n#{choices}")
       setReadReply()
-      getFreedb.handleConnection(@disc)
+      getFreedb.queryDisc(@disc)
 
       getFreedb.status.should == 'ok'
       getFreedb.freedbRecord.should == @file
@@ -137,7 +137,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
         setQueryReply("211 code close matches found\n#{choices}")
         setReadReply()
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         getFreedb.status.should == 'multipleRecords'
         getFreedb.freedbRecord.should == nil
@@ -158,7 +158,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
         setQueryReply("211 code close matches found\n#{choices}")
         setReadReply('rock', '7F087C0B')
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         # choose the second disc
         getFreedb.choose(1)
@@ -173,7 +173,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
         setQueryReply("211 code close matches found\n#{choices}")
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         # choose an unknown
         getFreedb.status.should == 'multipleRecords'
@@ -189,7 +189,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       it "should handle the response when the disc is not found" do
         setQueryReply()
         setReadReply('blues', '7F087C0A', '401 Cddb entry not found')
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         getFreedb.status.should == 'cddbEntryNotFound'
         getFreedb.freedbRecord.should == nil
@@ -198,7 +198,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       it "should handle an unknown response code" do
         setQueryReply()
         setReadReply('blues', '7F087C0A', '666 The number of the beast')
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         getFreedb.status.should == 'unknownReturnCode: 666'
         getFreedb.freedbRecord.should == nil
@@ -207,7 +207,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       it "should handle a server (402) error response on the server" do
         setQueryReply()
         setReadReply('blues', '7F087C0A', '402 There is a temporary server error')
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         getFreedb.status.should == 'serverError'
         getFreedb.freedbRecord.should == nil
@@ -216,7 +216,7 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
       it "should handle a database (403) error response on the server" do
         setQueryReply()
         setReadReply('blues', '7F087C0A', '403 Database inconsistency error')
-        getFreedb.handleConnection(@disc)
+        getFreedb.queryDisc(@disc)
 
         getFreedb.status.should == 'databaseCorrupt'
         getFreedb.freedbRecord.should == nil

@@ -20,12 +20,8 @@ require 'rubyripper/fileAndDir'
 # A class that tries to locally find an entry in $HOME/.cddb
 class LoadFreedbRecord
 
-  # * discid = the discid as calculated for the freedb server
   def initialize(fileAndDir=nil)
     @file = fileAndDir ? fileAndDir : FileAndDir.new()
-    @encoding = nil
-    @freedbRecord = nil
-    @status = 'noRecords'
   end
 
   # look for local entries
@@ -58,6 +54,8 @@ private
     if matches.size > 0
       @status = 'ok'
       @freedbRecord = getFile(matches[0])
+    else
+      @status = 'noRecords'
     end
   end
 

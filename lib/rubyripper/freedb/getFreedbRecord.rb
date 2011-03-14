@@ -33,7 +33,7 @@ class GetFreedbRecord
   end
 
   # handle the initial connection with the freedb server
-  def handleConnection(freedbString)
+  def queryDisc(freedbString)
     @freedbString = freedbString
     analyzeQueryResult(queryFreedbForMatches())
   end

@@ -16,10 +16,24 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'spec_helper'
+require 'rubyripper/freedb/metadata'
 
 describe FreedbRecordParser do
 
   let(:parser) {FreedbRecordParser.new()}
+
+  context "Before parsing the disc" do
+    it "should set some default values" do
+      parser.md.artist.should == 'Unknown'
+      parser.md.album.should == 'Unknown'
+      parser.md.genre.should == 'Unknown'
+      parser.md.year.should == '0'
+      parser.md.extraDiscInfo.should == ''
+      parser.md.discid.should == ''
+      parser.md.trackname(12).should == 'Track 12'
+      parser.md.getVarArtist(12).should == 'Unknown'
+    end
+  end
 
   context "When the string is not an UTF-8 encoded string" do
     it "should detect if it has no valid encoding and abort" do
@@ -27,7 +41,6 @@ describe FreedbRecordParser do
       parser.parse(nonUTF8)
 
       parser.status.should == 'noValidEncoding'
-      parser.metadata.should == nil
     end
 
     it "should detect if the encoding is not UTF-8 and abort" do
@@ -35,7 +48,6 @@ describe FreedbRecordParser do
       parser.parse(latin1)
 
       parser.status.should == 'noUTF8Encoding'
-      parser.metadata.should == nil
     end
   end
 
@@ -45,9 +57,9 @@ describe FreedbRecordParser do
       parser.parse(record)
 
       parser.status.should == 'ok'
-      parser.metadata['genre'].should == 'Gothic'
-      parser.metadata['discid'].should == nil
-      parser.metadata['year'].should == '1993'
+      parser.md.genre.should == 'Gothic'
+      parser.md.discid.should == ''
+      parser.md.year.should == '1993'
     end
 
     it "should parse all standard info" do
@@ -57,12 +69,12 @@ TTITLE1=Christian Woman".encode('UTF-8')
       parser.parse(record)
 
       parser.status.should == 'ok'
-      parser.metadata['discid'].should == '98113b0e'
-      parser.metadata['artist'].should == 'Type O Negative'
-      parser.metadata['album'].should == 'Bloody Kisses'
-      parser.metadata['genre'].should == 'Gothic'
-      parser.metadata['tracklist'][1].should == 'Machine Screw'
-      parser.metadata['tracklist'][2].should == 'Christian Woman'
+      parser.md.discid.should == '98113b0e'
+      parser.md.artist.should == 'Type O Negative'
+      parser.md.album.should == 'Bloody Kisses'
+      parser.md.genre.should == 'Gothic'
+      parser.md.trackname(1).should == 'Machine Screw'
+      parser.md.trackname(2).should == 'Christian Woman'
     end
 
     it "should parse extra disc info" do
@@ -70,7 +82,7 @@ TTITLE1=Christian Woman".encode('UTF-8')
       parser.parse(record)
 
       parser.status.should == 'ok'
-      parser.metadata['extraDiscInfo'].should == 'What a wonderfull show!'
+      parser.md.extraDiscInfo.should == 'What a wonderfull show!'
     end
 
     it "should recognize a trackname of two lines and add a space in between" do
@@ -78,7 +90,7 @@ TTITLE1=Christian Woman".encode('UTF-8')
       parser.parse(record)
 
       parser.status.should == 'ok'
-      parser.metadata['tracklist'][10].should == 'Part1 Part2'
+      parser.md.trackname(10).should == 'Part1 Part2'
     end
 
     it "should recognize the album if the title has two lines" do
@@ -86,8 +98,8 @@ TTITLE1=Christian Woman".encode('UTF-8')
       parser.parse(record)
 
       parser.status.should == 'ok'
-      parser.metadata['artist'].should == 'Artist'
-      parser.metadata['album'].should == 'Album with a longer name'
+      parser.md.artist.should == 'Artist'
+      parser.md.album.should == 'Album with a longer name'
     end
 
     it "should recognize the artist if it spins two lines as well" do
@@ -95,8 +107,8 @@ TTITLE1=Christian Woman".encode('UTF-8')
       parser.parse(record)
 
       parser.status.should == 'ok'
-      parser.metadata['artist'].should == 'Artist with a long name'
-      parser.metadata['album'].should == 'Album'
+      parser.md.artist.should == 'Artist with a long name'
+      parser.md.album.should == 'Album'
     end
 
     context "When a various artist disc is expected" do
@@ -106,10 +118,10 @@ EASYBEATS / Friday on my Mind".encode('UTF-8')
         parser.parse(record)
 
         parser.status.should == 'ok'
-        parser.metadata['varArtist'][3].should == 'MUNGO JERRY'
-        parser.metadata['varArtist'][4].should == 'THE EASYBEATS'
-        parser.metadata['tracklist'][3].should == 'In The Summertime'
-        parser.metadata['tracklist'][4].should == 'Friday on my Mind'
+        parser.md.getVarArtist(3).should == 'MUNGO JERRY'
+        parser.md.getVarArtist(4).should == 'THE EASYBEATS'
+        parser.md.trackname(3).should == 'In The Summertime'
+        parser.md.trackname(4).should == 'Friday on my Mind'
       end
 
       it "should recognize a various artist disc separated by a '-'" do
@@ -118,10 +130,10 @@ EASYBEATS - Friday on my Mind".encode('UTF-8')
         parser.parse(record)
 
         parser.status.should == 'ok'
-        parser.metadata['varArtist'][3].should == 'MUNGO JERRY'
-        parser.metadata['varArtist'][4].should == 'THE EASYBEATS'
-        parser.metadata['tracklist'][3].should == 'In The Summertime'
-        parser.metadata['tracklist'][4].should == 'Friday on my Mind'
+        parser.md.getVarArtist(3).should == 'MUNGO JERRY'
+        parser.md.getVarArtist(4).should == 'THE EASYBEATS'
+        parser.md.trackname(3).should == 'In The Summertime'
+        parser.md.trackname(4).should == 'Friday on my Mind'
       end
 
       it "should recognize a various artist disc separated by a ':'" do
@@ -130,10 +142,10 @@ EASYBEATS : Friday on my Mind".encode('UTF-8')
         parser.parse(record)
 
         parser.status.should == 'ok'
-        parser.metadata['varArtist'][3].should == 'MUNGO JERRY'
-        parser.metadata['varArtist'][4].should == 'THE EASYBEATS'
-        parser.metadata['tracklist'][3].should == 'In The Summertime'
-        parser.metadata['tracklist'][4].should == 'Friday on my Mind'
+        parser.md.getVarArtist(3).should == 'MUNGO JERRY'
+        parser.md.getVarArtist(4).should == 'THE EASYBEATS'
+        parser.md.trackname(3).should == 'In The Summertime'
+        parser.md.trackname(4).should == 'Friday on my Mind'
       end
 
       it "should recognize a various artist disc separated by different splitters" do
@@ -142,12 +154,12 @@ EASYBEATS - Friday on my Mind\nTTITLE4=THE EASYBEATS / Friday on my Mind".encode
         parser.parse(record)
 
         parser.status.should == 'ok'
-        parser.metadata['varArtist'][3].should == 'MUNGO JERRY'
-        parser.metadata['varArtist'][4].should == 'THE EASYBEATS'
-        parser.metadata['varArtist'][5].should == 'THE EASYBEATS'
-        parser.metadata['tracklist'][3].should == 'In The Summertime'
-        parser.metadata['tracklist'][4].should == 'Friday on my Mind'
-        parser.metadata['tracklist'][5].should == 'Friday on my Mind'
+        parser.md.getVarArtist(3).should == 'MUNGO JERRY'
+        parser.md.getVarArtist(4).should == 'THE EASYBEATS'
+        parser.md.getVarArtist(5).should == 'THE EASYBEATS'
+        parser.md.trackname(3).should == 'In The Summertime'
+        parser.md.trackname(4).should == 'Friday on my Mind'
+        parser.md.trackname(5).should == 'Friday on my Mind'
       end
 
       it "should allow to revert to the old tracknames before splitting" do
@@ -156,9 +168,8 @@ EASYBEATS / Friday on my Mind".encode('UTF-8')
         parser.parse(record)
         parser.undoVarArtist()
 
-        parser.metadata['tracklist'][3].should == 'MUNGO JERRY / In The Summertime'
-        parser.metadata['tracklist'][4].should == 'THE EASYBEATS / Friday on my Mind'
-        parser.metadata['oldTracklist'].should == nil
+        parser.md.trackname(3).should == 'MUNGO JERRY / In The Summertime'
+        parser.md.trackname(4).should == 'THE EASYBEATS / Friday on my Mind'
       end
 
       it "should allow to redo the various artist splitting" do
@@ -167,11 +178,13 @@ EASYBEATS / Friday on my Mind".encode('UTF-8')
         parser.parse(record)
         parser.undoVarArtist()
         parser.redoVarArtist()
+        parser.undoVarArtist()
+        parser.redoVarArtist()
 
-        parser.metadata['varArtist'][3].should == 'MUNGO JERRY'
-        parser.metadata['varArtist'][4].should == 'THE EASYBEATS'
-        parser.metadata['tracklist'][3].should == 'In The Summertime'
-        parser.metadata['tracklist'][4].should == 'Friday on my Mind'
+        parser.md.getVarArtist(3).should == 'MUNGO JERRY'
+        parser.md.getVarArtist(4).should == 'THE EASYBEATS'
+        parser.md.trackname(3).should == 'In The Summertime'
+        parser.md.trackname(4).should == 'Friday on my Mind'
       end
     end
   end

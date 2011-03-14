@@ -15,9 +15,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/freedb/metadata'
+
 # This class can read and interpret a freedb metadata message
 class FreedbRecordParser
-attr_reader :metadata, :status
+attr_reader :status, :md
+
+  def initialize(md=nil)
+    @md = md ? md : Metadata.new
+  end
 
   # setup actions to analyze the result
   # freedbRecord = A string with the complete freedb metadata message
@@ -25,22 +31,22 @@ attr_reader :metadata, :status
     @freedbRecord = freedbRecord
 
     if recordIsValid?()
-      @metadata = {'tracklist'=> Hash.new, 'varArtist' => Hash.new}
       analyzeResult()
       scanForVarious()
       @status = 'ok'
     end
   end
 
-  # revert the auto splitting feature
+  # revert the situation before splitting
   def undoVarArtist
-    @metadata['tracklist'] = @metadata['oldTracklist']
-    @metadata.delete('oldTracklist')
+    @md.tracklist = @oldTracklist
+    @md.varArtist = Hash.new
+    @oldTracklist = Hash.new
   end
 
   # and split yet again unless it is already splitted
   def redoVarArtist
-    scanForVarious() unless @metadata.key?('oldTracklist')
+    scanForVarious() if @oldTracklist.empty?
   end
 
 private
@@ -62,21 +68,21 @@ private
       if line[0] == '#'
         next
       elsif line =~ /DISCID=/
-        @metadata['discid'] = $'.strip()
+        @md.discid = $'.strip()
       elsif line =~ /DTITLE=/
         discTitle = addValue(discTitle, $'.strip())
       elsif line =~ /DYEAR=/
-        @metadata['year'] = $'.rstrip() if $'.strip().length > 0
+        @md.year = $'.rstrip() if $'.strip().length > 0
       elsif line =~ /DGENRE=/
-        @metadata['genre'] = $'.strip()
+        @md.genre = $'.strip()
       elsif line =~ /TTITLE\d+=/
         track = $&[6..-2].to_i + 1
-        @metadata['tracklist'][track] = addValue(@metadata['tracklist'][track], $'.rstrip())
+        @md.tracklist[track] = addValue(@md.tracklist[track], $'.rstrip())
       elsif line =~ /EXTD=/
-        @metadata['extraDiscInfo'] = $'.strip() if $'.strip().length > 0
+        @md.extraDiscInfo = $'.strip()
       end
     end
-    @metadata['artist'], @metadata['album'] = discTitle.split(/\s\/\s/)
+    @md.artist, @md.album = discTitle.split(/\s\/\s/)
   end
 
    # if multiple rows can occur add a space again before the 2nd line
@@ -88,30 +94,24 @@ private
     end
   end
 
-  # try to detect various artists, separator can be ' / ' || ' - ' || ': '
+  # if all tracks have a various pattern, split it
   def scanForVarious
-    various = true
-    @metadata['tracklist'].each do |key, value|
+    if findVariousPattern(split=false)
+      @oldTracklist = @md.tracklist.dup()
+      findVariousPattern(split=true)
+    end
+  end
+
+  # detect the pattern, it can be ' / ' || ' - ' || ': '
+  def findVariousPattern(split=false)
+    @md.tracklist.each do |key, value|
       if value =~ /\s\/\s/
       elsif value =~ /\s-\s/
       elsif value =~ /\s*:\s/
-      else
-        various = false
-        break
+      else break
       end
-    end
 
-    if various == true
-      # save the original so the user can later undo this logic
-      @metadata['oldTracklist'] = @metadata['tracklist'].dup()
-      @metadata['tracklist'].each do |key, value|
-        if value =~ /\s\/\s/
-        elsif value =~ /\s-\s/
-        elsif value =~ /\s*:\s/
-        end
-        # $` = part before the matching part, $' = part after the matching part
-        @metadata['varArtist'][key], @metadata['tracklist'][key] = $`, $'
-      end
+      @md.varArtist[key], @md.tracklist[key] = $`, $' if split
     end
   end
 end
