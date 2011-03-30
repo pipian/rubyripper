@@ -21,7 +21,7 @@
 # discs with data tracks. For freedb calculation cd-info is correct, for
 # detecting the audio part, cdparanoia is correct.
 class ScanDiscCdinfo
-  attr_reader :status
+  attr_reader :status, :version, :vendor, :model, :revision, :discMode
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
@@ -39,6 +39,7 @@ class ScanDiscCdinfo
     query = @fire.launch("cd-info -C #{@prefs.get('cdrom')}")
 
     if isValidQuery(query)
+      @status = 'ok'
       parseQuery(query)
       addExtraInfo()
     end
@@ -84,6 +85,7 @@ private
 
   # now back to time
   def toTime(sectors)
+    return '' if sectors == nil
     minutes = sectors / (60*75)
     seconds = ((sectors % (60*75)) / 75)
     frames = sectors - minutes*60*75 - seconds*75
@@ -94,11 +96,11 @@ private
   def parseQuery(query)
     currentTrack = 0
     query.each_line do |line|
-      @disc['version'] = line if line =~ /cd-info version/
-      @disc['vendor'] = $'.strip if line =~ /Vendor\s+:\s/
-      @disc['model'] = $'.strip if line =~ /Model\s+:\s/
-      @disc['revision'] = $'.strip if line =~ /Revision\s+:\s/
-      @disc['discMode'] = $'.strip if line =~ /Disc mode is listed as:\s/
+      @version = line.strip() if line =~ /cd-info version/
+      @vendor = $'.strip if line =~ /Vendor\s+:\s/
+      @model = $'.strip if line =~ /Model\s+:\s/
+      @revision = $'.strip if line =~ /Revision\s+:\s/
+      @discMode = $'.strip if line =~ /Disc mode is listed as:\s/
 
       # discover a track
       if line =~ /\s+\d+:\s/

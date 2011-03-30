@@ -59,11 +59,42 @@ describe ScanDiscCdinfo do
   end
 
   context "When a query is a valid response" do
-    it "should detect the cd-info version"
-    it "should detect the vendor of the drive"
-    it "should detect the model of the drive"
-    it "should detect the revision of the drive"
-    it "should detect the discmode of the drive"
+    it "should detect the cd-info version" do
+      answer = "cd-info version 0.82 i686-pc-linux-gnu\nCopyright (c) 2003"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.status.should == 'ok'
+      scan.version.should == 'cd-info version 0.82 i686-pc-linux-gnu'
+    end
+
+    it "should detect the vendor of the drive" do
+      answer = "Vendor                      : HL-DT-ST"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.vendor.should == 'HL-DT-ST'
+    end
+
+    it "should detect the model of the drive" do
+      answer = "Model                       : DVDRAM GH22NS40\n "
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.model.should == 'DVDRAM GH22NS40'
+    end
+
+    it "should detect the revision of the drive" do
+      answer = "Revision                    : NL01\n "
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.revision.should == 'NL01'
+    end
+
+    it "should detect the discmode of the drive" do
+      answer = "Disc mode is listed as: CD-DA\n "
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.discMode.should == 'CD-DA'
+    end
+
     it "should detect the startsector for each track"
     it "should detect the data tracks on the disc"
     it "should detect the total amount of sectors for the disc"
