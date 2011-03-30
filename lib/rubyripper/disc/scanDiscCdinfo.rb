@@ -21,6 +21,7 @@
 # discs with data tracks. For freedb calculation cd-info is correct, for
 # detecting the audio part, cdparanoia is correct.
 class ScanDiscCdinfo
+  attr_reader :status
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
@@ -31,21 +32,17 @@ class ScanDiscCdinfo
     @disc = Hash.new
     @disc['startSector'] = Hash.new
     @disc['dataTracks'] = Array.new
-    @status = 'ok'
   end
 
   # scan the contents of the disc
   def scan
-    query = @fire.launch('cd-info', "cd-info -C #{@prefs.get('cdrom')}")
+    query = @fire.launch("cd-info -C #{@prefs.get('cdrom')}")
 
     if isValidQuery(query)
       parseQuery(query)
       addExtraInfo()
     end
   end
-
-  # return the status, 'ok' is good
-  def status ; return @status ; end
 
   # return the settings variable
   def get(key=false)
@@ -64,17 +61,14 @@ private
 
   # check the query result for errors
   def isValidQuery(query)
-    if query == false
-      @status = 'notInstalled'
-    elsif query.include?('WARN: Can\'t get file status')
-      @status = _('ERROR: Not a valid cdrom drive')
-    elsif query.include?('Usage:')
-      @status = _('ERROR: invalid parameters for cd-info')
-    elsif query.include?('WARN: error in ioctl')
-      @status = _('ERROR: No disc found')
+    case query
+      when nil then @status = 'notInstalled'
+      when /WARN: Can't get file status/ then @status = 'unknownDrive'
+      when /Usage:/ then @status = 'wrongParameters'
+      when /WARN: error in ioctl/ then @status = 'noDiscInDrive'
     end
 
-    return @status == 'ok'
+    return @status.nil?
   end
 
   # minutes:seconds:sectors to sectors
