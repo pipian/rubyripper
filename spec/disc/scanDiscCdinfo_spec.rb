@@ -150,7 +150,9 @@ describe ScanDiscCdinfo do
 179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
       fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
       scan.scan()
+      scan.audiotracks.should == 2
       scan.dataTracks.should == []
+      scan.tracks.should == 2
     end
 
     it "should detect the data tracks on the disc" do
