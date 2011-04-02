@@ -20,7 +20,8 @@
 # creating the freedb string. Cd-info is better for that.
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
-  attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack
+  attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack,
+      :totalSectors
 
   # * preferences is an instance of Preferences
   # * fireCommand is an instance of FireCommand
@@ -70,6 +71,8 @@ class ScanDiscCdparanoia
       else (44 + @lengthSector[track] * 2352) if @lengthSector.key?(track)
     end
   end
+
+  def tracks ; return @audiotracks ; end
 
   # prepend the gaps, so rewrite the toc info
   # notice that cdparanoia appends by default

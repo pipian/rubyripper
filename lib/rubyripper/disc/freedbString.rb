@@ -65,8 +65,6 @@ private
     end
   end
 
-
-
   # try to fetch freedb string with help programs
   def autoCalcFreedb
     unmountDiscDarwin() if @deps.platform.include?('darwin')
@@ -90,28 +88,12 @@ private
      @fire.launch("diskutil mount #{@prefs.get('cdrom')}")
   end
 
-  # try to calculate it ourselves
+  # try to calculate it ourselves, prefer cd-info if available
   def manualCalcFreedb
-    @startSector = @disc.get('startSector')
-    @lengthSector = @disc.get('lengthSector')
-    @audiotracks = @lengthSector.keys.length
-
-    # cd-info get us more reliable disc info
-    tryCdinfo()
+    @cdinfo.scan
+    @scan = @cdinfo.status == 'ok' ? @cdinfo : @disc
     setDiscId()
     buildFreedbString()
-  end
-
-  # Cd-info reads the toc more reliably than cdparanoia
-  def tryCdinfo
-    if @deps.installed?('cd-info')
-      @cdinfo.scan
-      if @cdinfo.status == 'ok'
-        @startSector = @cdinfo.get('startSector')
-        @lengthSector = @cdinfo.get('lengthSector')
-        @audiotracks = @cdinfo.get('tracks')
-      end
-    end
   end
 
   # The freedb checksum is calculated as follows:
@@ -120,9 +102,9 @@ private
   # * For example if seconds = 338 seconds, total is added with 3+3+8=14
   def setChecksum
     total = 0
-    @startSector.keys.sort.each do |track|
-      seconds = (@startSector[track] + 150) / 75
-      seconds.to_s.split(/\s*/).each{|s| total += s.to_i}
+    (1..@scan.tracks).each do |tracknumber|
+      seconds = (@scan.getStartSector(tracknumber) + 150) / 75
+      seconds.to_s.each_char{|char| total += char.to_i}
     end
 
     return total
@@ -130,12 +112,8 @@ private
 
   # Calculate the discid using some magic which make my brain hurt itself
   def setDiscId
-    @totalSectors = @startSector[@audiotracks] - @startSector[1]
-    @totalSectors += @lengthSector[@audiotracks]
-
-    @totalSeconds = @totalSectors / 75
-
-    @discid = ((setChecksum() % 0xff) << 24 | @totalSeconds << 8 | @audiotracks).to_s(16)
+    @totalSeconds = @scan.totalSectors / 75
+    @discid = ((setChecksum() % 0xff) << 24 | @totalSeconds << 8 | @scan.tracks).to_s(16)
     @discid.upcase!
   end
 
@@ -148,12 +126,12 @@ private
   def buildFreedbString
     @freedbString = String.new
     @freedbString << "#{@discid} "
-    @freedbString << "#{@audiotracks} "
+    @freedbString << "#{@scan.tracks} "
 
-    @startSector.keys.sort.each do |key|
-      @freedbString << "#{@startSector[key] + 150} "
+    (1..@scan.tracks).each do |tracknumber|
+      @freedbString << "#{@scan.getStartSector(tracknumber) + 150} "
     end
 
-    @freedbString << "#{(@totalSectors + 150) / 75}"
+    @freedbString << "#{(@scan.totalSectors + 150) / 75}"
   end
 end

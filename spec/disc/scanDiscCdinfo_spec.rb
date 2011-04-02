@@ -67,42 +67,100 @@ describe ScanDiscCdinfo do
       scan.version.should == 'cd-info version 0.82 i686-pc-linux-gnu'
     end
 
-    it "should detect the vendor of the drive" do
-      answer = "Vendor                      : HL-DT-ST"
-      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
-      scan.scan()
-      scan.vendor.should == 'HL-DT-ST'
-    end
-
-    it "should detect the model of the drive" do
-      answer = "Model                       : DVDRAM GH22NS40\n "
-      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
-      scan.scan()
-      scan.model.should == 'DVDRAM GH22NS40'
-    end
-
-    it "should detect the revision of the drive" do
-      answer = "Revision                    : NL01\n "
-      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
-      scan.scan()
-      scan.revision.should == 'NL01'
-    end
-
     it "should detect the discmode of the drive" do
-      answer = "Disc mode is listed as: CD-DA\n "
+      answer = "___________\n\nDisc mode is listed as: CD-DA"
       fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
       scan.scan()
       scan.discMode.should == 'CD-DA'
     end
 
-    it "should detect the startsector for each track"
-    it "should detect the data tracks on the disc"
-    it "should detect the total amount of sectors for the disc"
-    it "should detect the playtime in mm:ss for the disc"
-    it "should detect the complete drivename"
-    it "should detect the amount of audiotracks"
-    it "should detect the first audio track"
-    it "should detect the length in sectors for each track"
-    it "should detect the length in mm:ss for each track"
+    it "should detect the devicename for the drive" do
+      answer = "Vendor                      : HL-DT-ST\nModel                       \
+: DVDRAM GH22NS40\nRevision                    : NL01"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.deviceName.should == 'HL-DT-ST DVDRAM GH22NS40 NL01'
+    end
+
+    it "should detect the startsector for each track" do
+      answer = " 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
+179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.getStartSector(14).should == nil
+      scan.getStartSector(15).should == 164445
+      scan.getStartSector(16).should == 179535
+      scan.getStartSector(17).should == nil
+    end
+
+    it "should detect the length in sectors for each track" do
+      answer = " 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
+179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.getLengthSector(14).should == nil
+      scan.getLengthSector(15).should == 15090
+      scan.getLengthSector(16).should == 16320
+      scan.getLengthSector(17).should == nil
+    end
+
+    it "should detect the length in mm:ss for each track" do
+      answer = " 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
+179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.getLengthText(14).should == nil
+      scan.getLengthText(15).should == '03:21.15'
+      scan.getLengthText(16).should == '03:37.45'
+      scan.getLengthText(17).should == nil
+    end
+
+    it "should detect the total amount of sectors for the disc" do
+      answer = "       no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.totalSectors.should == 195855
+    end
+
+    it "should detect the playtime in mm:ss for the disc" do
+      answer = "       no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.playtime.should == '43:31' #minus 2 seconds offset, without frames
+    end
+
+    it "should detect the amount of audiotracks" do
+      answer = " 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
+179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.audiotracks.should == 2
+    end
+
+    it "should detect the first audio track" do
+      answer = " 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
+179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.firstAudioTrack.should == 15
+    end
+
+    it "should detect if there are no data tracks on the disc" do
+      answer = " 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
+179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.dataTracks.should == []
+    end
+
+    it "should detect the data tracks on the disc" do
+      answer = " 13: 61:11:22  275197 data   false  no\n170: 73:47:31  \
+331906 leadout (744 MB raw, 744 MB formatted)"
+      fire.should_receive(:launch).with('cd-info -C /dev/cdrom').and_return(answer)
+      scan.scan()
+      scan.audiotracks.should == 0
+      scan.dataTracks.should == [13]
+      scan.tracks.should == 1
+    end
   end
 end

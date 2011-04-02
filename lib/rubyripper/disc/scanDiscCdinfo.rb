@@ -21,7 +21,8 @@
 # discs with data tracks. For freedb calculation cd-info is correct, for
 # detecting the audio part, cdparanoia is correct.
 class ScanDiscCdinfo
-  attr_reader :status, :version, :vendor, :model, :revision, :discMode
+  attr_reader :status, :version, :discMode, :deviceName, :totalSectors,
+      :playtime, :audiotracks, :firstAudioTrack, :dataTracks
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
@@ -29,9 +30,8 @@ class ScanDiscCdinfo
     @prefs = preferences
     @fire = fireCommand
 
-    @disc = Hash.new
-    @disc['startSector'] = Hash.new
-    @disc['dataTracks'] = Array.new
+    @startSector = Hash.new
+    @dataTracks = Array.new
   end
 
   # scan the contents of the disc
@@ -45,18 +45,16 @@ class ScanDiscCdinfo
     end
   end
 
-  # return the settings variable
-  def get(key=false)
-    if key == false
-      return @disc
-    else
-      if @disc.key?(key)
-        return @disc[key]
-      else
-        return false
-      end
-    end
-  end
+  # return the startsector for a track
+  def getStartSector(tracknumber) ; @startSector[tracknumber] ; end
+
+  # return the length for a track (in sectors)
+  def getLengthSector(tracknumber) ; @lengthSector[tracknumber] ; end
+
+  # return the length for a track (in mm:ss.ff)
+  def getLengthText(tracknumber) ; @lengthText[tracknumber] ; end
+
+  def tracks ; @audiotracks + @dataTracks.length ; end
 
 private
 
@@ -94,7 +92,7 @@ private
 
   # store the info of the query in variables
   def parseQuery(query)
-    currentTrack = 0
+    tracknumber = 0
     query.each_line do |line|
       @version = line.strip() if line =~ /cd-info version/
       @vendor = $'.strip if line =~ /Vendor\s+:\s/
@@ -103,46 +101,38 @@ private
       @discMode = $'.strip if line =~ /Disc mode is listed as:\s/
 
       # discover a track
-      if line =~ /\s+\d+:\s/
-        currentTrack += 1
+      if line =~ /\s+\d+:\s/ # for example: '  1: '
+        tracknumber = $&.strip()[0..-2].to_i
         trackinfo = $'.split(/\s+/)
-        @disc['startSector'][currentTrack] = toSectors(trackinfo[0])
-        @disc['dataTracks'] << currentTrack if trackinfo[2] == "data"
+        @startSector[tracknumber] = toSectors(trackinfo[0])
+        @dataTracks << tracknumber if trackinfo[2] == "data"
+        @firstAudioTrack = tracknumber unless @firstAudioTrack || trackinfo[2] == "data"
       end
 
       if line =~ /leadout/
         line =~ /\d\d:\d\d:\d\d/
-        @disc['totalSectors'] = toSectors($&)
+        @totalSectors = toSectors($&)
         break
       end
     end
-    @disc['tracks'] = currentTrack
+    @finalTrack = tracknumber
   end
 
   # Add some extra info that is calculated
   def addExtraInfo
-    @disc['devicename'] = "#{@disc['vendor']} "
-    @disc['devicename'] += "#{@disc['model']} "
-    @disc['devicename'] += "#{@disc['revision']}"
-    @disc['playtime'] = toTime(@disc['totalSectors'])[0,5]
-    @disc['audiotracks'] = @disc['tracks'] - @disc['dataTracks'].length
-    (1..@disc['tracks']).each do |track|
-      if not @disc['dataTracks'].include?(track)
-        @disc['firstAudioTrack'] = track
-        break
-      end
-    end
+    @deviceName = "#{@vendor} #{@model} #{@revision}"
+    @playtime = toTime(@totalSectors)[0,5]
+    @audiotracks = @startSector.length - @dataTracks.length
 
-    # add some track info
-    @disc['lengthSector'] = Hash.new
-    @disc['lengthText'] = Hash.new
-    @disc['startSector'].each do |key, value|
-      if key == @disc['tracks']
-        @disc['lengthSector'][key] = @disc['totalSectors'] - @disc['startSector'][key]
+    @lengthSector = Hash.new
+    @lengthText = Hash.new
+    @startSector.each do |tracknumber, value|
+      if tracknumber == @finalTrack
+        @lengthSector[tracknumber] = @totalSectors - @startSector[tracknumber]
       else
-        @disc['lengthSector'][key] = @disc['startSector'][key + 1] - value
+        @lengthSector[tracknumber] = @startSector[tracknumber + 1] - value
       end
-      @disc['lengthText'][key] = toTime(@disc['lengthSector'][key])
+      @lengthText[tracknumber] = toTime(@lengthSector[tracknumber])
     end
   end
 end

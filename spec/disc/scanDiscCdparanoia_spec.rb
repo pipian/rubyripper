@@ -151,5 +151,11 @@ describe ScanDiscCdparanoia do
       disc.getFileSize(11).should == nil
       disc.getFileSize('image').should == 383185532
     end
+
+    it "should detect the total sectors of the disc" do
+      setQueryReply(@cdparanoia)
+      disc.scan()
+      disc.totalSectors.should == 162919
+    end
   end
 end

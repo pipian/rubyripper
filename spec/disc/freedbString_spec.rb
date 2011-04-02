@@ -71,29 +71,34 @@ describe FreedbString do
     before(:each) do
       @start = {1=>0, 2=>13209, 3=>36539, 4=>53497, 5=>68172, 6=>81097,
 7=>87182, 8=>106732, 9=>122218, 10=>124080}
-      @length = {1=>13209, 2=>23330, 3=>16958, 4=>14675, 5=>12925,
-6=>6085, 7=>19550, 8=>15486, 9=>1862, 10=>38839}
       prefs.should_receive(:get).with('debug').and_return false
       deps.should_receive(:installed?).with('discid').and_return false
       deps.should_receive(:installed?).with('cd-discid').and_return false
-      scan.should_receive(:get).with('startSector').and_return @start
-      scan.should_receive(:get).with('lengthSector').and_return @length
     end
 
     it "should try to read values from cd-info, but skip to cdparanoia" do
-      deps.should_receive(:installed?).with('cd-info').and_return false
+      cdinfo.should_receive(:scan).and_return true
+      cdinfo.should_receive(:status).and_return false
+
+      scan.should_receive(:tracks).at_least(:once).and_return(10)
+      scan.should_receive(:totalSectors).at_least(:once).and_return(162919)
+      (1..10).each do |number|
+        scan.should_receive(:getStartSector).with(number).at_least(:once).and_return @start[number]
+      end
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
     end
 
     it "should read cd-info values when possible" do
-      deps.should_receive(:installed?).with('cd-info').and_return true
       cdinfo.should_receive(:scan).and_return true
       cdinfo.should_receive(:status).and_return 'ok'
-      cdinfo.should_receive(:get).with('startSector').and_return @start
-      cdinfo.should_receive(:get).with('lengthSector').and_return @length
-      cdinfo.should_receive(:get).with('tracks').and_return 10
+
+      cdinfo.should_receive(:tracks).at_least(:once).and_return(10)
+      cdinfo.should_receive(:totalSectors).at_least(:once).and_return(162919)
+      (1..10).each do |number|
+        cdinfo.should_receive(:getStartSector).with(number).at_least(:once).and_return @start[number]
+      end
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
