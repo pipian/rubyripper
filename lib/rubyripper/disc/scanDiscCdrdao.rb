@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'tmpdir'
-
 # The scanDiscCdrdao class helps detecting all special audio-cd
 # features as hidden tracks, pregaps, etcetera. It does so by
 # analyzing the output of cdrdao's TOC output. The class is only
@@ -27,186 +25,136 @@ require 'tmpdir'
 # cuesheet is necessary to store the gap info.
 # The scanning will take about 1 - 2 minutes.
 
+# TODO handle the extra thread from within this class
+# TODO perhaps call the cuesheet generation as well
+
 class ScanDiscCdrdao
+attr_reader :log, :status
 
-	# prefences = instance of Preferences
-	# fireCommand = instance of fireCommand
-	def initialize(preferences, fireCommand, cuesheet=false)
-		@prefs = preferences
-		@fire = fireCommand
-		@cue = cuesheet
-		checkArguments()
+  def initialize(preferences, fireCommand)
+    @prefs = preferences
+    @fire = fireCommand
+  end
 
-		@cdrom = @prefs.get('cdrom')
-		@verbose = @prefs.get('verbose')
-		@status = 'ok'
-	end
+  # scan the disc and parse the resulting file
+  def scan
+    @output = getOutput()
 
-	# scan the disc
-	def scan
-		@scan = Hash.new
-		@buildLog = Array.new
+    if isValidQuery()
+      @status = 'ok'
+      setVars()
+      parseQuery()
+      makeLog()
+    end
+  end
 
-		@scan['preEmphasis'] = Array.new
-		@scan['dataTracks'] = Array.new
-		@scan['preGap'] = Hash.new
-		@scan['trackNames'] = Hash.new
-		@scan['varArtists'] = Hash.new
+  # return the pregap if found, otherwise return 0
+  def getPregap(track) ; @pregap.key?(track) ? @pregap[track] : 0 ; end
 
-		@output = getOutput()
-
-		if isValidQuery()
-			parseQuery()
-			makeLog()
-		end
-	end
-
-	# return the logfile
-	def getLog ; return @buildLog ; end
-
-	# return the status, _('ok') is good
-	def status ; return @status ; end
-
-	# return the scan variable
-	def get(key=false)
-		if key == false
-			return @scan
-		else
-			if @scan.key?(key)
-				return @scan[key]
-			else
-				return false
-			end
-		end
-	end
+  # return if a track has pre-emphasis
+  def hasPreEmph(track) ; @preEmphasis.key?(track) ; end
 
 private
 
-	# check the parameters
-	def checkArguments
-		unless @prefs.respond_to?(:get)
-			raise ArgumentError, "preferences must be a Preference instance!"
-		end
+  # return a temporary filename, based on the drivename to make it unique
+  def tempfile
+    require 'tmpdir'
+    File.join(Dir.tmpdir, "temp_#{File.basename(@prefs.get('cdrom'))}.toc")
+  end
 
-		unless @fire.respond_to?(:launch)
-			raise ArgumentError, "fireCommand must be a FireCommand instance!"
-		end
-	end
+  # get all the cdrdao info
+  def getOutput
+    command = "cdrdao read-toc --device #{@prefs.get('cdrom')} \"#{tempfile()}\""
+    command += " 2>&1" unless @prefs.get('verbose')
 
-	# get all the cdrdao info
-	def getOutput
-		# find a temporary location
-		file = File.join(Dir.tmpdir, "temp_#{File.basename(@cdrom)}.toc")
+    @fire.launch(command, tempfile())
+    @fire.status == 'ok' ? @fire.readFile() : nil
+  end
 
-		# build the command
-		command = "cdrdao read-toc --device #{@cdrom} \"#{file}\""
-		command += " 2>&1" unless @verbose
+  # check if the output is valid
+  def isValidQuery
+    case @output
+      when nil then @status = 'notInstalled'
+      when /ERROR: Unit not ready, giving up./ then @status = 'noDiscInDrive'
+      when /Usage: cdrdao/ then @status = 'wrongParameters'
+      when /ERROR: Cannot setup device/ then @status = 'unknownDrive'
+    end
 
-		# fire the command
-		result = @fire.launch('cdrdao', command, file)
+    return @status.nil?
+  end
 
-		if result == false || @fire.status != true
-			return String.new
-		else
-			return @fire.file
-		end
-	end
+  # set some variables
+  def setVars
+    @log = Array.new
+    @preEmphasis = Array.new
+    @dataTracks = Array.new
+    @preGap = Hash.new
+    @trackNames = Hash.new
+    @varArtists = Hash.new
+  end
 
-	# check if the output is valid
-	def isValidQuery
-		if @output == ''
-			@status = _('ERROR: Cdrdao exited unexpectedly.')
-		elsif @output.include?('ERROR: Unit not ready, giving up.')
-			@status = _("ERROR: No disc found")
-		elsif @output.include?('Usage: cdrdao')
-			@status = _('ERROR: %s doesn\'t recognize the parameters.') %['Cdrdao']
-		elsif @output.include?('ERROR: Cannot setup device')
-			@status = _('ERROR: Not a valid cdrom drive')
-		end
+  # minutes:seconds:sectors to sectors
+  def toSectors(time)
+    count = 0
+    minutes, seconds, sectors = time.split(':')
+    count += sectors.to_i
+    count += (seconds.to_i * 75)
+    count += (minutes.to_i * 60 * 75)
+    return count
+  end
 
-		return @status == _('ok')
-	end
+  # read the file of cdrdao into the scan Hash
+  def parseQuery
+    track = 0
+    @output.each_line do |line|
+      if line[0..1] == 'CD' && @discType.nil?
+        @discType = line.strip()
+      elsif track == 0 && line =~ /TITLE /
+        @artist, @album = $'.strip()[1..-2].split(/\s\s+/)
+      elsif track == 0 && line =~ /SILENCE /
+        @silence = toSectors($'.strip)
+      elsif line =~ /Track/
+        track += 1
+      elsif line =~ /TRACK DATA/
+        @dataTracks << track
+      elsif line[0..11] == 'PRE_EMPHASIS'
+        @preEmphasis << track
+      elsif line =~ /START /
+        @preGap[track] = toSectors($'.strip)
+      elsif line =~ /TITLE /
+        @trackNames[track] = $'.strip()[1..-2] #exclude quotes
+      elsif track > 0 && line =~ /PERFORMER /
+        if $'.strip().length > 2
+          @varArtists[track] = $'[1..-2] #exclude quotes
+        end
+      end
+    end
+    @tracks = track
+  end
 
-	# minutes:seconds:sectors to sectors
-	def toSectors(time)
-		count = 0
-		minutes, seconds, sectors = time.split(':')
-		count += sectors.to_i
-		count += (seconds.to_i * 75)
-		count += (minutes.to_i * 60 * 75)
-		return count
-	end
+  # report all special cases
+  def makeLog
+    if @preEmphasis.empty? && @preGap.empty? && @silence.nil?
+      @log << _("No pregaps, silences or pre-emphasis detected\n")
+      return true
+    end
 
-	# read the file of cdrdao into the scan Hash
-	def parseQuery
-		track = 0
-		@output.each_line do |line|
-			if line[0..1] == 'CD' && !@scan.key?('discType')
-				@scan['discType'] = line.strip()
-			elsif track == 0 && line =~ /TITLE /
-				@scan['artist'], @scan['album'] = $'.strip()[1..-2].split(/\s\s+/)
-			elsif track == 0 && line =~ /SILENCE /
-				@scan['silence'] = toSectors($'.strip)
-			elsif line =~ /Track/
-				track += 1
-			elsif line =~ /TRACK DATA/
-				@scan['dataTracks'] << track
-			elsif line[0..11] == 'PRE_EMPHASIS'
-				@scan['preEmphasis'] << track
-			elsif line =~ /START /
-				@scan['preGap'][track] = toSectors($'.strip)
-			elsif line =~ /TITLE /
-				@scan['trackNames'][track] = $'.strip()[1..-2] #exclude quotes
-			elsif track > 0 && line =~ /PERFORMER /
-				if $'.strip().length > 2
-					@scan['varArtists'][track] = $'[1..-2] #exclude quotes
-				end
-			end
-		end
-		@scan['tracks'] = track
-	end
+    @log << _("Silence detected for disc : %s sectors\n") % [@silence]
 
-	# report all special cases
-	def makeLog
-		if @scan['preEmphasis'].empty? && @scan['preGap'].empty? && !@scan.key?('silence')
-			@buildLog << _("No pregaps, silences or pre-emphasis detected\n")
-			return true
-		end
+    (1..@tracks).each do |track|
+      @log << _("Pregap detected for track %s : %s sectors\n") %
+      [track, @preGap[track]] if @preGap.key?(track)
 
-		@buildLog << _("Silence detected for disc : %s sectors\n") % [@scan['silence']]
+      # pre emphasis detected?
+      @log << ("Pre_emphasis detected for track %s\n") %
+      [track] if @preEmphasis.include?(track)
 
-		(1..@scan['tracks']).each do |track|
-			# pregap detected?
-			@buildLog << _("Pregap detected for track %s : %s sectors\n") %
-[track, @scan['preGap'][track]] if @scan['preGap'].key?(track)
-			# pre emphasis detected?
-			@buildLog << ("Pre_emphasis detected for track %s\n") %
-[track] if @scan['preEmphasis'].include?(track)
-			# is the track marked as data track?
-			@buildLog << _("Track %s is marked as a DATA track\n") %
-[track] if @scan['dataTracks'].include?(track)
-		end
+      # is the track marked as data track?
+      @log << _("Track %s is marked as a DATA track\n") %
+      [track] if @dataTracks.include?(track)
+    end
 
-		#set an extra whiteline before starting to rip
-		@buildLog << "\n"
-	end
-
-	# return the pregap if found, otherwise return 0
-	def getPregap(track)
-		if @pregap.key?(track)
-			return @pregap[track]
-		else
-			return 0
-		end
-	end
-
-	# return if a track has pre-emphasis
-	def hasPreEmph(track)
-		if @preEmphasis.key?(track)
-			return true
-		else
-			return false
-		end
-	end
+    #set an extra whiteline before starting to rip
+    @log << "\n"
+  end
 end
-

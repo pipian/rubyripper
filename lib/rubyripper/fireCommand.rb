@@ -27,6 +27,7 @@ attr_reader :status
   end
 
   # return output for command
+  # clear the file if it exists before the program runs
   def launch(command, filename=false)
     output = nil
     program = command.split[0]
@@ -34,7 +35,7 @@ attr_reader :status
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
       output = `#{command}`
-      @status = $?.success?
+      @status = 'ok' if $?.success?
       @filename = filename
     end
 
@@ -42,7 +43,7 @@ attr_reader :status
   end
 
   # return created file with command
-  def file
+  def readFile
     return File.read(@filename) if File.exists?(@filename)
   end
 end
