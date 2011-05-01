@@ -40,7 +40,6 @@ class FalseClass; include Boolean; end
 require 'test/unit'
 
 # Load and run all test scripts
-require './TC_scanDiscCdrdao.rb'
 require './TC_cleanPrefs.rb'
 require './TC_savePrefs.rb'
 require './TC_loadPrefs.rb'

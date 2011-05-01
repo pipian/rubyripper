@@ -33,7 +33,7 @@ attr_reader :display
 		[@image1, @label1].each{|object| @hbox1.pack_start(object)}
 		@hbox1.border_width = 10
 		@separator1 = Gtk::HSeparator.new
-		
+
 		@textview = Gtk::TextView.new
 		@textview.editable = false
 		@scrolled_window = Gtk::ScrolledWindow.new
@@ -41,7 +41,7 @@ attr_reader :display
 		@scrolled_window.border_width = 7
 		@scrolled_window.add(@textview)
 		@textview.buffer.insert(@textview.buffer.end_iter, summary)
-				
+
 		@button1 = Gtk::Button.new()
 		@label2 = Gtk::Label.new(_("Open log file"))
 		@image2 = Gtk::Image.new(Gtk::Stock::EXECUTE, Gtk::IconSize::LARGE_TOOLBAR)
@@ -49,7 +49,7 @@ attr_reader :display
 		[@image2, @label2].each{|object| @hbox2.pack_start(object)}
 		@button1.add(@hbox2)
 		@button1.signal_connect("released"){Thread.new{if installed(editor.split()[0]) ; `#{editor} "#{directory + '/ripping.log'}"` else puts _("%s is not found on your system!") % [editor.split()[0]] end}}
-		
+
 		@button2 = Gtk::Button.new()
 		@label3 = Gtk::Label.new(_("Open directory"))
 		@image3 = Gtk::Image.new(Gtk::Stock::OPEN, Gtk::IconSize::LARGE_TOOLBAR)
@@ -57,19 +57,19 @@ attr_reader :display
 		[@image3, @label3].each{|object| @hbox3.pack_start(object)}
 		@button2.add(@hbox3)
 		@button2.signal_connect("released"){Thread.new{if installed(filemanager.split()[0]) ; `#{filemanager} "#{directory}"` else puts _("%s is not found on your system!") % [filemanager.split()[0]] end}}
-		
+
 		@hbox4 = Gtk::HBox.new(true, 5) #put the two buttons in a box
 		[@button1, @button2].each{|object| @hbox4.pack_start(object)}
-		
+
 		@vbox1 = Gtk::VBox.new(false,10)
 		@vbox1.pack_start(@hbox1,false,false)
 		@vbox1.pack_start(@separator1,false,false)
 		@vbox1.pack_start(@scrolled_window,false,false) #maximize the space for displaying the tracks
 		@vbox1.pack_start(@hbox4,false,false)
-		
+
 		@display = Gtk::Frame.new(_("Ripping and encoding is finished"))
 		@display.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@display.border_width = 5
 		@display.add(@vbox1)
-	end	
+	end
 end

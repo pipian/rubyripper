@@ -11,7 +11,7 @@ TABLE OF CONTENTS
 1. INTRODUCTION
 
 Rubyripper aims to deliver high quality rips from audio cd's to your computer
-drive. It tries to do so by ripping the same track with cdparanoia multiple 
+drive. It tries to do so by ripping the same track with cdparanoia multiple
 times and then comparing the results. It currently has a gtk2 and a command-
 line interface.
 
@@ -31,18 +31,18 @@ Some of it's main features:
 
 2. SECURE RIP METHOD
 
-The underlying philosophy is that errors are random and therefore will differ 
-with each trial. Since the files don't always match directly proves that at 
-least part of this is true. However, it might be that some read errors are not 
-random and will happen exactly the same with multiple trials. In this case an 
+The underlying philosophy is that errors are random and therefore will differ
+with each trial. Since the files don't always match directly proves that at
+least part of this is true. However, it might be that some read errors are not
+random and will happen exactly the same with multiple trials. In this case an
 error would slip through unnoticed.
 
-A completely secure rip can never be guaranteed, neither by Exact Audio Copy 
-(which inspired Rubyripper), nor by any other ripper. Factors like the 
-quality of the audio-cd and the quality of the cdrom drive are very important 
+A completely secure rip can never be guaranteed, neither by Exact Audio Copy
+(which inspired Rubyripper), nor by any other ripper. Factors like the
+quality of the audio-cd and the quality of the cdrom drive are very important
 as well. Despite these problems Rubyripper tries to do it's very best.
 
-The user can set a number of 'A' matches for each chunk of 1000 bytes. Each 
+The user can set a number of 'A' matches for each chunk of 1000 bytes. Each
 chunk represents about 0,006 seconds. If, after ripping the track 'A' times,
 there are chunks that don't match 'A' times, another trial is launched. This
 time however, the mismatched chunks must match 'B' times, which can be equal,
@@ -235,7 +235,7 @@ phase --prefix is supported. With the make install --prefix and $DESTDIR
 
 ---------0.4.3 RELEASE------
 
-* first release that's translatable. Dutch and German languages 
+* first release that's translatable. Dutch and German languages
 are supported initially. This adds the ruby-gettext dependency.
 * check if there is write permission on the output location
 * improve other codec support (actually make it work)
@@ -295,7 +295,7 @@ track if -Z is supplied, so it's automatically removed for the last track.
 Q : Will Rubyripper work on any platform other than linux?
 A : If the same dependencies are available on these platforms, then things will
 probably just work fine. If some of the dependencies are missing, but you do
-know one other utility which does just about the same, please report a 
+know one other utility which does just about the same, please report a
 feature request at the Google bugtracker.
 
 Q : How do I report a bug / request a missing feature?

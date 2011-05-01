@@ -29,7 +29,8 @@
 # TODO perhaps call the cuesheet generation as well
 
 class ScanDiscCdrdao
-attr_reader :log, :status
+attr_reader :log, :status, :dataTracks, :discType, :tracks,
+    :artist, :album
 
   def initialize(preferences, fireCommand)
     @prefs = preferences
@@ -38,33 +39,64 @@ attr_reader :log, :status
 
   # scan the disc and parse the resulting file
   def scan
-    @output = getOutput()
+    @tempfile = nil ; @cdrom = nil
 
+    @output = getOutput()
     if isValidQuery()
       @status = 'ok'
       setVars()
       parseQuery()
-      makeLog()
+      makeLog() unless @tracks.nil?
     end
   end
 
+  # some discs have a silence tag at the start of the disc
+  def getSilenceSectors
+    assertScanFinished('getSilenceSectors')
+    return @silence
+  end
+
   # return the pregap if found, otherwise return 0
-  def getPregap(track) ; @pregap.key?(track) ? @pregap[track] : 0 ; end
+  def getPregapSectors(track)
+    assertScanFinished('getPregapSectors')
+    @preGap.key?(track) ? @preGap[track] : 0
+  end
 
   # return if a track has pre-emphasis
-  def hasPreEmph(track) ; @preEmphasis.key?(track) ; end
+  def preEmph?(track)
+    assertScanFinished('preEmph?')
+    @preEmphasis.include?(track)
+  end
+
+  def getTrackname(track)
+    assertScanFinished('getTrackname')
+    @trackNames.key?(track) ? @trackNames[track] : String.new
+  end
+
+  def getVarArtist(track)
+    assertScanFinished('getVarArtist')
+    @varArtists.key?(track) ? @varArtists[track] : String.new
+  end
 
 private
 
+  def assertScanFinished(name)
+    raise "Can't #{name} when scanDiscCdparanoia status is not ok!" unless @status == 'ok'
+  end
+
+  # return the cdrom drive
+  def cdrom
+    @cdrom ||= @prefs.get('cdrom')
+  end
+
   # return a temporary filename, based on the drivename to make it unique
   def tempfile
-    require 'tmpdir'
-    File.join(Dir.tmpdir, "temp_#{File.basename(@prefs.get('cdrom'))}.toc")
+    @tempfile ||= @fire.getTempFile("#{File.basename(cdrom)}.toc")
   end
 
   # get all the cdrdao info
   def getOutput
-    command = "cdrdao read-toc --device #{@prefs.get('cdrom')} \"#{tempfile()}\""
+    command = "cdrdao read-toc --device #{cdrom} \"#{tempfile()}\""
     command += " 2>&1" unless @prefs.get('verbose')
 
     @fire.launch(command, tempfile())
@@ -105,16 +137,16 @@ private
 
   # read the file of cdrdao into the scan Hash
   def parseQuery
-    track = 0
+    track = nil
     @output.each_line do |line|
       if line[0..1] == 'CD' && @discType.nil?
         @discType = line.strip()
-      elsif track == 0 && line =~ /TITLE /
+      elsif !track && line =~ /TITLE /
         @artist, @album = $'.strip()[1..-2].split(/\s\s+/)
-      elsif track == 0 && line =~ /SILENCE /
+      elsif !track && line =~ /SILENCE /
         @silence = toSectors($'.strip)
-      elsif line =~ /Track/
-        track += 1
+      elsif line =~ / Track /
+        track = $'.strip().to_i
       elsif line =~ /TRACK DATA/
         @dataTracks << track
       elsif line[0..11] == 'PRE_EMPHASIS'
@@ -123,9 +155,9 @@ private
         @preGap[track] = toSectors($'.strip)
       elsif line =~ /TITLE /
         @trackNames[track] = $'.strip()[1..-2] #exclude quotes
-      elsif track > 0 && line =~ /PERFORMER /
+      elsif track && line =~ /PERFORMER /
         if $'.strip().length > 2
-          @varArtists[track] = $'[1..-2] #exclude quotes
+          @varArtists[track] = $'.strip()[1..-2] #exclude quotes
         end
       end
     end

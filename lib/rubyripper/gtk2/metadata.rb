@@ -50,7 +50,7 @@ attr_reader :display, :tracks_to_rip
 		setTrackSignals()
 		packTrackObjects()
 	end
-	
+
 	def pack_both
 		setDisplayValues()
 		configDisplayValues()
@@ -88,7 +88,7 @@ attr_reader :display, :tracks_to_rip
 
 		@genreEntry.width_request = 100
 		@yearEntry.width_request = 100
-		
+
 		@freezeCheckbox.tooltip_text = _("Use this option to keep the disc info\nfor albums that span multiple discs")
 		@discNumberLabel.set_alignment(0.0, 0.5)
 		@discNumberLabel.sensitive = false
@@ -117,8 +117,8 @@ attr_reader :display, :tracks_to_rip
 		@table10.attach(@genreEntry, 3, 4, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0) #4th column
 		@table10.attach(@yearEntry, 3 , 4, 1, 2, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
 		@table10.attach(@varCheckbox, 0, 4, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table10.attach(@freezeCheckbox, 0, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)		
-		@table10.attach(@discNumberLabel, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)		
+		@table10.attach(@freezeCheckbox, 0, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+		@table10.attach(@discNumberLabel, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
 		@table10.attach(@discNumberSpin, 3, 4, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
 	end
 
@@ -129,7 +129,7 @@ attr_reader :display, :tracks_to_rip
 		@varArtistLabel = Gtk::Label.new(_('Artist'))
 		@tracknameLabel = Gtk::Label.new(_("Tracknames \(%s tracks\)") % [@cd.audiotracks])
 		@lengthLabel = Gtk::Label.new(_("Length \(%s\)") % [@cd.playtime])
-		
+
 		@checkTrackArray = Array.new ; @varArtistEntryArray = Array.new ; @trackEntryArray = Array.new ; @lengthLabelArray = Array.new
 		@cd.audiotracks.times do |track|
 			@checkTrackArray << Gtk::CheckButton.new((track + 1).to_s)
@@ -152,7 +152,7 @@ attr_reader :display, :tracks_to_rip
 
 	def setTrackSignals()
 		@allTracksButton.signal_connect("toggled") do
-			@allTracksButton.active? ? @checkTrackArray.each{|box| box.active = true} : @checkTrackArray.each{|box| box.active = false} #signal to toggle on/off all tracks 
+			@allTracksButton.active? ? @checkTrackArray.each{|box| box.active = true} : @checkTrackArray.each{|box| box.active = false} #signal to toggle on/off all tracks
 		end
 	end
 
@@ -167,18 +167,18 @@ attr_reader :display, :tracks_to_rip
 		else
 			@table20.attach(@tracknameLabel, 1, 3, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0)
 		end
-		
+
 		@cd.audiotracks.times do |index|
 			@table20.attach(@checkTrackArray[index], 0, 1, 1 + index, 2 + index, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 2nd row till end
 			@table20.attach(@lengthLabelArray[index],3, 4, 1 + index, 2 + index, Gtk::FILL, Gtk::SHRINK, 0, 0) #4th column, 2nd row till end
-			
+
 			if varArtist == true
 				@table20.attach(@varArtistEntryArray[index], 1, 2, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 				@table20.attach(@trackEntryArray[index], 2, 3, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 			else
 				@table20.attach(@trackEntryArray[index],1, 3, 1 + index, 2 + index, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd + 3rd column, 2nd row till end
 			end
-			
+
 		end
 	end
 
@@ -199,7 +199,7 @@ attr_reader :display, :tracks_to_rip
 		@frame10.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@frame10.label_widget = @label10
 		@frame10.border_width = 5
-		
+
 		@scrolledWindow.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC)
 		@scrolledWindow.set_border_width(5)
 
@@ -211,7 +211,7 @@ attr_reader :display, :tracks_to_rip
 
 	def packDisplayObjects()
 		@frame10.add(@table10)
-		
+
 		@scrolledWindow.add_with_viewport(@table20)
 		@frame20.add(@scrolledWindow)
 
@@ -242,7 +242,7 @@ attr_reader :display, :tracks_to_rip
 		packTrackObjects() # pack the objects into the table
 		@table20.show_all()
 	end
-	
+
 	def updateMetadata
 		if @freezeCheckbox.active? == false
 			if not @cd.md.varArtists.empty? ; @varCheckbox.active = true end
@@ -282,16 +282,16 @@ attr_reader :display, :tracks_to_rip
 		#show all updates
 		@table20.show_all()
 	end
-	
+
 	def save_updates(image=false) # save all updated info from the user
 		@cd.md.artist = @artistEntry.text
 		@cd.md.album = @albumEntry.text
 		@cd.md.genre = @genreEntry.text
 		@cd.md.year = @yearEntry.text if @yearEntry.text.to_i != 0
 		@cd.md.discNumber = @discNumberSpin.value.to_i if @freezeCheckbox.active?
-		
+
 		@tracks_to_rip = Array.new #reset the array
-		
+
 		if image
 		    @tracks_to_rip = ["image"]
 		else
@@ -300,7 +300,7 @@ attr_reader :display, :tracks_to_rip
 			if @checkTrackArray[index].active? ; @tracks_to_rip << index + 1 end
 		    end
 		end
-		
+
 		unless @cd.md.varArtists.empty?
 			@cd.audiotracks.times{|index| @cd.md.varArtists[index] = @varArtistEntryArray[index].text}
 		end

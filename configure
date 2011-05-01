@@ -2,9 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can 
+#    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
-#    Public License as published by the Free Software Foundation, either 
+#    Public License as published by the Free Software Foundation, either
 #    version 3 of the License, or (at your option) any later version.
 #
 #    This program is distributed in the hope that it will be useful,
@@ -106,11 +106,11 @@ end
 
 def check_deps
 	puts "Checking the NEEDED dependencies...."
-	
+
 	installed('cdparanoia') ? puts("cdparanoia found...") : puts("cdparanoia NOT found")
-	
+
 	puts "\nChecking the OPTIONAL dependencies..."
-	
+
 	puts "Testing support for the graphical frontend..."
 	begin
 		require 'gtk2'
@@ -118,10 +118,10 @@ def check_deps
 	rescue LoadError
 		puts "ruby-gtk2 is not found. The graphical frontend won't work!"
 	end
-	
+
 	puts "\nTesting support for freedb metadata fetching..."
 	(installed('cd-discid') || installed('discid')) ? puts("cd-discid or discid found...") : puts("Neither cd-discid or discid could be found.")
-	
+
 	puts "\nTesting support for ejecting the disk tray..."
 	(installed('eject') || installed('diskutil')) ? puts("eject or disktutil found...") : puts("Neither eject or disktutil could be found.")
 
@@ -129,12 +129,12 @@ def check_deps
 	installed('flac') ? puts("flac found...") : puts("flac NOT found.")
 	installed('oggenc') ? puts("oggenc (vorbis) found...") : puts("oggenc (vorbis) NOT found.")
 	installed('lame') ? puts("lame (mp3) found...") : puts("lame (mp3) NOT found.")
-	
+
 	puts "\nTesting support for replaygain..."
 	installed('wavegain') ? puts("wavegain found...") : puts("wavegain NOT found.")
 	installed('vorbisgain') ? puts("vorbisgain found...") : puts("vorbisgain NOT found.")
 	installed('mp3gain') ? puts("mp3gain found...") : puts("mp3gain NOT found.")
-	
+
 	puts "\nTesting support for normalize..."
 	installed('normalize') ? puts("normalize found...") : puts("normalize NOT found")
 end

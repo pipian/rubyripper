@@ -26,7 +26,7 @@ attr_reader :textview, :display, :updateProgress, :logChange
 		packObjects()
 		reset() #reset to default text
 	end
-	
+
 	# Show the update in progress of the ripping/encoding
 	def updateProgress(type, value)
 		progress = "%.3g" % (value * 100)
@@ -42,10 +42,10 @@ attr_reader :textview, :display, :updateProgress, :logChange
 	# Show the new text in the status window
 	def logChange(text)
 		# First parameter is the last character + 1 in the log
-		@textview.buffer.insert(@textview.buffer.end_iter, text) 
+		@textview.buffer.insert(@textview.buffer.end_iter, text)
 		@textview.scroll_to_iter(@textview.buffer.end_iter, 0, true, 1, 1)
 	end
-	
+
 	def createObjects
 		@textview = Gtk::TextView.new
 		@textview.editable = false
@@ -54,16 +54,16 @@ attr_reader :textview, :display, :updateProgress, :logChange
 		@scrolledWindow.set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_AUTOMATIC)
 		@scrolledWindow.border_width = 7
 		@scrolledWindow.add(@textview)
-		
+
 		@encBar = Gtk::ProgressBar.new
  		@ripBar = Gtk::ProgressBar.new
 		@encBar.pulse_step = 0.01
  		@ripBar.pulse_step = 0.01
-		
+
 		@hbox1 = Gtk::HBox.new(true,5)
 		@vbox1 = Gtk::VBox.new(false,5)
 		@vbox1.border_width = 5
-		
+
 		@label1 = Gtk::Label.new
  		@label1.set_markup(_("<b>Ripping status</b>"))
 		@display = Gtk::Frame.new
@@ -71,7 +71,7 @@ attr_reader :textview, :display, :updateProgress, :logChange
 		@display.label_widget = @label1
 		@display.border_width = 5
 	end
-	
+
 	def packObjects
 		@hbox1.pack_start(@ripBar)
 		@hbox1.pack_start(@encBar)
@@ -79,7 +79,7 @@ attr_reader :textview, :display, :updateProgress, :logChange
 		@vbox1.pack_start(@hbox1,false,false)
 		@display.add(@vbox1)
 	end
-	
+
 	# load default values
 	def reset
 		@encBar.text = _('Not yet started (0%)')

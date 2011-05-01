@@ -26,7 +26,7 @@ attr_reader :display
 		@label = Gtk::Label.new(_("The directory %s already exists.\n\nWhat do you want rubyripper to do?") % [dirname])
 		@label.wrap = true
 		@image = Gtk::Image.new(Gtk::Stock::DIALOG_QUESTION, Gtk::IconSize::DIALOG)
-		
+
 		@infobox = Gtk::HBox.new
 		@infobox.add(@image) ; @infobox.add(@label)
 		@separator = Gtk::HSeparator.new
@@ -36,14 +36,14 @@ attr_reader :display
 		@images = [Gtk::Image.new(Gtk::Stock::CANCEL, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::CLEAR, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::OK, Gtk::IconSize::LARGE_TOOLBAR)]
 		@hboxes = [Gtk::HBox.new, Gtk::HBox.new, Gtk::HBox.new]
 		@buttonbox = Gtk::HBox.new
-		
+
 		3.times do |index|
 			@hboxes[index].pack_start(@images[index], false, false) #pack the image + label into a hbox
 			@hboxes[index].pack_start(@labels[index], false, false)
 			@buttons[index].add(@hboxes[index]) #put the hbox into the button
 			@buttonbox.pack_start(@buttons[index], false, false, 10) #put the buttons into a hbox
 		end
-		
+
 		@buttons[0].signal_connect("released") {gui.change_display(gui.instances['GtkMetadata'])}
 		@buttons[1].signal_connect("released") {rubyripper.overwriteDir() ; gui.do_rip() }
 		@buttons[2].signal_connect("released") {rubyripper.postfixDir() ; gui.do_rip() }
@@ -51,7 +51,7 @@ attr_reader :display
 		@vbox = Gtk::VBox.new
 		@vbox.border_width = 10
 		[@infobox, @separator, @buttonbox].each{|object| @vbox.pack_start(object,false,false,10)}
-		
+
 		@display = Gtk::Frame.new(_("Dir already exists...")) # will contain the above
 		@display.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@display.border_width = 5

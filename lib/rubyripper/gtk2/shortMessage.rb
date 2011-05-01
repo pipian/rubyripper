@@ -24,27 +24,27 @@ attr_reader :display
 	def initialize(cdrom)
 		@display = Gtk::Label.new(_("Welcome to rubyripper %s.\nScanning drive %s for an audio disc...") % [$rr_version, cdrom])
 	end
-	
+
 	def no_disc_found(cdrom)
 		@display.text = _("No disc found in %s!\nPlease insert a disc and push 'Scan drive'.\n\nThe cdrom drive can be set in 'Preferences'.") % [cdrom]
 	end
-	
+
 	def open_tray(cdrom)
 		@display.text = _("Opening tray of drive %s") % [cdrom]
 	end
-	
+
 	def close_tray(cdrom)
 		@display.text = _("Closing tray of drive %s. \n\nThe drive will be scanned for an audio disc...") % [cdrom]
 	end
-	
+
 	def ask_for_disc
 		@display.text = _("Insert an audio-disc and press 'Close tray'.\nThe drive will automatically be scanned for a disc.\n\nIf the tray is already closed, press 'Scan drive'")
 	end
-	
+
 	def no_eject_found
 		@display.text = _("The eject utility is not found on your system!")
 	end
-	
+
 	def show_message(message)
 		@display.text = message
 	end

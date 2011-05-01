@@ -26,6 +26,12 @@ attr_reader :status
     @deps = dependency
   end
 
+  # return a temporary filename
+  def getTempFile(name)
+    require 'tmpdir'
+    File.join(Dir.tmpdir, name)
+  end
+
   # return output for command
   # clear the file if it exists before the program runs
   def launch(command, filename=false)

@@ -43,7 +43,7 @@ attr_reader :display
 		pack_other_frames()
 		load()
 	end
-	
+
 	def load # load the settings
 #ripping settings
 		@cdrom_entry.text = @settings['cdrom']
@@ -95,7 +95,7 @@ attr_reader :display
 		@editor_entry.text = @settings['editor']
 		@filemanager_entry.text = @settings['filemanager']
 	end
-	
+
 	def save # Update the settings hash from the preferences window
 #ripping settings
 		@settings['cdrom'] = @cdrom_entry.text
@@ -135,7 +135,7 @@ attr_reader :display
 			puts "that are older than 0.18.0. Setting them to zero."
 			puts "Please upgrade your bindings if you want threads."
 		end
-		
+
 		@settings['normalize'] = if @normalize.active == 0 ; false elsif @normalize.active == 1 ; "replaygain" else "normalize" end
 		@settings['gain'] = if @modus.active ==0 ; "album" else "track" end
 #freedb
@@ -155,7 +155,7 @@ attr_reader :display
 		@settings['filemanager'] = @filemanager_entry.text
 		@settingsClass.save(@settings) #also update the config file
 	end
-	
+
 #Today is a great day to start counting with 40 :) Actually I worked backwards and needed to make sure I had enough room in the beginning.
 	def ripobjects_frame1 # Cdrom device frame
 		@table40 = Gtk::Table.new(3,2,false)
@@ -183,7 +183,7 @@ attr_reader :display
 		@frame40.border_width = 5
 		@frame40.add(@table40)
 	end
-	
+
 	def ripobjects_frame2 # Ripping options frame
 		@table50 = Gtk::Table.new(3,3,false)
 		@table50.column_spacings = 5
@@ -217,7 +217,7 @@ attr_reader :display
 		@frame50.border_width = 5
 		@frame50.add(@table50)
 	end
-	
+
 	def ripobjects_frame3 #Ripping related frame
 		@table60 = Gtk::Table.new(2,3,false)
 		@table60.column_spacings = 5
@@ -273,7 +273,7 @@ attr_reader :display
 		@frameToc1.border_width = 5
 		@frameToc1.add(@tableToc1)
 	end
-	
+
 	def gapObjectsFrame2
 		@tableToc2 = Gtk::Table.new(3,2,false)
 		@tableToc2.column_spacings = 5
@@ -299,7 +299,7 @@ attr_reader :display
 		@cdrdaoHbox.pack_start(@cdrdao, false, false, 5)
 		@cdrdaoHbox.pack_start(@cdrdaoImage, false, false)
 	end
-	
+
 	def gapObjectsFrame3
 		@tableToc3 = Gtk::Table.new(3,3,false)
 		@tableToc3.column_spacings = 5
@@ -343,7 +343,7 @@ attr_reader :display
 		@pageTocLabel = Gtk::Label.new(_("TOC analysis"))
 		@display.append_page(@pageToc, @pageTocLabel)
 	end
-	
+
 	#check if cdrdao is installed
 	def cdrdaoInstalled
 		if installed('cdrdao')
@@ -355,7 +355,7 @@ attr_reader :display
 			@frameToc2.each{|child| child.sensitive = false}
 		end
 	end
-	
+
 	# signal for createCue
 	def createCue
 		@create_single_file.sensitive = @create_cue.active?
@@ -363,14 +363,14 @@ attr_reader :display
 		@tableToc3.each{|child| child.sensitive = @create_cue.active?}
 		@tableToc4.each{|child| child.sensitive = @create_cue.active?}
 	end
-	
+
 	# signal for create single file
 	def createSingle
 		@tableToc3.each{|child| child.sensitive = !@create_single_file.active?}
 		@correctPreEmphasis.active = true
 		@doNotCorrectPreEmphasis.sensitive = !@create_single_file.active?
 	end
-	
+
 	#set signals for the toc
 	def setSignalsToc
 		cdrdaoInstalled()
@@ -418,7 +418,7 @@ attr_reader :display
 		@frame70.border_width = 5
 		@frame70.add(@table70) # add the hbox in the frame
 	end
-	
+
 	def codecobjects_frame2 #Encoding related frame
 		@table80 = Gtk::Table.new(4,2,false)
 		@table80.column_spacings = 5
@@ -436,7 +436,7 @@ attr_reader :display
 		@table80.attach(@playlist, 0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0)
 		@table80.attach(@noSpaces, 0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0)
 		@table80.attach(@noCapitals, 0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0)
-		
+
 #create frame
 		@frame80 = Gtk::Frame.new(_("Codec related"))
 		@frame80.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
@@ -475,7 +475,7 @@ attr_reader :display
 		@page2_label = Gtk::Label.new(_("Codecs"))
 		@display.append_page(@page2, @page2_label)
 	end
-	
+
 	def freedbobjects_frame #Freedb client configuration frame
 		@table90 = Gtk::Table.new(5,2,false)
 		@table90.column_spacings = 5
@@ -595,7 +595,7 @@ attr_reader :display
 	end
 
 #Small table for debugging
-#Verbose mode	| debug mode	
+#Verbose mode	| debug mode
 	def otherobjects_frame3 # Debug options frame
 		@table120 = Gtk::Table.new(1,2,false)
 		@table120.column_spacings = 5
@@ -612,7 +612,7 @@ attr_reader :display
 		@frame120.border_width = 5
 		@frame120.add(@table120)
 	end
-	
+
 	def pack_other_frames #pack all frames into a single page
 		@page4 = Gtk::VBox.new()
 		[@frame100, @frame110, @frame120].each{|frame| @page4.pack_start(frame,false,false)}

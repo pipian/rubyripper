@@ -27,13 +27,13 @@ attr_reader :display
 		@image1 = Gtk::Image.new(Gtk::Stock::DIALOG_QUESTION, Gtk::IconSize::DIALOG)
 		@hbox1 = Gtk::HBox.new
 		[@image1, @label1].each{|object| @hbox1.pack_start(object)}
-		
-		@combobox = Gtk::ComboBox.new(true) # text only		
+
+		@combobox = Gtk::ComboBox.new(true) # text only
 		value.each{|freedb_hit| @combobox.append_text(freedb_hit)}
 		@separator1 = Gtk::HSeparator.new
 		@hbox2 = Gtk::HBox.new
 		@hbox2.pack_start(@combobox, false,false,5)
-		
+
 		@button1 = Gtk::Button.new
 		@label2 = Gtk::Label.new(_("Ok"))
 		@image2 = Gtk::Image.new(Gtk::Stock::OK, Gtk::IconSize::LARGE_TOOLBAR)
@@ -42,11 +42,11 @@ attr_reader :display
 		@button1.add(@hbox3)
 		@hbox4 = Gtk::HBox.new
 		@hbox4.pack_start(@button1,true,false)
-		
+
 		@vbox1 = Gtk::VBox.new
 		@vbox1.border_width = 10
 		[@hbox1, @hbox2, @separator1, @hbox4].each{|object| @vbox1.pack_start(object,false,false,10)}
-		
+
 		@display = Gtk::Frame.new(_("Multiple hits found...")) # will contain the above
 		@display.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
 		@display.border_width = 5
