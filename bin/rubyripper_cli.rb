@@ -38,11 +38,12 @@ end
 class CommandLineInterface
 
   # start up the interface
-  def initialize(prefs=nil, deps=nil, disc=nil, int=nil)
+  def initialize(out=nil, prefs=nil, deps=nil, disc=nil, int=nil)
+    @out = out ? out : $stdout
     @deps = deps ? deps : Dependency.new
-    @int = int ? int : CliGetInt.new
-    @cliPrefs = prefs ? prefs : CliPreferences.new(@int)
-    @cliDisc = disc ? disc : CliDisc.new(@cliPrefs.prefs, @int)
+    @int = int ? int : CliGetInt.new(@out)
+    @cliPrefs = prefs ? prefs : CliPreferences.new(@out, @int)
+    @cliDisc = disc ? disc : CliDisc.new(@out, @cliPrefs.prefs, @int)
   end
 
   def start
@@ -60,15 +61,15 @@ class CommandLineInterface
   def update(modus, value=false)
     if modus == "ripping_progress"
       progress = "%.3g" % (value * 100)
-      puts "Ripping progress (#{progress} %)"
+      @out.puts "Ripping progress (#{progress} %)"
     elsif modus == "encoding_progress"
       progress = "%.3g" % (value * 100)
-      puts "Encoding progress (#{progress} %)"
+      @out.puts "Encoding progress (#{progress} %)"
     elsif modus == "log_change"
-      print value
+      @out.print value
     elsif modus == "error"
-      print value
-      print "\n"
+      @out.print value
+      @out.print "\n"
       if get_answer(_("Do you want to change your settings? (y/n) : "), "yes",_("y"))
         @settingsInfo.editSettings()
       end
@@ -81,7 +82,7 @@ private
 
   # check dependencies, read the preferences and show the disc
   def prepare
-    puts "Rubyripper version #{$rr_version}"
+    @out.puts "Rubyripper version #{$rr_version}"
     @deps.verify()
     @cliPrefs.read()
     @cliDisc.show()
@@ -89,39 +90,34 @@ private
 
   # Display the different options
   def showMainMenu
-    puts ""
-    puts _("*** RUBYRIPPER MAIN MENU ***")
-    puts ""
-    puts ' 1) ' + _('Change preferences')
-    puts ' 2) ' + _('Change metadata')
-    puts ' 3) ' + _('Change tracks to rip (default = all)')
-    puts ' 4) ' + _('Rip the disc!')
-    puts '99) ' + _("Exit rubyripper...")
-    puts ""
-    @int.get("Please type the number of your choice", 4)
+    @out.puts ""
+    @out.puts _("* RUBYRIPPER MAIN MENU *")
+    @out.puts ""
+    @out.puts ' 1) ' + _('Change preferences')
+    @out.puts ' 2) ' + _('Change metadata')
+    @out.puts ' 3) ' + _('Change tracks to rip (default = all)')
+    @out.puts ' 4) ' + _('Rip the disc!')
+    @out.puts '99) ' + _("Exit rubyripper...")
+    @out.puts ""
+    @int.get("Please type the number of your choice", 99)
   end
 
   #  Loop through the main menu
   def loopMainMenu
-    choice = showMainMenu()
-    if choice == 99
-      puts _("Thanks for using rubyripper.")
-      puts _("Have a nice day!")
-      exit()
-    else
-      if choice == 1 ; @cliPrefs.show()
-      elsif choice == 2 ; @cliDisc.show()
-      elsif choice == 3
-        puts 'TODO: implement the track selection menu'
+    case choice = showMainMenu()
+      when 99
+        @out.puts _("Thanks for using rubyripper.")
+        @out.puts _("Have a nice day!")
+      when 1 then @cliPrefs.show()
+      when 2 then @cliDisc.show()
+      when 3 then @out.puts 'TODO: implement the track selection menu'
         # TODO @inst.get('cliTracklist').chooseTracks()
-      elsif choice == 4
-        puts 'TODO: implement the rip action'
+      when 4 then @out.puts 'TODO: implement the rip action'
         # TODO
-      else
-        puts _("Number #{choice} is not a valid choice, try again")
-      end
-      loopMainMenu()
+    else @out.puts _("Number #{choice} is not a valid choice, try again")
     end
+
+    loopMainMenu() unless choice == 99
   end
 
   # Show the disc info and include error handling
@@ -138,7 +134,7 @@ private
 
   # cancel the rip
   def cancelRip()
-    puts _("Rip is canceled, exiting...")
+    @out.puts _("Rip is canceled, exiting...")
     eject(@settings['cd'].cdrom)
     exit()
   end
@@ -159,12 +155,12 @@ private
 
   # A dialog in case the output directory exists
   def dirExists
-    puts _("The output directory already exists. What would you like to do?")
-    puts ""
-    puts _("1) Auto rename the output directory")
-    puts _("2) Overwrite the existing directory")
-    puts _("3) Cancel the rip and eject the disc")
-    puts ""
+    @out.puts _("The output directory already exists. What would you like to do?")
+    @out.puts ""
+    @out.puts _("1) Auto rename the output directory")
+    @out.puts _("2) Overwrite the existing directory")
+    @out.puts _("3) Cancel the rip and eject the disc")
+    @out.puts ""
 
     answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
     if answer == 1; @rubyripper.postfixDir() ; @rubyripper.startRip()

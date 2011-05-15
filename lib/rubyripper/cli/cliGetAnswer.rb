@@ -17,65 +17,73 @@
 
 # return an answer from the user, typed into the screen
 class CliGetAnswer
+  @@in = $stdin
+  def initialize(out=nil)
+    @out = out ? out : $stdout
+  end
 
-	# get the input from the user
-	def get(question, default)
-		print(question + " [#{default}] : ")
-		input = $stdin.gets.strip
+  # to easily override the input
+  def setInput(input)
+    @@in = input
+  end
 
-		if input.empty?
-			return default
-		else
-			return input
-		end
-	end
+  # get the input from the user
+  def get(question, default)
+    @out.print(question + " [#{default}] : ")
+    input = @@in.gets.strip
+    return input.empty? ? default : input
+  end
 end
 
 # return a boolean value from the user, subclasses from GetAnswer
 class CliGetBool < CliGetAnswer
 
-	# get a boolean value from the user
-	def initialize
-		@valid = {_("yes") => true, _('y') => true,
-_("no") => false, _("n") =>false}
-	end
+  # get a boolean value from the user
+  def initialize(out)
+    super(out)
+    @valid = {_("yes") => true, _('y') => true, _("no") => false, _("n") =>false}
+  end
 
-	# get the input from the user
-	def get(question, default)
-		input = super
+  # get the input from the user
+  def get(question, default)
+    input = super
 
-		if !@valid.key?(input)
-			print("Please answer #{_('yes')} or #{_('no')}. Try again.\n")
-			get(question, default)
-		else
-			return @valid[input]
-		end
-	end
+    if !@valid.key?(input)
+      @out.print("Please answer #{_('yes')} or #{_('no')}. Try again.\n")
+      get(question, default)
+    else
+      return @valid[input]
+    end
+  end
 end
 
 # return an integer value from the user, subclasses from GetAnswer
 class CliGetInt < CliGetAnswer
 
-	# get the input from the user
-	def get(question, default)
-		input = super
-		if input == default
-			return default
-		# 0 may be a valid response, but any string.to_i == 0
-		elsif input.to_i > 0 || input == "0"
-			return input.to_i
-		else
-			print("Please enter an integer value. Try again.\n")
-			get(question, default)
-		end
-	end
+  def initialize(out)
+    super(out)
+  end
+
+  # get the input from the user
+  def get(question, default)
+    input = super
+    if input == default
+      return default
+    # 0 may be a valid response, but any string.to_i == 0
+    elsif input.to_i > 0 || input == "0"
+      return input.to_i
+    else
+      @out.print("Please enter an integer value. Try again.\n")
+      get(question, default)
+    end
+  end
 end
 
 # return an answer from the user, typed into the screen
 class CliGetString < CliGetAnswer
 
-	# get the input from the user
-	def get(question, default)
-		super
-	end
+  # get the input from the user
+  #def get(question, default)
+  #super
+  #end
 end

@@ -22,11 +22,12 @@ require 'rubyripper/cli/cliGetAnswer'
 class CliDisc
 
   # setup the different objects
-  def initialize(preferences, int=nil, bool=nil, string=nil)
+  def initialize(out=nil, preferences=nil, int=nil, bool=nil, string=nil)
+    @out = out ? out : $stdout
     @prefs = preferences
-    @int = int ? int : CliGetInt.new
-    @bool = bool ? bool : CliGetBool.new
-    @string = string ? string : CliGetString.new
+    @int = int ? int : CliGetInt.new(@out)
+    @bool = bool ? bool : CliGetBool.new(@out)
+    @string = string ? string : CliGetString.new(@out)
     @cd = Disc.new(@prefs)
   end
 
@@ -49,14 +50,14 @@ private
 
   # show the contents of the audio disc
   def showDisc
-    puts ""
+    @out.puts ""
 
     if @cd.status != 'ok'
-      puts _("The disc is not ready: [%s]") % [@cd.status]
+      @out.puts _("The disc is not ready: [%s]") % [@cd.status]
     else
-      puts _("AUDIO DISC FOUND")
-      puts _("Number of tracks: %s") % [@cd.audiotracks]
-      puts _("Total playtime: %s") % [@cd.playtime]
+      @out.puts _("AUDIO DISC FOUND")
+      @out.puts _("Number of tracks: %s") % [@cd.audiotracks]
+      @out.puts _("Total playtime: %s") % [@cd.playtime]
       @md = @cd.metadata
       showFreedb()
     end
@@ -101,14 +102,14 @@ private
   end
 
   def showDiscInfo(edit=false)
-    puts "\nDISC INFO"
-    puts "1) " + _("Artist:") + " #{@md.artist}"
-    puts "2) " + _("Album:") + " #{@md.album}"
-    puts "3) " + _("Genre:") + " #{@md.genre}"
-    puts "4) " + _("Year:") + " #{@md.year}"
-    puts "5) " + _("Extra disc info:") + " #{@md.extraDiscInfo}"
-    puts "6) " + _("Marked as various disc? [%s]") % [@md.various? ? '*' : ' ']
-    puts "99) " + _("Finished editing disc info\n\n") if edit
+    @out.puts "\nDISC INFO"
+    @out.puts "1) " + _("Artist:") + " #{@md.artist}"
+    @out.puts "2) " + _("Album:") + " #{@md.album}"
+    @out.puts "3) " + _("Genre:") + " #{@md.genre}"
+    @out.puts "4) " + _("Year:") + " #{@md.year}"
+    @out.puts "5) " + _("Extra disc info:") + " #{@md.extraDiscInfo}"
+    @out.puts "6) " + _("Marked as various disc? [%s]") % [@md.various? ? '*' : ' ']
+    @out.puts "99) " + _("Finished editing disc info\n\n") if edit
     editDiscInfo() if edit
   end
 
@@ -128,15 +129,15 @@ private
 
   # Present the track info
   def showTrackInfo(edit=false)
-    puts _("\nTRACK INFO")
+    @out.puts _("\nTRACK INFO")
     (1..@cd.audiotracks).each do |tracknumber|
       trackname = @md.trackname(tracknumber)
       trackname = "#{@md.getVarArtist(tracknumber)} - #{trackname}" if @md.various?
-      puts "#{tracknumber}) #{trackname}"
+      @out.puts "#{tracknumber}) #{trackname}"
     end
 
-    puts "" if edit
-    puts "99) " + _("Finished editing track info\n\n") if edit
+    @out.puts "" if edit
+    @out.puts "99) " + _("Finished editing track info\n\n") if edit
     editTrackInfo if edit
   end
 
@@ -158,14 +159,14 @@ private
 
   # Present choice: edit metadata, start rip or break off
   def showFreedbOptions()
-    puts ""
-    puts _("What would you like to do?")
-    puts ""
-    puts _("1) Select the tracks to rip")
-    puts _("2) Edit the disc info")
-    puts _("3) Edit the track info")
-    puts _("4) Cancel the rip and eject the disc")
-    puts ""
+    @out.puts ""
+    @out.puts _("What would you like to do?")
+    @out.puts ""
+    @out.puts _("1) Select the tracks to rip")
+    @out.puts _("2) Edit the disc info")
+    @out.puts _("3) Edit the track info")
+    @out.puts _("4) Cancel the rip and eject the disc")
+    @out.puts ""
 
     case answer = @int.get(_("Please enter the number of your choice: "), 1)
       when 1 then @status = "chooseTracks"
