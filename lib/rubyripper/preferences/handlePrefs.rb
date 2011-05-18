@@ -115,4 +115,3 @@ class HandlePrefs
     end
   end
 end
-

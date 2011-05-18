@@ -16,28 +16,33 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # a class to fake input
-# All user input is channeled through the GetAnswer class and childs.
-# The input object is an instance variable, so override it with ourself.
 class InputMock
 
   def initialize
     @input = Array.new
-    a = CliGetAnswer.new
-    a.setInput(self)
+    overrideInput()
   end
 
   # Add another input (without the ENTER)
-  def add(text)
+  def <<(text)
     @input << (text.to_s + "\n")
   end
 
-  def pressEnter(amount)
-    amount.times{@input << "\n"}
+  def pressEnter
+    @input << "\n"
   end
 
   # fake function to simulate input, return first line
   def gets
     @input.empty? ? '' : @input.shift()
+  end
+
+private
+# All user input is channeled through the GetAnswer class and childs.
+# The input object is a class variable, so override it with ourself.
+  def overrideInput
+    a = CliGetAnswer.new
+    a.setInput(self)
   end
 end
 

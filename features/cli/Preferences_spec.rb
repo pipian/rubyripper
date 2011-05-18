@@ -16,13 +16,14 @@
 
 require 'features/feature_helper'
 
+# Note that [ENTER] always lead to a higher menu until rubyripper exits
 describe "Given the rubyripper CLI is started and shows the main menu" do
-  # mock up the Output to verify the behaviour
   let(:output) {OutputMock.new}
   let(:input) {InputMock.new}
   let(:deps) {double('Dependency').as_null_object}
   let(:disc) {double('Disc').as_null_object}
 
+  # launch a new cli passing a non-existant file so it uses defaults
   def start
     app = CommandLineInterface.new(output, prefs=nil, deps, disc, int=nil)
     app.start()
@@ -30,14 +31,14 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
 
   context "When I want to see the current rubyripper preferences" do
     it "should offer a menu option to change preferences" do
-      input.pressEnter(1)
+      input.pressEnter()
       start()
       output.should be_visible("* RUBYRIPPER MAIN MENU *")
       output.should be_visible(" 1) Change preferences")
     end
 
     it "should show the right menu when I choose 1) Change Preferences" do
-      input.add(1); input.pressEnter(2)
+      input << 1; 2.times{input.pressEnter}
       start()
       output.should be_visible("** RUBYRIPPER PREFERENCES **")
       output.should be_visible(" 1) Secure ripping")
@@ -49,7 +50,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 1) Secure Ripping" do
-      input.add(1) ; input.add(1) ; input.pressEnter(3)
+      2.times{input << 1} ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** SECURE RIPPING PREFERENCES ***")
       output.should be_visible(" 1) Ripping drive:", false)
@@ -66,7 +67,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 2) Toc analysis" do
-      input.add(1) ; input.add(2) ; input.pressEnter(3)
+      input << 1 ; input << 2 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** TOC ANALYSIS PREFERENCES ***")
       output.should be_visible(" 1) Create a cuesheet [",false)
@@ -79,7 +80,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 3) Codecs" do
-      input.add(1) ; input.add(3) ; input.pressEnter(3)
+      input << 1 ; input << 3 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** CODEC PREFERENCES ***", false)
       output.should be_visible(" 1) Flac [", false)
@@ -101,7 +102,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 4) Freedb" do
-      input.add(1) ; input.add(4) ; input.pressEnter(3)
+      input << 1 ; input << 4 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** FREEDB PREFERENCES ***")
       output.should be_visible(" 1) Fetch cd info with freedb [", false)
@@ -113,7 +114,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 5) Other" do
-      input.add(1) ; input.add(5) ; input.pressEnter(3)
+      input << 1 ; input << 5 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** OTHER PREFERENCES ***")
       output.should be_visible(" 1) Base directory:", false)
