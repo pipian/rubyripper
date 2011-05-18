@@ -16,6 +16,7 @@
 
 require 'features/feature_helper'
 
+# For each test rubyripper is restarted and keyboard input is simulated
 # Note that [ENTER] always lead to a higher menu until rubyripper exits
 describe "Given the rubyripper CLI is started and shows the main menu" do
   let(:output) {OutputMock.new}
@@ -23,7 +24,6 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
   let(:deps) {double('Dependency').as_null_object}
   let(:disc) {double('Disc').as_null_object}
 
-  # launch a new cli passing a non-existant file so it uses defaults
   def start
     app = CommandLineInterface.new(output, prefs=nil, deps, disc, int=nil)
     app.start()
