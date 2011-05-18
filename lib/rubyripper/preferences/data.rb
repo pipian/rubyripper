@@ -26,8 +26,8 @@ module Preferences
     # The offset for the drive
     attr_accessor :offset
 
-    #* Extra parameters passed to cdparanoia
-    attr_accessor :ripperSettings
+    # Extra parameters passed to cdparanoia
+    attr_accessor :rippersettings
 
     # The amount of times all sectors have to match
     attr_accessor :reqMatchesAll
@@ -57,10 +57,10 @@ module Preferences
     # Minimum seconds to be marked as hidden track
     attr_accessor :minLengthHiddenTrack
 
-    # Append or prepend hidden audio sectors
+    # Append or prepend hidden audio sectors: 'prepend' || 'append'
     attr_accessor :preGaps
 
-    # How to handle pre-emphasis
+    # How to handle pre-emphasis 'sox' || 'cue'
     attr_accessor :preEmphasis
 
     # CODEC PREFERENCES
@@ -103,10 +103,10 @@ module Preferences
     # Downsize all capital letters in filenames
     attr_accessor :noCapitals
 
-    # Normalize program
+    # Normalize program: 'none'|| 'normalize' || 'replaygain'
     attr_accessor :normalizer
 
-    # Normalize modus
+    # Normalize modus 'album' || 'track'
     attr_accessor :gain
 
     # Set the gain in the tags only
@@ -146,6 +146,9 @@ module Preferences
 
     # File manager
     attr_accessor :filemanager
+
+    # Browser
+    attr_accessor :browser
 
     # Verbose modus
     attr_accessor :verbose

@@ -21,73 +21,77 @@ require 'rubyripper/dependency'
 #The Data class stores all preferences
 module Preferences
   class SetDefaults
-
-
-    # setup the the default settings
-    def setDefaults
-      @prefs = {"flac" => false,
-        "settingsFlac" => "--best -V", #passed to flac
-        "vorbis" => true,
-        "settingsVorbis" => "-q 4", #passed to vorbis
-        "mp3" => false,
-        "settingsMp3" => "-V 3 --id3v2-only", #passed to lame
-        "wav" => false,
-        "other" => false, #any other codec
-        "settingsOther" => '', #the complete command
-        "playlist" => true,
-        "cdrom" => @deps.cdrom,
-        "offset" => 0,
-        "maxThreads" => 2, #number of encoding proces while ripping
-        "rippersettings" => '', #passed to cdparanoia
-        "maxTries" => 5, #number of tries before giving up correcting
-        'basedir' => '~/', #where to store your new rips?
-        'namingNormal' => '%f/%a (%y) %b/%n - %t', # normal discs
-        'namingVarious' => '%f/%va (%y) %b/%n - %a - %t', # various artist discs
-        'namingImage' => '%f/%a (%y) %b/%a - %b (%y)', # image rips
-        "verbose" => false, # extra info shown in terminal
-        "debug" => true, # extra debug info shown in terminal
-        "eject" => true, # open up the tray when finished?
-        'ripHiddenAudio' => true, # rip part before track 1?
-        'minLengthHiddenTrack' => 2, #minimum seconds hidden track
-        "reqMatchesErrors" => 2, # # required matches when errors detected
-        "reqMatchesAll" => 2,  # required matches when no errors detected
-        "site" => "http://freedb.freedb.org/~cddb/cddb.cgi", # freedb site
-        "username" => "anonymous", # user name freedb
-        "hostname" => "my_secret.com", # hostname freedb
-        "firstHit" => true, # always choose 1st option
-        "freedb" => true, # enable freedb
-        "editor" => @deps.editor, #default editor
-        "filemanager" => @deps.filemanager, #default file manager
-        "browser" => @deps.browser, #default browser
-        "noLog" => false, #delete log if no errors?
-        "createCue" => true, #create cuesheet
-        "image" => false, #save to single file
-        'normalizer' => 'none', #normalize volume?
-        'gain' => "album", #gain mode
-        'gainTagsOnly' => false, #not actually modify audio
-        'noSpaces' => false, #replace spaces with underscores
-        'noCapitals' => false, #replace uppercase with lowercase
-        'preGaps' => "prepend", #way to handle pregaps
-        'preEmphasis' => 'cue' #way to handle pre-emphasis
-      }
+    def initialize(deps=Dependency.new)
+      @data = DATA
+      @deps = deps
+      setDefaults()
     end
 
-    # update the settings with the info from loadPrefs
-    # also check if @load has all the keys
-    def update(results)
-      results.each do |key, value|
-        if @prefs.key?(key)
-          @prefs[key] = value
-        else
-          puts "WARNING: invalid setting: #{key}"
-        end
-      end
+    def setDefaults()
+      setRippingDefaults()
+      setTocAnalysisDefaults()
+      setCodecDefaults()
+      setFreedbDefaults()
+      setOtherDefaults()
+    end
 
-      results.each do |key, value|
-        if results[key].nil?
-          puts "WARNING: #{key} is missing in config file!"
-        end
-      end
+    def setRippingDefaults
+      @data.cdrom = @deps.cdrom()
+      @data.offset = 0
+      @data.rippersettings = String.new
+      @data.reqMatchesAll = 2
+      @data.reqMatchesErrors = 2
+      @data.maxTries = 5
+      @data.eject = true
+      @data.noLog = false
+    end
+
+    def setTocAnalysisDefaults
+      @data.createCue = true
+      @data.image = false
+      @data.ripHiddenAudio = true
+      @data.minLengthHiddenTrack = 2
+      @data.preGaps = 'prepend'
+      @data.preEmphasis = 'cue'
+    end
+
+    def setCodecDefaults
+      @data.flac = false
+      @data.settingsFlac = '--best -V'
+      @data.vorbis = true
+      @data.settingsVorbis = '-q 4'
+      @data.mp3 = false
+      @data.settingsMp3 = '-V 3 --id3v2-only'
+      @data.wav = false
+      @data.other = false
+      @data.settingsOther = String.new
+      @data.playlist = true
+      @data.maxThreads = 2
+      @data.noSpaces = false
+      @data.noCapitals = false
+      @data.normalizer = 'none'
+      @data.gain = 'album'
+      @data.gainTagsonly = false
+    end
+
+    def setFreedbDefaults
+      @data.freedb = true
+      @data.firstHit = true
+      @data.site = 'http://freedb.freedb.org/~cddb/cddb.cgi'
+      @data.username = 'anonymous'
+      @data.hostname = 'my_secret.com'
+    end
+
+    def setOtherDefaults
+      @data.basedir = '~/'
+      @data.namingNormal = '%f/%a (%y) %b/%n - %t'
+      @data.namingVarious = '%f/%va (%y) %b/%n - %a - %t'
+      @data.namingImage = '%f/%a (%y) %b/%a - %b (%y)'
+      @data.editor = @deps.editor()
+      @data.filemanager = @deps.filemanager
+      @data.browser = @deps.browser
+      @data.verbose = false
+      @data.debug = false
     end
   end
 end
