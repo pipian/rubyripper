@@ -93,15 +93,19 @@ class FileAndDir
 		if File.file?(filename) && force == false
 			status = 'fileExists'
 		else
-			createDirs(filename)
-
-			File.open(filename, 'w') do |file|
-				file.write(content)
-			end
-
+			createDirs(filename) unless File.exists?(File.dirname(filename))
+      writeContent(filename, content)
 			status = 'ok'
 		end
 
 		return status
 	end
+
+  private
+  
+  def writeContent(filename, content)
+    File.open(filename, 'w') do |file|
+	  	file.write(content)
+		end
+  end
 end

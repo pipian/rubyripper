@@ -15,41 +15,36 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/preferences/data'
-require 'rubyripper/preferences/setDefaults'
-require 'rubyripper/preferences/load'
-require 'rubyripper/preferences/save'
+require 'rubyripper/fileAndDir'
 
-# WILL OBSOLETE handlePrefs.rb
-# The settings class is responsible for:
-# managing the settings during a session
 module Preferences
-  DATA = Data.new
-  FILENAME = getDefaultFilename()
-
-  # return the default filename
-  def getDefaultFilename
-    dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
-    File.join(dir, 'rubyripper/settings')
-  end
-
-  class Main
-
-    # load the preferences after setting the defaults
-    def load(filename=FILENAME)
-      #Cleanup.new
-      SetDefaults.new
-      @preferencesFile = Load.new(filename)
+  class Cleanup
+    def initialize(fileAndDir=nil)
+      @file = fileAndDir ? fileAndDir : FileAndDir.new
     end
 
-    # save the preferences
-    def save()
-      Save.new()
+    # clean up the old config files
+    def cleanup
+      getOldConfigs()
+      removeOldFiles()
     end
 
-    # if the method is not found try to look it up in the data object
-    def method_missing(name, *args)
-      DATA.send(name, *args)
+private
+
+    # set the filenames to search for
+    def getOldConfigs
+      @oldFiles = Array.new
+      @oldFiles << File.join(ENV['HOME'], '.rubyripper')
+      @oldFiles << File.join(@oldFiles[0], 'settings')
+      @oldFiles << File.join(@oldFiles[0], 'freedb.yaml')
+      @oldFiles << File.join(ENV['HOME'], '.rubyripper_settings')
+    end
+
+    # remove old files
+    def removeOldFiles
+      while @oldFiles.length > 0
+        @file.remove(@oldFiles.pop)
+      end
     end
   end
 end
