@@ -52,7 +52,7 @@ describe ScanDiscCdparanoia do
 
   context "When trying to scan a disc" do
     before(:each) do
-      prefs.should_receive(:get).with('cdrom').at_least(:once).and_return('/dev/cdrom')
+      prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
 
     it "should abort when cdparanoia is unable to open the disc" do
@@ -79,7 +79,7 @@ describe ScanDiscCdparanoia do
     before(:each) do
       @cdparanoia ||= File.read('spec/disc/data/cdparanoia')
       perm.should_receive(:check).with('/dev/cdrom', @cdparanoia).and_return 'ok'
-      prefs.should_receive(:get).with('cdrom').at_least(:once).and_return('/dev/cdrom')
+      prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
 
     it "should set the status to ok" do

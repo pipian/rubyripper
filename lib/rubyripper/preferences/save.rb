@@ -20,7 +20,9 @@ require 'rubyripper/fileAndDir'
 # This class will try to save the Rubyripper config file
 module Preferences
   class Save
-    def initialize(fileAndDir=nil)
+    def initialize(main, fileAndDir=nil)
+      @filename = main.filename()
+      @data = main.data()
       @file = fileAndDir ? fileAndDir : FileAndDir.new
       save()
     end
@@ -32,11 +34,11 @@ module Preferences
     # this function will save artist=#{@data.artist} and album=#{@data.album}
     def save
       content = String.new
-      DATA.instance_variables.each do |var|
-        content << "#{var[1..-1]}=#{DATA.send(var[1..-1].to_sym)}\n"
+      @data.instance_variables.each do |var|
+        content << "#{var[1..-1]}=#{@data.send(var[1..-1].to_sym)}\n"
       end
 
-      @file.write(FILENAME, content)
+      @file.write(@filename, content)
     end
   end
 end

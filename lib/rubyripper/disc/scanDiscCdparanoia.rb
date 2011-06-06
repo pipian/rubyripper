@@ -95,7 +95,7 @@ class ScanDiscCdparanoia
   end
 
   def readDisc
-    query = @fire.launch("cdparanoia -d #{@prefs.get('cdrom')} -vQ 2>&1")
+    query = @fire.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
 
     # some versions of cdparanoia don't support the cdrom parameter
     query = @fire.launch("cdparanoia -vQ 2>&1") if query.include?('USAGE')
@@ -104,7 +104,7 @@ class ScanDiscCdparanoia
       parseQuery(query)
       addExtraInfo()
       checkOffsetFirstTrack()
-      @status = @perm.check(@prefs.get('cdrom'), query)
+      @status = @perm.check(@prefs.cdrom, query)
     end
   end
 
@@ -177,9 +177,9 @@ class ScanDiscCdparanoia
       @startSector.each_key{|key| @startSector[key] -= dataOffset}
       #do nothing extra when hidden audio shouldn't be ripped
       #in the cuesheet this part will be marked as a pregap (silence).
-    elsif @prefs.get('ripHiddenAudio') == false
+    elsif @prefs.ripHiddenAudio == false
       # if size of hiddenAudio is bigger than minimum length, make track 0
-    elsif (@startSector[1] != 0 && @startSector[1] / 75.0 > @prefs.get('minLengthHiddenTrack'))
+    elsif (@startSector[1] != 0 && @startSector[1] / 75.0 > @prefs.minLengthHiddenTrack)
       @startSector[0] = 0
       @lengthSector[0] = @startSector[1]
       # otherwise prepend it to the first track

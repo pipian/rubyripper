@@ -16,40 +16,45 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/data'
+require 'rubyripper/preferences/cleanup'
 require 'rubyripper/preferences/setDefaults'
 require 'rubyripper/preferences/load'
 require 'rubyripper/preferences/save'
 
-# WILL OBSOLETE handlePrefs.rb
-# The settings class is responsible for:
-# managing the settings during a session
 module Preferences
-  DATA = Data.new
-  FILENAME = getDefaultFilename()
-
-  # return the default filename
-  def getDefaultFilename
-    dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
-    File.join(dir, 'rubyripper/settings')
-  end
-
+ 
   class Main
+  attr_reader :data
+  attr_accessor :filename
+  
+    def initialize
+      @data = Data.new
+      @filename = getDefaultFilename()
+    end
 
     # load the preferences after setting the defaults
-    def load(filename=FILENAME)
-      #Cleanup.new
-      SetDefaults.new
-      @preferencesFile = Load.new(filename)
+    def load(customFilename="")
+      Cleanup.new()
+      SetDefaults.new(self)
+      Load.new(self, customFilename)
     end
 
     # save the preferences
     def save()
-      Save.new()
+      Save.new(self)
     end
-
+    
+   private
+   
     # if the method is not found try to look it up in the data object
     def method_missing(name, *args)
-      DATA.send(name, *args)
+      @data.send(name, *args)
+    end
+   
+    # return the default filename
+    def getDefaultFilename
+      dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
+      File.join(dir, 'rubyripper/settings')
     end
   end
 end

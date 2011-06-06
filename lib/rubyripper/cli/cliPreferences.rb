@@ -17,7 +17,7 @@
 
 # helper for interpreting commandline options
 require 'optparse'
-require 'rubyripper/preferences'
+require 'rubyripper/preferences/main.rb'
 require 'rubyripper/cli/cliGetAnswer'
 
 # CliPreferences is responsible for showing and editing the preferences
@@ -28,7 +28,7 @@ class CliPreferences
   def initialize(out=nil, int=nil, prefs=nil, bool=nil, string=nil)
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
-    @prefs = prefs ? prefs : Preferences.new()
+    @prefs = prefs ? prefs : Preferences::Main.new()
     @bool = bool ? bool : CliGetBool.new(@out)
     @string = string ? string : CliGetString.new(@out)
   end
@@ -57,18 +57,19 @@ private
 
   # Read the settings of the config file or the defaults
   def readPreferences()
-    # if file is still false it will be ignored by @prefs
-    @prefs.load(configFile = @options['file'])
+    @prefs.load(@options['file'].to_s)
 
-    # in case the configfile is missing
-    if @options['file'] != false && !@prefs.isConfigFound
+    if theFileFromUserDoesNotExist()
       @out.puts "WARNING: the provided configfile is not found."
-      @out.puts "The default settings are used instead."
+      @out.puts "The default preferences are used instead."
     end
 
-    if @options['configure']
-      loopMainMenu()
-    end
+    loopMainMenu() if @options['configure']
+  end
+  
+  # is the file provided by the user and does it not exist?
+  def theFileFromUserDoesNotExist
+    @options['file'].is_a?(String) && (@options['file'] != @prefs.filename)
   end
 
   # First define the different options
@@ -120,17 +121,13 @@ private
   end
 
   # helper function to show boolean preference
-  def showBool(preference)
-    @prefs.get(preference) ? '[*]' : '[ ]'
+  def showBool(bool)
+    bool ? '[*]' : '[ ]'
   end
 
   # helper function to set boolean preference
   def switchBool(preference)
-    if @prefs.get(preference) == true
-      @prefs.set(preference, value=false)
-    else
-      @prefs.set(preference, value=true)
-    end
+    preference == true ? preference = false : preference = true
   end
 
   # helper function to ask an option from multiple choices
@@ -187,17 +184,17 @@ private
     @out.puts ''
     @out.puts _("*** SECURE RIPPING PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Ripping drive") + ": %s" %[@prefs.get('cdrom')]
-    @out.puts ' 2) ' + _("Drive offset") + ": %s" % [@prefs.get('offset')]
+    @out.puts ' 1) ' + _("Ripping drive") + ": %s" %[@prefs.cdrom]
+    @out.puts ' 2) ' + _("Drive offset") + ": %s" % [@prefs.offset]
     @out.puts _("   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
     @out.puts _("   **Your drive model is shown in the logfile.")
-    @out.puts ' 3) ' + _("Passing extra cdparanoia parameters") + ": %s" % [@prefs.get('rippersettings')]
-    @out.puts ' 4) ' + _("Match all chunks") + ": %s" % [@prefs.get('reqMatchesAll')]
-    @out.puts ' 5) ' + _("Match erroneous chunks") + ": %s" % [@prefs.get('reqMatchesErrors')]
-    @out.puts ' 6) ' + _("Maximum trials") + ": %s" % [@prefs.get('maxTries') == 0 ? "no\
- maximum" : @prefs.get('maxTries')]
-    @out.puts ' 7) ' + _("Eject disc after ripping %s") % [showBool('eject')]
-    @out.puts ' 8) ' + _("Only keep log when errors %s") % [showBool('noLog')]
+    @out.puts ' 3) ' + _("Passing extra cdparanoia parameters") + ": %s" % [@prefs.rippersettings]
+    @out.puts ' 4) ' + _("Match all chunks") + ": %s" % [@prefs.reqMatchesAll]
+    @out.puts ' 5) ' + _("Match erroneous chunks") + ": %s" % [@prefs.reqMatchesErrors]
+    @out.puts ' 6) ' + _("Maximum trials") + ": %s" % [@prefs.maxTries == 0 ? "no\
+ maximum" : @prefs.maxTries]
+    @out.puts ' 7) ' + _("Eject disc after ripping %s") % [showBool(@prefs.eject)]
+    @out.puts ' 8) ' + _("Only keep log when errors %s") % [showBool(@prefs.noLog)]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -207,18 +204,16 @@ private
   def loopSubMenuRipping
     case choice = showSubMenuRipping()
       when 99 then loopMainMenu()
-      when 1 then @prefs.set('cdrom', @string.get(_("Ripping drive"),
-        @prefs.get('cdrom')))
-      when 2 then @prefs.set('offset', @int.get(_("Drive offset"), 0))
-      when 3 then @prefs.set('rippersettings',
-        @string.get(_("Passing extra cdparanoia parameters"), ""))
-      when 4 then @prefs.set('reqMatchesAll',
-        @int.get(_("Match all chunks"), 2))
-      when 5 then @prefs.set('reqMatchesErrors',
-        @int.get(_("Match erronous chunks"), 3))
-      when 6 then @prefs.set('maxTries', @int.get(_("Maximum trials"), 5))
-      when 7 then switchBool('eject')
-      when 8 then switchBool('noLog')
+      when 1 then @prefs.cdrom = @string.get(_("Ripping drive"),
+        @prefs.cdrom)
+      when 2 then @prefs.offset = @int.get(_("Drive offset"), 0)
+      when 3 then @prefs.rippersettings = \
+        @string.get(_("Passing extra cdparanoia parameters"), "")
+      when 4 then @prefs.reqMatchesAll = @int.get(_("Match all chunks"), 2)
+      when 5 then @prefs.reqMatchesErrors = @int.get(_("Match erronous chunks"), 3)
+      when 6 then @prefs.maxTries = @int.get(_("Maximum trials"), 5)
+      when 7 then switchBool(@prefs.eject)
+      when 8 then switchBool(@prefs.noLog)
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
     end
     loopSubMenuRipping() unless choice == 99
@@ -229,12 +224,12 @@ private
     @out.puts ''
     @out.puts _("*** TOC ANALYSIS PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Create a cuesheet %s") % [showBool('createCue')]
-    @out.puts ' 2) ' + _("Rip to single file %s") % [showBool('image')]
-    @out.puts ' 3) ' + _("Rip hidden audio sectors %s") % [showBool('ripHiddenAudio')]
-    @out.puts ' 4) ' + _("Minimum seconds hidden track") + ": %s" % [@prefs.get('minLengthHiddenTrack')]
-    @out.puts ' 5) ' + _("Append or prepend audio") + ": %s" % [@prefs.get('preGaps')]
-    @out.puts ' 6) ' + _("Way to handle pre-emphasis") + ": %s" % [@prefs.get('preEmphasis')]
+    @out.puts ' 1) ' + _("Create a cuesheet %s") % [showBool(@prefs.createCue)]
+    @out.puts ' 2) ' + _("Rip to single file %s") % [showBool(@prefs.image)]
+    @out.puts ' 3) ' + _("Rip hidden audio sectors %s") % [showBool(@prefs.ripHiddenAudio)]
+    @out.puts ' 4) ' + _("Minimum seconds hidden track") + ": %s" % [@prefs.minLengthHiddenTrack]
+    @out.puts ' 5) ' + _("Append or prepend audio") + ": %s" % [@prefs.preGaps]
+    @out.puts ' 6) ' + _("Way to handle pre-emphasis") + ": %s" % [@prefs.preEmphasis]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -244,11 +239,11 @@ private
   def loopSubMenuToc
     case choice = showSubMenuToc()
       when 99 then loopMainMenu()
-      when 1 then switchBool('createCue')
-      when 2 then switchBool('image')
-      when 3 then switchBool('ripHiddenAudio')
-      when 4 then @prefs.set('minLengthHiddenTrack',
-        @int.get(_("Minimum seconds hidden track"), 2))
+      when 1 then switchBool(@prefs.createCue)
+      when 2 then switchBool(@prefs.image)
+      when 3 then switchBool(@prefs.ripHiddenAudio)
+      when 4 then @prefs.minLengthHiddenTrack = \
+        @int.get(_("Minimum seconds hidden track"), 2)
       when 5 then setPregaps()
       when 6 then setPreEmphasis()
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
@@ -259,13 +254,13 @@ private
   def setPregaps
     choices = [['prepend', _('Prepend pregaps to next track')],
       ['append', _('Append pregaps to previous track')]]
-    @prefs.set('preGaps', multipleChoice(choices))
+    @prefs.preGaps = multipleChoice(choices)
   end
 
   def setPreEmphasis
     choices = [['cue', _('Write pre-emphasis tag to the cuesheet')],
       ['sox', 'Correct the audio with "sox"']]
-    @prefs.set('preEmphasis', multipleChoice(choices))
+    @prefs.preEmphasis = multipleChoice(choices)
   end
 
   # show the codec submenu
@@ -273,21 +268,21 @@ private
     @out.puts ''
     @out.puts _("*** CODEC PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Flac %s") % [showBool('flac')]
-    @out.puts ' 2) ' + _("Flac options passed") + ": %s" % [@prefs.get('settingsFlac')]
-    @out.puts ' 3) ' + _("Vorbis %s") % [showBool('vorbis')]
-    @out.puts ' 4) ' + _("Oggenc options passed") + ": %s" % [@prefs.get('settingsVorbis')]
-    @out.puts ' 5) ' + _("Mp3 %s") % [showBool('mp3')]
-    @out.puts ' 6) ' + _("Lame options passed") + ": %s" % [@prefs.get('settingsMp3')]
-    @out.puts ' 7) ' + _("Wav %s") % [showBool('wav')]
-    @out.puts ' 8) ' + _("Other codec %s") % [showBool('other')]
-    @out.puts ' 9) ' + _("Commandline passed") + ": %s" % [@prefs.get('settingsOther')]
-    @out.puts '10) ' + _("Playlist support %s") %[showBool('playlist')]
-    @out.puts '11) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.get('maxThreads')]
-    @out.puts '12) ' + _("Replace spaces with underscores %s") % [showBool('noSpaces')]
-    @out.puts '13) ' + _("Downsize all capital letters in filenames %s") %[showBool('noCapitals')]
-    @out.puts '14) ' + _("Normalize program") + ": %s" % [@prefs.get('normalizer')]
-    @out.puts '15) ' + _("Normalize modus") + ": %s" % [@prefs.get('gain')]
+    @out.puts ' 1) ' + _("Flac %s") % [showBool(@prefs.flac)]
+    @out.puts ' 2) ' + _("Flac options passed") + ": %s" % [@prefs.settingsFlac]
+    @out.puts ' 3) ' + _("Vorbis %s") % [showBool(@prefs.vorbis)]
+    @out.puts ' 4) ' + _("Oggenc options passed") + ": %s" % [@prefs.settingsVorbis]
+    @out.puts ' 5) ' + _("Mp3 %s") % [showBool(@prefs.mp3)]
+    @out.puts ' 6) ' + _("Lame options passed") + ": %s" % [@prefs.settingsMp3]
+    @out.puts ' 7) ' + _("Wav %s") % [showBool(@prefs.wav)]
+    @out.puts ' 8) ' + _("Other codec %s") % [showBool(@prefs.other)]
+    @out.puts ' 9) ' + _("Commandline passed") + ": %s" % [@prefs.settingsOther]
+    @out.puts '10) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
+    @out.puts '11) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.maxThreads]
+    @out.puts '12) ' + _("Replace spaces with underscores %s") % [showBool(@prefs.noSpaces)]
+    @out.puts '13) ' + _("Downsize all capital letters in filenames %s") %[showBool(@prefs.noCapitals)]
+    @out.puts '14) ' + _("Normalize program") + ": %s" % [@prefs.normalizer]
+    @out.puts '15) ' + _("Normalize modus") + ": %s" % [@prefs.gain]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -297,23 +292,23 @@ private
   def loopSubMenuCodecs
     case choice = showSubMenuCodecs()
       when 99 then loopMainMenu()
-      when 1 then switchBool('flac')
-      when 2 then @prefs.set('settingsFlac',
-        @string.get(_("Flac options passed"), '--best -V'))
-      when 3 then switchBool('vorbis')
-      when 4 then @prefs.set('settingsVorbis',
-        @string.get(_("Oggenc options passed"), '-q 4'))
-      when 5 then switchBool('mp3')
-      when 6 then @prefs.set('settingsMp3',
-        @string.get(_("Lame options passed"), '-V 3 --id3v2-only'))
-      when 7 then switchBool('wav')
-      when 8 then switchBool('other')
+      when 1 then switchBool(@prefs.flac)
+      when 2 then @prefs.settingsFlac = \
+        @string.get(_("Flac options passed"), '--best -V')
+      when 3 then switchBool(@prefs.vorbis)
+      when 4 then @prefs.settingsVorbis = \
+        @string.get(_("Oggenc options passed"), '-q 4')
+      when 5 then switchBool(@prefs.mp3)
+      when 6 then @prefs.settingsMp3 = \
+        @string.get(_("Lame options passed"), '-V 3 --id3v2-only')
+      when 7 then switchBool(@prefs.wav)
+      when 8 then switchBool(@prefs.other)
       when 9 then setOtherCodec()
       when 10 then switchBool('playlist')
-      when 11 then @prefs.set('maxThreads',
-          @int.get(_("Maximum extra encoding threads"), 2))
-      when 12 then switchBool('noSpaces')
-      when 13 then switchBool('noCapitals')
+      when 11 then @prefs.maxThreads = \
+        @int.get(_("Maximum extra encoding threads"), 2)
+      when 12 then switchBool(@prefs.noSpaces)
+      when 13 then switchBool(@prefs.noCapitals)
       when 14 then setNormalizer()
       when 15 then setNormalizeModus()
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
@@ -325,21 +320,21 @@ private
     @out.puts(_("%a = artist, %b = album, %g = genre, %y = year"))
     @out.puts(_("%t = trackname, %n = tracknumber, %i = inputfile"))
     @out.puts(_("%o = outputfile (don't forget the extension)"))
-    @prefs.set('settingsOther', @string.get(_("Commandline passed"),
-      'lame %i %o.mp3'))
+    @prefs.settingsOther = @string.get(_("Commandline passed"),
+      'lame %i %o.mp3')
   end
 
   def setNormalizer
     choices = [['none', _("Don't normalize the audio")],
       ['replaygain', _('Use replaygain')],
       ['normalize', _('Use normalize')]]
-    @prefs.set('normalizer', multipleChoice(choices))
+    @prefs.normalizer = multipleChoice(choices)
   end
 
   def setNormalizeModus
     choices = [['album', _('Use album based gain')],
       ['track', _('Use track based gain')]]
-    @prefs.set('gain', multipleChoice(choices))
+    @prefs.gain = multipleChoice(choices)
   end
 
   # show the freedb menu
@@ -347,11 +342,11 @@ private
     @out.puts ''
     @out.puts _("*** FREEDB PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Fetch cd info with freedb %s") % [showBool('freedb')]
-    @out.puts ' 2) ' + _("Always use first hit %s") % [showBool('firstHit')]
-    @out.puts ' 3) ' + _("Freedb server") + ": %s" % [@prefs.get('site')]
-    @out.puts ' 4) ' + _("Freedb username") + ": %s" % [@prefs.get('username')]
-    @out.puts ' 5) ' + _("Freedb hostname") + ": %s" % [@prefs.get('hostname')]
+    @out.puts ' 1) ' + _("Fetch cd info with freedb %s") % [showBool(@prefs.freedb)]
+    @out.puts ' 2) ' + _("Always use first hit %s") % [showBool(@prefs.firstHit)]
+    @out.puts ' 3) ' + _("Freedb server") + ": %s" % [@prefs.site]
+    @out.puts ' 4) ' + _("Freedb username") + ": %s" % [@prefs.username]
+    @out.puts ' 5) ' + _("Freedb hostname") + ": %s" % [@prefs.hostname]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -361,14 +356,14 @@ private
   def loopSubMenuFreedb
     case choice = showSubMenuFreedb()
       when 99 then loopMainMenu()
-      when 1 then switchBool('freedb')
-      when 2 then switchBool('firstHit')
-      when 3 then @prefs.set('site', @string.get(_("Freedb server"),
-        'http://freedb.freedb.org/~cddb/cddb.cgi'))
-      when 4 then @prefs.set('username', @string.get(_("Freedb username"),
-        'anonymous'))
-      when 5 then @prefs.set('hostname', @string.get(_("Freedb hostname"),
-        'my_secret.com'))
+      when 1 then switchBool(@prefs.freedb)
+      when 2 then switchBool(@prefs.firstHit)
+      when 3 then @prefs.site = @string.get(_("Freedb server"),
+        'http://freedb.freedb.org/~cddb/cddb.cgi')
+      when 4 then @prefs.username = @string.get(_("Freedb username"),
+        'anonymous')
+      when 5 then @prefs.hostname = @string.get(_("Freedb hostname"),
+        'my_secret.com')
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
     end
     loopSubMenuFreedb() unless choice == 99
@@ -379,14 +374,14 @@ private
     @out.puts ''
     @out.puts _("*** OTHER PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Base directory") + ": %s" % [@prefs.get('basedir')]
-    @out.puts ' 2) ' + _("Standard filescheme") + ": %s" % [@prefs.get('namingNormal')]
-    @out.puts ' 3) ' + _("Various artist filescheme") + ": %s" % [@prefs.get('namingVarious')]
-    @out.puts ' 4) ' + _("Single file rip filescheme") + ": %s" % [@prefs.get('namingImage')]
-    @out.puts ' 5) ' + _("Log file viewer") + ": %s" % [@prefs.get('editor')]
-    @out.puts ' 6) ' + _("File manager") + ": %s" % [@prefs.get('filemanager')]
-    @out.puts ' 7) ' + _("Verbose mode %s") % [showBool('verbose')]
-    @out.puts ' 8) ' + _("Debug mode %s") % [showBool('debug')]
+    @out.puts ' 1) ' + _("Base directory") + ": %s" % [@prefs.basedir]
+    @out.puts ' 2) ' + _("Standard filescheme") + ": %s" % [@prefs.namingNormal]
+    @out.puts ' 3) ' + _("Various artist filescheme") + ": %s" % [@prefs.namingVarious]
+    @out.puts ' 4) ' + _("Single file rip filescheme") + ": %s" % [@prefs.namingImage]
+    @out.puts ' 5) ' + _("Log file viewer") + ": %s" % [@prefs.editor]
+    @out.puts ' 6) ' + _("File manager") + ": %s" % [@prefs.filemanager]
+    @out.puts ' 7) ' + _("Verbose mode %s") % [showBool(@prefs.verbose)]
+    @out.puts ' 8) ' + _("Debug mode %s") % [showBool(@prefs.debug)]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -396,46 +391,49 @@ private
   def loopSubMenuOther
     case choice = showSubMenuOther()
       when 99 then loopMainMenu()
-      when 1 then @prefs.set('basedir', @string.get(_("Base directory"),
-        @prefs.get('basedir')))
-      when 2 then setDir('namingNormal')
-      when 3 then setDir('namingVarious')
-      when 4 then setDir('namingImage')
-      when 5 then @prefs.set('editor', @string.get(_('Log file viewer'),
-        @prefs.get('editor')))
-      when 6 then @prefs.set('filemanager', @string.get(_('File manager'),
-        @prefs.get('filemanager')))
-      when 7 then switchBool('verbose')
-      when 8 then switchBool('debug')
+      when 1 then @prefs.basedir = @string.get(_("Base directory"),
+        @prefs.basedir)
+      when 2 then setDir('normal', @prefs.namingNormal)
+      when 3 then setDir('various', @prefs.namingVarious)
+      when 4 then setDir('image', @prefs.namingImage)
+      when 5 then @prefs.editor = @string.get(_('Log file viewer'),
+        @prefs.editor)
+      when 6 then @prefs.filemanager = @string.get(_('File manager'),
+        @prefs.filemanager)
+      when 7 then switchBool(@prefs.verbose)
+      when 8 then switchBool(@prefs.debug)
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
     end
     loopSubMenuOther() unless choice == 99
   end
 
   # set the naming schemes
-  def setDir(filescheme)
-    @out.puts _("\nCurrent naming scheme: %s") % [@prefs.get(filescheme)]
-
-    if filescheme == 'namingNormal'
-      @out.puts getExampleFilenameNormal(@prefs.get('basedir'), @prefs.get(filescheme))
-    else
-      @out.puts getExampleFilenameVarious(@prefs.get('basedir'), @prefs.get(filescheme))
-    end
+  def setDir(sort, filescheme)
+    @out.puts _("\nCurrent naming scheme: %s") % [filescheme]
+    showExampleForFilescheme(sort, filescheme)
 
     @out.puts _("\n%a = Artist\n%b = Album\n%g = Genre\n%y = Year\n%f = Codec\
       \n%n = Tracknumber\n%t = Trackname\n%va = Various Artist\n\n")
 
-    answer = @string.get(_("New %s naming scheme (q to quit)") % [filescheme],
+    answer = @string.get(_("New naming scheme (q to quit)"),
       "%f/%a (%y) %b/%n - %t")
-
-    if answer != 'q'
-      if filescheme == 'namingNormal'
-        @out.puts _("An example filename is now:\n\n\t%s") % [getExampleFilenameNormal(@prefs.get('basedir'), answer)]
-        @prefs.set(filescheme, answer)
-      else
-        @out.puts _("An example filename is now:\n\n\t%s") % [getExampleFilenameVarious(@prefs.get('basedir'), answer)]
-        @prefs.set(filescheme, answer)
-      end
+    updateFilescheme(sort, answer) if answer != 'q'
+  end
+  
+  def showExampleForFilescheme(sort, filescheme)
+     if sort == 'normal'
+      @out.puts getExampleFilenameNormal(@prefs.basedir, filescheme)
+    else
+      @out.puts getExampleFilenameVarious(@prefs.basedir, filescheme)
+    end
+  end
+  
+  def updateFilescheme(sort, answer)
+    showExampleForFilescheme(sort, answer)
+    case sort
+      when 'normal' then @prefs.namingNormal = answer
+      when 'various' then @prefs.namingVarious = answer
+      when 'image' then @prefs.namingImage = answer
     end
   end
 end

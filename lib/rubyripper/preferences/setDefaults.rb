@@ -17,13 +17,11 @@
 
 require 'rubyripper/dependency'
 
-# Will obsolete handleprefs.rb
-#The Data class stores all preferences
 module Preferences
   class SetDefaults
-    def initialize(deps=Dependency.new)
-      @data = DATA
-      @deps = deps
+    def initialize(main, deps=nil)
+      @data = main.data
+      @deps = deps ? deps : Dependency.new
       setDefaults()
     end
 
@@ -71,7 +69,7 @@ module Preferences
       @data.noCapitals = false
       @data.normalizer = 'none'
       @data.gain = 'album'
-      @data.gainTagsonly = false
+      @data.gainTagsOnly = false
     end
 
     def setFreedbDefaults
