@@ -21,11 +21,11 @@ module Preferences
   class Load
 
     # setting up instances
-    def initialize(main, customFilename, fileAndDir=nil, out=$stdout)
+    def initialize(main, customFilename, out=$stdout, fileAndDir=nil)
       @file = fileAndDir ? fileAndDir : FileAndDir.new
       @out = out
       @data = main.data()
-      
+
       validateCustomFilename(customFilename, main)
       readPreferencesFromFile() if File.exists?(@filename)
     end
@@ -45,7 +45,7 @@ private
         updatePreference(key,value)
       end
     end
-  
+
     # convert the lines into key and values
     def getNextPreference(line)
       key, value = line.split('=', 2)
@@ -72,5 +72,5 @@ private
         @out.puts("WARNING: Preference with key #{key} does not exist")
       end
     end
-  end 
+  end
 end

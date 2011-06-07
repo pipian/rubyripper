@@ -28,7 +28,7 @@ class CliPreferences
   def initialize(out=nil, int=nil, prefs=nil, bool=nil, string=nil)
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
-    @prefs = prefs ? prefs : Preferences::Main.new()
+    @prefs = prefs ? prefs : Preferences::Main.new(@out)
     @bool = bool ? bool : CliGetBool.new(@out)
     @string = string ? string : CliGetString.new(@out)
   end
@@ -66,7 +66,7 @@ private
 
     loopMainMenu() if @options['configure']
   end
-  
+
   # is the file provided by the user and does it not exist?
   def theFileFromUserDoesNotExist
     @options['file'].is_a?(String) && (@options['file'] != @prefs.filename)
@@ -419,7 +419,7 @@ private
       "%f/%a (%y) %b/%n - %t")
     updateFilescheme(sort, answer) if answer != 'q'
   end
-  
+
   def showExampleForFilescheme(sort, filescheme)
      if sort == 'normal'
       @out.puts getExampleFilenameNormal(@prefs.basedir, filescheme)
@@ -427,7 +427,7 @@ private
       @out.puts getExampleFilenameVarious(@prefs.basedir, filescheme)
     end
   end
-  
+
   def updateFilescheme(sort, answer)
     showExampleForFilescheme(sort, answer)
     case sort

@@ -22,35 +22,36 @@ require 'rubyripper/preferences/load'
 require 'rubyripper/preferences/save'
 
 module Preferences
- 
+
   class Main
   attr_reader :data
   attr_accessor :filename
-  
-    def initialize
+
+    def initialize(out=$stdout)
       @data = Data.new
       @filename = getDefaultFilename()
+      @out = out
     end
 
     # load the preferences after setting the defaults
     def load(customFilename="")
       Cleanup.new()
       SetDefaults.new(self)
-      Load.new(self, customFilename)
+      Load.new(self, customFilename, @out)
     end
 
     # save the preferences
     def save()
       Save.new(self)
     end
-    
+
    private
-   
+
     # if the method is not found try to look it up in the data object
     def method_missing(name, *args)
       @data.send(name, *args)
     end
-   
+
     # return the default filename
     def getDefaultFilename
       dir = ENV['XDG_CONFIG_HOME'] || File.join(ENV['HOME'], '.config')
