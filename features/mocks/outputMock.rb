@@ -23,19 +23,10 @@ class OutputMock
   end
 
   # is the text printed to the screen?
-  def visible?(text, matchCompleteLine=true)
-    @visible = false
-    matchCompleteLine ? matchCompleteLine(text) : matchInLine(text)
-    logOutput() if @visible == false
-    return @visible
-  end
-
-  def matchCompleteLine(text)
-    @output.each{|line| (@visible=true ; break) if line == text}
-  end
-
-  def matchInLine(text)
-    @output.each{|line| (@visible=true ; break) if line.include?(text)}
+  def visible?(text)
+    visible = @output.include?(text)
+    logOutput() if visible == false
+    return visible
   end
 
   def logOutput

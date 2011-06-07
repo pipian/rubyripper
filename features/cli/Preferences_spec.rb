@@ -24,6 +24,9 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
   let(:deps) {double('Dependency').as_null_object}
   let(:disc) {double('Disc').as_null_object}
 
+  # Use default preferences so our expectations are clear
+  before(:all) do ; $TST_DEFAULT_PREFS = true ; end
+
   def start
     app = CommandLineInterface.new(output, prefs=nil, deps, disc, int=nil)
     app.start()
@@ -53,16 +56,16 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
       2.times{input << 1} ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** SECURE RIPPING PREFERENCES ***")
-      output.should be_visible(" 1) Ripping drive:", false)
-      output.should be_visible(" 2) Drive offset:", false)
+      output.should be_visible(" 1) Ripping drive: /dev/cdrom")
+      output.should be_visible(" 2) Drive offset: 0")
       output.should be_visible("   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
       output.should be_visible("   **Your drive model is shown in the logfile.")
-      output.should be_visible(" 3) Passing extra cdparanoia parameters:", false)
-      output.should be_visible(" 4) Match all chunks:", false)
-      output.should be_visible(" 5) Match erroneous chunks:", false)
-      output.should be_visible(" 6) Maximum trials:", false)
-      output.should be_visible(" 7) Eject disc after ripping [", false)
-      output.should be_visible(" 8) Only keep log when errors [", false)
+      output.should be_visible(" 3) Passing extra cdparanoia parameters: -Z")
+      output.should be_visible(" 4) Match all chunks: 2")
+      output.should be_visible(" 5) Match erroneous chunks: 3")
+      output.should be_visible(" 6) Maximum trials: 5")
+      output.should be_visible(" 7) Eject disc after ripping [*]")
+      output.should be_visible(" 8) Only keep log when errors [ ]")
       output.should be_visible("99) Back to settings main menu")
     end
 
@@ -70,34 +73,34 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
       input << 1 ; input << 2 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** TOC ANALYSIS PREFERENCES ***")
-      output.should be_visible(" 1) Create a cuesheet [",false)
-      output.should be_visible(" 2) Rip to single file [", false)
-      output.should be_visible(" 3) Rip hidden audio sectors [", false)
-      output.should be_visible(" 4) Minimum seconds hidden track:", false)
-      output.should be_visible(" 5) Append or prepend audio:", false)
-      output.should be_visible(" 6) Way to handle pre-emphasis:",false)
-      output.should be_visible("99) Back to settings main menu", false)
+      output.should be_visible(" 1) Create a cuesheet [*]")
+      output.should be_visible(" 2) Rip to single file [ ]")
+      output.should be_visible(" 3) Rip hidden audio sectors [*]")
+      output.should be_visible(" 4) Minimum seconds hidden track: 2")
+      output.should be_visible(" 5) Append or prepend audio: prepend")
+      output.should be_visible(" 6) Way to handle pre-emphasis: cue")
+      output.should be_visible("99) Back to settings main menu")
     end
 
     it "should show the right submenu when I choose 3) Codecs" do
       input << 1 ; input << 3 ; 3.times{input.pressEnter()}
       start()
-      output.should be_visible("*** CODEC PREFERENCES ***", false)
-      output.should be_visible(" 1) Flac [", false)
-      output.should be_visible(" 2) Flac options passed:", false)
-      output.should be_visible(" 3) Vorbis [", false)
-      output.should be_visible(" 4) Oggenc options passed:", false)
-      output.should be_visible(" 5) Mp3 [", false)
-      output.should be_visible(" 6) Lame options passed:", false)
-      output.should be_visible(" 7) Wav [", false)
-      output.should be_visible(" 8) Other codec [", false)
-      output.should be_visible(" 9) Commandline passed:", false)
-      output.should be_visible("10) Playlist support [", false)
-      output.should be_visible("11) Maximum extra encoding threads:", false)
-      output.should be_visible("12) Replace spaces with underscores [", false)
-      output.should be_visible("13) Downsize all capital letters in filenames [", false)
-      output.should be_visible("14) Normalize program:", false)
-      output.should be_visible("15) Normalize modus:", false)
+      output.should be_visible("*** CODEC PREFERENCES ***")
+      output.should be_visible(" 1) Flac [ ]")
+      output.should be_visible(" 2) Flac options passed: --best -V")
+      output.should be_visible(" 3) Vorbis [*]")
+      output.should be_visible(" 4) Oggenc options passed: -q 4")
+      output.should be_visible(" 5) Mp3 [ ]")
+      output.should be_visible(" 6) Lame options passed: -V 3 --id3v2-only")
+      output.should be_visible(" 7) Wav [ ]")
+      output.should be_visible(" 8) Other codec [ ]")
+      output.should be_visible(" 9) Commandline passed: ")
+      output.should be_visible("10) Playlist support [*]")
+      output.should be_visible("11) Maximum extra encoding threads: 2")
+      output.should be_visible("12) Replace spaces with underscores [ ]")
+      output.should be_visible("13) Downsize all capital letters in filenames [ ]")
+      output.should be_visible("14) Normalize program: none")
+      output.should be_visible("15) Normalize modus: album")
       output.should be_visible("99) Back to settings main menu")
     end
 
@@ -105,11 +108,11 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
       input << 1 ; input << 4 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** FREEDB PREFERENCES ***")
-      output.should be_visible(" 1) Fetch cd info with freedb [", false)
-      output.should be_visible(" 2) Always use first hit [", false)
-      output.should be_visible(" 3) Freedb server:", false)
-      output.should be_visible(" 4) Freedb username:", false)
-      output.should be_visible(" 5) Freedb hostname:", false)
+      output.should be_visible(" 1) Fetch cd info with freedb [*]")
+      output.should be_visible(" 2) Always use first hit [*]")
+      output.should be_visible(" 3) Freedb server: http://freedb.freedb.org/~cddb/cddb.cgi")
+      output.should be_visible(" 4) Freedb username: anonymous")
+      output.should be_visible(" 5) Freedb hostname: my_secret.com")
       output.should be_visible("99) Back to settings main menu")
     end
 
@@ -117,21 +120,43 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
       input << 1 ; input << 5 ; 3.times{input.pressEnter()}
       start()
       output.should be_visible("*** OTHER PREFERENCES ***")
-      output.should be_visible(" 1) Base directory:", false)
-      output.should be_visible(" 2) Standard filescheme:", false)
-      output.should be_visible(" 3) Various artist filescheme:", false)
-      output.should be_visible(" 4) Single file rip filescheme:", false)
-      output.should be_visible(" 5) Log file viewer:", false)
-      output.should be_visible(" 6) File manager:", false)
-      output.should be_visible(" 7) Verbose mode [", false)
-      output.should be_visible(" 8) Debug mode [", false)
+      output.should be_visible(" 1) Base directory: /home/test")
+      output.should be_visible(" 2) Standard filescheme: %f/%a (%y) %b/%n - %t")
+      output.should be_visible(" 3) Various artist filescheme: %f/%va (%y) %b/%n - %a - %t")
+      output.should be_visible(" 4) Single file rip filescheme: %f/%a (%y) %b/%a - %b (%y)")
+      output.should be_visible(" 5) Log file viewer: mousepad")
+      output.should be_visible(" 6) File manager: thunar")
+      output.should be_visible(" 7) Verbose mode [ ]")
+      output.should be_visible(" 8) Debug mode [ ]")
       output.should be_visible("99) Back to settings main menu")
     end
+    
+    context "When updating the preferences"
+      it "should show the updated ripping preferences" do
+        3.times{input << 1} ; input << '/dev/dvdrom' # ripping drive
+        input << 2 ; input << 10 # offset
+        input << 3 ; input << '-abcdef' # offset
+        input << 4 ; input << 3 # all chunks
+        input << 5 ; input << 4 # err chunks
+        input << 6 ; input << 7 # max trials
+        input << 7 # toggle eject
+        input << 8 # only log when errors
+        3.times{input.pressEnter()}
+        start()
+        output.should be_visible(" 1) Ripping drive: /dev/dvdrom")
+        output.should be_visible(" 2) Drive offset: 10")
+        output.should be_visible(" 3) Passing extra cdparanoia parameters: -abcdef")
+        output.should be_visible(" 4) Match all chunks: 3")
+        output.should be_visible(" 5) Match erroneous chunks: 4")
+        output.should be_visible(" 6) Maximum trials: 7")
+        output.should be_visible(" 7) Eject disc after ripping [ ]")
+        output.should be_visible(" 8) Only keep log when errors [*]")
+      end
+      
+      it "should show the updated TOC analysis preferences"
+      it "should show the updated the codecs preferences"
+      it "should show the updated the freedb preferences"
+      it "should show the updated the other preferences"   
   end
-
-  context "When I want to update the ripper preferences"
-  context "When I want to update the TOC analysis preferences"
-  context "When I want to update the codecs preferences"
-  context "When I want to update the freedb preferences"
-  context "When I want to update the other preferences"
+  after(:all) do ; $TST_DEFAULT_PREFS = false ; end
 end

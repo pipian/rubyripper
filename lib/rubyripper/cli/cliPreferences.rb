@@ -127,7 +127,8 @@ private
 
   # helper function to set boolean preference
   def switchBool(preference)
-    preference == true ? preference = false : preference = true
+    newValue = !@prefs.send(preference)
+    @prefs.send((preference + '=').to_sym, newValue)
   end
 
   # helper function to ask an option from multiple choices
@@ -212,8 +213,8 @@ private
       when 4 then @prefs.reqMatchesAll = @int.get(_("Match all chunks"), 2)
       when 5 then @prefs.reqMatchesErrors = @int.get(_("Match erronous chunks"), 3)
       when 6 then @prefs.maxTries = @int.get(_("Maximum trials"), 5)
-      when 7 then switchBool(@prefs.eject)
-      when 8 then switchBool(@prefs.noLog)
+      when 7 then switchBool('eject')
+      when 8 then switchBool('noLog')
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
     end
     loopSubMenuRipping() unless choice == 99
@@ -239,9 +240,9 @@ private
   def loopSubMenuToc
     case choice = showSubMenuToc()
       when 99 then loopMainMenu()
-      when 1 then switchBool(@prefs.createCue)
-      when 2 then switchBool(@prefs.image)
-      when 3 then switchBool(@prefs.ripHiddenAudio)
+      when 1 then switchBool('createCue')
+      when 2 then switchBool('image')
+      when 3 then switchBool('ripHiddenAudio')
       when 4 then @prefs.minLengthHiddenTrack = \
         @int.get(_("Minimum seconds hidden track"), 2)
       when 5 then setPregaps()
@@ -292,23 +293,23 @@ private
   def loopSubMenuCodecs
     case choice = showSubMenuCodecs()
       when 99 then loopMainMenu()
-      when 1 then switchBool(@prefs.flac)
+      when 1 then switchBool('flac')
       when 2 then @prefs.settingsFlac = \
         @string.get(_("Flac options passed"), '--best -V')
-      when 3 then switchBool(@prefs.vorbis)
+      when 3 then switchBool('vorbis')
       when 4 then @prefs.settingsVorbis = \
         @string.get(_("Oggenc options passed"), '-q 4')
-      when 5 then switchBool(@prefs.mp3)
+      when 5 then switchBool('mp3')
       when 6 then @prefs.settingsMp3 = \
         @string.get(_("Lame options passed"), '-V 3 --id3v2-only')
-      when 7 then switchBool(@prefs.wav)
-      when 8 then switchBool(@prefs.other)
+      when 7 then switchBool('wav')
+      when 8 then switchBool('other')
       when 9 then setOtherCodec()
       when 10 then switchBool('playlist')
       when 11 then @prefs.maxThreads = \
         @int.get(_("Maximum extra encoding threads"), 2)
-      when 12 then switchBool(@prefs.noSpaces)
-      when 13 then switchBool(@prefs.noCapitals)
+      when 12 then switchBool('noSpaces')
+      when 13 then switchBool('noCapitals')
       when 14 then setNormalizer()
       when 15 then setNormalizeModus()
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
@@ -356,8 +357,8 @@ private
   def loopSubMenuFreedb
     case choice = showSubMenuFreedb()
       when 99 then loopMainMenu()
-      when 1 then switchBool(@prefs.freedb)
-      when 2 then switchBool(@prefs.firstHit)
+      when 1 then switchBool('freedb')
+      when 2 then switchBool('firstHit')
       when 3 then @prefs.site = @string.get(_("Freedb server"),
         'http://freedb.freedb.org/~cddb/cddb.cgi')
       when 4 then @prefs.username = @string.get(_("Freedb username"),
@@ -400,8 +401,8 @@ private
         @prefs.editor)
       when 6 then @prefs.filemanager = @string.get(_('File manager'),
         @prefs.filemanager)
-      when 7 then switchBool(@prefs.verbose)
-      when 8 then switchBool(@prefs.debug)
+      when 7 then switchBool('verbose')
+      when 8 then switchBool('debug')
     else @out.puts _("Number #{choice} is not a valid choice, try again.")
     end
     loopSubMenuOther() unless choice == 99

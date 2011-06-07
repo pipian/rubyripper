@@ -59,7 +59,7 @@ def getExampleFilenameVarious(basedir, layout)
 end
 
 # A help function to eject the disc drive
-def eject(cdrom)
+def openDrive(cdrom)
 	Thread.new do
 	 	if installed('eject') ; `eject #{cdrom}`
 		#Mac users don't got eject, but diskutil

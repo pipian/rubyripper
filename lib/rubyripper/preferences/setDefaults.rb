@@ -31,14 +31,15 @@ module Preferences
       setCodecDefaults()
       setFreedbDefaults()
       setOtherDefaults()
+      setTestingDefaults() unless $TST_DEFAULT_PREFS.nil?
     end
 
     def setRippingDefaults
       @data.cdrom = @deps.cdrom()
       @data.offset = 0
-      @data.rippersettings = String.new
+      @data.rippersettings = '-Z'
       @data.reqMatchesAll = 2
-      @data.reqMatchesErrors = 2
+      @data.reqMatchesErrors = 3
       @data.maxTries = 5
       @data.eject = true
       @data.noLog = false
@@ -90,6 +91,15 @@ module Preferences
       @data.browser = @deps.browser
       @data.verbose = false
       @data.debug = false
+    end
+    
+    # override some settings for testing to be predictable
+    def setTestingDefaults
+      @data.cdrom = '/dev/cdrom'
+      @data.editor = 'mousepad'
+      @data.filemanager = 'thunar'
+      @data.browser = 'firefox'
+      @data.basedir = '/home/test'
     end
   end
 end
