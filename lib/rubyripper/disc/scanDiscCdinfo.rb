@@ -36,7 +36,7 @@ class ScanDiscCdinfo
 
   # scan the contents of the disc
   def scan
-    query = @fire.launch("cd-info -C #{@prefs.get('cdrom')}")
+    query = @fire.launch("cd-info -C #{@prefs.cdrom}")
 
     if isValidQuery(query)
       @status = 'ok'

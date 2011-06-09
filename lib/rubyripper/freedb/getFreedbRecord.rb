@@ -57,7 +57,7 @@ private
   # There can be none, one or multiple hits, depending on the return code
   def queryFreedbForMatches()
     query = @server.path + "?cmd=cddb+query+" + CGI.escape("#{@freedbString}") +
-"&hello=" + CGI.escape("#{@prefs.get('username')} #{@prefs.get('hostname')} \
+"&hello=" + CGI.escape("#{@prefs.username} #{@prefs.hostname} \
 rubyripper #{$rr_version}") + "&proto=6"
 
     # http requests return all output at once, even if multiple lines
@@ -95,7 +95,7 @@ rubyripper #{$rr_version}") + "&proto=6"
     @choices.pop if @choices[-1] == '.'
 
     # simulate one record found if firstHit == true
-    if @prefs.get('firstHit') == true
+    if @prefs.firstHit == true
       reply = "200 #{@choices[0]}"
       oneRecordFound(reply)
     else
@@ -112,7 +112,7 @@ rubyripper #{$rr_version}") + "&proto=6"
   # retrieve the record
   def getRecord(category, discid)
     query = "#{@server.path}?cmd=cddb+read+" + CGI.escape("#{category} #{discid}") +
-"&hello=" + CGI.escape("#{@prefs.get('username')} #{@prefs.get('hostname')} \
+"&hello=" + CGI.escape("#{@prefs.username} #{@prefs.hostname} \
 rubyripper #{$rr_version}") + "&proto=6"
 
     reply = @server.get(query)

@@ -37,8 +37,8 @@ describe ScanDiscCdrdao do
   end
 
   def setQueryReply(response, status='ok')
-    prefs.should_receive(:get).with('cdrom').and_return('/dev/cdrom')
-    prefs.should_receive(:get).with('verbose').and_return(true)
+    prefs.should_receive(:cdrom).and_return('/dev/cdrom')
+    prefs.should_receive(:verbose).and_return(true)
     fire.should_receive(:launch).with(%Q{cdrdao read-toc --device /dev/cdrom \"/tmp/cdrom.toc\"}, "/tmp/cdrom.toc")
     fire.should_receive(:getTempFile).with('cdrom.toc').and_return('/tmp/cdrom.toc')
     fire.should_receive(:status).and_return(status)

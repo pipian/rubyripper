@@ -60,8 +60,8 @@ fakestation+rubyripper+test&proto=6"
   context "After firing a query for a disc to the freedb server" do
 
     before(:each) do
-      prefs.should_receive(:get).with('hostname').at_least(:once).and_return 'fakestation'
-      prefs.should_receive(:get).with('username').at_least(:once).and_return 'Joe'
+      prefs.should_receive(:hostname).at_least(:once).and_return 'fakestation'
+      prefs.should_receive(:username).at_least(:once).and_return 'Joe'
       http.should_receive(:path).at_least(:once).and_return "/~cddb/cddb.cgi"
     end
 
@@ -111,7 +111,7 @@ fakestation+rubyripper+test&proto=6"
     end
 
     it "should get the first response if multiple are reported when firstHit preference is true" do
-      prefs.stub(:get).with('firstHit').and_return true
+      prefs.stub(:firstHit).and_return true
       choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 
@@ -128,10 +128,9 @@ B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
     end
 
     context "when multiple records are reported and the user wishes to choose" do
-      before(:each){prefs.stub(:get).with('firstHit').and_return false}
+      before(:each){prefs.stub(:firstHit).and_return false}
 
       it "should allow choosing the first disc" do
-        prefs.stub(:get).with('firstHit').and_return false
         choices = "blues 7F087C0A Artist A / Album A\nrock 7F087C0B Artist B / Album \
 B\n\jazz 7F087C0C Artist C / Album C\n\country 7F087C0D Artist D / Album D\n."
 

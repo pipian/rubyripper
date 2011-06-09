@@ -29,7 +29,7 @@ describe FreedbString do
     @freedb = FreedbString.new(deps, prefs, scan, fire, cdinfo)
     @freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
-    prefs.should_receive(:get).with('cdrom').at_least(:once).and_return('/dev/cdrom')
+    prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
   end
 
   context "When a help program for creating a freedbstring exists" do
@@ -71,7 +71,7 @@ describe FreedbString do
     before(:each) do
       @start = {1=>0, 2=>13209, 3=>36539, 4=>53497, 5=>68172, 6=>81097,
 7=>87182, 8=>106732, 9=>122218, 10=>124080}
-      prefs.should_receive(:get).with('debug').and_return false
+      prefs.should_receive(:debug).and_return false
       deps.should_receive(:installed?).with('discid').and_return false
       deps.should_receive(:installed?).with('cd-discid').and_return false
     end

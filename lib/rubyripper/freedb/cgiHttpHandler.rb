@@ -38,7 +38,7 @@ class CgiHttpHandler
 private
   # first configure the connection (with proxy if needed)
   def config
-    url = URI.parse(@prefs.get('site'))
+    url = URI.parse(@prefs.site)
 
     if ENV['http_proxy']
       proxy = URI.parse(ENV['http_proxy'])

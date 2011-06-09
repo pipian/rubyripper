@@ -88,9 +88,9 @@ class FileAndDir
 	# filename = Name of the new file
 	# content = A string with the content of the new file
 	# force = overwrite if file exists
-	def write(filename, content, force = false)
+	def write(filename, content, update = true)
 		status = false
-		if File.file?(filename) && force == false
+		if !update && File.file?(filename)
 			status = 'fileExists'
 		else
 			createDirs(filename) unless File.exists?(File.dirname(filename))

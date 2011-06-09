@@ -86,7 +86,7 @@ private
 
   # return the cdrom drive
   def cdrom
-    @cdrom ||= @prefs.get('cdrom')
+    @cdrom ||= @prefs.cdrom
   end
 
   # return a temporary filename, based on the drivename to make it unique
@@ -97,7 +97,7 @@ private
   # get all the cdrdao info
   def getOutput
     command = "cdrdao read-toc --device #{cdrom} \"#{tempfile()}\""
-    command += " 2>&1" unless @prefs.get('verbose')
+    command += " 2>&1" unless @prefs.verbose
 
     @fire.launch(command, tempfile())
     @fire.status == 'ok' ? @fire.readFile() : nil

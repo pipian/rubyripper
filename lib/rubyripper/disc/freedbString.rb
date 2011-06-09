@@ -55,7 +55,7 @@ private
     autoCalcFreedb()
 
     if @freedbString.nil?
-      if @prefs.get('debug')
+      if @prefs.debug
         puts _("warning: discid or cd-discid isn't found on your system!)")
         puts _("Using fallback...")
       end
@@ -70,9 +70,9 @@ private
     unmountDiscDarwin() if @deps.platform.include?('darwin')
 
     if @deps.installed?('discid')
-      @freedbString = @fire.launch("discid #{@prefs.get('cdrom')}")
+      @freedbString = @fire.launch("discid #{@prefs.cdrom}")
     elsif @deps.installed?('cd-discid')
-      @freedbString = @fire.launch("cd-discid #{@prefs.get('cdrom')}")
+      @freedbString = @fire.launch("cd-discid #{@prefs.cdrom}")
     end
 
     remountDiscDarwin() if @deps.platform.include?('darwin')
@@ -80,12 +80,12 @@ private
 
   # mac OS needs to unmount the disc first
   def unmountDiscDarwin
-      @fire.launch("diskutil unmount #{@prefs.get('cdrom')}")
+      @fire.launch("diskutil unmount #{@prefs.cdrom}")
   end
 
   # mac OS needs to mount the disc again
   def remountDiscDarwin
-     @fire.launch("diskutil mount #{@prefs.get('cdrom')}")
+     @fire.launch("diskutil mount #{@prefs.cdrom}")
   end
 
   # try to calculate it ourselves, prefer cd-info if available

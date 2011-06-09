@@ -24,7 +24,7 @@ describe ScanDiscCdinfo do
   let(:scan) {ScanDiscCdinfo.new(prefs, fire)}
 
   before(:each) do
-    prefs.should_receive(:get).with('cdrom').at_least(:once).and_return('/dev/cdrom')
+    prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
   end
 
   context "When a queryresult is not a valid response" do
