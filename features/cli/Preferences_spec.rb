@@ -153,10 +153,94 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         output.should be_visible(" 8) Only keep log when errors [*]")
       end
       
-      it "should show the updated TOC analysis preferences"
-      it "should show the updated the codecs preferences"
-      it "should show the updated the freedb preferences"
-      it "should show the updated the other preferences"   
+      it "should show the updated TOC analysis preferences" do
+        input << 1 ; input << 2 ; input << 1 # cuesheet
+        input << 2 #single file
+        input << 3 #hidden sectors
+        input << 4 ; input << 5 # seconds hidden tracks
+        input << 5 ; input << 2 # append
+        input << 6 ; input << 2 # sox
+        3.times{input.pressEnter()}
+        start()
+        output.should be_visible(" 1) Create a cuesheet [ ]")
+        output.should be_visible(" 2) Rip to single file [*]")
+        output.should be_visible(" 3) Rip hidden audio sectors [ ]")
+        output.should be_visible(" 4) Minimum seconds hidden track: 5")
+        output.should be_visible(" 5) Append or prepend audio: append")
+        output.should be_visible(" 6) Way to handle pre-emphasis: sox")
+      end
+      
+      it "should show the updated the codecs preferences" do
+        input << 1 ; input << 3 ; input << 1 # flac
+        input << 2 ; input << '--good' # flac settings
+        input << 3  # vorbis
+        input << 4 ; input << '-q 5' # vorbis settings
+        input << 5 ; # mp3
+        input << 6 ; input << '-V 2'
+        input << 7  # wav
+        input << 8 # other
+        input << 9 ; input << 'flac %i %o.flac' #other command
+        input << 10 # playlist
+        input << 11 ; input << 3 # threads
+        input << 12 # noSpaces
+        input << 13 # noCapitals
+        input << 14 ; input << 2 # normalizer
+        input << 15 ; input << 2 # track based
+        3.times{input.pressEnter()}
+        start()
+        output.should be_visible(" 1) Flac [*]")
+        output.should be_visible(" 2) Flac options passed: --good")
+        output.should be_visible(" 3) Vorbis [ ]")
+        output.should be_visible(" 4) Oggenc options passed: -q 5")
+        output.should be_visible(" 5) Mp3 [*]")
+        output.should be_visible(" 6) Lame options passed: -V 2")
+        output.should be_visible(" 7) Wav [*]")
+        output.should be_visible(" 8) Other codec [*]")
+        output.should be_visible(" 9) Commandline passed: flac %i %o.flac")
+        output.should be_visible("10) Playlist support [ ]")
+        output.should be_visible("11) Maximum extra encoding threads: 3")
+        output.should be_visible("12) Replace spaces with underscores [*]")
+        output.should be_visible("13) Downsize all capital letters in filenames [*]")
+        output.should be_visible("14) Normalize program: replaygain")
+        output.should be_visible("15) Normalize modus: track")
+      end
+      
+      it "should show the updated the freedb preferences" do
+        input << 1 ; input << 4 ; input << 1 # use freedb
+        input << 2 # first hit
+        input << 3 ; input << 'http://google.nl' # freedb server
+        input << 4 ; input << 'Joe' #freedb username
+        input << 5 ; input << 'Black' # freedb hostname
+        3.times{input.pressEnter()}
+        start()
+        output.should be_visible(" 1) Fetch cd info with freedb [*]")
+        output.should be_visible(" 2) Always use first hit [*]")
+        output.should be_visible(" 3) Freedb server: http://freedb.freedb.org/~cddb/cddb.cgi")
+        output.should be_visible(" 4) Freedb username: anonymous")
+        output.should be_visible(" 5) Freedb hostname: my_secret.com")
+      end
+      
+      it "should show the updated other preferences" do
+        input << 1 ; input << 5 # go to other menu
+        input << 1 ; input << '/home/test2' # basedir
+        input << 2 ; input << '%f/BE_HAPPY/%a %b %y/%n - %t' # standard filescheme
+        input << 3 ; input << '%f/BE_HAPPY/%va %b %y' # var filescheme
+        input << 4 ; input << '%f/BE_HAPPY/%a %b %y/%n - %t' # single filescheme
+        input << 5 ; input << 'gedit' # log file viewer
+        input << 6 ; input << 'dolphin' # file browser
+        input << 7 # verbose mode
+        input << 8 # debug mode
+        3.times{input.pressEnter()}
+        start()
+        output.should be_visible(" 1) Base directory: /home/test2")
+        output.should be_visible(" 2) Standard filescheme: %f/BE_HAPPY/%a %b %y/%n - %t")
+        output.should be_visible(" 3) Various artist filescheme: %f/BE_HAPPY/%va %b %y")
+        output.should be_visible(" 4) Single file rip filescheme: %f/BE_HAPPY/%a %b %y/%n - %t")
+        output.should be_visible(" 5) Log file viewer: gedit")
+        output.should be_visible(" 6) File manager: dolphin")
+        output.should be_visible(" 7) Verbose mode [*]")
+        output.should be_visible(" 8) Debug mode [*]")
+      end
   end
   after(:all) do ; $TST_DEFAULT_PREFS = false ; end
 end
