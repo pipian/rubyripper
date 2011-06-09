@@ -422,10 +422,10 @@ private
   end
 
   def showExampleForFilescheme(sort, filescheme)
-     if sort == 'normal'
-      @out.puts getExampleFilenameNormal(@prefs.basedir, filescheme)
+    if sort == 'normal'
+      @out.puts Preferences.showFilenameNormal(@prefs.basedir, filescheme)
     else
-      @out.puts getExampleFilenameVarious(@prefs.basedir, filescheme)
+      @out.puts Preferences.showFilenameVarious(@prefs.basedir, filescheme)
     end
   end
 
