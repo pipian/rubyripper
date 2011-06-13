@@ -20,7 +20,6 @@ class InputMock
 
   def initialize
     @input = Array.new
-    overrideInput()
   end
 
   # Add another input (without the ENTER)
@@ -35,14 +34,6 @@ class InputMock
   # fake function to simulate input, return first line
   def gets
     @input.empty? ? '' : @input.shift()
-  end
-
-private
-# All user input is channeled through the GetAnswer class and childs.
-# The input object is a class variable, so override it with ourself.
-  def overrideInput
-    a = CliGetAnswer.new
-    a.setInput(self)
   end
 end
 

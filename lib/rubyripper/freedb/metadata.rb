@@ -47,11 +47,23 @@ class Metadata
     @varArtist[number]
   end
 
-  def setVarArtist
-    @tracklist.each_key{|key| @varArtist[key] = _('Unknown')}
+  def setVarArtist(number,value)
+    @varArtist[number] = value
+  end
+  
+  def markAsVarArtist
+    if @oldVarArtist != nil
+      @varArtist = @oldVarArtist
+      @oldVarArtist = nil
+    elsif !various?
+      @tracklist.each_key{|key| @varArtist[key] = _('Unknown')}
+    end
   end
 
-  def unsetVarArtist ; @varArtist = Hash.new ; end
+  def unsetVarArtist
+    @oldVarArtist = @varArtist
+    @varArtist = Hash.new
+  end
 
   def various? ; @varArtist.size > 0 ; end
 end

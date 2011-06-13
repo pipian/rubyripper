@@ -52,7 +52,7 @@ private
 
   # try to get the freedbstring
   def get
-    autoCalcFreedb()
+    autoCalcFreedb() unless $TST_DISC_CDINFO
 
     if @freedbString.nil?
       if @prefs.debug

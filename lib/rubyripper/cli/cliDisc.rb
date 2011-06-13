@@ -35,16 +35,21 @@ class CliDisc
   def show
     refreshDisc()
     showDisc()
+    showFreedb() if discReady?
   end
 
-  # return the disc object
-  # def disc ; return @disc ; end
-  # return status when finished
-  #def status ; return @status ; end
-  # return any problems reported
-  #def error ; return @error ; end
+  # one of the options in the main menu
+  def changeMetadata
+    discReady? ? loopMainMenu() : showDiscNotReady()
+  end
 
 private
+  def discReady? ; @cd.status == 'ok' ; end
+  
+  def showDiscNotReady
+    @out.puts _("The disc is not ready: [%s]") % [@cd.status]
+  end
+
   # read the disc contents
   def refreshDisc ; @cd.scan() ; end
 
@@ -52,16 +57,144 @@ private
   def showDisc
     @out.puts ""
 
-    if @cd.status != 'ok'
-      @out.puts _("The disc is not ready: [%s]") % [@cd.status]
-    else
+    if discReady?
       @out.puts _("AUDIO DISC FOUND")
       @out.puts _("Number of tracks: %s") % [@cd.audiotracks]
       @out.puts _("Total playtime: %s") % [@cd.playtime]
+      @out.puts ""
       @md = @cd.metadata
-      showFreedb()
+    else
+      showDiscNotReady()
     end
   end
+
+  # Present the disc info
+  def showFreedb()
+    showDiscInfo()
+    showTrackInfo()
+  end
+  
+  def showDiscInfo
+    @out.puts "DISC INFO"
+    discInfo().each_value{|value| @out.puts value}
+    @out.puts ""
+  end
+  
+  # build the discInfo
+  def discInfo
+    discInfo = Hash.new
+    discInfo[1] = _("Artist:") + " #{@md.artist}"
+    discInfo[2] = _("Album:") + " #{@md.album}"
+    discInfo[3] = _("Genre:") + " #{@md.genre}"
+    discInfo[4] = _("Year:") + " #{@md.year}"
+    discInfo[5] = _("Extra disc info:") + " #{@md.extraDiscInfo}"
+    discInfo[6] = _("Marked as various disc? [%s]") % [@md.various? ? '*' : ' ']
+    return discInfo
+  end
+  
+  def showTrackInfo
+    @out.puts "TRACK INFO"
+    trackInfo().each{|key, value| @out.puts "#{key}. #{value}"}
+    @out.puts ""
+  end
+  
+  # build the trackinfo
+  def trackInfo
+    trackInfo = Hash.new
+    (1..@cd.audiotracks).each do |tracknumber|
+      trackname = @md.trackname(tracknumber)
+      trackname = "#{@md.getVarArtist(tracknumber)} - #{trackname}" if @md.various?
+      trackInfo[tracknumber] = trackname
+    end
+    return trackInfo
+  end
+
+  # choose which the user wants to change
+  def showMainMenu()
+    @out.puts ""
+    @out.puts _("** EDIT METADATA **")
+    @out.puts ""
+    @out.puts ' 1) ' + _('Edit the disc info')
+    @out.puts ' 2) ' + _('Edit the track info')
+    @out.puts '99) ' + _("Return to main menu")
+    @out.puts ""
+    @int.get("Please type the number of your choice", 99)
+  end
+  
+  def loopMainMenu()
+    case choice = showMainMenu()
+      when 1 then loopSubMenuDisc()
+      when 2 then loopSubMenuTracks()
+      when 99 then # return to start menu
+    else
+      noValidChoiceMessage(choice)
+      loopMainMenu()
+    end
+  end
+  
+  def noValidChoiceMessage
+    @out.puts _("Number #{choice} is not a valid choice, try again.")
+  end
+    
+  def showSubMenuDisc()
+    @out.puts ""
+    @out.puts _('*** EDIT DISC INFO ***')
+    discInfo().each{|key, value| @out.puts "%2d) #{value}" % key}
+    @out.puts "99) " + _("Back to metadata menu")
+    @out.puts ""
+    @int.get("Please type the number of the data you wish to change", 99)
+  end
+  
+  def loopSubMenuDisc
+    case choice = showSubMenuDisc()
+      when 1 then @md.artist = @string.get(_("Artist:"), @md.artist)
+      when 2 then @md.album = @string.get(_("Album:"), @md.album)
+      when 3 then @md.genre = @string.get(_("Genre:"), @md.genre)
+      when 4 then @md.year = @string.get(_("Year:"), @md.year)
+      when 5 then @md.extraDiscInfo = @string.get(_("Extra disc info:"), @md.extraDiscInfo)
+      when 6 then @md.various? ? @md.unsetVarArtist() : @md.markAsVarArtist()
+      when 99 then loopMainMenu()
+    else
+      noValidChoiceMessage(choice)
+    end
+    loopSubMenuDisc unless choice == 99
+  end
+  
+  def noValidChoiceMessage
+    @out.puts _("Number #{choice} is not a valid choice, try again.")
+  end
+  
+  def showSubMenuTracks
+    @out.puts _('*** EDIT TRACK INFO ***')
+    trackInfo().each{|key, value| @out.puts "%2d) #{value}" % key}
+    @out.puts "99) " + _("Back to metadata menu")
+    @out.puts ""
+    @int.get("Please type the number of the data you wish to change", 99)
+  end
+  
+  def loopSubMenuTracks()
+    number = showSubMenuTracks()
+    if number > 0 && number <= @cd.audiotracks
+      if @md.various?
+        @md.setVarArtist(number, 
+          @string.get(_("Artist:"), @md.getVarartist(number)))
+      end
+      @md.setTrackname(number, @string.get(_("Trackname:"), 
+        @md.trackname(number)))
+    elsif number == 99 ; loopMainMenu()
+    else
+      noValidChoiceMessage()
+    end
+    loopSubMenuTracks unless number == 99
+  end
+end
+
+  # return the disc object
+  # def disc ; return @disc ; end
+  # return status when finished
+  #def status ; return @status ; end
+  # return any problems reported
+  #def error ; return @error ; end
 
 	# Fetch the cddb info, if choice is true, multiple discs were available
 	#def handleFreedb(choice = false)
@@ -94,86 +227,10 @@ private
 	#	end
 	#end
 
-  # Present the disc info
-  def showFreedb()
-    showDiscInfo()
-    showTrackInfo()
-    showFreedbOptions() unless @defaults
-  end
-
-  def showDiscInfo(edit=false)
-    @out.puts "\nDISC INFO"
-    @out.puts "1) " + _("Artist:") + " #{@md.artist}"
-    @out.puts "2) " + _("Album:") + " #{@md.album}"
-    @out.puts "3) " + _("Genre:") + " #{@md.genre}"
-    @out.puts "4) " + _("Year:") + " #{@md.year}"
-    @out.puts "5) " + _("Extra disc info:") + " #{@md.extraDiscInfo}"
-    @out.puts "6) " + _("Marked as various disc? [%s]") % [@md.various? ? '*' : ' ']
-    @out.puts "99) " + _("Finished editing disc info\n\n") if edit
-    editDiscInfo() if edit
-  end
-
-  # Edit metadata at the disc level
-  def editDiscInfo
-    case answer = @int.get(_("Please enter the number you'd like to edit:"), 99)
-      when 1 then @md.artist = @string.get(_("Artist:"), @md.artist)
-      when 2 then @md.album = @string.get(_("Album:"), @md.album)
-      when 3 then @md.genre = @string.get(_("Genre:"), @md.genre)
-      when 4 then @md.year = @string.get(_("Year:"), @md.year)
-      when 5 then @md.extraDiscInfo = @string.get(_("Extra disc info:"), @md.extraDiscInfo)
-      when 6 then @md.various? ? @md.unsetVarArtist() : @md.setVarArtist()
-      when 99 then showFreedbOptions() ; return true
-    end
-    editDiscInfo()
-  end
-
-  # Present the track info
-  def showTrackInfo(edit=false)
-    @out.puts _("\nTRACK INFO")
-    (1..@cd.audiotracks).each do |tracknumber|
-      trackname = @md.trackname(tracknumber)
-      trackname = "#{@md.getVarArtist(tracknumber)} - #{trackname}" if @md.various?
-      @out.puts "#{tracknumber}) #{trackname}"
-    end
-
-    @out.puts "" if edit
-    @out.puts "99) " + _("Finished editing track info\n\n") if edit
-    editTrackInfo if edit
-  end
-
-  # Edit metadata at the track level
-  def editTrackInfo()
-    case number = @int.get(_("Please enter the number you'd like to edit:"), 99)
-    when number > 0 && number <= @cd.audiotracks
-      @md.setTrackname(number, @string.get("Track #{number}:", @md.trackname(number)))
-      raise "TODO: fix various artist input" if @md.various?
-    when 99 then showFreedbOptions() ; return true
-    end
-    editTrackInfo()
-  end
 
 #        if not @md.varArtists.empty?
 #          string = @string.get("Artist for Track #{answer} : ",  @md.varArtist(answer))
 #          @md.setVarArtist(answer, string)
 #        end
 
-  # Present choice: edit metadata, start rip or break off
-  def showFreedbOptions()
-    @out.puts ""
-    @out.puts _("What would you like to do?")
-    @out.puts ""
-    @out.puts _("1) Select the tracks to rip")
-    @out.puts _("2) Edit the disc info")
-    @out.puts _("3) Edit the track info")
-    @out.puts _("4) Cancel the rip and eject the disc")
-    @out.puts ""
 
-    case answer = @int.get(_("Please enter the number of your choice: "), 1)
-      when 1 then @status = "chooseTracks"
-      when 2 then showDiscInfo(edit=true)
-      when 3 then showTrackInfo(edit=true)
-      when 4 then @status = "cancelRip"
-      else showFreedbOptions()
-    end
-  end
-end

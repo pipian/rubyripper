@@ -95,16 +95,31 @@ class ScanDiscCdparanoia
   end
 
   def readDisc
-    query = @fire.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
-
-    # some versions of cdparanoia don't support the cdrom parameter
-    query = @fire.launch("cdparanoia -vQ 2>&1") if query.include?('USAGE')
-
+    query = getQueryResult()
+    parseQueryResult(query)
+  end
+  
+  def getQueryResult
+    if $TST_DISC_PARANOIA != nil
+      query = $TST_DISC_PARANOIA
+    else
+      query = @fire.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
+      # some versions of cdparanoia don't support the cdrom parameter
+      query = @fire.launch("cdparanoia -vQ 2>&1") if query.include?('USAGE')
+    end
+    return query
+  end
+  
+  def parseQueryResult(query)
     if isValidQuery(query)
       parseQuery(query)
       addExtraInfo()
       checkOffsetFirstTrack()
-      @status = @perm.check(@prefs.cdrom, query)
+      if $TST_DISC_PARANOIA.nil?
+        @status = @perm.check(@prefs.cdrom, query)
+      else
+        @status = 'ok'
+      end
     end
   end
 

@@ -51,7 +51,10 @@ private
     dir = File.join(ENV['HOME'], '.cddb')
     matches = @file.glob("#{dir}/*/#{@discid}")
 
-    if matches.size > 0
+    if $TST_DISC_FREEDB != nil
+      @status = 'ok'
+      @freedbRecord = $TST_DISC_FREEDB
+    elsif matches.size > 0
       @status = 'ok'
       @freedbRecord = getFile(matches[0])
     else

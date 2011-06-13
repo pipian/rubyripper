@@ -143,7 +143,7 @@ private
     choice = @int.get("\nWhich one do you prefer?", 1)
 
     if choice > choices.size
-      @out.puts _("Number #{choice} is not a valid choice, try again")
+      noValidChoiceMessage(choice)
       multipleChoice(choices)
     else
       return choices[choice - 1][0]
@@ -175,9 +175,13 @@ private
       when 4 then loopSubMenuFreedb()
       when 5 then loopSubMenuOther()
     else
-      @out.puts _("Number #{choice} is not a valid choice, try again")
+      noValidChoiceMessage(choice)
       loopMainMenu()
     end
+  end
+  
+  def noValidChoiceMessage(choice)
+    @out.puts _("Number #{choice} is not a valid choice, try again")
   end
 
   # show the ripping submenu
@@ -215,7 +219,7 @@ private
       when 6 then @prefs.maxTries = @int.get(_("Maximum trials"), 5)
       when 7 then switchBool('eject')
       when 8 then switchBool('noLog')
-    else @out.puts _("Number #{choice} is not a valid choice, try again.")
+    else noValidChoiceMessage(choice)
     end
     loopSubMenuRipping() unless choice == 99
   end
@@ -247,7 +251,7 @@ private
         @int.get(_("Minimum seconds hidden track"), 2)
       when 5 then setPregaps()
       when 6 then setPreEmphasis()
-    else @out.puts _("Number #{choice} is not a valid choice, try again.")
+    else noValidChoiceMessage(choice)
     end
     loopSubMenuToc() unless choice == 99
   end
@@ -312,7 +316,7 @@ private
       when 13 then switchBool('noCapitals')
       when 14 then setNormalizer()
       when 15 then setNormalizeModus()
-    else @out.puts _("Number #{choice} is not a valid choice, try again.")
+    else noValidChoiceMessage(choice)
     end
     loopSubMenuCodecs() unless choice == 99
   end
@@ -365,7 +369,7 @@ private
         'anonymous')
       when 5 then @prefs.hostname = @string.get(_("Freedb hostname"),
         'my_secret.com')
-    else @out.puts _("Number #{choice} is not a valid choice, try again.")
+    else noValidChoiceMessage(choice)
     end
     loopSubMenuFreedb() unless choice == 99
   end
@@ -403,7 +407,7 @@ private
         @prefs.filemanager)
       when 7 then switchBool('verbose')
       when 8 then switchBool('debug')
-    else @out.puts _("Number #{choice} is not a valid choice, try again.")
+    else noValidChoiceMessage(choice)
     end
     loopSubMenuOther() unless choice == 99
   end

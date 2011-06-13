@@ -17,20 +17,16 @@
 
 # return an answer from the user, typed into the screen
 class CliGetAnswer
-  @@in = $stdin
-  def initialize(out=nil)
-    @out = out ? out : $stdout
-  end
 
-  # to easily override the input
-  def setInput(input)
-    @@in = input
+  def initialize(out=nil)
+    @in = $TST_INPUT ? $TST_INPUT : $stdin
+    @out = out ? out : $stdout
   end
 
   # get the input from the user
   def get(question, default)
     @out.print(question + " [#{default}] : ")
-    input = @@in.gets.strip
+    input = @in.gets.strip
     return input.empty? ? default : input
   end
 end

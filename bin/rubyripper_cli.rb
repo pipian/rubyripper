@@ -90,13 +90,13 @@ private
 
   # Display the different options
   def showMainMenu
-    @out.puts ""
     @out.puts _("* RUBYRIPPER MAIN MENU *")
     @out.puts ""
     @out.puts ' 1) ' + _('Change preferences')
-    @out.puts ' 2) ' + _('Change metadata')
-    @out.puts ' 3) ' + _('Change tracks to rip (default = all)')
-    @out.puts ' 4) ' + _('Rip the disc!')
+    @out.puts ' 2) ' + _('Scan drive for audio disc')
+    @out.puts ' 3) ' + _('Change metadata')
+    @out.puts ' 4) ' + _('Change tracks to rip (default = all)')
+    @out.puts ' 5) ' + _('Rip the disc!')
     @out.puts '99) ' + _("Exit rubyripper...")
     @out.puts ""
     @int.get("Please type the number of your choice", 99)
@@ -110,9 +110,10 @@ private
         @out.puts _("Have a nice day!")
       when 1 then @cliPrefs.show()
       when 2 then @cliDisc.show()
-      when 3 then @out.puts 'TODO: implement the track selection menu'
+      when 3 then @cliDisc.changeMetadata()
+      when 4 then @out.puts 'TODO: implement the track selection menu'
         # TODO @inst.get('cliTracklist').chooseTracks()
-      when 4 then @out.puts 'TODO: implement the rip action'
+      when 5 then @out.puts 'TODO: implement the rip action'
         # TODO
     else @out.puts _("Number #{choice} is not a valid choice, try again")
     end

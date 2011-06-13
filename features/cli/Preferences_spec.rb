@@ -26,6 +26,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
 
   # Use default preferences so our expectations are clear
   before(:all) do ; $TST_DEFAULT_PREFS = true ; end
+  before(:each) do ; $TST_INPUT = input ; end
 
   def start
     app = CommandLineInterface.new(output, prefs=nil, deps, disc, int=nil)
