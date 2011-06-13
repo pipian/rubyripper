@@ -45,31 +45,16 @@ class Freedb
     end
   end
 
-  # helper function for the metadata class
-  def artist ; @md.artist ; end
-  def album ; @md.album ; end
-  def genre ; @md.genre ; end
-  def year ; @md.year ; end
-  def extraDiscInfo ; @md.extraDiscInfo ; end
-  def trackname(number) ; @md.trackname(number) ; end
-  def artist=(name) ; @md.artist = name ; end
-  def album=(name) ; @md.album = name ; end
-  def genre=(name) ; @md.genre = name ; end
-  def year=(name) ; @md.year = name ; end
-  def extraDiscInfo=(name) ; @md.extraDiscInfo = name ; end
-  def setTrackname(number, name) ; @md.setTrackname(number, name) ; end
-  def discid ; @md.discid ; end
-
-  def various? ; @md.various? ; end
-  def getVarArtist(number) ; @md.getVarArtist(number) ; end
-  def setVarArtist ; @md.setVarArtist ; end
-  def unsetVarArtist ; @md.unsetVarArtist ; end
-
   # helper function for the freedbrecordparser class
   def undoVarArtist ; @parser.undoVarArtist ; end
   def redoVarArtist ; @parser.redoVarArtist ; end
 
   private
+
+    # if the method is not found try to look it up in the data object
+    def method_missing(name, *args)
+      @md.send(name, *args)
+    end
 
   def isLocalFileFound?
     @load.scan(@disc.discid)

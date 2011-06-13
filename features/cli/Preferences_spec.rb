@@ -35,14 +35,13 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
 
   context "When I want to see the current rubyripper preferences" do
     it "should offer a menu option to change preferences" do
-      input.pressEnter()
       start()
       output.should be_visible("* RUBYRIPPER MAIN MENU *")
       output.should be_visible(" 1) Change preferences")
     end
 
     it "should show the right menu when I choose 1) Change Preferences" do
-      input << 1; 2.times{input.pressEnter}
+      input << 1
       start()
       output.should be_visible("** RUBYRIPPER PREFERENCES **")
       output.should be_visible(" 1) Secure ripping")
@@ -54,7 +53,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 1) Secure Ripping" do
-      2.times{input << 1} ; 3.times{input.pressEnter()}
+      2.times{input << 1}
       start()
       output.should be_visible("*** SECURE RIPPING PREFERENCES ***")
       output.should be_visible(" 1) Ripping drive: /dev/cdrom")
@@ -71,7 +70,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 2) Toc analysis" do
-      input << 1 ; input << 2 ; 3.times{input.pressEnter()}
+      input << 1 ; input << 2
       start()
       output.should be_visible("*** TOC ANALYSIS PREFERENCES ***")
       output.should be_visible(" 1) Create a cuesheet [*]")
@@ -84,7 +83,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 3) Codecs" do
-      input << 1 ; input << 3 ; 3.times{input.pressEnter()}
+      input << 1 ; input << 3
       start()
       output.should be_visible("*** CODEC PREFERENCES ***")
       output.should be_visible(" 1) Flac [ ]")
@@ -106,7 +105,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 4) Freedb" do
-      input << 1 ; input << 4 ; 3.times{input.pressEnter()}
+      input << 1 ; input << 4
       start()
       output.should be_visible("*** FREEDB PREFERENCES ***")
       output.should be_visible(" 1) Fetch cd info with freedb [*]")
@@ -118,7 +117,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
     end
 
     it "should show the right submenu when I choose 5) Other" do
-      input << 1 ; input << 5 ; 3.times{input.pressEnter()}
+      input << 1 ; input << 5
       start()
       output.should be_visible("*** OTHER PREFERENCES ***")
       output.should be_visible(" 1) Base directory: /home/test")
@@ -142,7 +141,6 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         input << 6 ; input << 7 # max trials
         input << 7 # toggle eject
         input << 8 # only log when errors
-        3.times{input.pressEnter()}
         start()
         output.should be_visible(" 1) Ripping drive: /dev/dvdrom")
         output.should be_visible(" 2) Drive offset: 10")
@@ -161,7 +159,6 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         input << 4 ; input << 5 # seconds hidden tracks
         input << 5 ; input << 2 # append
         input << 6 ; input << 2 # sox
-        3.times{input.pressEnter()}
         start()
         output.should be_visible(" 1) Create a cuesheet [ ]")
         output.should be_visible(" 2) Rip to single file [*]")
@@ -187,7 +184,6 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         input << 13 # noCapitals
         input << 14 ; input << 2 # normalizer
         input << 15 ; input << 2 # track based
-        3.times{input.pressEnter()}
         start()
         output.should be_visible(" 1) Flac [*]")
         output.should be_visible(" 2) Flac options passed: --good")
@@ -212,7 +208,6 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         input << 3 ; input << 'http://google.nl' # freedb server
         input << 4 ; input << 'Joe' #freedb username
         input << 5 ; input << 'Black' # freedb hostname
-        3.times{input.pressEnter()}
         start()
         output.should be_visible(" 1) Fetch cd info with freedb [*]")
         output.should be_visible(" 2) Always use first hit [*]")
@@ -231,7 +226,6 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         input << 6 ; input << 'dolphin' # file browser
         input << 7 # verbose mode
         input << 8 # debug mode
-        3.times{input.pressEnter()}
         start()
         output.should be_visible(" 1) Base directory: /home/test2")
         output.should be_visible(" 2) Standard filescheme: %f/BE_HAPPY/%a %b %y/%n - %t")

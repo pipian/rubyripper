@@ -139,6 +139,7 @@ private
   def showSubMenuDisc()
     @out.puts ""
     @out.puts _('*** EDIT DISC INFO ***')
+    @out.puts ""
     discInfo().each{|key, value| @out.puts "%2d) #{value}" % key}
     @out.puts "99) " + _("Back to metadata menu")
     @out.puts ""
@@ -165,7 +166,9 @@ private
   end
   
   def showSubMenuTracks
+    @out.puts ""
     @out.puts _('*** EDIT TRACK INFO ***')
+    @out.puts ""
     trackInfo().each{|key, value| @out.puts "%2d) #{value}" % key}
     @out.puts "99) " + _("Back to metadata menu")
     @out.puts ""
