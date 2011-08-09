@@ -48,6 +48,7 @@ private
   
   def showDiscNotReady
     @out.puts _("The disc is not ready: [%s]") % [@cd.status]
+    @out.puts ''
   end
 
   # read the disc contents
@@ -125,7 +126,7 @@ private
     case choice = showMainMenu()
       when 1 then loopSubMenuDisc()
       when 2 then loopSubMenuTracks()
-      when 99 then # return to start menu
+      when 99 then @out.puts '' # return to start menu
     else
       noValidChoiceMessage(choice)
       loopMainMenu()
@@ -153,7 +154,7 @@ private
       when 3 then @md.genre = @string.get(_("Genre:"), @md.genre)
       when 4 then @md.year = @string.get(_("Year:"), @md.year)
       when 5 then @md.extraDiscInfo = @string.get(_("Extra disc info:"), @md.extraDiscInfo)
-      when 6 then @md.various? ? @md.unsetVarArtist() : @md.markAsVarArtist()
+      when 6 then @md.various? ? @md.unmarkVarArtist() : @md.markVarArtist()
       when 99 then loopMainMenu()
     else
       noValidChoiceMessage(choice)
@@ -180,7 +181,7 @@ private
     if number > 0 && number <= @cd.audiotracks
       if @md.various?
         @md.setVarArtist(number, 
-          @string.get(_("Artist:"), @md.getVarartist(number)))
+          @string.get(_("Artist:"), @md.getVarArtist(number)))
       end
       @md.setTrackname(number, @string.get(_("Trackname:"), 
         @md.trackname(number)))

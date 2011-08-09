@@ -42,6 +42,10 @@ describe "Given the rubyripper CLI is started" do
     app.start()
   end
   
+  def setVariousDiscAndShowTracks
+    input << 3 ; input << 1 ; input << 6 ; input.pressEnter() ; input << 2
+  end
+  
   context "When an audio disc is detected" do
     it "should show the disc info" do
       start()
@@ -141,5 +145,31 @@ describe "Given the rubyripper CLI is started" do
       start()
       (1..12).each{|track| output.should be_visible("%2d) Track #{track}" % track)}
     end
+    
+    context "When the disc is marked as various" do
+      it "should mention a default artistname for each track" do
+        setVariousDiscAndShowTracks()
+        start()
+        output.should be_visible(' 1) Unknown - Terminal Show')
+        output.should be_visible(' 2) Unknown - Killers')
+        output.should be_visible(' 3) Unknown - In The Name Of Tragedy')
+        output.should be_visible(' 4) Unknown - Suicide')
+        output.should be_visible(' 5) Unknown - Life\'s A Bitch')
+        output.should be_visible(' 6) Unknown - Down On Me')
+        output.should be_visible(' 7) Unknown - In The Black')
+        output.should be_visible(' 8) Unknown - Fight')
+        output.should be_visible(' 9) Unknown - In The Year Of The Wolf')
+        output.should be_visible('10) Unknown - Keys To The Kingdom')
+        output.should be_visible('11) Unknown - Smiling Like A Killer')
+        output.should be_visible('12) Unknown - Whorehouse Blues')
+      end
+    
+    	it "should allow to update the artist and trackname for each track" do
+    		setVariousDiscAndShowTracks()
+    		(1..12).each{|track| input << track ; input << "Artist #{track}" ; input << "Track #{track}"}		
+    		start()
+    		(1..12).each{|track| output.should be_visible("%2d) Artist #{track} - Track #{track}" % track)}
+    	end
+  	end 
   end
 end

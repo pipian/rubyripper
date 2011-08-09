@@ -168,7 +168,7 @@ private
   # loop through the main menu
   def loopMainMenu
     case choice = showMainMenu()
-      when 99 then @prefs.save() # save the new settings to the configfile
+      when 99 then @prefs.save() ; @out.puts '' # save the new settings to the configfile
       when 1 then loopSubMenuRipping()
       when 2 then loopSubMenuToc()
       when 3 then loopSubMenuCodecs()

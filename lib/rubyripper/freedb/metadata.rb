@@ -19,50 +19,57 @@
 class Metadata
   attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtist,
       :extraDiscInfo, :discid
+      
+  DEFAULT_METADATA = _('Unknown')
+  DEFAULT_TRACKNAME = _('Track %s')
+  DEFAULT_YEAR = 0
 
   def initialize
-    @artist = _('Unknown')
-    @album = _('Unknown')
-    @genre = _('Unknown')
-    @year = '0'
+    @artist = DEFAULT_METADATA
+    @album = DEFAULT_METADATA
+    @genre = DEFAULT_METADATA
+    @year = DEFAULT_YEAR
     @extraDiscInfo = ''
     @discid = ''
-
-    # trackNumber => name
     @tracklist = Hash.new
     @varArtist = Hash.new
   end
 
+  # get the trackname for a given tracknumber
   def trackname(number)
-    return _('Track %s') % [number] unless @tracklist[number]
-    @tracklist[number]
+     @tracklist[number] ? @tracklist[number] : DEFAULT_TRACKNAME % number 
   end
 
+  # set the trackname for a given tracknumber
   def setTrackname(number, name)
     @tracklist[number] = name
   end
 
+  # get the artist for a given tracknumber
   def getVarArtist(number)
-    return _('Unknown') unless @varArtist[number]
-    @varArtist[number]
+    @varArtist[number] ? @varArtist[number] : DEFAULT_METADATA 
   end
 
+  # set the artist for a given tracknumber
   def setVarArtist(number,value)
     @varArtist[number] = value
   end
   
-  def markAsVarArtist
-    if @oldVarArtist != nil
-      @varArtist = @oldVarArtist
-      @oldVarArtist = nil
-    elsif !various?
-      @tracklist.each_key{|key| @varArtist[key] = _('Unknown')}
-    end
+  # mark the disc various
+  def markVarArtist
+    @tracklist.each_key{|key| @varArtist[key] = DEFAULT_METADATA} unless various?
   end
-
-  def unsetVarArtist
-    @oldVarArtist = @varArtist
-    @varArtist = Hash.new
+  
+  # unmark the disc as various
+  def unmarkVarArtist
+    if various?
+      @varArtist.each_key do |key|
+        if @varArtist[key] != DEFAULT_METADATA
+          @tracklist[key] = "#{@varArtist[key]} #{@tracklist[key]}"
+        end
+      end
+      @varArtist = Hash.new
+    end
   end
 
   def various? ; @varArtist.size > 0 ; end
