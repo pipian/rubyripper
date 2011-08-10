@@ -22,7 +22,7 @@ class Metadata
       
   DEFAULT_METADATA = _('Unknown')
   DEFAULT_TRACKNAME = _('Track %s')
-  DEFAULT_YEAR = 0
+  DEFAULT_YEAR = '0'
 
   def initialize
     @artist = DEFAULT_METADATA
