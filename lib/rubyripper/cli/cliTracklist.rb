@@ -15,60 +15,90 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/cli/cliGetAnswer'
+require 'rubyripper/cli/cliDisc'
+
 # Tracklist class is responsible for showing and editing the metadata
 class CliTracklist
-attr_reader :getTracks
+  
+  def initialize(out=nil, int=nil, prefs, disc)
+    @out = out ? out : $stdout
+    @int = int ? int : CliGetInt.new(@out)
+    @prefs = prefs
+    @cliDisc = disc
+  end
 
-	def initialize(settings, status)
-		@settings = settings
-		if @settings['image']
-			@tracksToRip = ['image']
-		else
-			@tracksToRip = (1..@settings['cd'].audiotracks).to_a
-			if status != "default"
-				chooseTracks()
-			end
-		end
-	end
+  # return the selection, if not set return all tracks
+  def selection
+    @selection ||= @cliDisc.tracks.keys
+  end
 
-	# Return the tracks to be ripped
-	def getTracks
-		return @tracksToRip
-	end
-
-	# Want all tracks?
-	def allTracks
-		if getAnswer(_("\nShould all tracks be ripped ? (y/n) "), "yes", _('y'))
-			puts _("Tracks to rip are %s") % [@tracksToRip.join(" ")]
-		else
-			chooseTracks()
-		end
-	end
-
-	# Make a choice which tracks are needed
-	def chooseTracks
-		succes = false
-		while !succes
-			puts _("Current selection of tracks : %s") % [@tracksToRip.join(' ')]
-			number = getAnswer(_("Enter 1 for entering the tracknumbers you want to remove.\nEnter 2 for entering the tracks you want to keep.\nYour choice: "), "number", 1)
-			if number == 1
-				print _("Type the numbers of the tracks you want to remove and separate them with a space: ")
-				answer = STDIN.gets.strip.split
-				answer.each_index{|index| answer[index] = answer[index].to_i} #convert to integers
-				@tracksToRip -= answer # don't you just love ruby math? [1,2,3,4,5] - [3,4] = [1,2,5]
-			elsif number == 2
-				print _("Type the numbers of the tracks you want to keep and separate them with a space: ")
-				answer = STDIN.gets.strip.split
-				answer.each_index{|index| answer[index] = answer[index].to_i} #convert to integers
-				remove = @tracksToRip - answer # remove is inverted result -> which tracks you want to remove?
-				@tracksToRip -= remove # remove these
-			else
-				puts _("%s is not a valid number! Please enter 1 or 2!\n") % [number]
-			end
-			if number == 1 || number == 2
-				puts _("Current selection of tracks : %s") % [@tracksToRip.join(' ')]
-				succes = !getAnswer(_("Do you want to make any changes? (y/n) : "), "yes", _("n"))
-			end
-		end
-	end
+  # go into the track selection menu
+  def show
+    if @prefs.image
+      @out.puts _('It\'s not possible to select tracks for image rips')
+      @out.puts _('Please change your rip preferences first')
+    else
+      selection()
+      loopTrackMenu()
+    end
+  end  
+  
+private
+  # show the tracks
+  def showTrackMenu
+    @out.puts ''
+    @out.puts _('** TRACK SELECTION **')
+    @out.puts ''
+    @cliDisc.tracks.each do |number, name|
+      @out.puts "%2d) %s %s" % [number, short(name), showBool(number)]
+    end
+    @out.puts ''
+    @out.puts '88) ' + _('To toggle all tracks on/off')
+    @out.puts "99) " + _("Back to main menu")
+    @out.puts ''
+    @int.get("Please type the number you wish to change", 99)
+  end
+  
+  # show 30 characters and fill it out
+  def short(name)
+    @maxLength ||= 30
+    if name.length >= @maxLength
+      name[0..(@maxLength-1)]
+    else
+      name + ' ' * (@maxLength -name.length)
+    end 
+  end
+  
+  def showBool(number)
+    @selection.include?(number) ? '[*]' : '[ ]'
+  end
+  
+  def noValidChoiceMessage(choice)
+    @out.puts _("Number #{choice} is not a valid choice, try again.")
+  end
+  
+  # add missing track, remove existing track
+  def toggleTrack(track)
+    if @selection.include?(track)
+      @selection.delete_if{|item| item == track}
+    else
+      @selection << track
+      @selection.sort!
+    end
+  end
+  
+  # loop this menu untill user chooses 99
+  def loopTrackMenu
+    number = showTrackMenu()
+    if number > 0 && number <= @cliDisc.tracks.size
+      toggleTrack(number)
+    elsif number == 88
+      @selection.empty? ? @selection = @cliDisc.tracks.keys : @selection.clear()  
+    elsif number == 99
+      @out.puts ''
+    else noValidChoiceMessage(number)
+    end
+    loopTrackMenu unless number == 99
+  end
 end

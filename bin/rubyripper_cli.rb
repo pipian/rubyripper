@@ -28,6 +28,7 @@ begin
   require 'rubyripper/cli/cliGetAnswer'
   require 'rubyripper/cli/cliPreferences'
   require 'rubyripper/cli/cliDisc'
+  require 'rubyripper/cli/cliTracklist'
 rescue LoadError
   puts 'The rubyripper lib files can\'t be found!'
   puts 'Perhaps you need to add the directory to the RUBYLIB variable?'
@@ -38,12 +39,13 @@ end
 class CommandLineInterface
 
   # start up the interface
-  def initialize(out=nil, prefs=nil, deps=nil, disc=nil, int=nil)
+  def initialize(out=nil, prefs=nil, deps=nil, disc=nil, int=nil, tracks=nil)
     @out = out ? out : $stdout
     @deps = deps ? deps : Dependency.new
     @int = int ? int : CliGetInt.new(@out)
     @cliPrefs = prefs ? prefs : CliPreferences.new(@out, @int)
     @cliDisc = disc ? disc : CliDisc.new(@out, @cliPrefs.prefs, @int)
+    @cliTracklist = tracks ? tracks : CliTracklist.new(@out, @int, @cliPrefs.prefs, @cliDisc)
   end
 
   def start
@@ -95,7 +97,7 @@ private
     @out.puts ' 1) ' + _('Change preferences')
     @out.puts ' 2) ' + _('Scan drive for audio disc')
     @out.puts ' 3) ' + _('Change metadata')
-    @out.puts ' 4) ' + _('Change tracks to rip (default = all)')
+    @out.puts ' 4) ' + _('Select the tracks to rip (default = all)')
     @out.puts ' 5) ' + _('Rip the disc!')
     @out.puts '99) ' + _("Exit rubyripper...")
     @out.puts ""
@@ -111,8 +113,7 @@ private
       when 1 then @cliPrefs.show()
       when 2 then @cliDisc.show()
       when 3 then @cliDisc.changeMetadata()
-      when 4 then @out.puts 'TODO: implement the track selection menu'
-        # TODO @inst.get('cliTracklist').chooseTracks()
+      when 4 then @cliTracklist.show()
       when 5 then @out.puts 'TODO: implement the rip action'
         # TODO
     else @out.puts _("Number #{choice} is not a valid choice, try again")

@@ -42,6 +42,11 @@ class CliDisc
   def changeMetadata
     discReady? ? loopMainMenu() : showDiscNotReady()
   end
+  
+  # return all tracknames
+  def tracks
+    discReady? ? trackInfo() : Hash.new
+  end
 
 private
   def discReady? ; @cd.status == 'ok' ; end
@@ -162,7 +167,7 @@ private
     loopSubMenuDisc unless choice == 99
   end
   
-  def noValidChoiceMessage
+  def noValidChoiceMessage(choice)
     @out.puts _("Number #{choice} is not a valid choice, try again.")
   end
   
@@ -187,7 +192,7 @@ private
         @md.trackname(number)))
     elsif number == 99 ; loopMainMenu()
     else
-      noValidChoiceMessage()
+      noValidChoiceMessage(number)
     end
     loopSubMenuTracks unless number == 99
   end
