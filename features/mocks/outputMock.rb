@@ -28,6 +28,13 @@ class OutputMock
     logOutput() if visible == false
     return visible
   end
+  
+  # how many times found?
+  def count(text)
+    count = 0
+    @output.each{|item| count += 1 if item == text}
+    return count
+  end
 
   def logOutput
     `echo #{@output} > /tmp/rspec.txt`

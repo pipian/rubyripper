@@ -71,5 +71,33 @@ describe "Given I have a disc inserted and want to rip tracks" do
       output.should be_visible('99) Back to main menu')
       output.should be_visible('Please type the number you wish to change [99] : ')
     end
+    
+    it "should allow to toggle all tracks off at once" do
+      input << 4 ; input << 88
+      start()
+      output.should be_visible(' 1) Terminal Show                  [ ]')
+      output.should be_visible(' 7) In The Black                   [ ]')
+      output.should be_visible('12) Whorehouse Blues               [ ]')
+    end
+    
+    it "should allow to toggle all tracks on at once" do
+      input << 4 ; input << 88 ; input << 88
+      start()
+      output.count(' 1) Terminal Show                  [*]').should == 2
+      output.count(' 7) In The Black                   [*]').should == 2
+      output.count('12) Whorehouse Blues               [*]').should == 2
+    end
+    
+    it "should remember the track selection when going back" do
+      input << 4 ; input << 1 ; input.pressEnter ; input << 4
+      start()
+      output.count(' 1) Terminal Show                  [ ]').should == 2 
+    end
+    
+    it "should show a message if an input is not valid" do
+      input << 4 ; input << 13
+      start()
+      output.should be_visible('Number 13 is not a valid choice, try again.')
+    end
   end
 end
