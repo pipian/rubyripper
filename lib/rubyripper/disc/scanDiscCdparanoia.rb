@@ -21,7 +21,7 @@
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
   attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack,
-      :totalSectors
+      :totalSectors, :error
 
   # * preferences is an instance of Preferences
   # * fireCommand is an instance of FireCommand
@@ -89,6 +89,12 @@ class ScanDiscCdparanoia
 
   private
 
+  def addError(code, parameters=nil)
+    @status = 'error'
+    @error ||= Array.new
+    @error = [code, parameters]
+  end
+
   # verify a disc is found
   def assertDiscFound(name)
     raise "Can't #{name} when scanDiscCdparanoia status is not ok!" unless @status == 'ok'
@@ -126,12 +132,12 @@ class ScanDiscCdparanoia
   # check the query result for errors
   def isValidQuery(query)
     case query
-      when /Unable to open disc/ then @status = 'noDiscInDrive'
-      when /USAGE/ then @status = 'wrongParameters'
-      when /No such file or directory/ then @status = 'unknownDrive'
+      when /Unable to open disc/ then addError(:noDiscInDrive, @prefs.cdrom)
+      when /USAGE/ then addError(:wrongParameters, 'Cdparanoia')
+      when /No such file or directory/ then addError(:unknownDrive, @prefs.cdrom)
     end
 
-    return @status.nil?
+    return @error.nil?
   end
 
   def setupDisc

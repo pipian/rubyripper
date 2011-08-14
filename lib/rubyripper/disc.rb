@@ -44,6 +44,7 @@ attr_reader :metadata
 
   # helper functions for ScanDiscCdparanoia
   def status ; @cdpar.status ; end
+  def error ; @cdpar.error ; end
   def playtime ; @cdpar.playtime ; end
   def audiotracks ; @cdpar.audiotracks ; end
   def devicename ; @cdpar.devicename ; end

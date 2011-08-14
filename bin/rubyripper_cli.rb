@@ -25,6 +25,7 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 begin
   require 'rubyripper/base'
   require 'rubyripper/dependency'
+  require 'rubyripper/errors'
   require 'rubyripper/cli/cliGetAnswer'
   require 'rubyripper/cli/cliPreferences'
   require 'rubyripper/cli/cliDisc'
@@ -47,7 +48,7 @@ class CommandLineInterface
     @cliDisc = disc ? disc : CliDisc.new(@out, @cliPrefs.prefs, @int)
     @cliTracklist = tracks ? tracks : CliTracklist.new(@out, @int, @cliPrefs.prefs, @cliDisc)
   end
-
+  
   def start
     @rippingLog = ""
     @rippingProgress = 0.0
@@ -55,9 +56,6 @@ class CommandLineInterface
     prepare()
     loopMainMenu()
   end
-
-  # Name of the frontend, used in InstanceHelper class
-  def name ; return 'cli' ; end
 
   # The only function where the lib files are reporting to
   def update(modus, value=false)
@@ -114,24 +112,31 @@ private
       when 2 then @cliDisc.show()
       when 3 then @cliDisc.changeMetadata()
       when 4 then @cliTracklist.show()
-      when 5 then @out.puts 'TODO: implement the rip action'
-        # TODO
+      when 5 then startRip()
     else @out.puts _("Number #{choice} is not a valid choice, try again")
     end
 
     loopMainMenu() unless choice == 99
   end
 
-  # Show the disc info and include error handling
-  def getDiscInfo()
-    if @discCli.getError
-      puts @discCli.getError
-      if getAnswer(_("Do you want to change your settings? "), "yes", _('y'))
-        @settingsCli.editSettings()
-        getDiscInfo()
-      end
-      exit()
-    end
+  # launch the ripping process
+  def startRip()
+    require 'rubyripper/rubyripper'
+    @out.puts 'TODO: finish implementation of the rip action'
+    
+    @rubyripper = Rubyripper.new(@cliPrefs.prefs, self, @cliDisc.cd, 
+    @cliTracklist.selection)
+    
+    errors = @rubyripper.checkConfiguration()
+    errors.empty? ? @rubyripper.startRip() : showErrors(errors)    
+  end
+  
+  # show the messages and return to main menu
+  def showErrors(errors)
+    @out.puts ''
+    @out.puts _("Please solve the following configuration errors first:")
+    errors.each{|error| @out.puts '  > ' + Errors.send(error[0], error[1])}
+    @out.puts ""
   end
 
   # cancel the rip
