@@ -58,20 +58,23 @@ describe ScanDiscCdparanoia do
     it "should abort when cdparanoia is unable to open the disc" do
       setQueryReply("cdparanoia\nUnable to open disc.  Is there an audio CD in the drive?\n")
       disc.scan()
-      disc.status.should == 'noDiscInDrive'
+      disc.status.should == 'error'
+      disc.error.should == [:noDiscInDrive, '/dev/cdrom']
     end
 
     it "should have one retry without the drive parameter when cdparanoia doesn't recognize it"  do
       setQueryReply("http://www.xiph.org/paranoia/\nUSAGE:\n  cdparanoia")
       setQueryReply("http://www.xiph.org/paranoia/\nUSAGE:\n  cdparanoia", 'cdparanoia -vQ 2>&1')
       disc.scan()
-      disc.status.should == 'wrongParameters'
+      disc.status.should == 'error'
+      disc.error.should == [:wrongParameters, 'Cdparanoia']
     end
 
     it "should abort when the disc drive is not found" do
       setQueryReply("Could not stat /dev/cdrom: No such file or directory")
       disc.scan()
-      disc.status.should == 'unknownDrive'
+      disc.status.should == 'error'
+      disc.error.should == [:unknownDrive, '/dev/cdrom']
     end
   end
 
