@@ -48,7 +48,7 @@ class CommandLineInterface
     @cliDisc = disc ? disc : CliDisc.new(@out, @cliPrefs.prefs, @int)
     @cliTracklist = tracks ? tracks : CliTracklist.new(@out, @int, @cliPrefs.prefs, @cliDisc)
   end
-  
+
   def start
     @rippingLog = ""
     @rippingProgress = 0.0
@@ -82,7 +82,8 @@ private
 
   # check dependencies, read the preferences and show the disc
   def prepare
-    @out.puts "Rubyripper version #{$rr_version}"
+    @out.puts _("Rubyripper version %s") % [$rr_version]
+    @out.puts ""
     @deps.verify()
     @cliPrefs.read()
     @cliDisc.show()
@@ -123,14 +124,14 @@ private
   def startRip()
     require 'rubyripper/rubyripper'
     @out.puts 'TODO: finish implementation of the rip action'
-    
-    @rubyripper = Rubyripper.new(@cliPrefs.prefs, self, @cliDisc.cd, 
+
+    @rubyripper = Rubyripper.new(@cliPrefs.prefs, self, @cliDisc.cd,
     @cliTracklist.selection)
-    
+
     errors = @rubyripper.checkConfiguration()
-    errors.empty? ? @rubyripper.startRip() : showErrors(errors)    
+    errors.empty? ? @rubyripper.startRip() : showErrors(errors)
   end
-  
+
   # show the messages and return to main menu
   def showErrors(errors)
     @out.puts ''

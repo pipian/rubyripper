@@ -26,14 +26,15 @@ class ScanDiscCdparanoia
   # * preferences is an instance of Preferences
   # * fireCommand is an instance of FireCommand
   # * permissionDrive is an instance of PermissionDrive
-  def initialize(fireCommand, permissionDrive, preferences)
+  def initialize(fireCommand, permissionDrive, preferences, out=nil)
     @fire = fireCommand
     @perm = permissionDrive
     @prefs = preferences
+    @out = out ? out : $stdout
   end
 
   # scan the disc for input and return the object
-  def scan ; readDisc() ; end
+  def scan ; waitForDisc() ; end
 
   # return the startSector, example for track 1 getStartSector(1)
   # if image, return the start sector for the lowest tracknumber
@@ -89,10 +90,15 @@ class ScanDiscCdparanoia
 
   private
 
-  def addError(code, parameters=nil)
+  def setError(code, parameters=nil)
     @status = 'error'
-    @error ||= Array.new
     @error = [code, parameters]
+  end
+
+  # new scan, new chances, so reset the error status
+  def unsetError
+    @status = nil
+    @error = nil
   end
 
   # verify a disc is found
@@ -100,11 +106,24 @@ class ScanDiscCdparanoia
     raise "Can't #{name} when scanDiscCdparanoia status is not ok!" unless @status == 'ok'
   end
 
+  # give the cdrom drive a few seconds to read the disc
+  def waitForDisc
+    (1..10).each do |trial|
+      unsetError()
+      readDisc()
+      break if @status == 'ok' || $test
+
+      @status == 'error' && @error[0] == :noDiscInDrive
+      @out.puts _("No disc found at trial %s!") % [trial]
+      sleep(1)
+    end
+  end
+
   def readDisc
     query = getQueryResult()
     parseQueryResult(query)
   end
-  
+
   def getQueryResult
     if $TST_DISC_PARANOIA != nil
       query = $TST_DISC_PARANOIA
@@ -115,7 +134,7 @@ class ScanDiscCdparanoia
     end
     return query
   end
-  
+
   def parseQueryResult(query)
     if isValidQuery(query)
       parseQuery(query)
@@ -132,9 +151,9 @@ class ScanDiscCdparanoia
   # check the query result for errors
   def isValidQuery(query)
     case query
-      when /Unable to open disc/ then addError(:noDiscInDrive, @prefs.cdrom)
-      when /USAGE/ then addError(:wrongParameters, 'Cdparanoia')
-      when /No such file or directory/ then addError(:unknownDrive, @prefs.cdrom)
+      when /Unable to open disc/ then setError(:noDiscInDrive, @prefs.cdrom)
+      when /USAGE/ then setError(:wrongParameters, 'Cdparanoia')
+      when /No such file or directory/ then setError(:unknownDrive, @prefs.cdrom)
     end
 
     return @error.nil?

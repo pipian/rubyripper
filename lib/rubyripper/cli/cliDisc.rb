@@ -44,7 +44,7 @@ attr_reader :cd
   def changeMetadata
     discReady? ? loopMainMenu() : showDiscNotReady()
   end
-  
+
   # return all tracknames
   def tracks
     discReady? ? trackInfo() : Hash.new
@@ -52,7 +52,7 @@ attr_reader :cd
 
 private
   def discReady? ; @cd.status == 'ok' ; end
-  
+
   def showDiscNotReady
     @out.print "WARNING: "
     puts Errors.send(@cd.error[0], @cd.error[1])
@@ -82,13 +82,13 @@ private
     showDiscInfo()
     showTrackInfo()
   end
-  
+
   def showDiscInfo
     @out.puts "DISC INFO"
     discInfo().each_value{|value| @out.puts value}
     @out.puts ""
   end
-  
+
   # build the discInfo
   def discInfo
     discInfo = Hash.new
@@ -100,13 +100,13 @@ private
     discInfo[6] = _("Marked as various disc? [%s]") % [@md.various? ? '*' : ' ']
     return discInfo
   end
-  
+
   def showTrackInfo
     @out.puts "TRACK INFO"
     trackInfo().each{|key, value| @out.puts "#{key}. #{value}"}
     @out.puts ""
   end
-  
+
   # build the trackinfo
   def trackInfo
     trackInfo = Hash.new
@@ -129,7 +129,7 @@ private
     @out.puts ""
     @int.get("Please type the number of your choice", 99)
   end
-  
+
   def loopMainMenu()
     case choice = showMainMenu()
       when 1 then loopSubMenuDisc()
@@ -140,11 +140,11 @@ private
       loopMainMenu()
     end
   end
-  
+
   def noValidChoiceMessage
     @out.puts _("Number #{choice} is not a valid choice, try again.")
   end
-    
+
   def showSubMenuDisc()
     @out.puts ""
     @out.puts _('*** EDIT DISC INFO ***')
@@ -154,7 +154,7 @@ private
     @out.puts ""
     @int.get("Please type the number of the data you wish to change", 99)
   end
-  
+
   def loopSubMenuDisc
     case choice = showSubMenuDisc()
       when 1 then @md.artist = @string.get(_("Artist:"), @md.artist)
@@ -169,11 +169,11 @@ private
     end
     loopSubMenuDisc unless choice == 99
   end
-  
+
   def noValidChoiceMessage(choice)
     @out.puts _("Number #{choice} is not a valid choice, try again.")
   end
-  
+
   def showSubMenuTracks
     @out.puts ""
     @out.puts _('*** EDIT TRACK INFO ***')
@@ -183,15 +183,15 @@ private
     @out.puts ""
     @int.get("Please type the number of the data you wish to change", 99)
   end
-  
+
   def loopSubMenuTracks()
     number = showSubMenuTracks()
     if number > 0 && number <= @cd.audiotracks
       if @md.various?
-        @md.setVarArtist(number, 
+        @md.setVarArtist(number,
           @string.get(_("Artist:"), @md.getVarArtist(number)))
       end
-      @md.setTrackname(number, @string.get(_("Trackname:"), 
+      @md.setTrackname(number, @string.get(_("Trackname:"),
         @md.trackname(number)))
     elsif number == 99 ; loopMainMenu()
     else
