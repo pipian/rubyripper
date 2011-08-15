@@ -26,9 +26,9 @@
 class OutputFile
 attr_reader :status, :artist, :album, :year, :genre
 
-	def initialize(settings)
-		@settings = settings
-		@md = @settings['cd'].md
+	def initialize(prefs, disc)
+		@prefs = prefs
+		@md = disc.metadata
 		@codecs = ['flac', 'vorbis', 'mp3', 'wav', 'other']
 		# Status of the class is false until proven otherwise
 		@status = false
@@ -46,7 +46,9 @@ attr_reader :status, :artist, :album, :year, :genre
 		@tracklist = Hash.new
 		@varArtists = Hash.new
 		@otherExtension = String.new
+  end
 
+  def start()
 		splitDirFile()
 		checkNames()
 		setDirectory()
@@ -55,12 +57,12 @@ attr_reader :status, :artist, :album, :year, :genre
 
 	# split the filescheme into a dir and a file
 	def splitDirFile
-		if @settings['image']
-			fileScheme = @settings['naming_image']
+		if @prefs['image']
+			fileScheme = @prefs['naming_image']
 		elsif @md.varArtists.empty?
-			fileScheme =  @settings['naming_normal']
+			fileScheme =  @prefs['naming_normal']
 		else
-			fileScheme = @settings['naming_various']
+			fileScheme = @prefs['naming_various']
 		end
 
 		# the basedir is added later on, since we don't want to change it
@@ -86,7 +88,7 @@ attr_reader :status, :artist, :album, :year, :genre
 			puts "This is automatically removed"
 		end
 
-		if @settings['image']
+		if @prefs['image']
 			if @fileName.include?('%n')
 				@fileName.gsub!('%n', '')
 				puts "Warning: '%n' in the filescheme for image rips makes no sense!"
@@ -110,7 +112,7 @@ attr_reader :status, :artist, :album, :year, :genre
 	# fill the @dir variable with all output dirs
 	def setDirectory
 		@codecs.each do |codec|
-			if @settings[codec]
+			if @prefs[codec]
 				@dir[codec] = giveDir(codec)
 			end
 		end
@@ -135,7 +137,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		end
 
 		dirName = fileFilter(dirName, true)
-		return File.expand_path(File.join(@settings['basedir'], dirName))
+		return File.expand_path(File.join(@prefs['basedir'], dirName))
 	end
 
 	# (re)attempt creation of the dirs, when succesfull create the filenames
@@ -152,17 +154,17 @@ attr_reader :status, :artist, :album, :year, :genre
 	end
 
 	def findExtensionOther
-		if @settings['other']
-			@settings['othersettings'] =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
+		if @prefs['other']
+			@prefs['othersettings'] =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
 			@otherExtension = $&[4..-1]
-			@settings['othersettings'].gsub!(@otherExtension, '') # remove any references to the ext in the settings
+			@prefs['othersettings'].gsub!(@otherExtension, '') # remove any references to the ext in the settings
 		end
 	end
 
 	# create playlist + cuesheet files
 	def createFiles
 		['flac','vorbis','mp3','wav','other'].each do |codec|
-			if @settings[codec] && @settings['playlist'] && !@settings['image']
+			if @prefs[codec] && @prefs['playlist'] && !@prefs['image']
 				createPlaylist(codec)
 			end
 		end
@@ -186,7 +188,7 @@ attr_reader :status, :artist, :album, :year, :genre
 	# check the existence of the output dir
 	def checkDirExistence
 		@dir.values.each do |dir|
-			puts dir if @settings['debug']
+			puts dir if @prefs['debug']
 			if File.directory?(dir)
 				@status = ["dir_exists", dir]
 				return false
@@ -210,12 +212,12 @@ attr_reader :status, :artist, :album, :year, :genre
 	# fill the @file variable, so we have for example @file['flac'][1]
 	def setFileNames
 		@codecs.each do |codec|
-			if @settings[codec]
+			if @prefs[codec]
 				@file[codec] = Hash.new
-				if @settings['image']
+				if @prefs['image']
 					@image[codec] = giveFileName(codec)
 				else
-					@settings['cd'].audiotracks.times do |track|
+					@prefs['cd'].audiotracks.times do |track|
 						@file[codec][track + 1] = giveFileName(codec, track)
 					end
 				end
@@ -223,7 +225,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		end
 
 		#if no hidden track is detected, getStartSector will return false
-		if @settings['cd'].getStartSector(0)
+		if @prefs['cd'].getStartSector(0)
 			setHiddenTrack()
 		end
 	end
@@ -251,7 +253,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		end
 
 		filename = fileFilter(file)
-		puts filename if @settings['debug']
+		puts filename if @prefs['debug']
 		return filename
 	end
 
@@ -261,11 +263,11 @@ attr_reader :status, :artist, :album, :year, :genre
 		@album = tagFilter(@md.album)
 		@genre = tagFilter(@md.genre)
 		@year = tagFilter(@md.year)
-		@settings['cd'].audiotracks.times do |track|
+		@prefs['cd'].audiotracks.times do |track|
 			@tracklist[track+1] = tagFilter(@md.tracklist[track])
 		end
 		if not @md.varArtists.empty?
-			@settings['cd'].audiotracks.times do |track|
+			@prefs['cd'].audiotracks.times do |track|
 				@varArtists[track+1] = tagFilter(@md.varArtists[track])
 			end
 		end
@@ -275,7 +277,7 @@ attr_reader :status, :artist, :album, :year, :genre
 	def setHiddenTrack
 		@tracklist[0] = tagFilter(_("Hidden Track").dup)
 		@varArtists[0] = tagFilter(_("Unknown Artist").dup) if not @md.varArtists.empty?
-		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @settings[codec]}
+		@codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @prefs[codec]}
 	end
 
 	# characters that will be changed for filenames (monkeyproof for FAT32)
@@ -294,8 +296,8 @@ attr_reader :status, :artist, :album, :year, :genre
 
 		allFilter(var)
 
-		if @settings['noSpaces'] ; var.gsub!(" ", "_") end
- 		if @settings['noCapitals'] ; var.downcase! end
+		if @prefs['noSpaces'] ; var.gsub!(" ", "_") end
+ 		if @prefs['noCapitals'] ; var.downcase! end
 		return var.strip
 	end
 
@@ -315,7 +317,7 @@ attr_reader :status, :artist, :album, :year, :genre
 
 		# replace any underscores with spaces, some freedb info got
 		# underscores instead of spaces
-		if not @settings['noSpaces'] ; var.gsub!('_', ' ') end
+		if not @prefs['noSpaces'] ; var.gsub!('_', ' ') end
 
 		if var.respond_to?(:encoding)
 			# prepare for byte substitutions
@@ -368,7 +370,7 @@ attr_reader :status, :artist, :album, :year, :genre
 		playlist = File.new(File.join(@dir[codec],
 			"#{@artistFile} - #{@albumFile} (#{codec}).m3u"), 'w')
 
-		@settings['tracksToRip'].each do |track|
+		@prefs['tracksToRip'].each do |track|
 			playlist.puts @file[codec][track]
 		end
 
@@ -419,7 +421,7 @@ attr_reader :status, :artist, :album, :year, :genre
 
 	#return the temporary dir
 	def getTempDir
-		return File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@settings['cd'].cdrom)}/")
+		return File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@prefs['cd'].cdrom)}/")
 	end
 
 	#return the trackname for the metadata

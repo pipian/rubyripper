@@ -15,58 +15,67 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/checkConfigBeforeRipping.rb'
-
 # The main program is launched from the class Rubyripper
 class Rubyripper
-attr_reader :outputDir
+attr_reader :outputDir, :outputFile, :log
 
   # * preferences = The preferences object
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-	def initialize(preferences, userInterface, disc, trackSelection)
-		@prefs = preferences
-		@update = userInterface
-		@disc = disc
-		@trackSelection = trackSelection
-	end
-	
-	# check if all is ready to go
-	def checkConfiguration
-	  @helper = CheckConfigBeforeRipping.new(@prefs, @update, @disc, @trackSelection)
-	  return @helper.result
-	end
-	
-	def startRip
-	  autofixCommonMistakes()
- 		@prefs['cd'].md.saveChanges()
-		@prefs['Out'] = OutputFile.new(@prefs)
-		@prefs['log'] = Log.new(@prefs)
-		@outputDir = @prefs['Out'].getDir()
-		updateGui() # Give some info about the cdrom-player, the codecs, the ripper, cddb_info
+  def initialize(preferences, userInterface, disc, trackSelection)
+    @prefs = preferences
+    @ui = userInterface
+    @disc = disc
+    @trackSelection = trackSelection
+  end
 
-		waitForToc()
+  # check if all is ready to go
+  def checkConfiguration
+    require 'rubyripper/checkConfigBeforeRipping'
+    return CheckConfigBeforeRipping.new(@prefs, @ui, @disc, @trackSelection).result
+  end
 
-		@prefs['log'].add(_("\nSTATUS\n\n"))
+  # do some neccesary preparation and start the ripping
+  def startRip
+    autofixCommonMistakes()
+    createHelpObjects()
+    @outputFile.start() # TODO find a better name for the class and function
+    @log.start() # TODO find a better name for the class and function
+    @rippingInfoAtStart.show()
+
+    # @disc.md.saveChanges() # TODO ??
+    # @outputDir = @prefs['Out'].getDir() # TODO ask if directory is available
+    #waitForToc() # TODO ??
 
 		computePercentage() # Do some pre-work to get the progress updater working later on
 		require 'digest/md5' # Needed for secure class, only have to load them ones here.
 		@encoding = Encode.new(@prefs) #Create an instance for encoding
 		@ripping = SecureRip.new(@prefs, @encoding) #create an instance for ripping
 	end
-	
+
+  def createHelpObjects
+    require 'rubyripper/outputFile'
+    @outputFile = OutputFile.new(@prefs, @disc)
+
+    require 'rubyripper/log'
+    @log = Log.new(@prefs, @disc, @outputFile, @ui)
+
+    require 'rubyripper/rippingInfoAtStart'
+    @rippingInfoAtStart = RippingInfoAtStart.new(@prefs, @disc, @log, @trackSelection)
+  end
+
 	def autofixCommonMistakes
 		flacIsNotAllowedToDeleteInputFile() if @prefs.flac
 		repairOtherPrefs() if @prefs.other
 		rippingErrorSectorsMustAtLeasEqualRippingNormalSectors()
 	end
-	
+
 	 # filter out encoding flags that do non-encoding tasks
 	def flacIsNotAllowedToDeleteInputFile
 		@prefs.settingsFlac = @prefs.settingsFlac.gsub(' --delete-input-file', '')
 	end
-	
+
 	def repairOtherprefs
 		copyString = ""
 		lastChar = ""
@@ -89,7 +98,7 @@ attr_reader :outputDir
 		@prefs.settingsOther = copyString
 		puts @prefs.settingsOther if @prefs['debug']
 	end
-	
+
 	def rippingErrorSectorsMustAtLeasEqualRippingNormalSectors()
 	  if @prefs.reqMatchesErrors < @prefs.reqMatchesAll
 	    @prefs.reqMatchesErrors = @prefs.reqMatchesAll
@@ -142,36 +151,6 @@ attr_reader :outputDir
 
 	def overwriteDir
 		@prefs['Out'].overwriteDir()
-	end
-
-	def updateGui
-		@prefs['log'].add(_("Cdrom player used to rip:\n%s\n") % [@prefs['cd'].devicename])
-		@prefs['log'].add(_("Cdrom offset used: %s\n\n") % [@prefs['offset']])
-		@prefs['log'].add(_("Ripper used: cdparanoia %s\n") % [if @prefs['ripperprefs'] ; @prefs['ripperprefs'] else _('default prefs') end])
-		@prefs['log'].add(_("Matches required for all chunks: %s\n") % [@prefs['req_matches_all']])
-		@prefs['log'].add(_("Matches required for erroneous chunks: %s\n\n") % [@prefs['req_matches_errors']])
-
-		@warnings.each{|warning| @prefs['log'].add(warning)}
-		@prefs['log'].add(_("Codec(s) used:\n"))
-		if @prefs['flac']; @prefs['log'].add(_("-flac \t-> %s (%s)\n") % [@prefs['flacprefs'], `flac --version`.strip]) end
-		if @prefs['vorbis']; @prefs['log'].add(_("-vorbis\t-> %s (%s)\n") % [@prefs['vorbisprefs'], `oggenc --version`.strip]) end
-		if @prefs['mp3']; @prefs['log'].add(_("-mp3\t-> %s\n(%s\n") % [@prefs['mp3prefs'], `lame --version`.split("\n")[0]]) end
-		if @prefs['wav']; @prefs['log'].add(_("-wav\n")) end
-		if @prefs['other'] ; @prefs['log'].add(_("-other\t-> %s\n") % [@prefs['otherprefs']]) end
-		@prefs['log'].add(_("\nCDDB INFO\n"))
-		@prefs['log'].add(_("\nArtist\t= "))
-		@prefs['log'].add(@prefs['cd'].md.artist)
-		@prefs['log'].add(_("\nAlbum\t= "))
-		@prefs['log'].add(@prefs['cd'].md.album)
-		@prefs['log'].add(_("\nYear\t= ") + @prefs['cd'].md.year)
-		@prefs['log'].add(_("\nGenre\t= ") + @prefs['cd'].md.genre)
-		@prefs['log'].add(_("\nTracks\t= ") + @prefs['cd'].audiotracks.to_s +
-		" (#{@prefs['tracksToRip'].length} " + _("selected") + ")\n\n")
-		@prefs['cd'].audiotracks.times do |track|
-			if @prefs['tracksToRip'] == 'image' || @prefs['tracksToRip'].include?(track + 1)
-				@prefs['log'].add("#{sprintf("%02d", track + 1)} - #{@prefs['cd'].md.tracklist[track]}\n")
-			end
-		end
 	end
 
 	def computePercentage

@@ -23,15 +23,15 @@ class CheckConfigBeforeRipping
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-	def initialize(preferences, userInterface, disc, trackSelection)
-		@prefs = preferences
-		@update = userInterface
-		@disc = disc
-		@trackSelection = trackSelection
-		@deps = Dependency.new()
-		@errors = Array.new
-	end
-  
+  def initialize(preferences, userInterface, disc, trackSelection)
+    @prefs = preferences
+    @ui = userInterface
+    @disc = disc
+    @trackSelection = trackSelection
+    @deps = Dependency.new()
+    @errors = Array.new
+  end
+
   # Give the result for the checks
   def result
     checkPreferences()
@@ -43,49 +43,49 @@ class CheckConfigBeforeRipping
   end
 
 private
-	def addError(code, parameters=nil)
-	  @errors << [code, parameters]
-	end
-	
-	def checkPreferences
-	  checkDevice()
-	  checkMinOneCodec()
-	end
-	
-	def checkDevice
-	  if !(File.symlink?(@prefs.cdrom) || File.blockdev?(@prefs.cdrom))
-	    addError(:unknownDrive, @prefs.cdrom)
+  def addError(code, parameters=nil)
+    @errors << [code, parameters]
+  end
+
+  def checkPreferences
+    checkDevice()
+    checkMinOneCodec()
+  end
+
+  def checkDevice
+    if !(File.symlink?(@prefs.cdrom) || File.blockdev?(@prefs.cdrom))
+      addError(:unknownDrive, @prefs.cdrom)
     end
-	end
-	
+  end
+
 	def checkMinOneCodec()
 	  unless @prefs.flac || @prefs.vorbis || @prefs.mp3 || @prefs.wav || @prefs.other
 	    addError(:noCodecSelected)
  		end
 	end
-	
+
 	def checkUserInterface
-	  addError(:noValidUserInterface) unless @update.respond_to?(:update)
+	  addError(:noValidUserInterface) unless @ui.respond_to?(:update)
 	end
-	
+
 	def checkDisc
 	  addError(:noDiscInDrive, @prefs.cdrom) if @disc.status != 'ok'
 	end
-	
+
 	# notice that image rips don't require track selection
 	def checkTrackSelection
 	  if !@prefs.image && @trackSelection.empty?
 	    addError(:noTrackSelection)
 	  end
 	end
-	
+
   def checkBinaries
     isFound?('cdparanoia')
     isFound?('flac') if @prefs.flac
     isFound?('oggenc') if @prefs.vorbis
     isFound('lame') if @prefs.mp3
     isFound('normalize') if @prefs.normalizer == 'normalize'
-    
+
     if @prefs.normalizer == 'replaygain'
       isFound?('metaflac') if @prefs.flac
       isFound?('vorbisgain') if @prefs.vorbis
@@ -93,14 +93,14 @@ private
       isFound?('wavegain') if @prefs.wav
     end
   end
-  
-  def isFound?(binary)   
+
+  def isFound?(binary)
     if !@deps.installed?(binary)
       addError(:binaryNotFound, binary.capitalize)
     end
   end
 end
-  
+
 		#TODO
 		#if (!@prefs['cd'].tocStarted || @prefs['cd'].tocFinished)
 		#	temp = AccurateScanDisc.new(@prefs, @prefs['instance'], '', true)

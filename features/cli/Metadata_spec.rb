@@ -27,25 +27,25 @@ describe "Given the rubyripper CLI is started" do
   # Use default preferences so our expectations are clear
   before(:all) do
     $TST_DEFAULT_PREFS = true
-    $TST_DISC_PARANOIA = File.read(File.join(File.dirname(__FILE__), 
+    $TST_DISC_PARANOIA = File.read(File.join(File.dirname(__FILE__),
       '../data/discs/disc1/cdparanoia'))
-    $TST_DISC_CDINFO = File.read(File.join(File.dirname(__FILE__), 
+    $TST_DISC_CDINFO = File.read(File.join(File.dirname(__FILE__),
       '../data/discs/disc1/cdinfo'))
-    $TST_DISC_FREEDB = File.read(File.join(File.dirname(__FILE__), 
-      '../data/discs/disc1/freedb'))  
+    $TST_DISC_FREEDB = File.read(File.join(File.dirname(__FILE__),
+      '../data/discs/disc1/freedb'))
   end
-  
+
   before(:each) do ; $TST_INPUT = input ; end
 
   def start
     app = CommandLineInterface.new(output, prefs=nil, deps, disc=nil, int=nil)
     app.start()
   end
-  
+
   def setVariousDiscAndShowTracks
     input << 3 ; input << 1 ; input << 6 ; input.pressEnter() ; input << 2
   end
-  
+
   context "When an audio disc is detected" do
     it "should show the disc info" do
       start()
@@ -57,7 +57,7 @@ describe "Given the rubyripper CLI is started" do
       output.should be_visible('Extra disc info: YEAR: 2004')
       output.should be_visible('Marked as various disc? [ ]')
     end
-    
+
     it "should show the track info" do
       start()
       output.should be_visible('TRACK INFO')
@@ -74,14 +74,14 @@ describe "Given the rubyripper CLI is started" do
       output.should be_visible('11. Smiling Like A Killer')
       output.should be_visible('12. Whorehouse Blues')
     end
-    
+
     it "should offer a menu option to change the metadata" do
       start()
       output.should be_visible("* RUBYRIPPER MAIN MENU *")
       output.should be_visible(" 3) Change metadata")
     end
   end
-  
+
   context "When I want to change the metadata" do
     it "should show me a menu for editing" do
       input << 3
@@ -91,7 +91,7 @@ describe "Given the rubyripper CLI is started" do
       output.should be_visible(' 2) Edit the track info')
       output.should be_visible('99) Return to main menu')
     end
-    
+
     it "should show a menu to edit the disc info" do
       input << 3 ; input << 1
       start()
@@ -104,7 +104,7 @@ describe "Given the rubyripper CLI is started" do
       output.should be_visible(' 6) Marked as various disc? [ ]')
       output.should be_visible('99) Back to metadata menu')
     end
-    
+
     it "should allow to update the disc info" do
       input << 3 ; input << 1
       input << 1 ; input << 'Iron Maiden'
@@ -121,7 +121,7 @@ describe "Given the rubyripper CLI is started" do
       output.should be_visible(' 5) Extra disc info: First album with Bruce Dickinson')
       output.should be_visible(' 6) Marked as various disc? [*]')
     end
-    
+
     it "should show a menu to edit the track info" do
       input << 3 ; input << 2
       start()
@@ -138,14 +138,14 @@ describe "Given the rubyripper CLI is started" do
       output.should be_visible('11) Smiling Like A Killer')
       output.should be_visible('12) Whorehouse Blues')
     end
-    
+
     it "should allow to update the track info" do
       input << 3 ; input << 2
       (1..12).each{|track| input << track ; input << "Track #{track}"}
       start()
       (1..12).each{|track| output.should be_visible("%2d) Track #{track}" % track)}
     end
-    
+
     context "When the disc is marked as various" do
       it "should mention a default artistname for each track" do
         setVariousDiscAndShowTracks()
@@ -163,13 +163,13 @@ describe "Given the rubyripper CLI is started" do
         output.should be_visible('11) Unknown - Smiling Like A Killer')
         output.should be_visible('12) Unknown - Whorehouse Blues')
       end
-    
+
     	it "should allow to update the artist and trackname for each track" do
     		setVariousDiscAndShowTracks()
-    		(1..12).each{|track| input << track ; input << "Artist #{track}" ; input << "Track #{track}"}		
+    		(1..12).each{|track| input << track ; input << "Artist #{track}" ; input << "Track #{track}"}
     		start()
     		(1..12).each{|track| output.should be_visible("%2d) Artist #{track} - Track #{track}" % track)}
     	end
-  	end 
+  	end
   end
 end

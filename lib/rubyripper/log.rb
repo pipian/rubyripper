@@ -24,46 +24,51 @@ class Log
 attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
-	def initialize(settings) #gui is an instance of the graphical user interface used
-		@settings = settings
-		createLog()
+  def initialize(preferences, disc, outputFile, userInterface)
+    @prefs = preferences
+    @md = disc.metadata
+    @outputFile = outputFile
+    @ui = userInterface
+  end
 
+  def start()
+		createLog()
 		@problem_tracks = Hash.new # key = tracknumber, value = new dictionary with key = seconds_chunk, value = [amount_of_chunks, trials_needed]
 		@not_corrected_tracks = Array.new # Array of tracks that weren't corrected within the maximum amount of trials set by the user
 		@ripping_progress = 0.0
 		@encoding_progress = 0.0
 		@encodingErrors = false
 		@rippingErrors = false
-		@short_summary = _("Artist : %s\nAlbum: %s\n") % [@settings['cd'].md.artist, @settings['cd'].md.album]
-		addLog(_("This log is created by Rubyripper, version %s\n") % [$rr_version])
-		addLog(_("Website: http://code.google.com/p/rubyripper\n\n"))
+		@short_summary = _("Artist : %s\nAlbum: %s\n") % [@md.artist, @md.album]
 	end
 
-	def createLog
-		@logfiles = Array.new
-		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-			if @settings[codec]
-				@logfiles << File.open(@settings['Out'].getLogFile(codec), 'a')
-			end
-		end
-	end
+  def createLog
+    @logfiles = Array.new
+    ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
+      @logfiles << File.open(@outputFile.getLogFile(codec), 'a') if @prefs.send(codec)
+    end
+  end
 
 	# update the ripping percentage of the gui
 	def ripPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
 		new_value <= 1.0 ? @ripping_progress = new_value : @ripping_progress = 1.0
-		@settings['instance'].update("ripping_progress", @ripping_progress)
+		ui.update("ripping_progress", @ripping_progress)
 	end
 
 	# update the encoding percentage of the gui
 	def encPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
 		new_value <= 1.0 ? @encoding_progress = new_value : @encoding_progress = 1.0
-		@settings['instance'].update("encoding_progress", @encoding_progress)
+		ui.update("encoding_progress", @encoding_progress)
 	end
+
+  def <<(message)
+    add(message)
+  end
 
 	# Add a message to the logging file + update the gui
 	def add(message, calling_function = false)
 		@logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
-		@settings['instance'].update("log_change", message)
+		ui.update("log_change", message)
 	end
 
 	# Add a message to the logging file

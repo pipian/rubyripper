@@ -19,7 +19,7 @@
 class Metadata
   attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtist,
       :extraDiscInfo, :discid
-      
+
   DEFAULT_METADATA = _('Unknown')
   DEFAULT_TRACKNAME = _('Track %s')
   DEFAULT_YEAR = '0'
@@ -37,7 +37,7 @@ class Metadata
 
   # get the trackname for a given tracknumber
   def trackname(number)
-     @tracklist[number] ? @tracklist[number] : DEFAULT_TRACKNAME % number 
+     @tracklist[number] ? @tracklist[number] : DEFAULT_TRACKNAME % number
   end
 
   # set the trackname for a given tracknumber
@@ -47,19 +47,19 @@ class Metadata
 
   # get the artist for a given tracknumber
   def getVarArtist(number)
-    @varArtist[number] ? @varArtist[number] : DEFAULT_METADATA 
+    @varArtist[number] ? @varArtist[number] : DEFAULT_METADATA
   end
 
   # set the artist for a given tracknumber
   def setVarArtist(number,value)
     @varArtist[number] = value
   end
-  
+
   # mark the disc various
   def markVarArtist
     @tracklist.each_key{|key| @varArtist[key] = DEFAULT_METADATA} unless various?
   end
-  
+
   # unmark the disc as various
   def unmarkVarArtist
     if various?
