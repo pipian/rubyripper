@@ -112,8 +112,6 @@ class ScanDiscCdparanoia
       unsetError()
       readDisc()
       break if @status == 'ok' || $test
-
-      @status == 'error' && @error[0] == :noDiscInDrive
       @out.puts _("No disc found at trial %s!") % [trial]
       sleep(1)
     end
