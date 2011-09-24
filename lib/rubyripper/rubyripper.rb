@@ -68,7 +68,7 @@ attr_reader :outputDir, :outputFile, :log
 
     # to execute the encoding
     require 'rubyripper/encode'
-    @encoding = Encode.new(@prefs, @outputFile, @log, @trackSelection)
+    @encoding = Encode.new(@prefs, @outputFile, @log, @trackSelection, @disc)
 
     # to execute the ripping
     require 'rubyripper/secureRip'

@@ -17,19 +17,22 @@
 
 # TODO make one general Encode class, subclass each codec
 # TODO move the managing of threads to a separate class
+# TODO move the finished code to another class
 # The Encode class is responsible for managing the diverse codecs.
 
 require 'thread' # for the sized queue object
 require 'monitor' # for the monitor object
+require 'fileutils' # for the fileutils object
 
 class Encode
   attr_writer :cancelled
 
-  def initialize(prefs, outputFile, log, trackSelection)
+  def initialize(prefs, outputFile, log, trackSelection, disc)
     @prefs = prefs
     @out = outputFile
     @log = log
     @trackSelection = trackSelection
+    @disc = disc
     @cancelled = false
     @progress = 0.0
     @threads = []
@@ -124,56 +127,55 @@ class Encode
     @log.encPerc(@progress)
   end
 
-
   def finished
     puts "Inside the finished function" if @prefs.debug
-		@progress = 1.0 ; @log.encPerc(@progress)
-		@log.summary()
-		if @prefs['no_log'] ; @prefs['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
-		@out.cleanTempDir()
-		if (@prefs['log'].rippingErrors || @prefs['log'].encodingErrors)
-			@prefs['instance'].update("finished", false)
-		else
-			@prefs['instance'].update("finished", true)
-		end
-	end
+    @progress = 1.0 ; @log.encPerc(@progress)
+    @log.summary()
+    if @prefs.noLog ; @log.delLog end #Delete the logfile if no correction was needed if no_log is true
+    @out.cleanTempDir()
+    if (@log.rippingErrors || @log.encodingErrors)
+      @prefs['instance'].update("finished", false)
+    else
+      @prefs['instance'].update("finished", true)
+    end
+  end
 
-	def replaygain(filename, codec, track)
-		if @prefs['normalize'] == "replaygain"
-			command = ''
-			if @prefs['gain'] == "album" && @prefs['tracksToRip'][-1] == track || @prefs['gain']=="track"
-				if codec == 'flac' && installed('metaflac')
-					command = "metaflac --add-replay-gain \"#{if @prefs['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
-				elsif codec == 'vorbis' && installed('vorbisgain')
-					command = "vorbisgain #{if @prefs['gain'] =="track" ; "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
-				elsif codec == 'mp3' && installed('mp3gain') && @prefs['gainTagsOnly']
-					command = "mp3gain -c #{if @prefs['gain'] =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
-				elsif codec == 'mp3' && installed('mp3gain') && !@prefs['gainTagsOnly']
-					command = "mp3gain -c #{if @prefs['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
-				elsif codec == 'wav' && installed('wavegain')
-					command = "wavegain #{if @prefs['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
-				end
-			end
-			`#{command}` if command != ''
-		end
-	end
+  def replaygain(filename, codec, track)
+    if @prefs.normalize == "replaygain"
+      command = ''
+      if @prefs.gain == "album" && @trackSelection[-1] == track || @prefs.gain =="track"
+        if codec == 'flac' && installed('metaflac')
+          command = "metaflac --add-replay-gain \"#{if @prefs.gain =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
+        elsif codec == 'vorbis' && installed('vorbisgain')
+          command = "vorbisgain #{if @prefs.gain =="track" ; "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
+        elsif codec == 'mp3' && installed('mp3gain') && @prefs.gainTagsOnly
+          command = "mp3gain -c #{if @prefs.gain =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
+        elsif codec == 'mp3' && installed('mp3gain') && !@prefs.gainTagsOnly
+          command = "mp3gain -c #{if @prefs.gain =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
+        elsif codec == 'wav' && installed('wavegain')
+          command = "wavegain #{if @prefs.gain =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
+        end
+      end
+      `#{command}` if command != ''
+    end
+  end
 
-	def doFlac(track)
-		filename = @out.getFile(track, 'flac')
-		if !@prefs['flacsettings'] ; @prefs['flacsettings'] = '--best' end
-		flac(filename, track)
-		replaygain(filename, 'flac', track)
-	end
+  def doFlac(track)
+    filename = @out.getFile(track, 'flac')
+    @prefs.settingsFlac ||= '--best'
+    flac(filename, track)
+    replaygain(filename, 'flac', track)
+  end
 
-	def doVorbis(track)
-		filename = @out.getFile(track, 'vorbis')
-		if !@prefs['vorbissettings'] ; @prefs['vorbissettings'] = '-q 6' end
-		vorbis(filename, track)
-		replaygain(filename, 'vorbis', track)
-	end
+  def doVorbis(track)
+    filename = @out.getFile(track, 'vorbis')
+    @prefs.settingsVorbis ||= '-q 6'
+    vorbis(filename, track)
+    replaygain(filename, 'vorbis', track)
+  end
 
-	def doMp3(track)
-		@possible_lame_tags = ['A CAPPELLA', 'ACID', 'ACID JAZZ', 'ACID PUNK', 'ACOUSTIC', 'ALTERNATIVE', 'ALT. ROCK', 'AMBIENT', 'ANIME', 'AVANTGARDE', \
+  def doMp3(track)
+    @possible_lame_tags = ['A CAPPELLA', 'ACID', 'ACID JAZZ', 'ACID PUNK', 'ACOUSTIC', 'ALTERNATIVE', 'ALT. ROCK', 'AMBIENT', 'ANIME', 'AVANTGARDE', \
 'BALLAD', 'BASS', 'BEAT', 'BEBOB', 'BIG BAND', 'BLACK METAL', 'BLUEGRASS', 'BLUES', 'BOOTY BASS', 'BRITPOP', 'CABARET', 'CELTIC', 'CHAMBER MUSIC', 'CHANSON', \
 'CHORUS', 'CHRISTIAN GANGSTA RAP', 'CHRISTIAN RAP', 'CHRISTIAN ROCK', 'CLASSICAL', 'CLASSIC ROCK', 'CLUB', 'CLUB-HOUSE', 'COMEDY', 'CONTEMPORARY CHRISTIAN', \
 'COUNTRY', 'CROSSOVER', 'CULT', 'DANCE', 'DANCE HALL', 'DARKWAVE', 'DEATH METAL', 'DISCO', 'DREAM', 'DRUM & BASS', 'DRUM SOLO', 'DUET', 'EASY LISTENING', \
@@ -185,188 +187,188 @@ class Encode
 'RETRO', 'REVIVAL', 'RHYTHMIC SOUL', 'ROCK', 'ROCK & ROLL', 'SALSA', 'SAMBA', 'SATIRE', 'SHOWTUNES', 'SKA', 'SLOW JAM', 'SLOW ROCK', 'SONATA', 'SOUL', 'SOUND CLIP', \
 'SOUNDTRACK', 'SOUTHERN ROCK', 'SPACE', 'SPEECH', 'SWING', 'SYMPHONIC ROCK', 'SYMPHONY', 'SYNTHPOP', 'TANGO', 'TECHNO', 'TECHNO-INDUSTRIAL', 'TERROR', 'THRASH METAL', \
 'TOP 40', 'TRAILER', 'TRANCE', 'TRIBAL', 'TRIP-HOP', 'VOCAL']
-		filename = @out.getFile(track, 'mp3')
-		if !@prefs['mp3settings'] ; @prefs['mp3settings'] = "--preset fast standard" end
+    filename = @out.getFile(track, 'mp3')
+    @prefs.settingsMp3 ||= "--preset fast standard"
 
-		# lame versions before 3.98 didn't support other genre tags than the
-		# ones defined above, so change it to 'other' to prevent crashes
-		lameVersion = `lame --version`[20,4].split('.') # for example [3, 98]
-		if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 &&
-		!@possible_lame_tags.include?(@out.genre.upcase))
-		    genre = 'other'
-		else
-		    genre = @out.genre
-		end
+    # lame versions before 3.98 didn't support other genre tags than the
+    # ones defined above, so change it to 'other' to prevent crashes
+    lameVersion = `lame --version`[20,4].split('.') # for example [3, 98]
+    if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 &&
+    !@possible_lame_tags.include?(@out.genre.upcase))
+      genre = 'other'
+    else
+      genre = @out.genre
+    end
 
-		mp3(filename, genre, track)
-		replaygain(filename, 'mp3', track)
-	end
+    mp3(filename, genre, track)
+    replaygain(filename, 'mp3', track)
+  end
 
-	def doWav(track)
-		filename = @out.getFile(track, 'wav')
-		wav(filename, track)
-		replaygain(filename, 'wav', track)
-	end
+  def doWav(track)
+    filename = @out.getFile(track, 'wav')
+    wav(filename, track)
+    replaygain(filename, 'wav', track)
+  end
 
-	def doOther(track)
-		filename = @out.getFile(track, 'other')
-		command = @prefs['othersettings'].dup
+  def doOther(track)
+    filename = @out.getFile(track, 'other')
+    command = @prefs.settingsOther.dup
 
-		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
-		command.gsub!('%n', sprintf("%02d", track)) if track != "image"
-		command.gsub!('%f', 'other')
+    command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
+    command.gsub!('%n', sprintf("%02d", track)) if track != "image"
+    command.gsub!('%f', 'other')
 
-		if @out.getVarArtist(track) != ''
-			command.gsub!('%a', @out.getVarArtist(track))
-			command.gsub!('%va', @out.artist)
-		else
-			command.gsub!('%a', @out.artist)
-		end
+    if @out.getVarArtist(track) != ''
+      command.gsub!('%a', @out.getVarArtist(track))
+      command.gsub!('%va', @out.artist)
+    else
+      command.gsub!('%a', @out.artist)
+    end
 
-		command.gsub!('%b', @out.album)
-		command.gsub!('%g', @out.genre)
-		command.gsub!('%y', @out.year)
-		command.gsub!('%t', @out.getTrackname(track))
-		command.gsub!('%i', @out.getTempFile(track, 1))
-		command.gsub!('%o', @out.getFile(track, 'other'))
-		checkCommand(command, track, 'other')
-	end
+    command.gsub!('%b', @out.album)
+    command.gsub!('%g', @out.genre)
+    command.gsub!('%y', @out.year)
+    command.gsub!('%t', @out.getTrackname(track))
+    command.gsub!('%i', @out.getTempFile(track, 1))
+    command.gsub!('%o', @out.getFile(track, 'other'))
+    checkCommand(command, track, 'other')
+  end
 
-	def flac(filename, track)
-		tags = String.new
-		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
-		tags += "--tag ALBUM=\"#{@out.album}\" "
-		tags += "--tag DATE=\"#{@out.year}\" "
-		tags += "--tag GENRE=\"#{@out.genre}\" "
-		tags += "--tag DISCID=\"#{@prefs['cd'].discId}\" "
-		tags += "--tag DISCNUMBER=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
+  def flac(filename, track)
+    tags = String.new
+    tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
+    tags += "--tag ALBUM=\"#{@out.album}\" "
+    tags += "--tag DATE=\"#{@out.year}\" "
+    tags += "--tag GENRE=\"#{@out.genre}\" "
+    tags += "--tag DISCID=\"#{@disc.discId}\" "
+    tags += "--tag DISCNUMBER=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
 
-		 # Handle tags for single file images differently
-		if @prefs['image']
-			tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
-			if @prefs['create_cue'] # embed the cuesheet
-				tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
-			end
-		else # Handle tags for var artist discs differently
-			if @out.getVarArtist(track) != ''
-				tags += "--tag ARTIST=\"#{@out.getVarArtist(track)}\" "
-				tags += "--tag \"ALBUM ARTIST\"=\"#{@out.artist}\" "
-			else
-				tags += "--tag ARTIST=\"#{@out.artist}\" "
-			end
-			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
-			tags += "--tag TRACKNUMBER=#{track} "
-			tags += "--tag TRACKTOTAL=#{@prefs['cd'].audiotracks} "
-		end
+    # Handle tags for single file images differently
+    if @prefs.image
+      tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
+      if @prefs['create_cue'] # embed the cuesheet
+        tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
+      end
+    else # Handle tags for var artist discs differently
+      if @out.getVarArtist(track) != ''
+        tags += "--tag ARTIST=\"#{@out.getVarArtist(track)}\" "
+        tags += "--tag \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+      else
+        tags += "--tag ARTIST=\"#{@out.artist}\" "
+      end
+      tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
+      tags += "--tag TRACKNUMBER=#{track} "
+      tags += "--tag TRACKTOTAL=#{@prefs['cd'].audiotracks} "
+    end
 
-		command = String.new
-		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
-		command +="flac #{@prefs['flacsettings']} -o \"#{filename}\" #{tags}\
+    command = String.new
+    command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
+    command +="flac #{@prefs.settingsFlac} -o \"#{filename}\" #{tags}\
 \"#{@out.getTempFile(track, 1)}\""
-		command += " 2>&1" unless @prefs['verbose']
+    command += " 2>&1" unless @prefs.verbose
 
-		checkCommand(command, track, 'flac')
-	end
+    checkCommand(command, track, 'flac')
+  end
 
-	def vorbis(filename, track)
-		tags = String.new
-		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
-		tags += "-c ALBUM=\"#{@out.album}\" "
-		tags += "-c DATE=\"#{@out.year}\" "
-		tags += "-c GENRE=\"#{@out.genre}\" "
-		tags += "-c DISCID=\"#{@prefs['cd'].discId}\" "
-		tags += "-c DISCNUMBER=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
+  def vorbis(filename, track)
+    tags = String.new
+    tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
+    tags += "-c ALBUM=\"#{@out.album}\" "
+    tags += "-c DATE=\"#{@out.year}\" "
+    tags += "-c GENRE=\"#{@out.genre}\" "
+    tags += "-c DISCID=\"#{@prefs['cd'].discId}\" "
+    tags += "-c DISCNUMBER=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
 
-		 # Handle tags for single file images differently
-		if @prefs['image']
-			tags += "-c ARTIST=\"#{@out.artist}\" "
-		else # Handle tags for var artist discs differently
-			if @out.getVarArtist(track) != ''
-				tags += "-c ARTIST=\"#{@out.getVarArtist(track)}\" "
-				tags += "-c \"ALBUM ARTIST\"=\"#{@out.artist}\" "
-			else
-				tags += "-c ARTIST=\"#{@out.artist}\" "
-			end
-			tags += "-c TITLE=\"#{@out.getTrackname(track)}\" "
-			tags += "-c TRACKNUMBER=#{track} "
-			tags += "-c TRACKTOTAL=#{@prefs['cd'].audiotracks}"
-		end
+    # Handle tags for single file images differently
+    if @prefs.image
+      tags += "-c ARTIST=\"#{@out.artist}\" "
+    else # Handle tags for var artist discs differently
+      if @out.getVarArtist(track) != ''
+        tags += "-c ARTIST=\"#{@out.getVarArtist(track)}\" "
+        tags += "-c \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+      else
+        tags += "-c ARTIST=\"#{@out.artist}\" "
+      end
+      tags += "-c TITLE=\"#{@out.getTrackname(track)}\" "
+      tags += "-c TRACKNUMBER=#{track} "
+      tags += "-c TRACKTOTAL=#{@disc.audiotracks}"
+    end
 
-		command = String.new
-		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
-		command += "oggenc -o \"#{filename}\" #{@prefs['vorbissettings']} \
+    command = String.new
+    command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
+    command += "oggenc -o \"#{filename}\" #{@prefs.settingsVorbis} \
 #{tags} \"#{@out.getTempFile(track, 1)}\""
-		command += " 2>&1" unless @prefs['verbose']
+    command += " 2>&1" unless @prefs['verbose']
 
-		checkCommand(command, track, 'vorbis')
-	end
+    checkCommand(command, track, 'vorbis')
+  end
 
-	def mp3(filename, genre, track)
-		tags = String.new
-		tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
-		tags += "--tl \"#{@out.album}\" "
-		tags += "--ty \"#{@out.year}\" "
-		tags += "--tg \"#{@out.genre}\" "
-		tags += "--tv TXXX=DISCID=\"#{@prefs['cd'].discId}\" "
-		tags += "--tv TPOS=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
+  def mp3(filename, genre, track)
+    tags = String.new
+    tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
+    tags += "--tl \"#{@out.album}\" "
+    tags += "--ty \"#{@out.year}\" "
+    tags += "--tg \"#{@out.genre}\" "
+    tags += "--tv TXXX=DISCID=\"#{@disc.discId}\" "
+    tags += "--tv TPOS=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
 
-		 # Handle tags for single file images differently
-		if @prefs['image']
-			tags += "--ta \"#{@out.artist}\" "
-		else # Handle tags for var artist discs differently
-			if @out.getVarArtist(track) != ''
-				tags += "--ta \"#{@out.getVarArtist(track)}\" "
-				tags += "--tv \"ALBUM ARTIST\"=\"#{@out.artist}\" "
-			else
-				tags += "--ta \"#{@out.artist}\" "
-			end
-			tags += "--tt \"#{@out.getTrackname(track)}\" "
-			tags += "--tn #{track}/#{@prefs['cd'].audiotracks} "
-		end
+    # Handle tags for single file images differently
+    if @prefs.image
+      tags += "--ta \"#{@out.artist}\" "
+    else # Handle tags for var artist discs differently
+      if @out.getVarArtist(track) != ''
+        tags += "--ta \"#{@out.getVarArtist(track)}\" "
+        tags += "--tv \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+      else
+        tags += "--ta \"#{@out.artist}\" "
+      end
+      tags += "--tt \"#{@out.getTrackname(track)}\" "
+      tags += "--tn #{track}/#{@disc.audiotracks} "
+    end
 
-		# set UTF-8 tags (not the filename) to latin because of a lame bug.
-		begin
-			require 'iconv'
-			tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)
-		rescue
-			puts "couldn't convert to ISO-8859-1 succesfully"
-		end
+    # set UTF-8 tags (not the filename) to latin because of a lame bug.
+    begin
+      require 'iconv'
+      tags = Iconv.conv("ISO-8859-1", "UTF-8", tags)
+    rescue
+      puts "couldn't convert to ISO-8859-1 succesfully"
+    end
 
-		# combining two encoding sets in binary mode, only needed for ruby >=1.9
-		command = String.new
-		inputWavFile = @out.getTempFile(track, 1)
-		if command.respond_to?("force_encoding")
-			command.force_encoding("ASCII-8BIT")
-			tags.force_encoding("ASCII-8BIT")
-			inputWavFile.force_encoding("ASCII-8BIT")
-			filename.force_encoding("ASCII-8BIT")
-		end
+    # combining two encoding sets in binary mode, only needed for ruby >=1.9
+    command = String.new
+    inputWavFile = @out.getTempFile(track, 1)
+    if command.respond_to?("force_encoding")
+      command.force_encoding("ASCII-8BIT")
+      tags.force_encoding("ASCII-8BIT")
+      inputWavFile.force_encoding("ASCII-8BIT")
+      filename.force_encoding("ASCII-8BIT")
+    end
 
-		command += "lame #{@prefs['mp3settings']} #{tags}\"\
+    command += "lame #{@prefs.settingsMp3} #{tags}\"\
 #{inputWavFile}\" \"#{filename}\""
-		command += " 2>&1" unless @prefs['verbose']
+    command += " 2>&1" unless @prefs.verbose
 
-		checkCommand(command, track, 'mp3')
-	end
+    checkCommand(command, track, 'mp3')
+  end
 
-	def wav(filename, track)
-		begin
-			FileUtils.cp(@out.getTempFile(track, 1), filename)
-		rescue
-			puts "Warning: wav file #{@out.getTempFile(track,1)} not found!"
-			puts "If this is not the case, you might have a shortage of disk space.."
-		end
-	end
+  def wav(filename, track)
+    begin
+      FileUtils.cp(@out.getTempFile(track, 1), filename)
+    rescue
+      puts "Warning: wav file #{@out.getTempFile(track,1)} not found!"
+      puts "If this is not the case, you might have a shortage of disk space.."
+    end
+  end
 
-	def checkCommand(command, track, codec)
-		puts "command = #{command}" if @prefs.debug
+  def checkCommand(command, track, codec)
+    puts "command = #{command}" if @prefs.debug
 
-		exec = IO.popen("nice -n 6 #{command}") #execute command
-		exec.readlines() #get all the output
+    exec = IO.popen("nice -n 6 #{command}") #execute command
+    exec.readlines() #get all the output
 
-		if Process.waitpid2(exec.pid)[1].exitstatus != 0
-			@prefs['log'].add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
-			@prefs['log'].encodingErrors = true
-		end
-	end
+    if Process.waitpid2(exec.pid)[1].exitstatus != 0
+      @log.add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
+      @log.encodingErrors = true
+    end
+  end
 end
