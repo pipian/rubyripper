@@ -88,7 +88,7 @@ class SecureRip
   # when sox is finished move it back to the original name
   def deEmphasize(track)
     if @prefs.createCue && @prefs.preEmphasis == "sox" &&
-      @disc.toc.hasPreEmph(track) && installed(sox)
+      @disc.toc.hasPreEmph(track) && installed("sox")
       `sox #{@out.getTempFile(track, 1)} #{@out.getTempFile(track, 2)}`
       if $?.success?
         FileUtils.mv(@out.getTempFile(track, 2), @out.getTempFile(track, 1))
