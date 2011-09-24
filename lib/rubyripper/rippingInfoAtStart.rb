@@ -53,7 +53,7 @@ private
     @log << _("-vorbis\t-> %s (%s)\n") % [@prefs.settingsVorbis, version('oggenc')] if @prefs.vorbis
     @log << _("-mp3\t-> %s\n(%s\n") % [@prefs.settingsMp3, version('lame')] if @prefs.mp3
     @log << _("-wav\n") if @prefs.wav
-    @log << _("-other\t-> %s\n") % [@prefs.settingsOther] if @prefs['other'] ;
+    @log << _("-other\t-> %s\n") % [@prefs.settingsOther] if @prefs.other
   end
 
   def version(name)

@@ -221,7 +221,7 @@ attr_reader :status, :artist, :album, :year, :genre
         if @prefs.image
           @image[codec] = giveFileName(codec)
         else
-          (1..@disc.audiotracks).each do |track|
+          @trackSelection.each do |track|
             @file[codec][track] = giveFileName(codec, track)
           end
         end

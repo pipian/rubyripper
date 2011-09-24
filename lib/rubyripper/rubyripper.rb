@@ -28,6 +28,7 @@ attr_reader :outputDir, :outputFile, :log
     @ui = userInterface
     @disc = disc
     @trackSelection = trackSelection
+    puts "trackselection = #{@trackSelection}"
   end
 
   # check if all is ready to go
@@ -48,11 +49,11 @@ attr_reader :outputDir, :outputFile, :log
     # @outputDir = @prefs['Out'].getDir() # TODO ask if directory is available
     #waitForToc() # TODO ??
 
-		computePercentage() # Do some pre-work to get the progress updater working later on
-		require 'digest/md5' # Needed for secure class, only have to load them ones here.
-		@encoding = Encode.new(@prefs) #Create an instance for encoding
-		@ripping = SecureRip.new(@prefs, @encoding) #create an instance for ripping
-	end
+    computePercentage() # Do some pre-work to get the progress updater working later on
+    require 'digest/md5' # Needed for secure class, only have to load them ones here.
+    @encoding = Encode.new(@prefs) #Create an instance for encoding
+    @ripping = SecureRip.new(@prefs, @encoding) #create an instance for ripping
+  end
 
   def createHelpObjects
     require 'rubyripper/outputFile'
@@ -157,6 +158,6 @@ attr_reader :outputDir, :outputFile, :log
 		@prefs['percentages'] = Hash.new() #progress for each track
 		totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
 		@prefs['tracksToRip'].each{|track| totalSectors += @prefs['cd'].getLengthSector(track)} #update totalSectors
-		@prefs['tracksToRip'].each{|track| @prefs['percentages'][track] = @prefs['cd'].getLengthSector(track) / totalSectors}
+		@prefs['tracksToRip'].each{|track| @prefs['percentages'][track] = @disc.getLengthSector(track) / totalSectors}
 	end
 end
