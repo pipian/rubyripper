@@ -229,7 +229,7 @@ attr_reader :status, :artist, :album, :year, :genre
     end
 
     #if no hidden track is detected, getStartSector will return false
-    setHiddenTrack() if @prefs['cd'].getStartSector(0)
+    setHiddenTrack() if @disc.getStartSector(0)
   end
 
   # give the filename for given codec and track
@@ -255,7 +255,7 @@ attr_reader :status, :artist, :album, :year, :genre
     end
 
     filename = fileFilter(file)
-    puts filename if @prefs['debug']
+    puts filename if @prefs.debug
     return filename
   end
 
@@ -265,10 +265,10 @@ attr_reader :status, :artist, :album, :year, :genre
     @album = tagFilter(@md.album)
     @genre = tagFilter(@md.genre)
     @year = tagFilter(@md.year)
-    @prefs['cd'].audiotracks.times do |track|
-      @tracklist[track+1] = tagFilter(@md.tracklist[track])
+    (1..@disc.audiotracks).each do |track|
+      @tracklist[track] = tagFilter(@md.tracklist[track])
     end
-    if not @md.varArtists.empty?
+    if @md.various?
       (1..@disc.audiotracks).each do |track|
         @varArtists[track] = tagFilter(@md.varArtists[track])
       end
@@ -279,7 +279,7 @@ attr_reader :status, :artist, :album, :year, :genre
   def setHiddenTrack
     @tracklist[0] = tagFilter(_("Hidden Track").dup)
     @varArtists[0] = tagFilter(_("Unknown Artist").dup) if not @md.varArtists.empty?
-    @codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @prefs[codec]}
+    @codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @prefs.send(codec)}
   end
 
   # characters that will be changed for filenames (monkeyproof for FAT32)
