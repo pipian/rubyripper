@@ -45,119 +45,118 @@ attr_reader :outputDir, :outputFile, :log
     @log.start() # TODO find a better name for the class and function
     @rippingInfoAtStart.show()
 
-    # @disc.md.saveChanges() # TODO ??
+    # @disc.md.saveChanges() # TODO update the local freedb file
     # @outputDir = @prefs['Out'].getDir() # TODO ask if directory is available
     #waitForToc() # TODO ??
 
     computePercentage() # Do some pre-work to get the progress updater working later on
     require 'digest/md5' # Needed for secure class, only have to load them ones here.
-    @encoding = Encode.new(@prefs) #Create an instance for encoding
-    @ripping = SecureRip.new(@prefs, @encoding) #create an instance for ripping
   end
 
   def createHelpObjects
+    # determine file locations
     require 'rubyripper/outputFile'
     @outputFile = OutputFile.new(@prefs, @disc, @trackSelection)
 
+    # create the logfile + handle user interface updates + summary of errors
     require 'rubyripper/log'
     @log = Log.new(@prefs, @disc, @outputFile, @ui)
 
+    # show basic info for current rip and settings
     require 'rubyripper/rippingInfoAtStart'
     @rippingInfoAtStart = RippingInfoAtStart.new(@prefs, @disc, @log, @trackSelection)
+
+    # to execute the encoding
+    require 'rubyripper/encode'
+    @encoding = Encode.new(@prefs)
+
+    # to execute the ripping
+    require 'rubyripper/secureRip'
+    @ripping = SecureRip.new(@prefs, @encoding)
   end
 
-	def autofixCommonMistakes
-		flacIsNotAllowedToDeleteInputFile() if @prefs.flac
-		repairOtherPrefs() if @prefs.other
-		rippingErrorSectorsMustAtLeasEqualRippingNormalSectors()
-	end
+  def autofixCommonMistakes
+    flacIsNotAllowedToDeleteInputFile() if @prefs.flac
+    repairOtherPrefs() if @prefs.other
+    rippingErrorSectorsMustAtLeastEqualRippingNormalSectors()
+  end
 
-	 # filter out encoding flags that do non-encoding tasks
-	def flacIsNotAllowedToDeleteInputFile
-		@prefs.settingsFlac = @prefs.settingsFlac.gsub(' --delete-input-file', '')
-	end
+  # filter out encoding flags that do non-encoding tasks
+  def flacIsNotAllowedToDeleteInputFile
+    @prefs.settingsFlac = @prefs.settingsFlac.gsub(' --delete-input-file', '')
+  end
 
-	def repairOtherprefs
-		copyString = ""
-		lastChar = ""
+  def repairOtherprefs
+    copyString = ""
+    lastChar = ""
 
-		#first remove all double quotes. then iterate over each char
-		@prefs.settingsOther.delete('"').split(//).each do |char|
-			if char == '%' # prepend double quote before %
-				copyString << '"' + char
-			elsif lastChar == '%' # append double quote after %char
-				copyString << char + '"'
-			else
-				copyString << char
-			end
-			lastChar = char
-		end
+    #first remove all double quotes. then iterate over each char
+    @prefs.settingsOther.delete('"').split(//).each do |char|
+      if char == '%' # prepend double quote before %
+        copyString << '"' + char
+      elsif lastChar == '%' # append double quote after %char
+        copyString << char + '"'
+      else
+        copyString << char
+      end
+      lastChar = char
+    end
 
-		# above won't work for various artist
-		copyString.gsub!('"%v"a', '"%va"')
+    # above won't work for various artist
+    copyString.gsub!('"%v"a', '"%va"')
 
-		@prefs.settingsOther = copyString
-		puts @prefs.settingsOther if @prefs['debug']
-	end
+    @prefs.settingsOther = copyString
+    puts @prefs.settingsOther if @prefs['debug']
+  end
 
-	def rippingErrorSectorsMustAtLeasEqualRippingNormalSectors()
-	  if @prefs.reqMatchesErrors < @prefs.reqMatchesAll
-	    @prefs.reqMatchesErrors = @prefs.reqMatchesAll
-	  end
-	end
+  def rippingErrorSectorsMustAtLeastEqualRippingNormalSectors()
+    if @prefs.reqMatchesErrors < @prefs.reqMatchesAll
+      @prefs.reqMatchesErrors = @prefs.reqMatchesAll
+    end
+  end
 
-	# original init
-	#def backupInit
-	#	@directory = false
-	#	@prefs['log'] = false
-	#	@prefs['instance'] = gui
-	#	@error = false
-	#	@encoding = nil
-	#	@ripping = nil
-	#end
+  # the user wants to abort the ripping
+  def cancelRip
+    puts "User aborted current rip"
+    `killall cdrdao 2>&1`
+    @encoding.cancelled = true if @encoding != nil
+    @encoding = nil
+    @ripping.cancelled = true if @ripping != nil
+    @ripping = nil
+    `killall cdparanoia 2>&1` # kill any rip that is already started
+  end
 
-	# the user wants to abort the ripping
-	def cancelRip
-		puts "User aborted current rip"
-		`killall cdrdao 2>&1`
-		@encoding.cancelled = true if @encoding != nil
-		@encoding = nil
-		@ripping.cancelled = true if @ripping != nil
-		@ripping = nil
-		`killall cdparanoia 2>&1` # kill any rip that is already started
-	end
+  # wait for the Advanced Toc class to finish
+  # cdrdao takes a while to finish reading the disc
+  def waitForToc
+    if @prefs['create_cue'] && installed('cdrdao')
+      @prefs['log'].add(_("\nADVANCED TOC ANALYSIS (with cdrdao)\n"))
+      @prefs['log'].add(_("...please be patient, this may take a while\n\n"))
 
-	# wait for the Advanced Toc class to finish
-	# cdrdao takes a while to finish reading the disc
-	def waitForToc
-		if @prefs['create_cue'] && installed('cdrdao')
-			@prefs['log'].add(_("\nADVANCED TOC ANALYSIS (with cdrdao)\n"))
-			@prefs['log'].add(_("...please be patient, this may take a while\n\n"))
+      @prefs['cd'].updateprefs(@prefs) # update the rip prefs
 
-			@prefs['cd'].updateprefs(@prefs) # update the rip prefs
+      @prefs['cd'].toc.log.each do |message|
+        @log.add(message)
+      end
+    end
+  end
 
-			@prefs['cd'].toc.log.each do |message|
-				@prefs['log'].add(message)
-			end
-		end
-	end
+  def summary
+    return @log.short_summary
+  end
 
-	def summary
-		return @prefs['log'].short_summary
-	end
+  def postfixDir
+    @outputFile.postfixDir()
+  end
 
-	def postfixDir
-		@prefs['Out'].postfixDir()
-	end
+  def overwriteDir
+    @outputFile.overwriteDir()
+  end
 
-	def overwriteDir
-		@prefs['Out'].overwriteDir()
-	end
-
-	def computePercentage
-		@prefs['percentages'] = Hash.new() #progress for each track
-		totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
-		@prefs['tracksToRip'].each{|track| totalSectors += @prefs['cd'].getLengthSector(track)} #update totalSectors
-		@prefs['tracksToRip'].each{|track| @prefs['percentages'][track] = @disc.getLengthSector(track) / totalSectors}
-	end
+  def computePercentage
+    @updatePercForEachTrack = Hash.new()
+    totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
+    @trackSelection.each{|track| totalSectors += @disc.getLengthSector(track)} #update totalSectors
+    @trackSelection.each{|track| @updatePercForEachTrack[track] = @disc.getLengthSector(track) / totalSectors}
+  end
 end
