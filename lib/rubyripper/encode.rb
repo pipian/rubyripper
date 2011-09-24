@@ -15,138 +15,143 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+# TODO make one general Encode class, subclass each codec
+# TODO move the managing of threads to a separate class
 # The Encode class is responsible for managing the diverse codecs.
 
+require 'thread' # for the sized queue object
+require 'monitor' # for the monitor object
+
 class Encode
-	attr_writer :cancelled
+  attr_writer :cancelled
 
-	require 'thread'
+  def initialize(prefs, outputFile, log, trackSelection)
+    @prefs = prefs
+    @out = outputFile
+    @log = log
+    @trackSelection = trackSelection
+    @cancelled = false
+    @progress = 0.0
+    @threads = []
+    @queue = SizedQueue.new(@prefs.maxThreads) if @prefs.maxThreads != 0
+    @lock = Monitor.new
 
-	def initialize(settings)
-		@settings = settings
-		@cancelled = false
-		@progress = 0.0
-		@threads = []
-		@queue = SizedQueue.new(@settings['maxThreads']) if @settings['maxThreads'] != 0
-		@lock = Monitor.new
-		@out = @settings['Out'] # create a shortcut
+    # Set the charset environment variable to UTF-8. Oggenc needs this.
+    # Perhaps others need it as well.
+    ENV['CHARSET'] = "UTF-8"
 
-		# Set the charset environment variable to UTF-8. Oggenc needs this.
-		# Perhaps others need it as well.
-		ENV['CHARSET'] = "UTF-8"
+    @codecs = 0 # number of codecs
+    ['flac','vorbis','mp3','wav','other'].each do |codec|
+      @codecs += 1 if @prefs.send(codec)
+    end
 
-		@codecs = 0 # number of codecs
-		['flac','vorbis','mp3','wav','other'].each do |codec|
-			@codecs += 1 if @settings[codec]
-		end
+    # all encoding tasks are saved here, to determine when to delete a wav
+    @tasks = Hash.new
+    @trackSelection.each{|track| @tasks[track] = @codecs}
+  end
 
-		# all encoding tasks are saved here, to determine when to delete a wav
-		@tasks = Hash.new
-		@settings['tracksToRip'].each{|track| @tasks[track] = @codecs}
-	end
+  # is called when a track is ripped succesfully
+  def addTrack(track)
+    if normalize(track)
+      startEncoding(track)
+    end
+  end
 
-	# is called when a track is ripped succesfully
-	def addTrack(track)
-		if normalize(track)
-			startEncoding(track)
-		end
-	end
+  # encode track when normalize is finished
+  def startEncoding(track)
+    # mark the progress bar as being started
+    @log.encPerc(0.0) if track == @trackSelection[0]
+    ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
+      if @prefs.send(codec) && @cancelled == false
+        if @prefs.maxThreads == 0
+          encodeTrack(track,codec)
+        else
+          puts "Adding track #{track} (#{codec}) to the queue.." if @prefs.debug
+          @queue << 1 # add a value to the queue, if full wait here.
+          @threads << Thread.new do
+            encodeTrack(track,codec)
+            puts "Removing track #{track} (#{codec}) from the queue.." if @prefs.debug
+            @queue.shift() # move up in the queue to the first waiter
+          end
+        end
+      end
+    end
 
-	# encode track when normalize is finished
-	def startEncoding(track)
-		# mark the progress bar as being started
-		@settings['log'].encPerc(0.0) if track == @settings['tracksToRip'][0]
-		['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-			if @settings[codec] && @cancelled == false
-				if @settings['maxThreads'] == 0
-					encodeTrack(track,codec)
-				else
-					puts "Adding track #{track} (#{codec}) to the queue.." if @settings['debug']
-					@queue << 1 # add a value to the queue, if full wait here.
-					@threads << Thread.new do
-						encodeTrack(track,codec)
-						puts "Removing track #{track} (#{codec}) from the queue.." if @settings['debug']
-						@queue.shift() # move up in the queue to the first waiter
-					end
-				end
-			end
-		end
+    #give the signal we're finished
+    if track == @trackSelection[-1] && @cancelled == false
+      @threads.each{|thread| thread.join()}
+      finished()
+    end
+  end
 
-		#give the signal we're finished
-		if track == @settings['tracksToRip'][-1] && @cancelled == false
-			@threads.each{|thread| thread.join()}
-			finished()
-		end
-	end
+  # respect the normalize setting
+  def normalize(track)
+    continue = true
+    if @prefs.normalize != 'normalize'
+    elsif !installed('normalize')
+      puts "WARNING: normalize is not installed on your system!"
+    elsif @prefs.gain == 'album' && @trackSelection[-1] == track
+      command = "normalize -b \"#{File.join(@out.getTempDir(),'*.wav')}\""
+      `#{command}`
+      # now the wavs are altered, the encoding can start
+      @trackSelection.each{|track| startEncoding(track)}
+      continue = false
+    elsif @prefs.gain == 'track'
+      command = "normalize \"#{@out.getTempFile(track, 1)}\""
+      `#{command}`
+    end
+    return continue
+  end
 
-	# respect the normalize setting
-	def normalize(track)
-		continue = true
-		if @settings['normalize'] != 'normalize'
-		elsif !installed('normalize')
-			puts "WARNING: normalize is not installed on your system!"
-		elsif @settings['gain'] == 'album' && @settings['tracksToRip'][-1] == track
-			command = "normalize -b \"#{File.join(@out.getTempDir(),'*.wav')}\""
-			`#{command}`
-			# now the wavs are altered, the encoding can start
-			@settings['tracksToRip'].each{|track| startEncoding(track)}
-			continue = false
-		elsif @settings['gain'] == 'track'
-			command = "normalize \"#{@out.getTempFile(track, 1)}\""
-			`#{command}`
-		end
-		return continue
-	end
+  # call the specific codec function for the track
+  def encodeTrack(track, codec)
+    if codec == 'flac' ; doFlac(track)
+    elsif codec == 'vorbis' ; doVorbis(track)
+    elsif codec == 'mp3' ; doMp3(track)
+    elsif codec == 'wav' ; doWav(track)
+    elsif codec == 'other' && @prefs['othersettings'] != nil ; doOther(track)
+    end
 
-	# call the specific codec function for the track
-	def encodeTrack(track, codec)
-		if codec == 'flac' ; doFlac(track)
-		elsif codec == 'vorbis' ; doVorbis(track)
-		elsif codec == 'mp3' ; doMp3(track)
-		elsif codec == 'wav' ; doWav(track)
-		elsif codec == 'other' && @settings['othersettings'] != nil ; doOther(track)
-		end
+    @lock.synchronize do
+      File.delete(@out.getTempFile(track, 1)) if (@tasks[track] -= 1) == 0
+      updateProgress(@prefs['percentages'][track] / @codecs)
+    end
+  end
 
-		@lock.synchronize do
-			File.delete(@out.getTempFile(track, 1)) if (@tasks[track] -= 1) == 0
-			updateProgress(@settings['percentages'][track] / @codecs)
-		end
-	end
-
-	# update the gui
-	def updateProgress(progress)
-		@progress += progress
-		@settings['log'].encPerc(@progress)
-	end
+  # update the gui
+  def updateProgress(progress)
+    @progress += progress
+    @log.encPerc(@progress)
+  end
 
 
-	def finished
-		puts "Inside the finished function" if @settings['debug']
-		@progress = 1.0 ; @settings['log'].encPerc(@progress)
-		@settings['log'].summary(@settings['req_matches_all'], @settings['req_matches_errors'], @settings['max_tries'])
-		if @settings['no_log'] ; @settings['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
+  def finished
+    puts "Inside the finished function" if @prefs.debug
+		@progress = 1.0 ; @log.encPerc(@progress)
+		@log.summary()
+		if @prefs['no_log'] ; @prefs['log'].delLog end #Delete the logfile if no correction was needed if no_log is true
 		@out.cleanTempDir()
-		if (@settings['log'].rippingErrors || @settings['log'].encodingErrors)
-			@settings['instance'].update("finished", false)
+		if (@prefs['log'].rippingErrors || @prefs['log'].encodingErrors)
+			@prefs['instance'].update("finished", false)
 		else
-			@settings['instance'].update("finished", true)
+			@prefs['instance'].update("finished", true)
 		end
 	end
 
 	def replaygain(filename, codec, track)
-		if @settings['normalize'] == "replaygain"
+		if @prefs['normalize'] == "replaygain"
 			command = ''
-			if @settings['gain'] == "album" && @settings['tracksToRip'][-1] == track || @settings['gain']=="track"
+			if @prefs['gain'] == "album" && @prefs['tracksToRip'][-1] == track || @prefs['gain']=="track"
 				if codec == 'flac' && installed('metaflac')
-					command = "metaflac --add-replay-gain \"#{if @settings['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
+					command = "metaflac --add-replay-gain \"#{if @prefs['gain'] =="track" ; filename else File.dirname(filename) + "\"/*.flac" end}"
 				elsif codec == 'vorbis' && installed('vorbisgain')
-					command = "vorbisgain #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
-				elsif codec == 'mp3' && installed('mp3gain') && @settings['gainTagsOnly']
-					command = "mp3gain -c #{if @settings['gain'] =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
-				elsif codec == 'mp3' && installed('mp3gain') && !@settings['gainTagsOnly']
-					command = "mp3gain -c #{if @settings['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
+					command = "vorbisgain #{if @prefs['gain'] =="track" ; "\"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.ogg" end}"
+				elsif codec == 'mp3' && installed('mp3gain') && @prefs['gainTagsOnly']
+					command = "mp3gain -c #{if @prefs['gain'] =="track" ; "\"" + filename + "\"" else "\"" + File.dirname(filename) + "\"/*.mp3" end}"
+				elsif codec == 'mp3' && installed('mp3gain') && !@prefs['gainTagsOnly']
+					command = "mp3gain -c #{if @prefs['gain'] =="track" ; "-r \"" + filename + "\"" else "-a \"" + File.dirname(filename) + "\"/*.mp3" end}"
 				elsif codec == 'wav' && installed('wavegain')
-					command = "wavegain #{if @settings['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
+					command = "wavegain #{if @prefs['gain'] =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
 				end
 			end
 			`#{command}` if command != ''
@@ -155,14 +160,14 @@ class Encode
 
 	def doFlac(track)
 		filename = @out.getFile(track, 'flac')
-		if !@settings['flacsettings'] ; @settings['flacsettings'] = '--best' end
+		if !@prefs['flacsettings'] ; @prefs['flacsettings'] = '--best' end
 		flac(filename, track)
 		replaygain(filename, 'flac', track)
 	end
 
 	def doVorbis(track)
 		filename = @out.getFile(track, 'vorbis')
-		if !@settings['vorbissettings'] ; @settings['vorbissettings'] = '-q 6' end
+		if !@prefs['vorbissettings'] ; @prefs['vorbissettings'] = '-q 6' end
 		vorbis(filename, track)
 		replaygain(filename, 'vorbis', track)
 	end
@@ -181,7 +186,7 @@ class Encode
 'SOUNDTRACK', 'SOUTHERN ROCK', 'SPACE', 'SPEECH', 'SWING', 'SYMPHONIC ROCK', 'SYMPHONY', 'SYNTHPOP', 'TANGO', 'TECHNO', 'TECHNO-INDUSTRIAL', 'TERROR', 'THRASH METAL', \
 'TOP 40', 'TRAILER', 'TRANCE', 'TRIBAL', 'TRIP-HOP', 'VOCAL']
 		filename = @out.getFile(track, 'mp3')
-		if !@settings['mp3settings'] ; @settings['mp3settings'] = "--preset fast standard" end
+		if !@prefs['mp3settings'] ; @prefs['mp3settings'] = "--preset fast standard" end
 
 		# lame versions before 3.98 didn't support other genre tags than the
 		# ones defined above, so change it to 'other' to prevent crashes
@@ -205,7 +210,7 @@ class Encode
 
 	def doOther(track)
 		filename = @out.getFile(track, 'other')
-		command = @settings['othersettings'].dup
+		command = @prefs['othersettings'].dup
 
 		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
 		command.gsub!('%n', sprintf("%02d", track)) if track != "image"
@@ -233,13 +238,13 @@ class Encode
 		tags += "--tag ALBUM=\"#{@out.album}\" "
 		tags += "--tag DATE=\"#{@out.year}\" "
 		tags += "--tag GENRE=\"#{@out.genre}\" "
-		tags += "--tag DISCID=\"#{@settings['cd'].discId}\" "
-		tags += "--tag DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
+		tags += "--tag DISCID=\"#{@prefs['cd'].discId}\" "
+		tags += "--tag DISCNUMBER=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
 
 		 # Handle tags for single file images differently
-		if @settings['image']
+		if @prefs['image']
 			tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
-			if @settings['create_cue'] # embed the cuesheet
+			if @prefs['create_cue'] # embed the cuesheet
 				tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
 			end
 		else # Handle tags for var artist discs differently
@@ -251,14 +256,14 @@ class Encode
 			end
 			tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
 			tags += "--tag TRACKNUMBER=#{track} "
-			tags += "--tag TRACKTOTAL=#{@settings['cd'].audiotracks} "
+			tags += "--tag TRACKTOTAL=#{@prefs['cd'].audiotracks} "
 		end
 
 		command = String.new
 		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
-		command +="flac #{@settings['flacsettings']} -o \"#{filename}\" #{tags}\
+		command +="flac #{@prefs['flacsettings']} -o \"#{filename}\" #{tags}\
 \"#{@out.getTempFile(track, 1)}\""
-		command += " 2>&1" unless @settings['verbose']
+		command += " 2>&1" unless @prefs['verbose']
 
 		checkCommand(command, track, 'flac')
 	end
@@ -269,11 +274,11 @@ class Encode
 		tags += "-c ALBUM=\"#{@out.album}\" "
 		tags += "-c DATE=\"#{@out.year}\" "
 		tags += "-c GENRE=\"#{@out.genre}\" "
-		tags += "-c DISCID=\"#{@settings['cd'].discId}\" "
-		tags += "-c DISCNUMBER=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
+		tags += "-c DISCID=\"#{@prefs['cd'].discId}\" "
+		tags += "-c DISCNUMBER=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
 
 		 # Handle tags for single file images differently
-		if @settings['image']
+		if @prefs['image']
 			tags += "-c ARTIST=\"#{@out.artist}\" "
 		else # Handle tags for var artist discs differently
 			if @out.getVarArtist(track) != ''
@@ -284,14 +289,14 @@ class Encode
 			end
 			tags += "-c TITLE=\"#{@out.getTrackname(track)}\" "
 			tags += "-c TRACKNUMBER=#{track} "
-			tags += "-c TRACKTOTAL=#{@settings['cd'].audiotracks}"
+			tags += "-c TRACKTOTAL=#{@prefs['cd'].audiotracks}"
 		end
 
 		command = String.new
 		command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
-		command += "oggenc -o \"#{filename}\" #{@settings['vorbissettings']} \
+		command += "oggenc -o \"#{filename}\" #{@prefs['vorbissettings']} \
 #{tags} \"#{@out.getTempFile(track, 1)}\""
-		command += " 2>&1" unless @settings['verbose']
+		command += " 2>&1" unless @prefs['verbose']
 
 		checkCommand(command, track, 'vorbis')
 	end
@@ -302,11 +307,11 @@ class Encode
 		tags += "--tl \"#{@out.album}\" "
 		tags += "--ty \"#{@out.year}\" "
 		tags += "--tg \"#{@out.genre}\" "
-		tags += "--tv TXXX=DISCID=\"#{@settings['cd'].discId}\" "
-		tags += "--tv TPOS=\"#{@settings['cd'].md.discNumber}\" " if @settings['cd'].md.discNumber
+		tags += "--tv TXXX=DISCID=\"#{@prefs['cd'].discId}\" "
+		tags += "--tv TPOS=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
 
 		 # Handle tags for single file images differently
-		if @settings['image']
+		if @prefs['image']
 			tags += "--ta \"#{@out.artist}\" "
 		else # Handle tags for var artist discs differently
 			if @out.getVarArtist(track) != ''
@@ -316,7 +321,7 @@ class Encode
 				tags += "--ta \"#{@out.artist}\" "
 			end
 			tags += "--tt \"#{@out.getTrackname(track)}\" "
-			tags += "--tn #{track}/#{@settings['cd'].audiotracks} "
+			tags += "--tn #{track}/#{@prefs['cd'].audiotracks} "
 		end
 
 		# set UTF-8 tags (not the filename) to latin because of a lame bug.
@@ -337,9 +342,9 @@ class Encode
 			filename.force_encoding("ASCII-8BIT")
 		end
 
-		command += "lame #{@settings['mp3settings']} #{tags}\"\
+		command += "lame #{@prefs['mp3settings']} #{tags}\"\
 #{inputWavFile}\" \"#{filename}\""
-		command += " 2>&1" unless @settings['verbose']
+		command += " 2>&1" unless @prefs['verbose']
 
 		checkCommand(command, track, 'mp3')
 	end
@@ -354,14 +359,14 @@ class Encode
 	end
 
 	def checkCommand(command, track, codec)
-		puts "command = #{command}" if @settings['debug']
+		puts "command = #{command}" if @prefs.debug
 
 		exec = IO.popen("nice -n 6 #{command}") #execute command
 		exec.readlines() #get all the output
 
 		if Process.waitpid2(exec.pid)[1].exitstatus != 0
-			@settings['log'].add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
-			@settings['log'].encodingErrors = true
+			@prefs['log'].add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
+			@prefs['log'].encodingErrors = true
 		end
 	end
 end

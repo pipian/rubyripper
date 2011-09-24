@@ -97,12 +97,15 @@ attr_writer :encodingErrors
     if trial == 0; @not_corrected_tracks << track end #Reached maxtries and still got errors
   end
 
-  def summary(matches_all, matches_errors, maxtries) #Give an overview of errors
+  def summary() #Give an overview of errors
     if @encodingErrors ; addLog(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
     addLog(_("\nRIPPING SUMMARY\n\n"), true)
 
-    addLog(_("All chunks were tried to match at least %s times.\n") % [matches_all], true)
-    if matches_all != matches_errors; addLog(_("Chunks that differed after %s trials,\nwere tried to match %s times.\n") % [matches_all, matches_errors], true) end
+    addLog(_("All chunks were tried to match at least %s times.\n") % [@prefs.reqMatchesAll], true)
+    if @prefs.reqMatchesAll != @prefs.reqMatchesErrors
+      addLog(_("Chunks that differed after %s trials,") % [@prefs.reqMatchesAll], true)
+      addLog(_("\nwere tried to match %s times.\n") % [@prefs.reqMatchesErrors], true)
+    end
 
     if @problem_tracks.empty?
       addLog(_("None of the tracks gave any problems\n"), true)
@@ -117,13 +120,13 @@ attr_writer :encodingErrors
     end
 
     if !@problem_tracks.empty? # At least some correction was necessary
-      position_analyse(matches_errors, maxtries)
+      position_analyse()
       @short_summary += _("The exact positions of the suspicious chunks\ncan be found in the ripping log\n")
     end
     @logfiles.each{|logfile| logfile.close} #close all the files
   end
 
-  def position_analyse(matches_errors, maxtries) # Give an overview of suspicion position in the logfile
+  def position_analyse() # Give an overview of suspicion position in the logfile
     addLog(_("\nSUSPICIOUS POSITION ANALYSIS\n\n"))
     addLog(_("Since there are 75 chunks per second, after making the notion of the\n"))
     addLog(_("suspicious position, the amount of initially mismatched chunks for\nthat position is shown.\n\n"))

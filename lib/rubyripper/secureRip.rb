@@ -19,6 +19,7 @@
 # * Managing cdparanoia to fetch the files
 # * Comparing the fetched files
 # * Repairing the files if necessary
+require 'digest/md5' # Needed for secure class, only have to load them ones here.
 
 class SecureRip
 	attr_writer :cancelled

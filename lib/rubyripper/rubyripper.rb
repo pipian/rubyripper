@@ -49,8 +49,8 @@ attr_reader :outputDir, :outputFile, :log
     # @outputDir = @prefs['Out'].getDir() # TODO ask if directory is available
     #waitForToc() # TODO ??
 
-    computePercentage() # Do some pre-work to get the progress updater working later on
-    require 'digest/md5' # Needed for secure class, only have to load them ones here.
+    calculatePercentageUpdateForProgressbar()
+    @ripping.start()
   end
 
   def createHelpObjects
@@ -68,7 +68,7 @@ attr_reader :outputDir, :outputFile, :log
 
     # to execute the encoding
     require 'rubyripper/encode'
-    @encoding = Encode.new(@prefs)
+    @encoding = Encode.new(@prefs, @outputFile, @log, @trackSelection)
 
     # to execute the ripping
     require 'rubyripper/secureRip'
@@ -153,7 +153,7 @@ attr_reader :outputDir, :outputFile, :log
     @outputFile.overwriteDir()
   end
 
-  def computePercentage
+  def calculatePercentageUpdateForProgressbar()
     @updatePercForEachTrack = Hash.new()
     totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
     @trackSelection.each{|track| totalSectors += @disc.getLengthSector(track)} #update totalSectors
