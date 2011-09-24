@@ -287,6 +287,7 @@ attr_reader :status, :artist, :album, :year, :genre
     if not isDir
       var.gsub!('/', '') #no slashes allowed in filenames
     end
+    var.gsub!('$', 's') #no dollars allowed
     var.gsub!(':', '') #no colons allowed in FAT
     var.gsub!('*', '') #no asterix allowed in FAT
     var.gsub!('?', '') #no question mark allowed in FAT
