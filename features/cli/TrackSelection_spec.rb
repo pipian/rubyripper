@@ -24,32 +24,32 @@ describe "Given I have a disc inserted and want to rip tracks" do
   let(:output) {OutputMock.new}
   let(:input) {InputMock.new}
   let(:deps) {double('Dependency').as_null_object}
-  
+
   # Use default preferences so our expectations are clear
   before(:all) do
     $TST_DEFAULT_PREFS = true
-    $TST_DISC_PARANOIA = File.read(File.join(File.dirname(__FILE__), 
+    $TST_DISC_PARANOIA = File.read(File.join(File.dirname(__FILE__),
       '../data/discs/disc1/cdparanoia'))
-    $TST_DISC_CDINFO = File.read(File.join(File.dirname(__FILE__), 
+    $TST_DISC_CDINFO = File.read(File.join(File.dirname(__FILE__),
       '../data/discs/disc1/cdinfo'))
-    $TST_DISC_FREEDB = File.read(File.join(File.dirname(__FILE__), 
-      '../data/discs/disc1/freedb'))  
+    $TST_DISC_FREEDB = File.read(File.join(File.dirname(__FILE__),
+      '../data/discs/disc1/freedb'))
   end
-  
+
   before(:each) do ; $TST_INPUT = input ; end
-  
+
   def start
     app = CommandLineInterface.new(output, prefs=nil, deps, disc=nil, int=nil)
     app.start()
   end
-  
+
   context "When I am in the main menu" do
     it "Should have an option to select tracks, by default all tracks are selected" do
       start()
-      output.should be_visible(' 4) Select the tracks to rip (default = all)') 
+      output.should be_visible(' 4) Select the tracks to rip (default = all)')
     end
   end
-  
+
   context "When I go to the track selection menu" do
     it "should show an overview of all tracks to toggle" do
       input << 4
@@ -71,7 +71,7 @@ describe "Given I have a disc inserted and want to rip tracks" do
       output.should be_visible('99) Back to main menu')
       output.should be_visible('Please type the number you wish to change [99] : ')
     end
-    
+
     it "should allow to toggle all tracks off at once" do
       input << 4 ; input << 88
       start()
@@ -79,7 +79,7 @@ describe "Given I have a disc inserted and want to rip tracks" do
       output.should be_visible(' 7) In The Black                   [ ]')
       output.should be_visible('12) Whorehouse Blues               [ ]')
     end
-    
+
     it "should allow to toggle all tracks on at once" do
       input << 4 ; input << 88 ; input << 88
       start()
@@ -87,13 +87,13 @@ describe "Given I have a disc inserted and want to rip tracks" do
       output.count(' 7) In The Black                   [*]').should == 2
       output.count('12) Whorehouse Blues               [*]').should == 2
     end
-    
+
     it "should remember the track selection when going back" do
       input << 4 ; input << 1 ; input.pressEnter ; input << 4
       start()
-      output.count(' 1) Terminal Show                  [ ]').should == 2 
+      output.count(' 1) Terminal Show                  [ ]').should == 2
     end
-    
+
     it "should show a message if an input is not valid" do
       input << 4 ; input << 13
       start()

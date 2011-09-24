@@ -92,7 +92,7 @@ module Preferences
       @data.verbose = false
       @data.debug = false
     end
-    
+
     # override some settings for testing to be predictable
     def setTestingDefaults
       @data.cdrom = '/dev/cdrom'

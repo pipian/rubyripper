@@ -56,7 +56,7 @@ attr_reader :outputDir, :outputFile, :log
 
   def createHelpObjects
     require 'rubyripper/outputFile'
-    @outputFile = OutputFile.new(@prefs, @disc)
+    @outputFile = OutputFile.new(@prefs, @disc, @trackSelection)
 
     require 'rubyripper/log'
     @log = Log.new(@prefs, @disc, @outputFile, @ui)

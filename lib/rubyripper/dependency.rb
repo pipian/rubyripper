@@ -54,7 +54,7 @@ class Dependency
     end
     return false
   end
-  
+
 private
 
   # fill the Hash with consequences

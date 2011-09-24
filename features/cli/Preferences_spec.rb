@@ -130,7 +130,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
       output.should be_visible(" 8) Debug mode [ ]")
       output.should be_visible("99) Back to settings main menu")
     end
-    
+
     context "When updating the preferences"
       it "should show the updated ripping preferences" do
         3.times{input << 1} ; input << '/dev/dvdrom' # ripping drive
@@ -151,7 +151,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         output.should be_visible(" 7) Eject disc after ripping [ ]")
         output.should be_visible(" 8) Only keep log when errors [*]")
       end
-      
+
       it "should show the updated TOC analysis preferences" do
         input << 1 ; input << 2 ; input << 1 # cuesheet
         input << 2 #single file
@@ -167,7 +167,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         output.should be_visible(" 5) Append or prepend audio: append")
         output.should be_visible(" 6) Way to handle pre-emphasis: sox")
       end
-      
+
       it "should show the updated the codecs preferences" do
         input << 1 ; input << 3 ; input << 1 # flac
         input << 2 ; input << '--good' # flac settings
@@ -201,7 +201,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         output.should be_visible("14) Normalize program: replaygain")
         output.should be_visible("15) Normalize modus: track")
       end
-      
+
       it "should show the updated the freedb preferences" do
         input << 1 ; input << 4 ; input << 1 # use freedb
         input << 2 # first hit
@@ -215,7 +215,7 @@ describe "Given the rubyripper CLI is started and shows the main menu" do
         output.should be_visible(" 4) Freedb username: anonymous")
         output.should be_visible(" 5) Freedb hostname: my_secret.com")
       end
-      
+
       it "should show the updated other preferences" do
         input << 1 ; input << 5 # go to other menu
         input << 1 ; input << '/home/test2' # basedir

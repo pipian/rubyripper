@@ -102,7 +102,7 @@ class FileAndDir
 	end
 
   private
-  
+
   def writeContent(filename, content)
     File.open(filename, 'w') do |file|
 	  	file.write(content)

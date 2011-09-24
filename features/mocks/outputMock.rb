@@ -28,7 +28,7 @@ class OutputMock
     logOutput() if visible == false
     return visible
   end
-  
+
   # how many times found?
   def count(text)
     count = 0

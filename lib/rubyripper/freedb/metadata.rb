@@ -18,7 +18,7 @@
 # Store all metadata
 class Metadata
   attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtist,
-      :extraDiscInfo, :discid
+      :extraDiscInfo, :discid, :discNumber
 
   DEFAULT_METADATA = _('Unknown')
   DEFAULT_TRACKNAME = _('Track %s')

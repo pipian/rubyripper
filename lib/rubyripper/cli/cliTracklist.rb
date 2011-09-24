@@ -20,7 +20,7 @@ require 'rubyripper/cli/cliDisc'
 
 # Tracklist class is responsible for showing and editing the metadata
 class CliTracklist
-  
+
   def initialize(out=nil, int=nil, prefs, disc)
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
@@ -42,8 +42,8 @@ class CliTracklist
       selection()
       loopTrackMenu()
     end
-  end  
-  
+  end
+
 private
   # show the tracks
   def showTrackMenu
@@ -59,7 +59,7 @@ private
     @out.puts ''
     @int.get("Please type the number you wish to change", 99)
   end
-  
+
   # show 30 characters and fill it out
   def short(name)
     @maxLength ||= 30
@@ -67,17 +67,17 @@ private
       name[0..(@maxLength-1)]
     else
       name + ' ' * (@maxLength -name.length)
-    end 
+    end
   end
-  
+
   def showBool(number)
     @selection.include?(number) ? '[*]' : '[ ]'
   end
-  
+
   def noValidChoiceMessage(choice)
     @out.puts _("Number #{choice} is not a valid choice, try again.")
   end
-  
+
   # add missing track, remove existing track
   def toggleTrack(track)
     if @selection.include?(track)
@@ -87,14 +87,14 @@ private
       @selection.sort!
     end
   end
-  
+
   # loop this menu untill user chooses 99
   def loopTrackMenu
     number = showTrackMenu()
     if number > 0 && number <= @cliDisc.tracks.size
       toggleTrack(number)
     elsif number == 88
-      @selection.empty? ? @selection = @cliDisc.tracks.keys : @selection.clear()  
+      @selection.empty? ? @selection = @cliDisc.tracks.keys : @selection.clear()
     elsif number == 99
       @out.puts ''
     else noValidChoiceMessage(number)

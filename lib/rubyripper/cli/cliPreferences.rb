@@ -179,7 +179,7 @@ private
       loopMainMenu()
     end
   end
-  
+
   def noValidChoiceMessage(choice)
     @out.puts _("Number #{choice} is not a valid choice, try again")
   end
