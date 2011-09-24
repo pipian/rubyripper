@@ -22,6 +22,7 @@ require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/scanDiscCdinfo'
 require 'rubyripper/disc/freedbString'
 
+# TODO point to cdparanoia with ruby magic instead of copying functions
 class Disc
 attr_reader :metadata
 
@@ -53,6 +54,7 @@ attr_reader :metadata
   def getLengthSector(track) ; @cdpar.getLengthSector(track) ; end
   def getLengthText(track) ; @cdpar.getLengthText(track) ; end
   def getFileSize(track) ; @cdpar.getFileSize(track) ; end
+  def multipleDriveSupport ; @cdpar.multipleDriveSupport ; end
 
   # helper functions for @freedb
   def freedbString ; @freedb.freedbString ; end

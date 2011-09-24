@@ -18,6 +18,7 @@
 # TODO make one general Encode class, subclass each codec
 # TODO move the managing of threads to a separate class
 # TODO move the finished code to another class
+# TODO move the commands to fireCommand class
 # The Encode class is responsible for managing the diverse codecs.
 
 require 'thread' # for the sized queue object

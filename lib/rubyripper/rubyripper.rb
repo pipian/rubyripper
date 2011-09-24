@@ -50,7 +50,7 @@ attr_reader :outputDir, :outputFile, :log
     #waitForToc() # TODO ??
 
     calculatePercentageUpdateForProgressbar()
-    @ripping.start()
+    @ripper.ripTracks()
   end
 
   def createHelpObjects
@@ -72,7 +72,7 @@ attr_reader :outputDir, :outputFile, :log
 
     # to execute the ripping
     require 'rubyripper/secureRip'
-    @ripping = SecureRip.new(@prefs, @encoding)
+    @ripper = SecureRip.new(@prefs, @trackSelection, @disc, @outputFile, @log, @encoding)
   end
 
   def autofixCommonMistakes

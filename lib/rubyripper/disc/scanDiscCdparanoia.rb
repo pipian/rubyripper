@@ -21,7 +21,7 @@
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
   attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack,
-      :totalSectors, :error
+      :totalSectors, :error, :multipleDriveSupport
 
   # * preferences is an instance of Preferences
   # * fireCommand is an instance of FireCommand
@@ -126,9 +126,13 @@ class ScanDiscCdparanoia
     if $TST_DISC_PARANOIA != nil
       query = $TST_DISC_PARANOIA
     else
+      @multipleDriveSupport = true
       query = @fire.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
       # some versions of cdparanoia don't support the cdrom parameter
-      query = @fire.launch("cdparanoia -vQ 2>&1") if query.include?('USAGE')
+      if query.include?('USAGE')
+        query = @fire.launch("cdparanoia -vQ 2>&1")
+        @multipleDriveSupport = false
+      end
     end
     return query
   end

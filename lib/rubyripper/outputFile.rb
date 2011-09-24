@@ -241,8 +241,8 @@ attr_reader :status, :artist, :album, :year, :genre
     else artist = getVarArtist(track + 1) ; varArtist = @md.artist end
 
     {'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
-    '%y' => @md.year, '%n' => sprintf("%02d", track + 1), '%va' => varArtist,
-    '%t' => getTrackname(track + 1)}.each do |key, value|
+    '%y' => @md.year, '%n' => sprintf("%02d", track), '%va' => varArtist,
+    '%t' => getTrackname(track)}.each do |key, value|
       file.gsub!(key, value)
     end
 
@@ -279,7 +279,7 @@ attr_reader :status, :artist, :album, :year, :genre
   def setHiddenTrack
     @tracklist[0] = tagFilter(_("Hidden Track").dup)
     @varArtists[0] = tagFilter(_("Unknown Artist").dup) if not @md.varArtists.empty?
-    @codecs.each{|codec| @file[codec][0] = giveFileName(codec, -1) if @prefs.send(codec)}
+    @codecs.each{|codec| @file[codec][0] = giveFileName(codec, 0) if @prefs.send(codec)}
   end
 
   # characters that will be changed for filenames (monkeyproof for FAT32)
