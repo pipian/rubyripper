@@ -53,7 +53,7 @@ private
 
 	# load all necessary files and setup preferences objects
 	def preferences
-		require 'rubyripper/fileAndDir.rb'
+		require 'rubyripper/system/fileAndDir.rb'
 		require 'rubyripper/preferences/loadPrefs.rb'
 		require 'rubyripper/preferences/savePrefs.rb'
 		require 'rubyripper/preferences/cleanPrefs.rb'

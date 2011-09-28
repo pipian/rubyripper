@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/fileAndDir'
+require 'rubyripper/system/fileAndDir'
 
 # This class will try to save the Rubyripper config file
 module Preferences

@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/fileAndDir'
+require 'rubyripper/system/fileAndDir'
 
 # A class that tries to locally find an entry in $HOME/.cddb
 class LoadFreedbRecord

@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/fileAndDir'
+require 'rubyripper/system/fileAndDir'
 
 # class helping to store the retrieved freedb record
 # do this conform standards at location $HOME/.cddb/<category>/<discid>
