@@ -24,7 +24,7 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 # Try to find the rubyripper lib files
 begin
   require 'rubyripper/base'
-  require 'rubyripper/dependency'
+  require 'rubyripper/system/dependency'
   require 'rubyripper/errors'
   require 'rubyripper/cli/cliGetAnswer'
   require 'rubyripper/cli/cliPreferences'

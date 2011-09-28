@@ -26,9 +26,9 @@ class ScanDiscCdinfo
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
-  def initialize(preferences, fireCommand)
+  def initialize(preferences, execute)
     @prefs = preferences
-    @fire = fireCommand
+    @exec = execute
 
     @startSector = Hash.new
     @dataTracks = Array.new
@@ -37,7 +37,7 @@ class ScanDiscCdinfo
   # scan the contents of the disc
   def scan
     query = $TST_DISC_CDINFO
-    query ||= @fire.launch("cd-info -C #{@prefs.cdrom} -A --no-cddb")
+    query ||= @exec.launch("cd-info -C #{@prefs.cdrom} -A --no-cddb")
 
     if isValidQuery(query)
       @status = 'ok'

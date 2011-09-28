@@ -57,7 +57,7 @@ private
 		require 'rubyripper/preferences/loadPrefs.rb'
 		require 'rubyripper/preferences/savePrefs.rb'
 		require 'rubyripper/preferences/cleanPrefs.rb'
-		require 'rubyripper/dependency.rb'
+		require 'rubyripper/system/dependency.rb'
 		require 'rubyripper/preferences/preferences.rb'
 
 		@classes['fileAndDir'] = FileAndDir.new
@@ -98,7 +98,7 @@ get('savePrefs'), get('cleanPrefs'), get('dependency'))
 
 	# load all necessary files and setup disc objects
 	def disc
-		require 'rubyripper/fireCommand.rb'
+		require 'rubyripper/system/execute'
 		require 'rubyripper/permissionDrive.rb'
 		require 'rubyripper/disc/scanDiscCdparanoia.rb'
 #		require 'rubyripper/disc/cuesheet.rb'

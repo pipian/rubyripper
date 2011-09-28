@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/dependency'
+require 'rubyripper/system/dependency'
 require 'rubyripper/freedb/loadFreedbRecord'
 require 'rubyripper/freedb/saveFreedbRecord'
 require 'rubyripper/freedb/freedbRecordParser'

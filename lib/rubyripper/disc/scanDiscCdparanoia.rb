@@ -24,10 +24,10 @@ class ScanDiscCdparanoia
       :totalSectors, :error, :multipleDriveSupport
 
   # * preferences is an instance of Preferences
-  # * fireCommand is an instance of FireCommand
+  # * execute is an instance of Execute
   # * permissionDrive is an instance of PermissionDrive
-  def initialize(fireCommand, permissionDrive, preferences, out=nil)
-    @fire = fireCommand
+  def initialize(execute, permissionDrive, preferences, out=nil)
+    @exec = execute
     @perm = permissionDrive
     @prefs = preferences
     @out = out ? out : $stdout
@@ -127,10 +127,10 @@ class ScanDiscCdparanoia
       query = $TST_DISC_PARANOIA
     else
       @multipleDriveSupport = true
-      query = @fire.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
+      query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
       # some versions of cdparanoia don't support the cdrom parameter
       if query.include?('USAGE')
-        query = @fire.launch("cdparanoia -vQ 2>&1")
+        query = @exec.launch("cdparanoia -vQ 2>&1")
         @multipleDriveSupport = false
       end
     end

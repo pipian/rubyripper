@@ -32,9 +32,9 @@ class ScanDiscCdrdao
 attr_reader :log, :status, :dataTracks, :discType, :tracks,
     :artist, :album
 
-  def initialize(preferences, fireCommand)
+  def initialize(preferences, execute)
     @prefs = preferences
-    @fire = fireCommand
+    @exec = execute
   end
 
   # scan the disc and parse the resulting file
@@ -91,7 +91,7 @@ private
 
   # return a temporary filename, based on the drivename to make it unique
   def tempfile
-    @tempfile ||= @fire.getTempFile("#{File.basename(cdrom)}.toc")
+    @tempfile ||= @exec.getTempFile("#{File.basename(cdrom)}.toc")
   end
 
   # get all the cdrdao info
@@ -99,8 +99,8 @@ private
     command = "cdrdao read-toc --device #{cdrom} \"#{tempfile()}\""
     command += " 2>&1" unless @prefs.verbose
 
-    @fire.launch(command, tempfile())
-    @fire.status == 'ok' ? @fire.readFile() : nil
+    @exec.launch(command, tempfile())
+    @exec.status == 'ok' ? @exec.readFile() : nil
   end
 
   # check if the output is valid

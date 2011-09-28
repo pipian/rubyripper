@@ -20,8 +20,8 @@ require 'spec_helper'
 describe ScanDiscCdrdao do
 
   let(:prefs) {double('Preferences').as_null_object}
-  let(:fire) {double('FireCommand').as_null_object}
-  let(:disc) {ScanDiscCdrdao.new(prefs, fire)}
+  let(:exec) {double('Execute').as_null_object}
+  let(:disc) {ScanDiscCdrdao.new(prefs, exec)}
 
   context "Before scanning any disc" do
     it "shouldn't set default values" do
@@ -39,10 +39,10 @@ describe ScanDiscCdrdao do
   def setQueryReply(response, status='ok')
     prefs.should_receive(:cdrom).and_return('/dev/cdrom')
     prefs.should_receive(:verbose).and_return(true)
-    fire.should_receive(:launch).with(%Q{cdrdao read-toc --device /dev/cdrom \"/tmp/cdrom.toc\"}, "/tmp/cdrom.toc")
-    fire.should_receive(:getTempFile).with('cdrom.toc').and_return('/tmp/cdrom.toc')
-    fire.should_receive(:status).and_return(status)
-    fire.should_receive(:readFile).and_return(response) unless response.nil?
+    exec.should_receive(:launch).with(%Q{cdrdao read-toc --device /dev/cdrom \"/tmp/cdrom.toc\"}, "/tmp/cdrom.toc")
+    exec.should_receive(:getTempFile).with('cdrom.toc').and_return('/tmp/cdrom.toc')
+    exec.should_receive(:status).and_return(status)
+    exec.should_receive(:readFile).and_return(response) unless response.nil?
     disc.scan()
   end
 

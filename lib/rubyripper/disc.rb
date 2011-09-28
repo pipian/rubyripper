@@ -15,8 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/dependency'
-require 'rubyripper/fireCommand'
+require 'rubyripper/system/dependency'
+require 'rubyripper/system/execute'
 require 'rubyripper/permissionDrive'
 require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/scanDiscCdinfo'
@@ -27,14 +27,14 @@ class Disc
 attr_reader :metadata
 
   # initialize all needed dependencies
-  def initialize(preferences, deps=nil, fire=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil)
+  def initialize(preferences, deps=nil, exec=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil)
     @prefs = preferences
     @deps = deps ? deps : Dependency.new
-    @fire = fire ? fire : FireCommand.new(@deps)
+    @exec = exec ? exec : Execute.new(@deps)
     @perm = perm ? perm : PermissionDrive.new(@deps)
-    @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@fire, @perm, @prefs)
-    @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@prefs, @fire)
-    @freedb = freedb ? freedb : FreedbString.new(@deps, @prefs, @cdpar, @fire, @cdinfo)
+    @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm, @prefs)
+    @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@prefs, @exec)
+    @freedb = freedb ? freedb : FreedbString.new(@deps, @prefs, @cdpar, @exec, @cdinfo)
   end
 
   # after a succesfull scan setup the metadata object

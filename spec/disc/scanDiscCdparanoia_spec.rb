@@ -21,13 +21,13 @@ describe ScanDiscCdparanoia do
 
   def setQueryReply(reply, command=nil)
     command ||= 'cdparanoia -d /dev/cdrom -vQ 2>&1'
-    fire.stub(:launch).with(command).and_return reply
+    exec.stub(:launch).with(command).and_return reply
   end
 
-  let(:fire) {double('FireCommand').as_null_object}
+  let(:exec) {double('Execute').as_null_object}
   let(:perm) {double('PermissionDrive').as_null_object}
   let(:prefs) {double('Preferences').as_null_object}
-  let(:disc) {ScanDiscCdparanoia.new(fire, perm, prefs)}
+  let(:disc) {ScanDiscCdparanoia.new(exec, perm, prefs)}
 
   context "Before scanning any disc" do
     it "shouldn't set default values" do

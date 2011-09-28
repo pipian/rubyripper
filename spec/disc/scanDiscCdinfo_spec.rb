@@ -20,15 +20,15 @@ require 'spec_helper'
 describe ScanDiscCdinfo do
 
   let(:prefs) {double('Preferences').as_null_object}
-  let(:fire) {double('FireCommand').as_null_object}
-  let(:scan) {ScanDiscCdinfo.new(prefs, fire)}
+  let(:exec) {double('Execute').as_null_object}
+  let(:scan) {ScanDiscCdinfo.new(prefs, exec)}
 
   before(:each) do
     prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
   end
 
   def setQueryReply(answer)
-    fire.should_receive(:launch).with('cd-info -C /dev/cdrom -A --no-cddb').and_return(answer)
+    exec.should_receive(:launch).with('cd-info -C /dev/cdrom -A --no-cddb').and_return(answer)
   end
 
   context "When a queryresult is not a valid response" do

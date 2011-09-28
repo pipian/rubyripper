@@ -22,11 +22,11 @@ describe FreedbString do
   let(:deps) {double('Dependency').as_null_object}
   let(:prefs) {double('Preferences').as_null_object}
   let(:scan) {double('ScanDiscCdparanoia').as_null_object}
-  let(:fire) {double('FireCommand').as_null_object}
+  let(:exec) {double('Execute').as_null_object}
   let(:cdinfo) {double('ScanDiscCdinfo').as_null_object}
 
   before(:each) do
-    @freedb = FreedbString.new(deps, prefs, scan, fire, cdinfo)
+    @freedb = FreedbString.new(deps, prefs, scan, exec, cdinfo)
     @freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
     prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
@@ -37,7 +37,7 @@ describe FreedbString do
     it "should first try to use discid" do
       deps.should_receive(:platform).twice.and_return('i686-linux')
       deps.should_receive(:installed?).with('discid').and_return true
-      fire.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
+      exec.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
@@ -47,7 +47,7 @@ describe FreedbString do
       deps.should_receive(:platform).twice.and_return('i686-linux')
       deps.should_receive(:installed?).with('discid').and_return false
       deps.should_receive(:installed?).with('cd-discid').and_return true
-      fire.should_receive(:launch).with('cd-discid /dev/cdrom').and_return @freedbString
+      exec.should_receive(:launch).with('cd-discid /dev/cdrom').and_return @freedbString
 
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
@@ -57,9 +57,9 @@ describe FreedbString do
       it "should unmount the disc properly and mount it afterwards" do
         deps.should_receive(:platform).twice.and_return('i686-darwin')
         deps.should_receive(:installed?).with('discid').and_return true
-        fire.should_receive(:launch).with('diskutil unmount /dev/cdrom')
-        fire.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
-        fire.should_receive(:launch).with('diskutil mount /dev/cdrom')
+        exec.should_receive(:launch).with('diskutil unmount /dev/cdrom')
+        exec.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
+        exec.should_receive(:launch).with('diskutil mount /dev/cdrom')
 
         @freedb.freedbString.should == @freedbString
         @freedb.discid.should == "7F087C0A"

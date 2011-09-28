@@ -15,16 +15,18 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/system/execute'
+
 # class that gets the freedb string
 class FreedbString
 attr_reader :freedbString, :discid
 
   # setup some references to needed objects
-  def initialize(dependency, preferences, scanDiscCdparanoia, fireCommand, scanDiscCdinfo)
+  def initialize(dependency, preferences, scanDiscCdparanoia, execute, scanDiscCdinfo)
     @deps = dependency
     @prefs = preferences
     @disc = scanDiscCdparanoia
-    @fire = fireCommand
+    @exec = execute
     @cdinfo = scanDiscCdinfo
   end
 
@@ -70,9 +72,9 @@ private
     unmountDiscDarwin() if @deps.platform.include?('darwin')
 
     if @deps.installed?('discid')
-      @freedbString = @fire.launch("discid #{@prefs.cdrom}")
+      @freedbString = @exec.launch("discid #{@prefs.cdrom}")
     elsif @deps.installed?('cd-discid')
-      @freedbString = @fire.launch("cd-discid #{@prefs.cdrom}")
+      @freedbString = @exec.launch("cd-discid #{@prefs.cdrom}")
     end
 
     remountDiscDarwin() if @deps.platform.include?('darwin')
@@ -80,12 +82,12 @@ private
 
   # mac OS needs to unmount the disc first
   def unmountDiscDarwin
-      @fire.launch("diskutil unmount #{@prefs.cdrom}")
+      @exec.launch("diskutil unmount #{@prefs.cdrom}")
   end
 
   # mac OS needs to mount the disc again
   def remountDiscDarwin
-     @fire.launch("diskutil mount #{@prefs.cdrom}")
+     @exec.launch("diskutil mount #{@prefs.cdrom}")
   end
 
   # try to calculate it ourselves, prefer cd-info if available

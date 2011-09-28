@@ -15,14 +15,17 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/system/dependency'
+
 # This class manages the executing of external commands
 # A seperate class allows unified checking of exit status
 # Also it allows for better unit testing, since it is easily mocked
-class FireCommand
+class Execute
 attr_reader :status
 
   # * deps = instance of Dependency
-  def initialize(dependency)
+  def initialize(command, dependency = Dependency.new)
+    @command = command
     @deps = dependency
   end
 
