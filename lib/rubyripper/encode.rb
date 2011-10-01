@@ -36,6 +36,7 @@ class Encode
     @log = log
     @trackSelection = trackSelection
     @disc = disc
+    @md = disc.metadata
     @deps = deps ? deps : Dependency.new
     @exec = exec ? exec : Execute.new(@deps)
     @cancelled = false
@@ -127,7 +128,7 @@ class Encode
   end
 
   def replaygain(filename, codec, track)
-    if @prefs.normalize == "replaygain"
+    if @prefs.normalizer == "replaygain"
       command = ''
       if @prefs.gain == "album" && @trackSelection[-1] == track || @prefs.gain =="track"
         if codec == 'flac' && installed('metaflac')
@@ -227,7 +228,7 @@ class Encode
     tags += "--tag DATE=\"#{@out.year}\" "
     tags += "--tag GENRE=\"#{@out.genre}\" "
     tags += "--tag DISCID=\"#{@disc.discid}\" "
-    tags += "--tag DISCNUMBER=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
+    tags += "--tag DISCNUMBER=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image
@@ -263,7 +264,7 @@ class Encode
     tags += "-c DATE=\"#{@out.year}\" "
     tags += "-c GENRE=\"#{@out.genre}\" "
     tags += "-c DISCID=\"#{@disc.discid}\" "
-    tags += "-c DISCNUMBER=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
+    tags += "-c DISCNUMBER=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image
@@ -296,7 +297,7 @@ class Encode
     tags += "--ty \"#{@out.year}\" "
     tags += "--tg \"#{@out.genre}\" "
     tags += "--tv TXXX=DISCID=\"#{@disc.discId}\" "
-    tags += "--tv TPOS=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
+    tags += "--tv TPOS=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image

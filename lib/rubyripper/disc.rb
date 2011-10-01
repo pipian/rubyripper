@@ -40,7 +40,7 @@ attr_reader :metadata
   # after a succesfull scan setup the metadata object
   def scan
     @cdpar.scan
-    setMetata() if @cdpar.status == 'ok'
+    setMetadata() if @cdpar.status == 'ok'
   end
 
   # helper functions for ScanDiscCdparanoia
@@ -64,7 +64,7 @@ attr_reader :metadata
   private
 
   # helper function to load metadata object
-  def setMetata
+  def setMetadata
     require 'rubyripper/freedb'
     @metadata = Freedb.new(self, @prefs, @deps)
     @metadata.get()

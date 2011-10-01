@@ -103,7 +103,7 @@ class SecureRip
   end
 
   def sizeTest(track)
-    puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end}\
+    puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end} \
 is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     if @deps.installed?('df')
