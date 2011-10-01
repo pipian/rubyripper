@@ -1947,7 +1947,7 @@ class SecureRip
 		start = Time.now()
 		@settings['log'].add(_("Analyzing files for mismatching chunks"))
 		compareSectors(track) unless filesEqual?(track)
-		@settings['log'].add(_("(%s seconds)\n") %[(Time.now - start).to_i])
+		@settings['log'].add(_(" (%s seconds)\n") %[(Time.now - start).to_i])
 
 		# Remove the files now we analyzed them. Differences are saved in memory.
 		(@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].getTempFile(track, time + 2))}
