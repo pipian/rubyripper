@@ -123,7 +123,6 @@ private
   # launch the ripping process
   def startRip()
     require 'rubyripper/rubyripper'
-    @out.puts 'TODO: finish implementation of the rip action'
 
     @rubyripper = Rubyripper.new(@cliPrefs.prefs, self, @cliDisc.cd,
     @cliTracklist.selection)

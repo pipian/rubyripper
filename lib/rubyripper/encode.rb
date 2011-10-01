@@ -49,14 +49,14 @@ class Encode
     # Perhaps others need it as well.
     ENV['CHARSET'] = "UTF-8"
 
-    @codecs = 0 # number of codecs
+    @countCodecs = 0 # number of codecs
     ['flac','vorbis','mp3','wav','other'].each do |codec|
-      @codecs += 1 if @prefs.send(codec)
+      @countCodecs += 1 if @prefs.send(codec)
     end
 
     # all encoding tasks are saved here, to determine when to delete a wav
     @tasks = Hash.new
-    @trackSelection.each{|track| @tasks[track] = @codecs}
+    @trackSelection.each{|track| @tasks[track] = @countCodecs}
   end
 
   # is called when a track is ripped succesfully
@@ -123,7 +123,7 @@ class Encode
 
     @lock.synchronize do
       File.delete(@out.getTempFile(track, 1)) if (@tasks[track] -= 1) == 0
-      @log.updateEncodingProgress(track, @codecs.size)
+      @log.updateEncodingProgress(track, @countCodecs)
     end
   end
 

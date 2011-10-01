@@ -71,6 +71,10 @@ attr_writer :encodingErrors
     @ui.update("encoding_progress", @progressEncoding)
   end
 
+  def update(type, message=nil)
+    @ui.update(type, message)
+  end
+
   def finished
     summary()
     deleteLogfiles if @prefs.noLog

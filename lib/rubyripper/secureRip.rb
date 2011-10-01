@@ -27,6 +27,9 @@ require 'rubyripper/system/execute'
 class SecureRip
   attr_writer :cancelled
 
+  BYTES_WAV_CONTAINER = 44 # to store the type of wav file
+  BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
+
   def initialize(prefs, trackSelection, disc, outputFile, log, encoding, deps=nil, exec=nil)
     @prefs = prefs
     @trackSelection = trackSelection
@@ -41,8 +44,6 @@ class SecureRip
     @reqMatchesErrors = @prefs.reqMatchesErrors # Matches needed for chunks that didn't match immediately
     @sizeExpected = 0
     @timeStarted = Time.now # needed for a time break after 30 minutes
-    BYTES_WAV_CONTAINER = 44
-    BYTES_AUDIO_SECTOR = 2352
   end
 
   def ripTracks
@@ -125,7 +126,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     analyzeFiles(track) #If there are differences, save them in the @errors hash
 
     while @errors.size > 0
-      if @trial > @prefs['max_tries'] && @prefs['max_tries'] != 0 # We would like to respect our users settings, wouldn't we?
+      if @trial > @prefs.maxTries && @prefs.maxTries != 0
         @log.add(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
         @log.add(_("Will continue with the file we've got so far\n"))
         @log.mismatch(track, 0, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # zero means it is never solved.
@@ -135,11 +136,13 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       doNewTrial(track)
       break if @cancelled == true
 
-      if @trial > @reqMatchesErrors # If the reqMatches errors is equal of higher to @trial, no match would ever be found, so skip
-        correctErrorPos(track)
-      else
-        readErrorPos(track)
-      end
+      # update the erronous positions for the new trial
+      readErrorPos(track)
+
+      # if enough trials are done to possibly allow corrections
+      # for example is trial = 3 and only 2 matches are required a match can happen
+      correctErrorPos(track) if @trial > @reqMatchesErrors
+
     end
 
     getDigest(track) # Get a MD5-digest for the logfile
@@ -164,7 +167,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
   def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
     if not File.exist?(@out.getTempFile(track, @trial))
-      @prefs['instance'].update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
+      @log.update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
       return false
     end
     return true
@@ -235,25 +238,36 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   # Compare the different sectors now we know the files are not equal
+  # The first trial is used as a reference to compare the others
+  # Bytes of erronous sectors are kept in memory for future comparisons
   def compareSectors(track)
     files = Array.new
-    @reqMatchesAll.times do |time|
-      files << File.new(@out.getTempFile(track, time + 1), 'r')
-    end
+    (1..@reqMatchesAll).each{|trial| files << File.new(@out.getTempFile(track, trial), 'r')}
 
-    (@reqMatchesAll - 1).times do |time|
-      index = 0 ; files.each{|file| file.pos = BYTES_WAV_CONTAINER} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
+    comparesNeeded = @reqMatchesAll - 1
+    (1..comparesNeeded).each do |trial|
+      index = 0
+      setFileIndex(files, index)
+
       while index + BYTES_WAV_CONTAINER < @disc.getFileSize(track)
-        if !@errors.key?(index) && files[0].sysread(BYTES_AUDIO_SECTOR) != files[time + 1].sysread(BYTES_AUDIO_SECTOR) # Does this sector matches the previous ones? and isn't the position already known?
-          files.each{|file| file.pos = index + 44} # Reset each read position of the files
+        if sectorEqual?(files[0], files[trial]) && !@errors.key?(index)
+          setFileIndex(files, index) # set back to read again
           @errors[index] = Array.new
-          files.each{|file| @errors[index] << file.sysread(BYTES_AUDIO_SECTOR)} # Save the chunk for all files in the just created array
+          files.each{|file| @errors[index] << file.sysread(BYTES_AUDIO_SECTOR)}
         end
         index += BYTES_AUDIO_SECTOR
       end
     end
 
     files.each{|file| file.close}
+  end
+
+  def setFileIndex(filesArray, index)
+    filesArray.each{|file| file.pos = index + BYTES_WAV_CONTAINER}
+  end
+
+  def sectorEqual?(file1, file2)
+    file1.sysread(BYTES_AUDIO_SECTOR) == file2.sysread(BYTES_AUDIO_SECTOR)
   end
 
   # When required matches for mismatched sectors are bigger than there are
@@ -284,25 +298,21 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
   def correctErrorPos(track)
     file1 = File.new(@out.getTempFile(track, 1), 'r+')
-    file2 = File.new(@out.getTempFile(track, @trial), 'r')
+    minimumIndexDiff = @reqMatchesErrors - 1 # index 2 minus index 0 = 3 results
 
     # Sort the hash keys to prevent jumping forward and backwards in the file
-    @errors.keys.sort.each do |start_chunk|
-      file2.pos = start_chunk + BYTES_WAV_CONTAINER
-      @errors[start_chunk] << temp = file2.sysread(BYTES_AUDIO_SECTOR)
-
-      # now sort the array and see if the new read value has enough matches
-      # right index minus left index of the read value is amount of matches
-      @errors[start_chunk].sort!
-      if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1)
-        file1.pos = start_chunk + BYTES_WAV_CONTAINER
-        file1.write(temp)
-        @errors.delete(start_chunk)
+    @errors.keys.sort.each do |key|
+      @errors[key].sort!
+      @errors[key].uniq.each do |result|
+        if key.rindex(result) - key.index(result) >= minimumIndexDiff
+          file1.pos = key
+          file1.write(result)
+          @errors.delete(key)
+        end
       end
     end
 
     file1.close
-    file2.close
 
     # Remove the file now we read it. Differences are saved in memory.
     File.delete(@out.getTempFile(track, @trial))
