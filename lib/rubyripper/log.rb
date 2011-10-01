@@ -27,7 +27,7 @@ attr_writer :encodingErrors
   def initialize(preferences, disc, outputFile, userInterface, updatePercForEachTrack)
     @prefs = preferences
     @md = disc.metadata
-    @outputFile = outputFile
+    @out = outputFile
     @ui = userInterface
     @updatePercForEachTrack = updatePercForEachTrack
   end
@@ -45,7 +45,7 @@ attr_writer :encodingErrors
   def createLog
     @logfiles = Array.new
     ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-      @logfiles << File.open(@outputFile.getLogFile(codec), 'a') if @prefs.send(codec)
+      @logfiles << File.open(@out.getLogFile(codec), 'a') if @prefs.send(codec)
     end
   end
 
@@ -53,14 +53,29 @@ attr_writer :encodingErrors
   def updateRippingProgress(trackFinished=nil)
     @progressRip ||= 0.0
     @progressRip += @updatePercForEachTrack[trackFinished] if trackFinished
-    @progressRip = 1.0 if @progressRip > 1.0
+
+    # prevent rounding problem
+    @progressRip = 1.0 if @progressRip > 0.99
+
     @ui.update("ripping_progress", @progressRip)
   end
 
   # update the encoding percentage of the gui
-  def encPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
-    new_value <= 1.0 ? @encoding_progress = new_value : @encoding_progress = 1.0
-    @ui.update("encoding_progress", @encoding_progress)
+  def updateEncodingProgress(trackFinished=nil, numberOfCodecs)
+    @progressEncoding ||= 0.0
+    @progressEncoding += (@updatePercForEachTrack[trackFinished] / numberOfCodecs) if trackFinished
+
+    # prevent rounding problem
+    @progressEncoding = 1.0 if @progressEncoding > 0.99
+
+    @ui.update("encoding_progress", @progressEncoding)
+  end
+
+  def finished
+    summary()
+    deleteLogfiles if @prefs.noLog
+    @out.cleanTempDir()
+    @ui.update("finished", noProblems = !(@rippingErrors || @encodingErrors))
   end
 
   def <<(message)
@@ -147,7 +162,7 @@ attr_writer :encodingErrors
   end
 
   # delete the logfiles if no errors occured
-  def delLog
+  def deleteLogfiles
     if @problem_tracks.empty? && !@encodingErrors
       @logfiles.each{|logfile| File.delete(logfile.path)}
     end

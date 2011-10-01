@@ -17,7 +17,6 @@
 
 # TODO make one general Encode class, subclass each codec
 # TODO move the managing of threads to a separate class
-# TODO move the finished code to another class
 # TODO move the commands to fireCommand class
 # The Encode class is responsible for managing the diverse codecs.
 
@@ -25,15 +24,20 @@ require 'thread' # for the sized queue object
 require 'monitor' # for the monitor object
 require 'fileutils' # for the fileutils object
 
+require 'rubyripper/system/dependency'
+require 'rubyripper/system/execute'
+
 class Encode
   attr_writer :cancelled
 
-  def initialize(prefs, outputFile, log, trackSelection, disc)
+  def initialize(prefs, outputFile, log, trackSelection, disc, deps=nil, exec=nil)
     @prefs = prefs
     @out = outputFile
     @log = log
     @trackSelection = trackSelection
     @disc = disc
+    @deps = deps ? deps : Dependency.new
+    @exec = exec ? exec : Execute.new(@deps)
     @cancelled = false
     @progress = 0.0
     @threads = []
@@ -64,7 +68,7 @@ class Encode
   # encode track when normalize is finished
   def startEncoding(track)
     # mark the progress bar as being started
-    @log.encPerc(0.0) if track == @trackSelection[0]
+    @log.updateEncodingProgress() if track == @trackSelection[0]
     ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
       if @prefs.send(codec) && @cancelled == false
         if @prefs.maxThreads == 0
@@ -84,7 +88,7 @@ class Encode
     #give the signal we're finished
     if track == @trackSelection[-1] && @cancelled == false
       @threads.each{|thread| thread.join()}
-      finished()
+      @log.finished()
     end
   end
 
@@ -92,17 +96,17 @@ class Encode
   def normalize(track)
     continue = true
     if @prefs.normalize != 'normalize'
-    elsif !installed('normalize')
+    elsif !@deps.installed?('normalize')
       puts "WARNING: normalize is not installed on your system!"
     elsif @prefs.gain == 'album' && @trackSelection[-1] == track
       command = "normalize -b \"#{File.join(@out.getTempDir(),'*.wav')}\""
-      `#{command}`
+      @exec.launch(command)
       # now the wavs are altered, the encoding can start
       @trackSelection.each{|track| startEncoding(track)}
       continue = false
     elsif @prefs.gain == 'track'
       command = "normalize \"#{@out.getTempFile(track, 1)}\""
-      `#{command}`
+      @exec.launch(command)
     end
     return continue
   end
@@ -113,31 +117,12 @@ class Encode
     elsif codec == 'vorbis' ; doVorbis(track)
     elsif codec == 'mp3' ; doMp3(track)
     elsif codec == 'wav' ; doWav(track)
-    elsif codec == 'other' && @prefs['othersettings'] != nil ; doOther(track)
+    elsif codec == 'other' && @prefs.settingsOther != nil ; doOther(track)
     end
 
     @lock.synchronize do
       File.delete(@out.getTempFile(track, 1)) if (@tasks[track] -= 1) == 0
-      updateProgress(@prefs['percentages'][track] / @codecs)
-    end
-  end
-
-  # update the gui
-  def updateProgress(progress)
-    @progress += progress
-    @log.encPerc(@progress)
-  end
-
-  def finished
-    puts "Inside the finished function" if @prefs.debug
-    @progress = 1.0 ; @log.encPerc(@progress)
-    @log.summary()
-    if @prefs.noLog ; @log.delLog end #Delete the logfile if no correction was needed if no_log is true
-    @out.cleanTempDir()
-    if (@log.rippingErrors || @log.encodingErrors)
-      @prefs['instance'].update("finished", false)
-    else
-      @prefs['instance'].update("finished", true)
+      @log.updateEncodingProgress(track, @codecs.size)
     end
   end
 
@@ -157,7 +142,7 @@ class Encode
           command = "wavegain #{if @prefs.gain =="track" ; "\"" + filename +"\"" else "-a \"" + File.dirname(filename) + "\"/*.wav" end}"
         end
       end
-      `#{command}` if command != ''
+      @exec.launch(command) if command != ''
     end
   end
 
