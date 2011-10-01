@@ -95,7 +95,7 @@ class Encode
   # respect the normalize setting
   def normalize(track)
     continue = true
-    if @prefs.normalize != 'normalize'
+    if @prefs.normalizer != 'normalize'
     elsif !@deps.installed?('normalize')
       puts "WARNING: normalize is not installed on your system!"
     elsif @prefs.gain == 'album' && @trackSelection[-1] == track
@@ -226,13 +226,13 @@ class Encode
     tags += "--tag ALBUM=\"#{@out.album}\" "
     tags += "--tag DATE=\"#{@out.year}\" "
     tags += "--tag GENRE=\"#{@out.genre}\" "
-    tags += "--tag DISCID=\"#{@disc.discId}\" "
-    tags += "--tag DISCNUMBER=\"#{@prefs['cd'].md.discNumber}\" " if @prefs['cd'].md.discNumber
+    tags += "--tag DISCID=\"#{@disc.discid}\" "
+    tags += "--tag DISCNUMBER=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image
       tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
-      if @prefs['create_cue'] # embed the cuesheet
+      if @prefs.createCue # embed the cuesheet
         tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
       end
     else # Handle tags for var artist discs differently
@@ -244,7 +244,7 @@ class Encode
       end
       tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
       tags += "--tag TRACKNUMBER=#{track} "
-      tags += "--tag TRACKTOTAL=#{@prefs['cd'].audiotracks} "
+      tags += "--tag TRACKTOTAL=#{@disc.audiotracks} "
     end
 
     command = String.new
@@ -262,7 +262,7 @@ class Encode
     tags += "-c ALBUM=\"#{@out.album}\" "
     tags += "-c DATE=\"#{@out.year}\" "
     tags += "-c GENRE=\"#{@out.genre}\" "
-    tags += "-c DISCID=\"#{@prefs['cd'].discId}\" "
+    tags += "-c DISCID=\"#{@disc.discid}\" "
     tags += "-c DISCNUMBER=\"#{@disc.md.discNumber}\" " if @disc.md.discNumber
 
     # Handle tags for single file images differently
@@ -284,7 +284,7 @@ class Encode
     command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
     command += "oggenc -o \"#{filename}\" #{@prefs.settingsVorbis} \
 #{tags} \"#{@out.getTempFile(track, 1)}\""
-    command += " 2>&1" unless @prefs['verbose']
+    command += " 2>&1" unless @prefs.verbose
 
     checkCommand(command, track, 'vorbis')
   end

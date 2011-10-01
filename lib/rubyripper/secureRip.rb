@@ -104,7 +104,7 @@ class SecureRip
 
   def sizeTest(track)
     puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end}\
-    is #{@disc.getFileSize(track)} bytes." if @prefs.debug
+is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     if @deps.installed?('df')
       output = @exec.launch("df \"#{@out.getDir()}\"", filename=false, noTranslations=true)

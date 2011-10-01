@@ -61,7 +61,7 @@ attr_writer :encodingErrors
   end
 
   # update the encoding percentage of the gui
-  def updateEncodingProgress(trackFinished=nil, numberOfCodecs)
+  def updateEncodingProgress(trackFinished=nil, numberOfCodecs=nil)
     @progressEncoding ||= 0.0
     @progressEncoding += (@updatePercForEachTrack[trackFinished] / numberOfCodecs) if trackFinished
 
