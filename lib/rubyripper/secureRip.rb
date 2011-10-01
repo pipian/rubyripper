@@ -15,32 +15,36 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'digest/md5' # Needed for secure class, only have to load them ones here.
+require 'rubyripper/system/dependency'
+require 'rubyripper/system/execute'
+
 # The SecureRip class is mainly responsible for:
 # * Managing cdparanoia to fetch the files
 # * Comparing the fetched files
 # * Repairing the files if necessary
-require 'digest/md5' # Needed for secure class, only have to load them ones here.
 
 class SecureRip
   attr_writer :cancelled
 
-  def initialize(prefs, trackSelection, disc, outputFile, log, encoding)
+  def initialize(prefs, trackSelection, disc, outputFile, log, encoding, deps=nil, exec=nil)
     @prefs = prefs
     @trackSelection = trackSelection
     @disc = disc
     @out = outputFile
     @log = log
     @encoding = encoding
+    @deps = deps ? deps : Dependency.new()
+    @exec = exec ? exec : Execute.new(@deps)
     @cancelled = false
     @reqMatchesAll = @prefs.reqMatchesAll # Matches needed for all chunks
     @reqMatchesErrors = @prefs.reqMatchesErrors # Matches needed for chunks that didn't match immediately
-    @progress = 0.0 #for the progressbar
     @sizeExpected = 0
     @timeStarted = Time.now # needed for a time break after 30 minutes
   end
 
   def ripTracks
-    @log.ripPerc(0.0, "ripper") # Give a hint to the gui that ripping has started
+    @log.updateRippingProgress() # Give a hint to the gui that ripping has started
 
     @trackSelection.each do |track|
       break if @cancelled == true
@@ -88,9 +92,9 @@ class SecureRip
   # when sox is finished move it back to the original name
   def deEmphasize(track)
     if @prefs.createCue && @prefs.preEmphasis == "sox" &&
-      @disc.toc.hasPreEmph(track) && installed("sox")
-      `sox #{@out.getTempFile(track, 1)} #{@out.getTempFile(track, 2)}`
-      if $?.success?
+      @disc.toc.hasPreEmph(track) && @deps.installed?("sox")
+      @exec.launch("sox #{@out.getTempFile(track, 1)} #{@out.getTempFile(track, 2)}")
+      if @exec.status == 'ok'
         FileUtils.mv(@out.getTempFile(track, 2), @out.getTempFile(track, 1))
       else
         puts "sox failed somehow."
@@ -102,8 +106,9 @@ class SecureRip
     puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end}\
     is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
-    if installed('df')
-      freeDiskSpace = `LANG=C df \"#{@out.getDir()}\"`.split()[10].to_i
+    if @deps.installed?('df')
+      output = @exec.launch("df \"#{@out.getDir()}\"", filename=false, noTranslations=true)
+      freeDiskSpace = output.split()[10].to_i
       puts "Free disk space is #{freeDiskSpace} MB" if @prefs.debug
       if @disc.getFileSize(track) > freeDiskSpace*1000
         @log.add(_("Not enough disk space left! Rip aborted"))
@@ -136,8 +141,7 @@ class SecureRip
     end
 
     getDigest(track) # Get a MD5-digest for the logfile
-    @progress += @prefs['percentages'][track]
-    @log.ripPerc(@progress)
+    @log.updateRippingProgress(track)
     return true
   end
 
@@ -196,18 +200,18 @@ class SecureRip
   # Start and close the first file comparisons
   def analyzeFiles(track)
     start = Time.now()
-    @settings['log'].add(_("Analyzing files for mismatching chunks"))
+    @log.add(_("Analyzing files for mismatching chunks"))
     compareSectors(track) unless filesEqual?(track)
-    @settings['log'].add(_(" (%s second(s))\n") %[(Time.now - start).to_i])
+    @log.add(_(" (%s second(s))\n") %[(Time.now - start).to_i])
 
     # Remove the files now we analyzed them. Differences are saved in memory.
-    (@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].getTempFile(track, time + 2))}
+    (@reqMatchesAll - 1).times{|time| File.delete(@out.getTempFile(track, time + 2))}
 
     if @errors.size == 0
-      @settings['log'].add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
+      @log.add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
     else
-      @settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) # report for later position analysis
-      @settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
+      @log.mismatch(track, @trial, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # report for later position analysis
+      @log.add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
     end
   end
 
@@ -218,8 +222,8 @@ class SecureRip
     success = true
 
     while comparesNeeded > 0 && success == true
-      file1 = @settings['Out'].getTempFile(track, trial)
-      file2 = @settings['Out'].getTempFile(track, trial + 1)
+      file1 = @out.getTempFile(track, trial)
+      file2 = @out.getTempFile(track, trial + 1)
       success = FileUtils.compare_file(file1, file2)
       trial += 1
       comparesNeeded -= 1
@@ -232,12 +236,12 @@ class SecureRip
   def compareSectors(track)
     files = Array.new
     @reqMatchesAll.times do |time|
-      files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
+      files << File.new(@out.getTempFile(track, time + 1), 'r')
     end
 
     (@reqMatchesAll - 1).times do |time|
       index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
-      while index + 44 < @settings['cd'].getFileSize(track)
+      while index + 44 < @disc.getFileSize(track)
         if !@errors.key?(index) && files[0].sysread(2352) != files[time + 1].sysread(2352) # Does this sector matches the previous ones? and isn't the position already known?
           files.each{|file| file.pos = index + 44} # Reset each read position of the files
           @errors[index] = Array.new
@@ -353,7 +357,7 @@ class SecureRip
     command += " \"#{@out.getTempFile(track, @trial)}\""
     unless @prefs.verbose ; command += " 2>&1" end # hide the output of cdparanoia output
     puts command if @prefs.debug
-    `#{command}` if @cancelled == false #Launch the cdparanoia command
+    @exec.launch(command) if @cancelled == false #Launch the cdparanoia command
     @log.add(" (#{(Time.now - timeStarted).to_i} #{_("seconds")})\n")
   end
 

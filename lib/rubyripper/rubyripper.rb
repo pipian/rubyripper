@@ -40,7 +40,9 @@ attr_reader :outputDir, :outputFile, :log
   # do some neccesary preparation and start the ripping
   def startRip
     autofixCommonMistakes()
+    calculatePercentageUpdateForProgressbar()
     createHelpObjects()
+
     @outputFile.start() # TODO find a better name for the class and function
     @log.start() # TODO find a better name for the class and function
     @rippingInfoAtStart.show()
@@ -49,7 +51,6 @@ attr_reader :outputDir, :outputFile, :log
     # @outputDir = @prefs['Out'].getDir() # TODO ask if directory is available
     #waitForToc() # TODO ??
 
-    calculatePercentageUpdateForProgressbar()
     @ripper.ripTracks()
   end
 
@@ -60,7 +61,7 @@ attr_reader :outputDir, :outputFile, :log
 
     # create the logfile + handle user interface updates + summary of errors
     require 'rubyripper/log'
-    @log = Log.new(@prefs, @disc, @outputFile, @ui)
+    @log = Log.new(@prefs, @disc, @outputFile, @ui, @updatePercForEachTrack)
 
     # show basic info for current rip and settings
     require 'rubyripper/rippingInfoAtStart'
@@ -73,6 +74,13 @@ attr_reader :outputDir, :outputFile, :log
     # to execute the ripping
     require 'rubyripper/secureRip'
     @ripper = SecureRip.new(@prefs, @trackSelection, @disc, @outputFile, @log, @encoding)
+  end
+
+  def calculatePercentageUpdateForProgressbar()
+    @updatePercForEachTrack = Hash.new()
+    totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
+    @trackSelection.each{|track| totalSectors += @disc.getLengthSector(track)} #update totalSectors
+    @trackSelection.each{|track| @updatePercForEachTrack[track] = @disc.getLengthSector(track) / totalSectors}
   end
 
   def autofixCommonMistakes
@@ -153,10 +161,5 @@ attr_reader :outputDir, :outputFile, :log
     @outputFile.overwriteDir()
   end
 
-  def calculatePercentageUpdateForProgressbar()
-    @updatePercForEachTrack = Hash.new()
-    totalSectors = 0.0 # It can be that the user doesn't want to rip all tracks, so calculate it
-    @trackSelection.each{|track| totalSectors += @disc.getLengthSector(track)} #update totalSectors
-    @trackSelection.each{|track| @updatePercForEachTrack[track] = @disc.getLengthSector(track) / totalSectors}
-  end
+
 end

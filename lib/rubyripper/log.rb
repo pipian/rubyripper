@@ -24,18 +24,18 @@ class Log
 attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
-  def initialize(preferences, disc, outputFile, userInterface)
+  def initialize(preferences, disc, outputFile, userInterface, updatePercForEachTrack)
     @prefs = preferences
     @md = disc.metadata
     @outputFile = outputFile
     @ui = userInterface
+    @updatePercForEachTrack = updatePercForEachTrack
   end
 
   def start()
     createLog()
     @problem_tracks = Hash.new # key = tracknumber, value = new dictionary with key = seconds_chunk, value = [amount_of_chunks, trials_needed]
     @not_corrected_tracks = Array.new # Array of tracks that weren't corrected within the maximum amount of trials set by the user
-    @ripping_progress = 0.0
     @encoding_progress = 0.0
     @encodingErrors = false
     @rippingErrors = false
@@ -49,10 +49,12 @@ attr_writer :encodingErrors
     end
   end
 
-  # update the ripping percentage of the gui
-  def ripPerc(new_value, calling_function = false) #new_value = float, 1 = 100%
-    new_value <= 1.0 ? @ripping_progress = new_value : @ripping_progress = 1.0
-    @ui.update("ripping_progress", @ripping_progress)
+  # update the ripping progress in the gui
+  def updateRippingProgress(trackFinished=nil)
+    @progressRip ||= 0.0
+    @progressRip += @updatePercForEachTrack[trackFinished] if trackFinished
+    @progressRip = 1.0 if @progressRip > 1.0
+    @ui.update("ripping_progress", @progressRip)
   end
 
   # update the encoding percentage of the gui
