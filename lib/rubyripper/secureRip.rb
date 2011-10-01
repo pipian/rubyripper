@@ -41,6 +41,8 @@ class SecureRip
     @reqMatchesErrors = @prefs.reqMatchesErrors # Matches needed for chunks that didn't match immediately
     @sizeExpected = 0
     @timeStarted = Time.now # needed for a time break after 30 minutes
+    BYTES_WAV_CONTAINER = 44
+    BYTES_AUDIO_SECTOR = 2352
   end
 
   def ripTracks
@@ -175,9 +177,9 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     if sizeDiff == 0
       # expected size matches exactly
     elsif sizeDiff < 0
-      puts "More sectors ripped than expected: #{sizeDiff / 2352} sector(s)" if @prefs.debug
+      puts "More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_SECTOR} sector(s)" if @prefs.debug
     elsif @prefs['offset'] != 0 && (track == "image" || track == @disc.audiotracks)
-      @log.add(_("The ripped file misses %s sectors.\n") % [sizeDiff / 2352.0])
+      @log.add(_("The ripped file misses %s sectors.\n") % [sizeDiff / BYTES_AUDIO_SECTOR.to_f])
       @log.add(_("This is known behaviour for some drives when using an offset.\n"))
       @log.add(_("Notice that each sector is 1/75 second.\n"))
     elsif @cancelled == false
@@ -240,14 +242,14 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     end
 
     (@reqMatchesAll - 1).times do |time|
-      index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
-      while index + 44 < @disc.getFileSize(track)
-        if !@errors.key?(index) && files[0].sysread(2352) != files[time + 1].sysread(2352) # Does this sector matches the previous ones? and isn't the position already known?
+      index = 0 ; files.each{|file| file.pos = BYTES_WAV_CONTAINER} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
+      while index + BYTES_WAV_CONTAINER < @disc.getFileSize(track)
+        if !@errors.key?(index) && files[0].sysread(BYTES_AUDIO_SECTOR) != files[time + 1].sysread(BYTES_AUDIO_SECTOR) # Does this sector matches the previous ones? and isn't the position already known?
           files.each{|file| file.pos = index + 44} # Reset each read position of the files
           @errors[index] = Array.new
-          files.each{|file| @errors[index] << file.sysread(2352)} # Save the chunk for all files in the just created array
+          files.each{|file| @errors[index] << file.sysread(BYTES_AUDIO_SECTOR)} # Save the chunk for all files in the just created array
         end
-        index += 2352
+        index += BYTES_AUDIO_SECTOR
       end
     end
 
@@ -263,8 +265,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   def readErrorPos(track)
     file = File.new(@out.getTempFile(track, @trial), 'r')
     @errors.keys.sort.each do |start_chunk|
-      file.pos = start_chunk + 44
-      @errors[start_chunk] << file.sysread(2352)
+      file.pos = start_chunk + BYTES_WAV_CONTAINER
+      @errors[start_chunk] << file.sysread(BYTES_AUDIO_SECTOR)
     end
     file.close
 
@@ -286,14 +288,14 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     # Sort the hash keys to prevent jumping forward and backwards in the file
     @errors.keys.sort.each do |start_chunk|
-      file2.pos = start_chunk + 44
-      @errors[start_chunk] << temp = file2.sysread(2352)
+      file2.pos = start_chunk + BYTES_WAV_CONTAINER
+      @errors[start_chunk] << temp = file2.sysread(BYTES_AUDIO_SECTOR)
 
       # now sort the array and see if the new read value has enough matches
       # right index minus left index of the read value is amount of matches
       @errors[start_chunk].sort!
       if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1)
-        file1.pos = start_chunk + 44
+        file1.pos = start_chunk + BYTES_WAV_CONTAINER
         file1.write(temp)
         @errors.delete(start_chunk)
       end
