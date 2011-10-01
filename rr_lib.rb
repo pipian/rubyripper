@@ -2084,7 +2084,7 @@ class SecureRip
 		file = File.open(@settings['Out'].getTempFile(track, 1), 'r')
 		index = 0
 		while (index < @settings['cd'].getFileSize(track))
-			digest << file.read(100000)
+			digest << file.sysread(100000)
 			index += 100000
 		end
 		file.close()
