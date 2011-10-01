@@ -104,6 +104,10 @@ but it may not work on audio-cd's with a data track.
 
 
 4. CHANGELOG
+---------0.6.1 RELEASE------
+* fix for usage of sox to de-emphasize
+* fix for slow ripping for old ruby (1.8) version
+
 ---------0.6.0 RELEASE------
 * many ruby-1.9 fixes
 * get advanced toc scanning with help of cdrdao
