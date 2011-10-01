@@ -1987,10 +1987,10 @@ class SecureRip
 		(@reqMatchesAll - 1).times do |time|
 			index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
 			while index + 44 < @settings['cd'].getFileSize(track)
-				if !@errors.key?(index) && files[0].read(2352) != files[time + 1].read(2352) # Does this sector matches the previous ones? and isn't the position already known?
+				if !@errors.key?(index) && files[0].sysread(2352) != files[time + 1].sysread(2352) # Does this sector matches the previous ones? and isn't the position already known?
 					files.each{|file| file.pos = index + 44} # Reset each read position of the files
 					@errors[index] = Array.new
-					files.each{|file| @errors[index] << file.read(2352)} # Save the chunk for all files in the just created array
+					files.each{|file| @errors[index] << file.sysread(2352)} # Save the chunk for all files in the just created array
 				end
 				index += 2352
 			end
@@ -2009,7 +2009,7 @@ class SecureRip
 		file = File.new(@settings['Out'].getTempFile(track, @trial), 'r')
 		@errors.keys.sort.each do |start_chunk|
 			file.pos = start_chunk + 44
-			@errors[start_chunk] << file.read(2352)
+			@errors[start_chunk] << file.sysread(2352)
 		end
 		file.close
 
@@ -2032,7 +2032,7 @@ class SecureRip
 		# Sort the hash keys to prevent jumping forward and backwards in the file
 		@errors.keys.sort.each do |start_chunk|
 			file2.pos = start_chunk + 44
-			@errors[start_chunk] << temp = file2.read(2352)
+			@errors[start_chunk] << temp = file2.sysread(2352)
 
 			# now sort the array and see if the new read value has enough matches
 			# right index minus left index of the read value is amount of matches
