@@ -53,7 +53,7 @@ class SecureRip
       ripTrack(track)
     end
 
-    eject(@disc.cdrom) if @prefs.eject
+    @exec.eject(@prefs.cdrom) if @prefs.eject
   end
 
 

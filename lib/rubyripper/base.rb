@@ -34,15 +34,4 @@ else
 	end
 end
 
-# A help function to eject the disc drive
-def openDrive(cdrom)
-	Thread.new do
-	 	if installed('eject') ; `eject #{cdrom}`
-		#Mac users don't got eject, but diskutil
-		elsif installed('diskutil'); `diskutil eject #{cdrom}`
-		else puts _("No eject utility found!")
-		end
-	end
-end
-
 
