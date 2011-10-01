@@ -302,9 +302,12 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     # Sort the hash keys to prevent jumping forward and backwards in the file
     @errors.keys.sort.each do |key|
+      raise "Wrong class for key: #{key.class}" if key.class != Fixnum
       @errors[key].sort!
       @errors[key].uniq.each do |result|
-        if key.rindex(result) - key.index(result) >= minimumIndexDiff
+        raise "Wrong class for result: #{result.class}" if result.class != String
+        raise "Wrong class for errors[key]: #{@errors[key].class}" if @errors[key].class != Array
+        if @errors[key].rindex(result) - @errors[key].index(result) >= minimumIndexDiff
           file1.pos = key
           file1.write(result)
           @errors.delete(key)
@@ -313,9 +316,6 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     end
 
     file1.close
-
-    # Remove the file now we read it. Differences are saved in memory.
-    File.delete(@out.getTempFile(track, @trial))
 
     #give an update of the amount of errors and trials
     if @errors.size == 0
