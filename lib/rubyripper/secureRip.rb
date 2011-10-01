@@ -193,16 +193,51 @@ class SecureRip
     return true
   end
 
+  # Start and close the first file comparisons
   def analyzeFiles(track)
-    @log.add(_("Analyzing files for mismatching chunks\n"))
+    start = Time.now()
+    @settings['log'].add(_("Analyzing files for mismatching chunks"))
+    compareSectors(track) unless filesEqual?(track)
+    @settings['log'].add(_(" (%s second(s))\n") %[(Time.now - start).to_i])
+
+    # Remove the files now we analyzed them. Differences are saved in memory.
+    (@reqMatchesAll - 1).times{|time| File.delete(@settings['Out'].getTempFile(track, time + 2))}
+
+    if @errors.size == 0
+      @settings['log'].add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
+    else
+      @settings['log'].mismatch(track, @trial, @errors.keys, @settings['cd'].getFileSize(track), @settings['cd'].getLengthSector(track)) # report for later position analysis
+      @settings['log'].add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
+    end
+  end
+
+  # Compare if trial_1 matches trial_2, if trial_2 matches trial_3, and so on
+  def filesEqual?(track)
+    comparesNeeded = @reqMatchesAll - 1
+    trial = 1
+    success = true
+
+    while comparesNeeded > 0 && success == true
+      file1 = @settings['Out'].getTempFile(track, trial)
+      file2 = @settings['Out'].getTempFile(track, trial + 1)
+      success = FileUtils.compare_file(file1, file2)
+      trial += 1
+      comparesNeeded -= 1
+    end
+
+    return success
+  end
+
+  # Compare the different sectors now we know the files are not equal
+  def compareSectors(track)
     files = Array.new
     @reqMatchesAll.times do |time|
-      files << File.new(@out.getTempFile(track, time + 1), 'r')
+      files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
     end
 
     (@reqMatchesAll - 1).times do |time|
       index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
-      while index + 44 < @disc.getFileSize(track)
+      while index + 44 < @settings['cd'].getFileSize(track)
         if !@errors.key?(index) && files[0].sysread(2352) != files[time + 1].sysread(2352) # Does this sector matches the previous ones? and isn't the position already known?
           files.each{|file| file.pos = index + 44} # Reset each read position of the files
           @errors[index] = Array.new
@@ -213,16 +248,6 @@ class SecureRip
     end
 
     files.each{|file| file.close}
-
-    # Remove the files now we analyzed them. Differences are saved in memory.
-    (@reqMatchesAll - 1).times{|time| File.delete(@out.getTempFile(track, time + 2))}
-
-    if @errors.size == 0
-      @log.add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
-    else
-      @log.mismatch(track, @trial, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # report for later position analysis
-      @log.add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
-    end
   end
 
   # When required matches for mismatched sectors are bigger than there are
