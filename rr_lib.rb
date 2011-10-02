@@ -1775,6 +1775,9 @@ require 'fileutils'
 
 class SecureRip
 	attr_writer :cancelled 
+
+	BYTES_WAV_CONTAINER = 44 # wav container overhead
+	BYTES_AUDIO_SECTOR = 2352 # size for a audiocd sector as used in cdparanoia
 	
 	def initialize(settings, encoding)
 		@settings = settings
@@ -1785,8 +1788,6 @@ class SecureRip
 		@progress = 0.0 #for the progressbar
 		@sizeExpected = 0
 		@timeStarted = Time.now # needed for a time break after 30 minutes
-		@wavHeaderSize = 44 # wav container overhead
-		@sectorSize = 2352 # size for a audiocd sector as used in cdparanoia
 		ripTracks()
 	end
 
@@ -1970,8 +1971,8 @@ class SecureRip
 		# (http://code.google.com/p/rubyripper/issues/detail?id=348).
 		fa = files[fileIndexA]
 		fb = files[fileIndexB]
-		fa.sysseek(@wavHeaderSize + sectorOffset, IO::SEEK_SET)
-		fb.sysseek(@wavHeaderSize + sectorOffset, IO::SEEK_SET)
+		fa.sysseek(BYTES_WAV_CONTAINER + sectorOffset, IO::SEEK_SET)
+		fb.sysseek(BYTES_WAV_CONTAINER + sectorOffset, IO::SEEK_SET)
 		if fa.sysread(size) == fb.sysread(size)
 			return
 		end
@@ -1983,16 +1984,16 @@ class SecureRip
 			# If we haven't already recorded an error for this sector
 			if !@errors.key?(pos)
 				# Is there a mismatch
-				fa.sysseek(@wavHeaderSize + pos, IO::SEEK_SET)
-				fb.sysseek(@wavHeaderSize + pos, IO::SEEK_SET)
-				if fa.sysread(@sectorSize) != fb.sysread(@sectorSize)
+				fa.sysseek(BYTES_WAV_CONTAINER + pos, IO::SEEK_SET)
+				fb.sysseek(BYTES_WAV_CONTAINER + pos, IO::SEEK_SET)
+				if fa.sysread(BYTES_AUDIO_SECTOR) != fb.sysread(BYTES_AUDIO_SECTOR)
 					# Store a copy of the sector from each file in the error map
-					files.each{|file| file.sysseek(@wavHeaderSize + pos, IO::SEEK_SET)}
+					files.each{|file| file.sysseek(BYTES_WAV_CONTAINER + pos, IO::SEEK_SET)}
 					@errors[pos] = Array.new
-					files.each{|file| @errors[pos] << file.sysread(@sectorSize)}
+					files.each{|file| @errors[pos] << file.sysread(BYTES_AUDIO_SECTOR)}
 				end
 			end
-			pos += @sectorSize
+			pos += BYTES_AUDIO_SECTOR
 		end
 	end
 
@@ -2003,8 +2004,8 @@ class SecureRip
 			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
 		end
 
-		sectorGroupSize = 1024 * @sectorSize
-		endSectorOffset = @settings['cd'].getFileSize(track) - @wavHeaderSize
+		sectorGroupSize = 1024 * BYTES_AUDIO_SECTOR
+		endSectorOffset = @settings['cd'].getFileSize(track) - BYTES_WAV_CONTAINER
 
 		(@reqMatchesAll - 1).times do |time|
 			sectorOffset = 0
