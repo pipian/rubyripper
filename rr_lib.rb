@@ -1785,6 +1785,8 @@ class SecureRip
 		@progress = 0.0 #for the progressbar
 		@sizeExpected = 0
 		@timeStarted = Time.now # needed for a time break after 30 minutes
+		@wavHeaderSize = 44 # wav container overhead
+		@sectorSize = 2352 # size for a audiocd sector as used in cdparanoia
 		ripTracks()
 	end
 
@@ -1946,7 +1948,7 @@ class SecureRip
 	def analyzeFiles(track)
 		start = Time.now()
 		@settings['log'].add(_("Analyzing files for mismatching chunks"))
-		compareSectors(track) unless filesEqual?(track)
+		compareSectors(track)
 		@settings['log'].add(_(" (%s second(s))\n") %[(Time.now - start).to_i])
 
 		# Remove the files now we analyzed them. Differences are saved in memory.
@@ -1960,39 +1962,55 @@ class SecureRip
 		end
 	end
 
-	# Compare if trial_1 matches trial_2, if trial_2 matches trial_3, and so on
-	def filesEqual?(track)
-		comparesNeeded = @reqMatchesAll - 1
-		trial = 1
-		success = true
+	# Compare a range of sectors within two files
+	def compareSectorRange(files, fileIndexA, fileIndexB, sectorOffset, size)
 
-		while comparesNeeded > 0 && success == true
-			file1 = @settings['Out'].getTempFile(track, trial)
-			file2 = @settings['Out'].getTempFile(track, trial + 1)
-			success = FileUtils.compare_file(file1, file2)
-			trial += 1
-			comparesNeeded -= 1
+		# First do one large block compare, and bail out if the same.
+		# A lot faster than sector by sector comparison on some Ruby implementations
+		# (http://code.google.com/p/rubyripper/issues/detail?id=348).
+		fa = files[fileIndexA]
+		fb = files[fileIndexB]
+		fa.sysseek(@wavHeaderSize + sectorOffset, IO::SEEK_SET)
+		fb.sysseek(@wavHeaderSize + sectorOffset, IO::SEEK_SET)
+		if fa.sysread(size) == fb.sysread(size)
+			return
 		end
 
-		return success
+		# There was a difference, so drill down and find the individual sectors
+		pos = sectorOffset
+		endPos = pos + size
+		while pos < endPos
+			# If we haven't already recorded an error for this sector
+			if !@errors.key?(pos)
+				# Is there a mismatch
+				fa.sysseek(@wavHeaderSize + pos, IO::SEEK_SET)
+				fb.sysseek(@wavHeaderSize + pos, IO::SEEK_SET)
+				if fa.sysread(@sectorSize) != fb.sysread(@sectorSize)
+					# Store a copy of the sector from each file in the error map
+					files.each{|file| file.sysseek(@wavHeaderSize + pos, IO::SEEK_SET)}
+					@errors[pos] = Array.new
+					files.each{|file| @errors[pos] << file.sysread(@sectorSize)}
+				end
+			end
+			pos += @sectorSize
+		end
 	end
 
-	# Compare the different sectors now we know the files are not equal
+	# Compare each temp file, recording all sectors which don't match in @errors
 	def compareSectors(track)
 		files = Array.new
 		@reqMatchesAll.times do |time|
 			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
 		end
-				
+
+		sectorGroupSize = 1024 * @sectorSize
+		endSectorOffset = @settings['cd'].getFileSize(track) - @wavHeaderSize
+
 		(@reqMatchesAll - 1).times do |time|
-			index = 0 ; files.each{|file| file.pos = 44} # 44 = wav container overhead, 2352 = size for a audiocd sector as used in cdparanoia
-			while index + 44 < @settings['cd'].getFileSize(track)
-				if !@errors.key?(index) && files[0].sysread(2352) != files[time + 1].sysread(2352) # Does this sector matches the previous ones? and isn't the position already known?
-					files.each{|file| file.pos = index + 44} # Reset each read position of the files
-					@errors[index] = Array.new
-					files.each{|file| @errors[index] << file.sysread(2352)} # Save the chunk for all files in the just created array
-				end
-				index += 2352
+			sectorOffset = 0
+			while sectorOffset < endSectorOffset
+				compareSectorRange(files, 0, time + 1, sectorOffset, sectorGroupSize)
+				sectorOffset += sectorGroupSize
 			end
 		end
 		
