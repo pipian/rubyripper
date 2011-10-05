@@ -19,7 +19,7 @@
 LOCALE=[ENV['PWD'] + "/locale", "/usr/local/share/locale"]
 LOCALE.each{|dir| if File.directory?(dir) ; ENV['GETTEXT_PATH'] = dir ; break end}
 
-$rr_version = '0.6.1a' #application wide setting
+$rr_version = '0.6.1' #application wide setting
 
 begin
 	require 'gettext'
@@ -1778,6 +1778,7 @@ class SecureRip
 
 	BYTES_WAV_CONTAINER = 44 # wav container overhead
 	BYTES_AUDIO_SECTOR = 2352 # size for a audiocd sector as used in cdparanoia
+	BYTES_SECTOR_GROUP = 1024 * BYTES_AUDIO_SECTOR # compare groups first due performance issue ruby 1.8
 	
 	def initialize(settings, encoding)
 		@settings = settings
@@ -1964,7 +1965,7 @@ class SecureRip
 	end
 
 	# Compare a range of sectors within two files
-	def compareSectorRange(files, fileIndexA, fileIndexB, sectorOffset, size)
+	def compareSectorRange(files, fileIndexA, fileIndexB, sectorOffset)
 
 		# First do one large block compare, and bail out if the same.
 		# A lot faster than sector by sector comparison on some Ruby implementations
@@ -1973,13 +1974,13 @@ class SecureRip
 		fb = files[fileIndexB]
 		fa.sysseek(BYTES_WAV_CONTAINER + sectorOffset, IO::SEEK_SET)
 		fb.sysseek(BYTES_WAV_CONTAINER + sectorOffset, IO::SEEK_SET)
-		if fa.sysread(size) == fb.sysread(size)
+		if fa.sysread(BYTES_SECTOR_GROUP) == fb.sysread(BYTES_SECTOR_GROUP)
 			return
 		end
 
 		# There was a difference, so drill down and find the individual sectors
 		pos = sectorOffset
-		endPos = pos + size
+		endPos = pos + BYTES_SECTOR_GROUP
 		while pos < endPos
 			# If we haven't already recorded an error for this sector
 			if !@errors.key?(pos)
@@ -2004,14 +2005,13 @@ class SecureRip
 			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
 		end
 
-		sectorGroupSize = 1024 * BYTES_AUDIO_SECTOR
 		endSectorOffset = @settings['cd'].getFileSize(track) - BYTES_WAV_CONTAINER
 
 		(@reqMatchesAll - 1).times do |time|
 			sectorOffset = 0
 			while sectorOffset < endSectorOffset
-				compareSectorRange(files, 0, time + 1, sectorOffset, sectorGroupSize)
-				sectorOffset += sectorGroupSize
+				compareSectorRange(files, 0, time + 1, sectorOffset)
+				sectorOffset += BYTES_SECTOR_GROUP
 			end
 		end
 		
@@ -2027,8 +2027,8 @@ class SecureRip
 	def readErrorPos(track)
 		file = File.new(@settings['Out'].getTempFile(track, @trial), 'r')
 		@errors.keys.sort.each do |start_chunk|
-			file.pos = start_chunk + 44
-			@errors[start_chunk] << file.sysread(2352)
+			file.pos = start_chunk + BYTES_WAV_CONTAINER
+			@errors[start_chunk] << file.sysread(BYTES_AUDIO_SECTOR)
 		end
 		file.close
 
@@ -2050,14 +2050,14 @@ class SecureRip
 		
 		# Sort the hash keys to prevent jumping forward and backwards in the file
 		@errors.keys.sort.each do |start_chunk|
-			file2.pos = start_chunk + 44
-			@errors[start_chunk] << temp = file2.sysread(2352)
+			file2.pos = start_chunk + BYTES_WAV_CONTAINER
+			@errors[start_chunk] << temp = file2.sysread(BYTES_AUDIO_SECTOR)
 
 			# now sort the array and see if the new read value has enough matches
 			# right index minus left index of the read value is amount of matches
 			@errors[start_chunk].sort!
 			if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1)
-				file1.pos = start_chunk + 44
+				file1.pos = start_chunk + BYTES_WAV_CONTAINER
 				file1.write(temp)
 				@errors.delete(start_chunk)
 			end
