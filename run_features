@@ -1,1 +1,1 @@
-rspec -c -f doc features/
+rspec -c -f doc features.old/
