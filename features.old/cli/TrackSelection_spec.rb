@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'features/feature_helper'
+require 'features.old/feature_helper'
 
 # For each test rubyripper is restarted and keyboard input is simulated
 # Note that [ENTER] always lead to a higher menu until rubyripper exits

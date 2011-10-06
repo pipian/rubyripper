@@ -29,5 +29,5 @@ require 'rubyripper/cli/cliGetAnswer'
 require 'bin/rubyripper_cli'
 
 #mocks
-require 'features/mocks/outputMock'
-require 'features/mocks/inputMock'
+require 'features.old/mocks/outputMock'
+require 'features.old/mocks/inputMock'
