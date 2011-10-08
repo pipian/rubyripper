@@ -2027,7 +2027,7 @@ class SecureRip
 	def readErrorPos(track)
 		file = File.new(@settings['Out'].getTempFile(track, @trial), 'r')
 		@errors.keys.sort.each do |start_chunk|
-			file.pos = start_chunk + BYTES_WAV_CONTAINER
+			file.sysseek(start_chunk + BYTES_WAV_CONTAINER, IO::SEEK_SET)
 			@errors[start_chunk] << file.sysread(BYTES_AUDIO_SECTOR)
 		end
 		file.close
