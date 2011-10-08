@@ -73,7 +73,7 @@ private
     begin
       @opts.parse!(ARGV)
     rescue Exception => e
-      @out.puts "The loading of the input swithes crashed.", e, @opts
+      @out.puts "The loading of the input switches crashed.", e, @opts
       exit()
     end
 
