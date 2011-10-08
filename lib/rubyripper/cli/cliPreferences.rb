@@ -25,7 +25,8 @@ require 'rubyripper/cli/cliGetAnswer'
 class CliPreferences
   attr_reader :prefs
 
-  def initialize(out=nil, int=nil, prefs=nil, bool=nil, string=nil)
+  def initialize(arguments, out=nil, int=nil, prefs=nil, bool=nil, string=nil)
+    @options = arguments.options
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
     @prefs = prefs ? prefs : Preferences::Main.new(@out)
@@ -33,11 +34,8 @@ class CliPreferences
     @string = string ? string : CliGetString.new(@out)
   end
 
-  # Read the preferences + startup options and decide if action is needed
-  def read
-    parseOptions()
-    readPreferences()
-  end
+  # Read the preferences
+  def read ; readPreferences() ; end
 
   # return true if user has chosen for defaults
   def defaults ; return @options['defaults'] ; end
@@ -46,14 +44,6 @@ class CliPreferences
   def show ; loopMainMenu() ; end
 
 private
-
-  # Make sure the commandline options are interpreted
-  def parseOptions
-    @options = {'file' => false, 'version' => false, 'verbose' => false,
-'configure' => false, 'defaults' => false, 'help' => false}
-    setParseOptions()
-    getParseOptions()
-  end
 
   # Read the settings of the config file or the defaults
   def readPreferences()
@@ -70,53 +60,6 @@ private
   # is the file provided by the user and does it not exist?
   def theFileFromUserDoesNotExist
     @options['file'].is_a?(String) && (@options['file'] != @prefs.filename)
-  end
-
-  # First define the different options
-  def setParseOptions
-    @opts = OptionParser.new(banner = nil, width = 20, indent = ' ' * 2) do |opts|
-      opts.on("-V", "--version", _("Show current version of rubyripper.")) do
-        @options['version'] = true
-      end
-
-      opts.on("-f", "--file <FILE>", _("Load configuration settings from file <FILE>.")) do |f|
-        @options['file'] = f
-      end
-
-      opts.on("-v", "--verbose", _("Display verbose output.")) do |v|
-        @options['verbose'] = v
-      end
-
-      opts.on("-c", "--configure", _("Change configuration settings.")) do |c|
-        @options['configure'] = c
-      end
-
-      opts.on("-d", "--defaults", _("Skip questions and rip the disc.")) do |d|
-        @options['defaults'] = true
-      end
-
-      opts.on_tail("-h", "--help", _("Show this usage statement.")) do |h|
-        @out.puts opts
-        @options['help'] = h
-      end
-    end
-  end
-
-  # Then read the different options
-  def getParseOptions
-    begin
-      @opts.parse!(ARGV)
-    rescue Exception => e
-      @out.puts "The loading of the input swithes crashed.", e, @opts
-      exit()
-    end
-
-    if @options['help'] || @options['version']; exit end
-
-    @out.puts _("Verbose output specified.") if @options['verbose']
-    @out.puts _("Configure option specified.") if @options['configure']
-    @out.puts _("Skip questions and rip the disc.") if @options['defaults']
-    @out.puts _("Use config file ") + @options['file'] if @options['file']
   end
 
   # helper function to show boolean preference

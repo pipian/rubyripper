@@ -24,6 +24,9 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 # Try to find the rubyripper lib files
 begin
   require 'rubyripper/base'
+  require 'rubyripper/cli/cliArguments'
+  arguments = CliArguments.new()
+  arguments.parse()
   require 'rubyripper/system/dependency'
   require 'rubyripper/errors'
   require 'rubyripper/cli/cliGetAnswer'
@@ -40,11 +43,11 @@ end
 class CommandLineInterface
 
   # start up the interface
-  def initialize(out=nil, prefs=nil, deps=nil, disc=nil, int=nil, tracks=nil)
+  def initialize(arguments=nil, out=nil, prefs=nil, deps=nil, disc=nil, int=nil, tracks=nil)
     @out = out ? out : $stdout
     @deps = deps ? deps : Dependency.new
     @int = int ? int : CliGetInt.new(@out)
-    @cliPrefs = prefs ? prefs : CliPreferences.new(@out, @int)
+    @cliPrefs = prefs ? prefs : CliPreferences.new(arguments, @out, @int)
     @cliDisc = disc ? disc : CliDisc.new(@out, @cliPrefs.prefs, @int)
     @cliTracklist = tracks ? tracks : CliTracklist.new(@out, @int, @cliPrefs.prefs, @cliDisc)
   end
@@ -178,7 +181,6 @@ private
 end
 
 if __FILE__ == $0
-  app = CommandLineInterface.new()
+  app = CommandLineInterface.new(arguments)
   app.start()
 end
-
