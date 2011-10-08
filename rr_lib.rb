@@ -1320,7 +1320,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 
 		if varArtist == true
 			@backupTracklist = @tracklist.dup() #backup before overwrite with new values
-			@tracklist.each_index{|index| @varArtists[index], @tracklist[index] = @tracklist[index].split(/\s*[-\/]|(\sby\s)\s*/)} #remove any spaces (\s) around sep
+			@tracklist.each_index{|index| @varArtists[index], @tracklist[index] = @tracklist[index].split(/\s*[-\/]\s*|(\sby\s)\s*/)} #remove any spaces (\s) around sep
 		end
 	end
 	
