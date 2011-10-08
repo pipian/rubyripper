@@ -76,7 +76,6 @@ private
   def setParseOptions
     @opts = OptionParser.new(banner = nil, width = 20, indent = ' ' * 2) do |opts|
       opts.on("-V", "--version", _("Show current version of rubyripper.")) do
-        @out.puts "Rubyripper version #{$rr_version}."
         @options['version'] = true
       end
 
