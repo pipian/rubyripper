@@ -111,7 +111,7 @@ class ScanDiscCdparanoia
     (1..10).each do |trial|
       unsetError()
       readDisc()
-      break if @status == 'ok' || $test
+      break if @status == 'ok' || @prefs.testdisc
       @out.puts _("No disc found at trial %s!") % [trial]
       sleep(1)
     end
@@ -123,8 +123,8 @@ class ScanDiscCdparanoia
   end
 
   def getQueryResult
-    if $TST_DISC_PARANOIA != nil
-      query = $TST_DISC_PARANOIA
+    if @prefs.testdisc
+      query = File.read(File.join(@prefs.testdisc, 'cdparanoia'))
     else
       @multipleDriveSupport = true
       query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")

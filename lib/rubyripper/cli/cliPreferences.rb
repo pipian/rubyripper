@@ -48,6 +48,7 @@ private
   # Read the settings of the config file or the defaults
   def readPreferences()
     @prefs.load(@options['file'].to_s)
+    @prefs.testdisc = @options['testdisc']
 
     if theFileFromUserDoesNotExist()
       @out.puts "WARNING: the provided configfile is not found."

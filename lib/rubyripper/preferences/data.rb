@@ -155,5 +155,8 @@ module Preferences
 
     # Debug modus
     attr_accessor :debug
+
+    # TEST DATA
+    attr_accessor :testdisc
   end
 end
