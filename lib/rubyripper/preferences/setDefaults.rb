@@ -40,7 +40,7 @@ module Preferences
       @data.rippersettings = '-Z'
       @data.reqMatchesAll = 2
       @data.reqMatchesErrors = 3
-      @data.maxTries = 5
+      @data.maxTries = 7
       @data.eject = true
       @data.noLog = false
     end

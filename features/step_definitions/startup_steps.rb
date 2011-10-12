@@ -23,7 +23,7 @@ Given /^rubyripper will find "([^"]*)" is inserted$/ do |disc|
   end
 end
 
-When /^I run rubyripper in cli mode$/ do
+When /I run rubyripper in cli mode\s*/ do
   @file = File.expand_path("#{File.dirname(__FILE__)}/../testdata/settings")
   run_interactive "rubyripper_cli --testdisc #{@testdisc} --file #{@file}"
 end

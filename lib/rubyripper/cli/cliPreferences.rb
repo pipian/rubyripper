@@ -134,8 +134,8 @@ private
     @out.puts ''
     @out.puts ' 1) ' + _("Ripping drive") + ": %s" %[@prefs.cdrom]
     @out.puts ' 2) ' + _("Drive offset") + ": %s" % [@prefs.offset]
-    @out.puts _("   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
-    @out.puts _("   **Your drive model is shown in the logfile.")
+    @out.puts _("    **Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
+    @out.puts _("    **Your drive model is shown in the logfile.")
     @out.puts ' 3) ' + _("Passing extra cdparanoia parameters") + ": %s" % [@prefs.rippersettings]
     @out.puts ' 4) ' + _("Match all chunks") + ": %s" % [@prefs.reqMatchesAll]
     @out.puts ' 5) ' + _("Match erroneous chunks") + ": %s" % [@prefs.reqMatchesErrors]
