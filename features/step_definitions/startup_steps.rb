@@ -35,3 +35,10 @@ end
 When /^I press ENTER "([^"]*)" times to close the application$/ do |amount|
   amount.to_i.times{type("\n")}
 end
+
+When /^I change each preferences item in the menu$/ do |table|
+  table.raw.each do |preference, input|
+    type preference
+    type input unless input.empty?
+  end
+end

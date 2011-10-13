@@ -63,7 +63,7 @@ module Preferences
       @data.settingsMp3 = '-V 3 --id3v2-only'
       @data.wav = false
       @data.other = false
-      @data.settingsOther = String.new
+      @data.settingsOther = 'flac %i %o.flac'
       @data.playlist = true
       @data.maxThreads = 2
       @data.noSpaces = false

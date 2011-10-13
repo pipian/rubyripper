@@ -37,12 +37,12 @@ module Preferences
     def load(customFilename="")
       Cleanup.new()
       SetDefaults.new(self)
-      Load.new(self, customFilename, @out) if $TST_DEFAULT_PREFS.nil?
+      Load.new(self, customFilename, @out)
     end
 
     # save the preferences
     def save()
-      Save.new(self) if $TST_DEFAULT_PREFS.nil?
+      Save.new(self) unless @data.testdisc
     end
 
    private
