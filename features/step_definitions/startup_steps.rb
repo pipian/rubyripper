@@ -33,7 +33,7 @@ When /^I choose "([^"]*)"\s*/ do |menuOption|
 end
 
 When /^I press ENTER "([^"]*)" times to close the application$/ do |amount|
-  amount.to_i.times{type("\n")}
+  amount.to_i.times{type('')}
 end
 
 When /^I change each preferences item in the menu$/ do |table|
