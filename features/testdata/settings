@@ -42,4 +42,3 @@ filemanager=thunar
 browser=chromium
 verbose=false
 debug=false
-testdisc=/home/bouke/programming/rubyripper/features/testdata/disc/noAudioDisc
