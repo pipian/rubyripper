@@ -214,7 +214,7 @@ calculation unless %s is installed.") % ['Discid'],
     case platform
       when /freebsd/ then drive = getFreebsdDrive()        
       when /openbsd/ then drive = '/dev/cd0c' # as provided in issue 324
-      when /linux|bsd/ then drive = '/dev/cdrom'
+      when /linux|bsd/ then drive = getLinuxDrive()
       when /darwin/ then drive = '/dev/disk1'
     end
     
@@ -224,6 +224,13 @@ calculation unless %s is installed.") % ['Discid'],
   def getFreebsdDrive
     (0..9).each{|num| return "/dev/cd#{num}" if @file.exist?("/dev/cd#{num}")}
     (0..9).each{|num| return "/dev/acd#{num}" if @file.exist?("/dev/acd#{num}")}
+    return false
+  end
+  
+  def getLinuxDrive
+    return '/dev/cdrom' if @file.exist?('/dev/cdrom')
+    return '/dev/dvdrom' if @file.exist?('/dev/dvdrom')
+    (0..9).each{|num| return "/dev/sr#{num}" if @file.exist?("/dev/sr#{num}")}
     return false
   end
 end

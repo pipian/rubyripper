@@ -18,45 +18,69 @@
 require 'spec_helper'
 
 describe Dependency do
-  let(:file) {double('FileAndDir').as_null_object}
-  
+  let(:file) {double('File').as_null_object}
+  before(:each) {file.stub("exist?").and_return(false)}
+    
   context "When searching for the disc drive on freebsd" do
     let(:deps) {Dependency.new(file, platform='freebsd')}
     
     it "should query the device on /dev/cd# for existence" do
       (0..9).each{|num| file.should_receive("exist?").with("/dev/cd#{num}").and_return(false)}
-      file.stub("exist?").and_return(false)
       deps.cdrom().should == "unknown"
     end
     
     it "should query the device on /dev/acd# for existence" do
       (0..9).each{|num| file.should_receive("exist?").with("/dev/acd#{num}").and_return(false)}
-      file.stub("exist?").and_return(false)
       deps.cdrom().should == "unknown"
     end
     
     it "should detect a drive on /dev/cd0" do
-      file.should_receive("exist?").with("/dev/cd0").and_return(true)
-      file.stub("exist?").and_return(false)
+      file.should_receive("exist?").with("/dev/cd0").and_return(true)   
       deps.cdrom().should == '/dev/cd0'
     end
     
     it "should detect a drive on /dev/cd9" do
       file.should_receive("exist?").with("/dev/cd9").and_return(true)
-      file.stub("exist?").and_return(false)
       deps.cdrom().should == '/dev/cd9'
     end
     
     it "should detect a drive on /dev/acd0" do
       file.should_receive("exist?").with("/dev/acd0").and_return(true)
-      file.stub("exist?").and_return(false)
       deps.cdrom().should == '/dev/acd0'
     end
     
     it "should detect a drive on /dev/acd9" do
       file.should_receive("exist?").with("/dev/acd9").and_return(true)
-      file.stub("exist?").and_return(false)
       deps.cdrom().should == '/dev/acd9'
+    end
+  end
+  
+  context "When searching for the disc drive on linux" do
+    let(:deps) {Dependency.new(file, platform='linux')}
+    
+    it "should detect a drive on /dev/cdrom" do
+      file.should_receive("exist?").with("/dev/cdrom").and_return(true)   
+      deps.cdrom().should == '/dev/cdrom'
+    end
+    
+    it "should detect a drive on /dev/dvdrom" do
+      file.should_receive("exist?").with("/dev/dvdrom").and_return(true)   
+      deps.cdrom().should == '/dev/dvdrom'
+    end
+    
+    it "should query the device on /dev/sr# for existence" do
+      (0..9).each{|num| file.should_receive("exist?").with("/dev/sr#{num}").and_return(false)}
+      deps.cdrom().should == "unknown"
+    end
+    
+    it "should detect a drive on /dev/sr0" do
+      file.should_receive("exist?").with("/dev/sr0").and_return(true)   
+      deps.cdrom().should == '/dev/sr0'
+    end
+    
+    it "should detect a drive on /dev/sr9" do
+      file.should_receive("exist?").with("/dev/sr9").and_return(true)   
+      deps.cdrom().should == '/dev/sr9'
     end
   end
 end
