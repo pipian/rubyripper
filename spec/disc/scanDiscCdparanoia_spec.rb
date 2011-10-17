@@ -20,6 +20,7 @@ require 'spec_helper'
 describe ScanDiscCdparanoia do
 
   def setQueryReply(reply, command=nil)
+    prefs.stub('testdisc').and_return false
     command ||= 'cdparanoia -d /dev/cdrom -vQ 2>&1'
     exec.stub(:launch).with(command).and_return reply
   end
