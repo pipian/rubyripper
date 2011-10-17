@@ -20,81 +20,81 @@ require 'rubyripper/system/dependency'
 # check the permissions of the drive
 class PermissionDrive
 
-	# * dependency = instance of Dependency class
-	def initialize(deps)
-		@deps = deps ? deps : Dependency.new()
-		@status = 'ok'
-	end
+  # * dependency = instance of Dependency class
+  def initialize(deps)
+    @deps = deps ? deps : Dependency.new()
+    @status = 'ok'
+  end
 
-	# * cdrom = location of cdrom drive
-	# * query = cdparanoia query
-	def check(cdrom, query)
-		@cdrom = cdrom
-		@query = query
+  # * cdrom = location of cdrom drive
+  # * query = cdparanoia query
+  def check(cdrom, query)
+    @cdrom = cdrom
+    @query = query
 
-		checkDevice()
-		if @query.include?('generic device: ')
-			checkGenericDevice()
-		end
+    checkDevice()
+    if @query.include?('generic device: ')
+      checkGenericDevice()
+    end
 
-		return @status
-	end
+    return @status
+  end
 
 private
 
-	# first lookup the real drive, then check permissions
-	def checkDevice
-		while File.symlink?(@cdrom)
-			link = File.readlink(@cdrom)
-			if (link.include?('..') || !link.include?('/'))
-				@cdrom = File.expand_path(File.join(File.dirname(@cdrom), link))
-			else
-				@cdrom = link
-			end
-		end
+  # first lookup the real drive, then check permissions
+  def checkDevice
+    while File.symlink?(@cdrom)
+      link = File.readlink(@cdrom)
+      if (link.include?('..') || !link.include?('/'))
+        @cdrom = File.expand_path(File.join(File.dirname(@cdrom), link))
+      else
+        @cdrom = link
+      end
+    end
 
-		unless File.blockdev?(@cdrom) #is it a real device?
-			@status = _("ERROR: Cdrom drive %s does not exist on your system!\n\
+    unless File.blockdev?(@cdrom) #is it a real device?
+      @status = _("ERROR: Cdrom drive %s does not exist on your system!\n\
 Please configure your cdrom drive first.") % [@cdrom]
-			return false
-		end
+      return false
+    end
 
-		unless (File.readable?(@cdrom) && File.writable?(@cdrom))
-			@status = _("You don't have read and write permission for device\n
+    unless (File.readable?(@cdrom) && File.writable?(@cdrom))
+      @status = _("You don't have read and write permission for device\n
 %s on your system! These permissions are necessary for\n
 cdparanoiato scan your drive. You might want to add yourself\n
 to the necessary group with gpasswd.") % [@cdrom]
-			if @deps.installed?('ls')
-				permission = `ls -l #{@cdrom}`
-				@status +=	_("\n\nls -l shows %s") % [permission]
-			end
-		end
-	end
+      if @deps.installed?('ls')
+        permission = `ls -l #{@cdrom}`
+        @status +=	_("\n\nls -l shows %s") % [permission]
+      end
+    end
+  end
 
-	# lookup the scsi device and it's permissions
-	def checkGenericDevice
-		@query.each do |line|
-			if line =~ /generic device: /
-				device = $'.strip() #the part after the match
-				break #end the loop
-			end
-		end
+  # lookup the scsi device and it's permissions
+  def checkGenericDevice
+    @query.each do |line|
+      if line =~ /generic device: /
+        device = $'.strip() #the part after the match
+        break #end the loop
+      end
+    end
 
-		unless ((File.chardev?(device) || File.blockdev?(device)) && File.readable?(device) && File.writable?(device))
-			permission = nil
-			if File.chardev?(device) && @deps.installed?('ls')
-				permission = `ls -l #{device}`
-			end
+    unless ((File.chardev?(device) || File.blockdev?(device)) && File.readable?(device) && File.writable?(device))
+      permission = nil
+      if File.chardev?(device) && @deps.installed?('ls')
+        permission = `ls -l #{device}`
+      end
 
-			@status = _("You don't have read and write permission\n"\
-			"for device %s on your system! These permissions are\n"\
-			"necessary for cdparanoia to scan your drive.\n\n%s\n"\
-			"You might want to add yourself to the necessary group with gpasswd")\
-			%[device, "#{if permission ; "ls -l shows #{permission}" end}"]
+      @status = _("You don't have read and write permission\n"\
+      "for device %s on your system! These permissions are\n"\
+      "necessary for cdparanoia to scan your drive.\n\n%s\n"\
+      "You might want to add yourself to the necessary group with gpasswd")\
+      %[device, "#{if permission ; "ls -l shows #{permission}" end}"]
 
-			return false
-		end
+      return false
+    end
 
-		return true
-	end
+    return true
+  end
 end
