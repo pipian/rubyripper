@@ -17,6 +17,12 @@
 
 # The Dependency class is responsible for all dependency checking
 class Dependency
+  attr_reader :platform
+  
+  def initialize(file=nil, platform=nil)
+    @platform = platform ? platform : RUBY_PLATFORM
+    @file = file ? file : File
+  end
 
   # verify all dependencies are met
   # * verbose = print extra info to the terminal. Used in configure script.
@@ -32,9 +38,6 @@ class Dependency
     showInfo() if verbose == true
     forceDepsRuntime() if runtime == true
   end
-
-  # return the platform
-  def platform ; RUBY_PLATFORM ; end
 
   # an array with dirs in which binary files are launchable
   def path ; ENV['PATH'].split(':') + ['.'] ; end
@@ -209,10 +212,18 @@ calculation unless %s is installed.") % ['Discid'],
   # determine default drive
   def getCdrom #default values for cdrom drives under differenty os'es
     case platform
-      when /openbsd/ then '/dev/cd0c' # as provided in issue 324
-      when /linux|bsd/ then '/dev/cdrom'
-      when /darwin/ then '/dev/disk1'
-      else 'Unknown!'
+      when /freebsd/ then drive = getFreebsdDrive()        
+      when /openbsd/ then drive = '/dev/cd0c' # as provided in issue 324
+      when /linux|bsd/ then drive = '/dev/cdrom'
+      when /darwin/ then drive = '/dev/disk1'
     end
+    
+    return drive ? drive : 'unknown'
+  end
+  
+  def getFreebsdDrive
+    (0..9).each{|num| return "/dev/cd#{num}" if @file.exist?("/dev/cd#{num}")}
+    (0..9).each{|num| return "/dev/acd#{num}" if @file.exist?("/dev/acd#{num}")}
+    return false
   end
 end
