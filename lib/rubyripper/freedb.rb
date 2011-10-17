@@ -51,13 +51,13 @@ class Freedb
 
   private
 
-    # if the method is not found try to look it up in the data object
-    def method_missing(name, *args)
-      @md.send(name, *args)
-    end
+  # if the method is not found try to look it up in the data object
+  def method_missing(name, *args)
+    @md.send(name, *args)
+  end
 
   def isLocalFileFound?
-    @load.scan(@disc.discid)
+    @prefs.testdisc ? @load.read(@prefs.testdisc) : @load.scan(@disc.discid)
     @load.freedbRecord != nil && @load.status == 'ok'
   end
 

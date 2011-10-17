@@ -58,6 +58,7 @@ private
     elsif @freedbRecord.encoding.name != 'UTF-8'
       @status = 'noUTF8Encoding'
     end
+    raise "No valid encoding" unless @status.nil?
     return @status.nil?
   end
 

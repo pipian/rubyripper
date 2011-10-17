@@ -1,3 +1,4 @@
+@mainmenu
 Feature: Show an interactive main menu after starting
 
   Scenario: Start Rubyripper

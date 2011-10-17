@@ -56,7 +56,7 @@ attr_reader :status
 
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
-      output = `sh -c #{command}`
+      output = `sh -c "#{command}"`
       @status = 'ok' if $?.success?
       @filename = filename
     end

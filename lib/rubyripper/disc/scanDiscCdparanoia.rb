@@ -142,7 +142,7 @@ class ScanDiscCdparanoia
       parseQuery(query)
       addExtraInfo()
       checkOffsetFirstTrack()
-      if $TST_DISC_PARANOIA.nil?
+      if not @prefs.testdisc
         @status = @perm.check(@prefs.cdrom, query)
       else
         @status = 'ok'

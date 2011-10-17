@@ -1,3 +1,4 @@
+@noninteractive
 Feature: Command Line Interface non interactive commands
 
   Scenario: show usage with --help

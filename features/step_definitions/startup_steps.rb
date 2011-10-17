@@ -18,6 +18,8 @@ Given /^rubyripper will find "([^"]*)" is inserted$/ do |disc|
   @testdisc = File.expand_path("#{File.dirname(__FILE__)}/../testdata/disc")
   if disc == 'no audio disc'
     @testdisc = File.join(@testdisc, 'noAudioDisc')
+  elsif disc == 'Motorhead/Inferno'
+    @testdisc = File.join(@testdisc, 'normalAudioDisc')
   else
     raise "Unknown disc from cucumber!"
   end

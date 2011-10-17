@@ -1,3 +1,4 @@
+@preferences
 Feature: Manage rubyripper preferences
 
   Background:
