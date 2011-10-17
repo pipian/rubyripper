@@ -21,9 +21,8 @@ require 'rubyripper/system/dependency'
 class PermissionDrive
 
   # * dependency = instance of Dependency class
-  def initialize(deps)
+  def initialize(deps=nil)
     @deps = deps ? deps : Dependency.new()
-    @status = 'ok'
   end
 
   # * cdrom = location of cdrom drive
@@ -33,17 +32,31 @@ class PermissionDrive
     @query = query
 
     checkDevice()
-    if @query.include?('generic device: ')
-      checkGenericDevice()
-    end
-
-    return @status
+    checkGenericDevice()
+    
+    return @error.nil? ? 'ok' : @error
   end
 
 private
 
   # first lookup the real drive, then check permissions
+  # a block device is required on linux, not on other platforms (issue 480)
   def checkDevice
+    getRealDevice()
+    isBlockDevice? if @deps.platform =~ /linux/
+    isReadAndWritable?
+  end
+  
+  # a generic drive means a scsi drive
+  def checkGenericDevice
+     if @query.include?('generic device: ')
+       drive = getGenericDrive()
+       genericDeviceChecks(drive)
+     end
+  end
+
+  # return the drive behind the symlink
+  def getRealDevice
     while File.symlink?(@cdrom)
       link = File.readlink(@cdrom)
       if (link.include?('..') || !link.include?('/'))
@@ -52,49 +65,52 @@ private
         @cdrom = link
       end
     end
-
-    unless File.blockdev?(@cdrom) #is it a real device?
-      @status = _("ERROR: Cdrom drive %s does not exist on your system!\n\
+  end
+  
+  # check if it is not a fake device
+  def isBlockDevice?
+    if not File.blockdev?(@cdrom)
+      @error = _("ERROR: Cdrom drive %s does not exist on your system!\n\
 Please configure your cdrom drive first.") % [@cdrom]
-      return false
     end
-
+  end
+  
+  def isReadAndWritable?
     unless (File.readable?(@cdrom) && File.writable?(@cdrom))
-      @status = _("You don't have read and write permission for device\n
+      @error = _("You don't have read and write permission for device\n
 %s on your system! These permissions are necessary for\n
-cdparanoiato scan your drive. You might want to add yourself\n
+cdparanoia to scan your drive. You might want to add yourself\n
 to the necessary group with gpasswd.") % [@cdrom]
       if @deps.installed?('ls')
         permission = `ls -l #{@cdrom}`
-        @status +=	_("\n\nls -l shows %s") % [permission]
+        @error +=  _("\n\nls -l shows %s") % [permission]
       end
     end
   end
-
-  # lookup the scsi device and it's permissions
-  def checkGenericDevice
+  
+  def getGenericDrive
     @query.each do |line|
       if line =~ /generic device: /
-        device = $'.strip() #the part after the match
+        drive = $'.strip() #the part after the match
         break #end the loop
       end
     end
+    return drive
+  end
 
-    unless ((File.chardev?(device) || File.blockdev?(device)) && File.readable?(device) && File.writable?(device))
+  # lookup the scsi device and it's permissions
+  def genericDeviceChecks(drive)
+    unless ((File.chardev?(drive) || File.blockdev?(drive)) && File.readable?(drive) && File.writable?(drive))
       permission = nil
-      if File.chardev?(device) && @deps.installed?('ls')
-        permission = `ls -l #{device}`
+      if File.chardev?(drive) && @deps.installed?('ls')
+        permission = `ls -l #{drive}`
       end
 
-      @status = _("You don't have read and write permission\n"\
+      @error = _("You don't have read and write permission\n"\
       "for device %s on your system! These permissions are\n"\
       "necessary for cdparanoia to scan your drive.\n\n%s\n"\
       "You might want to add yourself to the necessary group with gpasswd")\
       %[device, "#{if permission ; "ls -l shows #{permission}" end}"]
-
-      return false
     end
-
-    return true
   end
 end
