@@ -52,11 +52,11 @@ attr_reader :status
   def launch(command, filename=false, noTranslations=nil)
     output = nil
     program = command.split[0]
-    command = "LANG=C #{command}" if noTranslations
+    command = "LANG=C; #{command}" if noTranslations
 
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
-      output = `#{command}`
+      output = `sh -c #{command}`
       @status = 'ok' if $?.success?
       @filename = filename
     end
