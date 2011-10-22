@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
 require 'rubyripper/permissionDrive'
@@ -27,14 +28,14 @@ class Disc
 attr_reader :metadata
 
   # initialize all needed dependencies
-  def initialize(preferences, deps=nil, exec=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil)
-    @prefs = preferences
+  def initialize(deps=nil, exec=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil, prefs=nil)
     @deps = deps ? deps : Dependency.new
     @exec = exec ? exec : Execute.new(@deps)
     @perm = perm ? perm : PermissionDrive.new(@deps)
-    @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm, @prefs)
-    @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@prefs, @exec)
-    @freedb = freedb ? freedb : FreedbString.new(@deps, @prefs, @cdpar, @exec, @cdinfo)
+    @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm)
+    @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@exec)
+    @freedb = freedb ? freedb : FreedbString.new(@deps, @cdpar, @exec, @cdinfo)
+    @prefs = prefs ? prefs : Preferences::Main.instance
   end
 
   # after a succesfull scan setup the metadata object
@@ -66,7 +67,7 @@ attr_reader :metadata
   # helper function to load metadata object
   def setMetadata
     require 'rubyripper/freedb'
-    @metadata = Freedb.new(self, @prefs, @deps)
+    @metadata = Freedb.new(self, @deps)
     @metadata.get()
   end
 end

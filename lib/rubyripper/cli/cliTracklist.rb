@@ -17,14 +17,15 @@
 
 require 'rubyripper/cli/cliGetAnswer'
 require 'rubyripper/cli/cliDisc'
+require 'rubyripper/preferences/main'
 
 # Tracklist class is responsible for showing and editing the metadata
 class CliTracklist
 
-  def initialize(out=nil, int=nil, prefs, disc)
+  def initialize(disc, out=nil, int=nil, prefs=nil)
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
-    @prefs = prefs
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @cliDisc = disc
   end
 

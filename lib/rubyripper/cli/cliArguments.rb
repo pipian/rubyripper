@@ -18,8 +18,7 @@
 # helper for interpreting commandline options
 require 'optparse'
 
-# CliPreferences is responsible for showing and editing the preferences
-# It also interpretes the parameters when loaded
+# Interpretes the parameters when loaded
 class CliArguments
   attr_reader :options
 

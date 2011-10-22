@@ -45,7 +45,7 @@ fakestation+rubyripper+test&proto=6"
 
   let(:prefs) {double('Preferences').as_null_object}
   let(:http) {double('CgiHttpHandler').as_null_object}
-  let(:getFreedb) {GetFreedbRecord.new(prefs, http)}
+  let(:getFreedb) {GetFreedbRecord.new(http, prefs)}
 
   context "Given there is only an empty instance" do
     it "should not crash if there are no choices but the caller still chooses" do

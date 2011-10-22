@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
+
 # A class that interprets the toc with the info of cd-info
 # Quite reliable for detecting data tracks and generating freedb strings
 # Notice that cdparanoia and cd-info might have conflicting results for
@@ -26,8 +28,8 @@ class ScanDiscCdinfo
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
-  def initialize(preferences, execute)
-    @prefs = preferences
+  def initialize(execute, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @exec = execute
 
     @startSector = Hash.new

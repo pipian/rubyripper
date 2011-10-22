@@ -15,16 +15,16 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/system/dependency.rb'
+require 'rubyripper/preferences/main'
+require 'rubyripper/system/dependency'
 
 # some sanity checks before the ripping starts
 class CheckConfigBeforeRipping
-  # * preferences = The preferences object
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-  def initialize(preferences, userInterface, disc, trackSelection)
-    @prefs = preferences
+  def initialize(userInterface, disc, trackSelection, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @ui = userInterface
     @disc = disc
     @trackSelection = trackSelection

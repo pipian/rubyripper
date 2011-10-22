@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'singleton'
 require 'rubyripper/preferences/data'
 require 'rubyripper/preferences/cleanup'
 require 'rubyripper/preferences/setDefaults'
@@ -24,25 +25,26 @@ require 'rubyripper/preferences/save'
 module Preferences
 
   class Main
-  attr_reader :data
-  attr_accessor :filename
+    include Singleton
+    attr_reader :data
+    attr_accessor :filename
 
-    def initialize(out=$stdout)
+    def initialize(out=nil)
       @data = Data.new
       @filename = getDefaultFilename()
-      @out = out
+      @out = out ? out : $stdout
     end
 
     # load the preferences after setting the defaults
     def load(customFilename="")
       Cleanup.new()
-      SetDefaults.new(self)
-      Load.new(self, customFilename, @out)
+      SetDefaults.new()
+      Load.new(customFilename, @out)
     end
 
     # save the preferences
     def save()
-      Save.new(self) unless @data.testdisc
+      Save.new() unless @data.testdisc
     end
 
    private

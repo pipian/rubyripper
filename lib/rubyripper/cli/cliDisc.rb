@@ -18,19 +18,20 @@
 require 'rubyripper/disc'
 require 'rubyripper/cli/cliGetAnswer'
 require 'rubyripper/errors'
+require 'rubyripper/preferences/main'
 
 # Metadata class is responsible for showing and editing the metadata
 class CliDisc
 attr_reader :cd
 
   # setup the different objects
-  def initialize(out=nil, preferences=nil, int=nil, bool=nil, string=nil)
+  def initialize(out=nil, int=nil, bool=nil, string=nil, prefs=nil)
     @out = out ? out : $stdout
-    @prefs = preferences
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @int = int ? int : CliGetInt.new(@out)
     @bool = bool ? bool : CliGetBool.new(@out)
     @string = string ? string : CliGetString.new(@out)
-    @cd = Disc.new(@prefs)
+    @cd = Disc.new()
   end
 
   # show the metadata to the screen

@@ -17,13 +17,15 @@
 
 # TODO require 'timeout' # in case of no connection
 
+require 'rubyripper/preferences/main'
 require 'net/http' #automatically loads the 'uri' library
 
 # This class handles all connectivity with a http server
 class CgiHttpHandler
 
-  # preferences is needed for the freedb server adress
-  def initialize(preferences) ; @prefs = preferences ; end
+  def initialize(prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
+  end
 
   # return the path for the specified url in preferences
   def path ; return @path ||= config ; end

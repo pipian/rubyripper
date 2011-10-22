@@ -17,19 +17,18 @@
 
 # helper for interpreting commandline options
 require 'optparse'
-require 'rubyripper/preferences/main.rb'
+require 'rubyripper/preferences/main'
 require 'rubyripper/cli/cliGetAnswer'
 
 # CliPreferences is responsible for showing and editing the preferences
 # It also interpretes the parameters when loaded
 class CliPreferences
-  attr_reader :prefs
 
-  def initialize(arguments, out=nil, int=nil, prefs=nil, bool=nil, string=nil)
+  def initialize(arguments, out=nil, int=nil, bool=nil, string=nil, prefs=nil)
     @options = arguments.options
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
-    @prefs = prefs ? prefs : Preferences::Main.new(@out)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @bool = bool ? bool : CliGetBool.new(@out)
     @string = string ? string : CliGetString.new(@out)
   end

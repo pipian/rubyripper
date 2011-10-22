@@ -15,9 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
+
 class RippingInfoAtStart
-  def initialize(prefs, disc, log, trackSelection)
-    @prefs = prefs
+  def initialize(disc, log, trackSelection, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @disc = disc
     @log = log
     @tracks = trackSelection.length

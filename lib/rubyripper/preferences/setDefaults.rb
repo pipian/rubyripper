@@ -15,12 +15,13 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
 
 module Preferences
   class SetDefaults
-    def initialize(main, deps=nil)
-      @data = main.data
+    def initialize(deps=nil, prefs=nil)
+      @data = prefs ? prefs.data : Preferences::Main.instance.data
       @deps = deps ? deps : Dependency.new
       setDefaults()
     end
@@ -31,7 +32,6 @@ module Preferences
       setCodecDefaults()
       setFreedbDefaults()
       setOtherDefaults()
-      setTestingDefaults() unless $TST_DEFAULT_PREFS.nil?
     end
 
     def setRippingDefaults
@@ -91,15 +91,6 @@ module Preferences
       @data.browser = @deps.browser
       @data.verbose = false
       @data.debug = false
-    end
-
-    # override some settings for testing to be predictable
-    def setTestingDefaults
-      @data.cdrom = '/dev/cdrom'
-      @data.editor = 'mousepad'
-      @data.filemanager = 'thunar'
-      @data.browser = 'firefox'
-      @data.basedir = '/home/test'
     end
   end
 end

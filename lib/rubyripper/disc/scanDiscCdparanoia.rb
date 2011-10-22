@@ -15,6 +15,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
+
 # A class that interprets the toc with the info of cdparanoia
 # It's purpose is pure for ripping the correct audio, not for
 # creating the freedb string. Cd-info is better for that.
@@ -23,13 +25,12 @@ class ScanDiscCdparanoia
   attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack,
       :totalSectors, :error, :multipleDriveSupport
 
-  # * preferences is an instance of Preferences
   # * execute is an instance of Execute
   # * permissionDrive is an instance of PermissionDrive
-  def initialize(execute, permissionDrive, preferences, out=nil)
+  def initialize(execute, permissionDrive,  prefs=nil, out=nil)
     @exec = execute
     @perm = permissionDrive
-    @prefs = preferences
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @out = out ? out : $stdout
   end
 

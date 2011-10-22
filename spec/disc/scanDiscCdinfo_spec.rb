@@ -21,7 +21,7 @@ describe ScanDiscCdinfo do
 
   let(:prefs) {double('Preferences').as_null_object}
   let(:exec) {double('Execute').as_null_object}
-  let(:scan) {ScanDiscCdinfo.new(prefs, exec)}
+  let(:scan) {ScanDiscCdinfo.new(exec, prefs)}
 
   before(:each) do
     prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')

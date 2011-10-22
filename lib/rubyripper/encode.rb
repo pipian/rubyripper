@@ -26,12 +26,13 @@ require 'fileutils' # for the fileutils object
 
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
+require 'rubyripper/preferences/main'
 
 class Encode
   attr_writer :cancelled
 
-  def initialize(prefs, outputFile, log, trackSelection, disc, deps=nil, exec=nil)
-    @prefs = prefs
+  def initialize(outputFile, log, trackSelection, disc, deps=nil, exec=nil, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @out = outputFile
     @log = log
     @trackSelection = trackSelection

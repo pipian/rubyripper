@@ -17,6 +17,7 @@
 
 # helper class to handle the http traffic
 require 'rubyripper/freedb/cgiHttpHandler.rb'
+require 'rubyripper/preferences/main'
 
 #for translating characters to HTTP codes, space = %20 for instance
 require 'cgi'
@@ -27,9 +28,9 @@ require 'cgi'
 class GetFreedbRecord
   attr_reader :status, :freedbRecord, :choices, :category, :finalDiscId
 
-  def initialize(preferences, server=nil)
-    @prefs = preferences
-    @server = server ? server : CgiHttpHandler.new(@prefs)
+  def initialize(server=nil, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
+    @server = server ? server : CgiHttpHandler.new()
   end
 
   # handle the initial connection with the freedb server

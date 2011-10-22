@@ -16,15 +16,16 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/system/execute'
+require 'rubyripper/preferences/main'
 
 # class that gets the freedb string
 class FreedbString
 attr_reader :freedbString, :discid
 
   # setup some references to needed objects
-  def initialize(dependency, preferences, scanDiscCdparanoia, execute, scanDiscCdinfo)
+  def initialize(dependency, scanDiscCdparanoia, execute, scanDiscCdinfo, prefs=nil)
     @deps = dependency
-    @prefs = preferences
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @disc = scanDiscCdparanoia
     @exec = execute
     @cdinfo = scanDiscCdinfo

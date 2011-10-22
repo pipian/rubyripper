@@ -19,12 +19,11 @@
 class Rubyripper
 attr_reader :outputDir, :outputFile, :log
 
-  # * preferences = The preferences object
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-  def initialize(preferences, userInterface, disc, trackSelection)
-    @prefs = preferences
+  def initialize(userInterface, disc, trackSelection, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @ui = userInterface
     @disc = disc
     @trackSelection = trackSelection
@@ -34,7 +33,7 @@ attr_reader :outputDir, :outputFile, :log
   # check if all is ready to go
   def checkConfiguration
     require 'rubyripper/checkConfigBeforeRipping'
-    return CheckConfigBeforeRipping.new(@prefs, @ui, @disc, @trackSelection).result
+    return CheckConfigBeforeRipping.new(@ui, @disc, @trackSelection).result
   end
 
   # do some neccesary preparation and start the ripping
@@ -57,23 +56,23 @@ attr_reader :outputDir, :outputFile, :log
   def createHelpObjects
     # determine file locations
     require 'rubyripper/outputFile'
-    @outputFile = OutputFile.new(@prefs, @disc, @trackSelection)
+    @outputFile = OutputFile.new(@disc, @trackSelection)
 
     # create the logfile + handle user interface updates + summary of errors
     require 'rubyripper/log'
-    @log = Log.new(@prefs, @disc, @outputFile, @ui, @updatePercForEachTrack)
+    @log = Log.new(@disc, @outputFile, @ui, @updatePercForEachTrack)
 
     # show basic info for current rip and settings
     require 'rubyripper/rippingInfoAtStart'
-    @rippingInfoAtStart = RippingInfoAtStart.new(@prefs, @disc, @log, @trackSelection)
+    @rippingInfoAtStart = RippingInfoAtStart.new(@disc, @log, @trackSelection)
 
     # to execute the encoding
     require 'rubyripper/encode'
-    @encoding = Encode.new(@prefs, @outputFile, @log, @trackSelection, @disc)
+    @encoding = Encode.new(@outputFile, @log, @trackSelection, @disc)
 
     # to execute the ripping
     require 'rubyripper/secureRip'
-    @ripper = SecureRip.new(@prefs, @trackSelection, @disc, @outputFile, @log, @encoding)
+    @ripper = SecureRip.new(@trackSelection, @disc, @outputFile, @log, @encoding)
   end
 
   def calculatePercentageUpdateForProgressbar()

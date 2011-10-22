@@ -21,26 +21,25 @@ module Preferences
   class Load
 
     # setting up instances
-    def initialize(main, customFilename, out=$stdout, fileAndDir=nil)
+    def initialize(customFilename, out=$stdout, fileAndDir=nil, prefs=nil)
       @file = fileAndDir ? fileAndDir : FileAndDir.new
+      @prefs = prefs ? prefs : Preferences::Main.instance
       @out = out
-      @data = main.data()
 
-      validateCustomFilename(customFilename, main)
-      readPreferencesFromFile() if File.exists?(@filename)
+      validateCustomFilename(customFilename)
+      readPreferencesFromFile() if File.exists?(@prefs.filename)
     end
 
 private
 
     # check if the file exists, if not return to defaults
-    def validateCustomFilename(customFilename, main)
-      main.filename = customFilename if File.exists?(customFilename)
-      @filename = main.filename()
+    def validateCustomFilename(customFilename)
+      @prefs.filename = customFilename if File.exists?(customFilename)
     end
 
     # read all preferences from the file
     def readPreferencesFromFile
-      @file.read(@filename).each_line do |line|
+      @file.read(@prefs.filename).each_line do |line|
         key, value = getNextPreference(line)
         updatePreference(key,value)
       end
@@ -66,8 +65,8 @@ private
     # try to update the data object
     def updatePreference(key,value)
       key = (key+'=').to_sym
-      if @data.respond_to?(key)
-        @data.send(key, value)
+      if @prefs.data.respond_to?(key)
+        @prefs.data.send(key, value)
       else
         @out.puts("WARNING: Preference with key #{key} does not exist")
       end

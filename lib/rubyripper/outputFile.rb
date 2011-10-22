@@ -23,6 +23,7 @@
 # are also made with help of the Cuesheet class.
 # Output is initialized as soon as the player pushes Rip Now!
 
+require 'rubyripper/preferences/main'
 require 'fileutils'
 
 class OutputFile
@@ -31,8 +32,8 @@ attr_reader :status, :artist, :album, :year, :genre
   # prefs = prefs object
   # disc = disc object
   # trackSelection = array with tracknumbers to rip
-  def initialize(prefs, disc, trackSelection)
-    @prefs = prefs
+  def initialize(disc, trackSelection, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @disc = disc
     @md = disc.metadata
     @trackSelection = trackSelection

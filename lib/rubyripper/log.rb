@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
 # The Log class is responsible for
 # * updating the log files
 # * keeping track of the reading trials
@@ -24,8 +25,8 @@ class Log
 attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
-  def initialize(preferences, disc, outputFile, userInterface, updatePercForEachTrack)
-    @prefs = preferences
+  def initialize(disc, outputFile, userInterface, updatePercForEachTrack, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @md = disc.metadata
     @out = outputFile
     @ui = userInterface

@@ -21,7 +21,7 @@ describe ScanDiscCdrdao do
 
   let(:prefs) {double('Preferences').as_null_object}
   let(:exec) {double('Execute').as_null_object}
-  let(:disc) {ScanDiscCdrdao.new(prefs, exec)}
+  let(:disc) {ScanDiscCdrdao.new(exec, prefs)}
 
   context "Before scanning any disc" do
     it "shouldn't set default values" do

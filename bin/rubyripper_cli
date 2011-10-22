@@ -46,8 +46,8 @@ class CommandLineInterface
     @deps = deps ? deps : Dependency.new
     @int = int ? int : CliGetInt.new(@out)
     @cliPrefs = prefs ? prefs : CliPreferences.new(arguments, @out, @int)
-    @cliDisc = disc ? disc : CliDisc.new(@out, @cliPrefs.prefs, @int)
-    @cliTracklist = tracks ? tracks : CliTracklist.new(@out, @int, @cliPrefs.prefs, @cliDisc)
+    @cliDisc = disc ? disc : CliDisc.new(@out, @int)
+    @cliTracklist = tracks ? tracks : CliTracklist.new(@cliDisc, @out, @int)
   end
 
   def start
@@ -125,8 +125,7 @@ private
   def startRip()
     require 'rubyripper/rubyripper'
 
-    @rubyripper = Rubyripper.new(@cliPrefs.prefs, self, @cliDisc.cd,
-    @cliTracklist.selection)
+    @rubyripper = Rubyripper.new(self, @cliDisc.cd, @cliTracklist.selection)
 
     errors = @rubyripper.checkConfiguration()
     errors.empty? ? @rubyripper.startRip() : showErrors(errors)

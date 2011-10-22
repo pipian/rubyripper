@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
 require 'rubyripper/freedb/loadFreedbRecord'
 require 'rubyripper/freedb/saveFreedbRecord'
@@ -26,15 +27,15 @@ require 'rubyripper/freedb/metadata'
 class Freedb
 
   # setting up all necessary objects
-  def initialize(disc, prefs, deps=nil, load=nil, save=nil, md=nil, parser=nil, getFreedb=nil)
+  def initialize(disc, deps=nil, loadFreedbRecord=nil, save=nil, md=nil, parser=nil, getFreedb=nil, prefs=nil)
     @disc = disc
-    @prefs = prefs
+    @loadFreedbRecord = loadFreedbRecord ? loadFreedbRecord : LoadFreedbRecord.new()
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.new()
-    @load = load ? load : LoadFreedbRecord.new()
     @save = save ? save : SaveFreedbRecord.new()
     @md = md ? md : Metadata.new()
     @parser = parser ? parser : FreedbRecordParser.new(@md)
-    @getFreedb = getFreedb ? getFreedb : GetFreedbRecord.new(@prefs)
+    @getFreedb = getFreedb ? getFreedb : GetFreedbRecord.new()
   end
 
   # get the metadata for the disc
@@ -57,11 +58,18 @@ class Freedb
   end
 
   def isLocalFileFound?
-    @prefs.testdisc ? @load.read(@prefs.testdisc) : @load.scan(@disc.discid)
-    @load.freedbRecord != nil && @load.status == 'ok'
+    if @prefs.testdisc
+      @loadFreedbRecord.read(@prefs.testdisc)
+    else
+      @loadFreedbRecord.scan(@disc.discid)
+    end
+    
+    @loadFreedbRecord.freedbRecord != nil && @loadFreedbRecord.status == 'ok'
   end
 
-  def handleLocal ; @parser.parse(@load.freedbRecord) ; end
+  def handleLocal
+    @parser.parse(@loadFreedbRecord.freedbRecord)
+  end
 
   def isRemoteFileFound?
     @getFreedb.queryDisc(@disc.freedbString)

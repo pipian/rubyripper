@@ -18,6 +18,7 @@
 require 'digest/md5' # Needed for secure class, only have to load them ones here.
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
+require 'rubyripper/preferences/main'
 
 # The SecureRip class is mainly responsible for:
 # * Managing cdparanoia to fetch the files
@@ -30,8 +31,8 @@ class SecureRip
   BYTES_WAV_CONTAINER = 44 # to store the type of wav file
   BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
 
-  def initialize(prefs, trackSelection, disc, outputFile, log, encoding, deps=nil, exec=nil)
-    @prefs = prefs
+  def initialize(trackSelection, disc, outputFile, log, encoding, deps=nil, exec=nil, prefs=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @trackSelection = trackSelection
     @disc = disc
     @out = outputFile

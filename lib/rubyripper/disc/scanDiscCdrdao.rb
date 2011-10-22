@@ -28,12 +28,14 @@
 # TODO handle the extra thread from within this class
 # TODO perhaps call the cuesheet generation as well
 
+require 'rubyripper/preferences/main'
+
 class ScanDiscCdrdao
 attr_reader :log, :status, :dataTracks, :discType, :tracks,
     :artist, :album
 
-  def initialize(preferences, execute)
-    @prefs = preferences
+  def initialize(execute, prefs=nil)
+    @prefs = @prefs = prefs ? prefs : Preferences::Main.instance
     @exec = execute
   end
 
