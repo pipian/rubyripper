@@ -253,7 +253,6 @@ class Encode
     command.force_encoding("UTF-8") if command.respond_to?("force_encoding")
     command +="flac #{@prefs.settingsFlac} -o \"#{filename}\" #{tags}\
 \"#{@out.getTempFile(track, 1)}\""
-    command += " 2>&1" unless @prefs.verbose
 
     checkCommand(command, track, 'flac')
   end

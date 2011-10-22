@@ -99,8 +99,6 @@ private
   # get all the cdrdao info
   def getOutput
     command = "cdrdao read-toc --device #{cdrom} \"#{tempfile()}\""
-    command += " 2>&1" unless @prefs.verbose
-
     @exec.launch(command, tempfile())
     @exec.status == 'ok' ? @exec.readFile() : nil
   end

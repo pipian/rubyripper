@@ -31,6 +31,12 @@ describe ScanDiscCdinfo do
     exec.should_receive(:launch).with('cd-info -C /dev/cdrom -A --no-cddb').and_return(answer)
   end
 
+  def setStandardQueryReply
+    setQueryReply([" 15: 36:34:45  164445 audio  false  no    2        no",
+                   " 16: 39:55:60  179535 audio  false  no    2        no",
+                   "170: 43:33:30  195855 leadout"])
+  end
+  
   context "When a queryresult is not a valid response" do
     it "should detect if cd-info is not installed" do
       setQueryReply(nil)
@@ -39,20 +45,19 @@ describe ScanDiscCdinfo do
     end
 
     it "should detect if the drive is not valid" do
-      setQueryReply('PARTICULAR PURPOSE.\n++ WARN: Can\'t get file status for')
+      setQueryReply(['++ WARN: Can\'t get file status for'])
       scan.scan()
       scan.status.should == 'unknownDrive'
     end
 
     it "should detect a problem with parameters" do
-      setQueryReply('cd-info: unrecognized option \'--unknownArgument\'\nUsage: cd')
+      setQueryReply(['Usage: cd'])
       scan.scan()
       scan.status.should == 'wrongParameters'
     end
 
     it "should detect if there is no disc inserted" do
-      setQueryReply('Disc mode is listed as: Error in getting information\n\
-++ WARN: error in ioctl CDROMREADTOCHDR: No medium found')
+      setQueryReply(['++ WARN: error in ioctl CDROMREADTOCHDR: No medium found'])
       scan.scan()
       scan.status.should == 'noDiscInDrive'
     end
@@ -60,28 +65,28 @@ describe ScanDiscCdinfo do
 
   context "When a query is a valid response" do
     it "should detect the cd-info version" do
-      setQueryReply("cd-info version 0.82 i686-pc-linux-gnu\nCopyright (c) 2003")
+      setQueryReply(["cd-info version 0.82 i686-pc-linux-gnu"])
       scan.scan()
       scan.status.should == 'ok'
       scan.version.should == 'cd-info version 0.82 i686-pc-linux-gnu'
     end
 
     it "should detect the discmode of the drive" do
-      setQueryReply("___________\n\nDisc mode is listed as: CD-DA")
+      setQueryReply(['Disc mode is listed as: CD-DA'])
       scan.scan()
       scan.discMode.should == 'CD-DA'
     end
 
     it "should detect the devicename for the drive" do
-      setQueryReply("Vendor                      : HL-DT-ST\nModel                      \
-: DVDRAM GH22NS40\nRevision                    : NL01")
+      setQueryReply(["Vendor                      : HL-DT-ST",
+                     "Model                      : DVDRAM GH22NS40",
+                     "Revision                    : NL01"])
       scan.scan()
       scan.deviceName.should == 'HL-DT-ST DVDRAM GH22NS40 NL01'
     end
 
     it "should detect the startsector for each track" do
-      setQueryReply(" 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
-179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout")
+      setStandardQueryReply()
       scan.scan()
       scan.getStartSector(14).should == nil
       scan.getStartSector(15).should == 164445
@@ -90,8 +95,7 @@ describe ScanDiscCdinfo do
     end
 
     it "should detect the length in sectors for each track" do
-      setQueryReply(" 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
-179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout")
+      setStandardQueryReply()
       scan.scan()
       scan.getLengthSector(14).should == nil
       scan.getLengthSector(15).should == 15090
@@ -100,8 +104,7 @@ describe ScanDiscCdinfo do
     end
 
     it "should detect the length in mm:ss for each track" do
-      setQueryReply(" 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
-179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout")
+      setStandardQueryReply()
       scan.scan()
       scan.getLengthText(14).should == nil
       scan.getLengthText(15).should == '03:21.15'
@@ -110,34 +113,31 @@ describe ScanDiscCdinfo do
     end
 
     it "should detect the total amount of sectors for the disc" do
-      setQueryReply("       no\n170: 43:33:30  195855 leadout")
+      setQueryReply(["170: 43:33:30  195855 leadout"])
       scan.scan()
       scan.totalSectors.should == 195855
     end
 
     it "should detect the playtime in mm:ss for the disc" do
-      setQueryReply("       no\n170: 43:33:30  195855 leadout")
+      setQueryReply(["170: 43:33:30  195855 leadout"])
       scan.scan()
       scan.playtime.should == '43:31' #minus 2 seconds offset, without frames
     end
 
     it "should detect the amount of audiotracks" do
-     setQueryReply(" 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
-179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout")
+      setStandardQueryReply()
       scan.scan()
       scan.audiotracks.should == 2
     end
 
     it "should detect the first audio track" do
-      setQueryReply(" 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
-179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout")
+      setStandardQueryReply()
       scan.scan()
       scan.firstAudioTrack.should == 15
     end
 
     it "should detect if there are no data tracks on the disc" do
-      setQueryReply(" 15: 36:34:45  164445 audio  false  no    2        no\n 16: 39:55:60  \
-179535 audio  false  no    2        no\n170: 43:33:30  195855 leadout")
+      setStandardQueryReply()
       scan.scan()
       scan.audiotracks.should == 2
       scan.dataTracks.should == []
@@ -145,8 +145,8 @@ describe ScanDiscCdinfo do
     end
 
     it "should detect the data tracks on the disc" do
-      setQueryReply(" 13: 61:11:22  275197 data   false  no\n170: 73:47:31  \
-331906 leadout (744 MB raw, 744 MB formatted)")
+      setQueryReply([" 13: 61:11:22  275197 data   false  no",
+                     "170: 73:47:31  331906 leadout (744 MB raw, 744 MB formatted)"])
       scan.scan()
       scan.audiotracks.should == 0
       scan.dataTracks.should == [13]

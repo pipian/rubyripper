@@ -125,12 +125,12 @@ attr_reader :outputDir, :outputFile, :log
   # the user wants to abort the ripping
   def cancelRip
     puts "User aborted current rip"
-    `killall cdrdao 2>&1`
+    `killall cdrdao`
     @encoding.cancelled = true if @encoding != nil
     @encoding = nil
     @ripping.cancelled = true if @ripping != nil
     @ripping = nil
-    `killall cdparanoia 2>&1` # kill any rip that is already started
+    `killall cdparanoia` # kill any rip that is already started
   end
 
   # wait for the Advanced Toc class to finish

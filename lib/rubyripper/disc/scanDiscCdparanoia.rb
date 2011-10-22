@@ -128,10 +128,11 @@ class ScanDiscCdparanoia
       query = File.read(File.join(@prefs.testdisc, 'cdparanoia'))
     else
       @multipleDriveSupport = true
-      query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ 2>&1")
+      query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ")
       # some versions of cdparanoia don't support the cdrom parameter
-      if query.include?('USAGE')
-        query = @exec.launch("cdparanoia -vQ 2>&1")
+      
+      if query != nil && query.include?('USAGE')
+        query = @exec.launch("cdparanoia -vQ")
         @multipleDriveSupport = false
       end
     end
@@ -153,10 +154,17 @@ class ScanDiscCdparanoia
 
   # check the query result for errors
   def isValidQuery(query)
-    case query
-      when /Unable to open disc/ then setError(:noDiscInDrive, @prefs.cdrom)
-      when /USAGE/ then setError(:wrongParameters, 'Cdparanoia')
-      when /No such file or directory/ then setError(:unknownDrive, @prefs.cdrom)
+    if query.nil?
+      setError(:notInstalled, 'cdparanoia')
+      return false
+    end
+    
+    query.each do |line|
+      case line
+        when /Unable to open disc/ then setError(:noDiscInDrive, @prefs.cdrom) ; break
+        when /USAGE/ then setError(:wrongParameters, 'cdparanoia') ; break
+        when /No such file or directory/ then setError(:unknownDrive, @prefs.cdrom) ; break
+      end
     end
 
     return @error.nil?
@@ -183,7 +191,7 @@ class ScanDiscCdparanoia
   def parseQuery(query)
     setupDisc()
     currentTrack = 0
-    query.each_line do |line|
+    query.each do |line|
       if line[0,5] =~ /\s+\d+\./
         currentTrack += 1
         addTrack(line, currentTrack)

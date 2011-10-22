@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/system/dependency'
+require 'open3'
 
 # This class manages the executing of external commands
 # A seperate class allows unified checking of exit status
@@ -50,20 +51,23 @@ attr_reader :status
   # return output for command
   # clear the file if it exists before the program runs
   def launch(command, filename=false, noTranslations=nil)
-    output = nil
     program = command.split[0]
     command = "LANG=C; #{command}" if noTranslations
 
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
-      output = `sh -c "#{command}"`
-      @status = 'ok' if $?.success?
+      begin
+        stdin, stdout, stderr = Open3.popen3(command)
+        output = stdout.readlines() + stderr.readlines()
+      rescue
+        output = nil
+      end
       @filename = filename
     end
 
     return output
   end
-
+  
   # return created file with command
   def readFile
     return File.read(@filename) if File.exists?(@filename)

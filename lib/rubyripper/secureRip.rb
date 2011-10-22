@@ -112,7 +112,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     if @deps.installed?('df')
       output = @exec.launch("df \"#{@out.getDir()}\"", filename=false, noTranslations=true)
-      freeDiskSpace = output.split()[10].to_i
+      freeDiskSpace = output[1].split()[3].to_i
       puts "Free disk space is #{freeDiskSpace} MB" if @prefs.debug
       if @disc.getFileSize(track) > freeDiskSpace*1000
         @log.add(_("Not enough disk space left! Rip aborted"))
@@ -368,7 +368,6 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     command += " -O #{@prefs.offset}"
     command += " \"#{@out.getTempFile(track, @trial)}\""
-    unless @prefs.verbose ; command += " 2>&1" end # hide the output of cdparanoia output
     puts command if @prefs.debug
     @exec.launch(command) if @cancelled == false #Launch the cdparanoia command
     @log.add(" (#{(Time.now - timeStarted).to_i} #{_("seconds")})\n")

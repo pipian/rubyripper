@@ -38,8 +38,7 @@ class ScanDiscCdinfo
 
   # scan the contents of the disc
   def scan
-    query = $TST_DISC_CDINFO
-    query ||= @exec.launch("cd-info -C #{@prefs.cdrom} -A --no-cddb")
+    query = @exec.launch("cd-info -C #{@prefs.cdrom} -A --no-cddb")
 
     if isValidQuery(query)
       @status = 'ok'
@@ -63,11 +62,17 @@ private
 
   # check the query result for errors
   def isValidQuery(query)
-    case query
-      when nil then @status = 'notInstalled'
-      when /WARN: Can't get file status/ then @status = 'unknownDrive'
-      when /Usage:/ then @status = 'wrongParameters'
-      when /WARN: error in ioctl/ then @status = 'noDiscInDrive'
+    if query.nil?
+      @status = 'notInstalled'
+      return false
+    end
+    
+    query.each do |line|
+      case line
+        when /WARN: Can't get file status/ then @status = 'unknownDrive' ; break
+        when /Usage:/ then @status = 'wrongParameters' ; break
+        when /WARN: error in ioctl/ then @status = 'noDiscInDrive' ; break
+      end
     end
 
     return @status.nil?
@@ -96,7 +101,7 @@ private
   # store the info of the query in variables
   def parseQuery(query)
     tracknumber = 0
-    query.each_line do |line|
+    query.each do |line|
       @version = line.strip() if line =~ /cd-info version/
       @vendor = $'.strip if line =~ /Vendor\s+:\s/
       @model = $'.strip if line =~ /Model\s+:\s/

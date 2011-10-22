@@ -21,7 +21,7 @@ describe ScanDiscCdparanoia do
 
   def setQueryReply(reply, command=nil)
     prefs.stub('testdisc').and_return false
-    command ||= 'cdparanoia -d /dev/cdrom -vQ 2>&1'
+    command ||= 'cdparanoia -d /dev/cdrom -vQ'
     exec.stub(:launch).with(command).and_return reply
   end
 
@@ -56,23 +56,30 @@ describe ScanDiscCdparanoia do
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
 
+    it "should abort when cdparanoia is not installed" do
+      setQueryReply(nil)
+      disc.scan()
+      disc.status.should == 'error'
+      disc.error.should == [:notInstalled, 'cdparanoia']
+    end
+    
     it "should abort when cdparanoia is unable to open the disc" do
-      setQueryReply("cdparanoia\nUnable to open disc.  Is there an audio CD in the drive?\n")
+      setQueryReply(["Unable to open disc.  Is there an audio CD in the drive?"])
       disc.scan()
       disc.status.should == 'error'
       disc.error.should == [:noDiscInDrive, '/dev/cdrom']
     end
 
     it "should have one retry without the drive parameter when cdparanoia doesn't recognize it"  do
-      setQueryReply("http://www.xiph.org/paranoia/\nUSAGE:\n  cdparanoia")
-      setQueryReply("http://www.xiph.org/paranoia/\nUSAGE:\n  cdparanoia", 'cdparanoia -vQ 2>&1')
+      setQueryReply(["USAGE:"])
+      setQueryReply(["USAGE:"], 'cdparanoia -vQ')
       disc.scan()
       disc.status.should == 'error'
-      disc.error.should == [:wrongParameters, 'Cdparanoia']
+      disc.error.should == [:wrongParameters, 'cdparanoia']
     end
 
     it "should abort when the disc drive is not found" do
-      setQueryReply("Could not stat /dev/cdrom: No such file or directory")
+      setQueryReply(["Could not stat /dev/cdrom: No such file or directory"])
       disc.scan()
       disc.status.should == 'error'
       disc.error.should == [:unknownDrive, '/dev/cdrom']
@@ -81,7 +88,7 @@ describe ScanDiscCdparanoia do
 
   context "When a disc is found" do
     before(:each) do
-      @cdparanoia ||= File.read('spec/disc/data/cdparanoia')
+      @cdparanoia ||= File.read('spec/disc/data/cdparanoia').split("\n")
       perm.should_receive(:check).with('/dev/cdrom', @cdparanoia).and_return 'ok'
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
