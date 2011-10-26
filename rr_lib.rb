@@ -2058,7 +2058,7 @@ class SecureRip
 			@errors[start_chunk].sort!
 			if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1)
 				file1.sysseek(start_chunk + BYTES_WAV_CONTAINER, IO::SEEK_SET)
-				file1.write(temp)
+				file1.syswrite(temp)
 				@errors.delete(start_chunk)
 			end
 		end
