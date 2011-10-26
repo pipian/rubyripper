@@ -2050,14 +2050,14 @@ class SecureRip
 		
 		# Sort the hash keys to prevent jumping forward and backwards in the file
 		@errors.keys.sort.each do |start_chunk|
-			file2.pos = start_chunk + BYTES_WAV_CONTAINER
+			file2.sysseek(start_chunk + BYTES_WAV_CONTAINER, IO::SEEK_SET)
 			@errors[start_chunk] << temp = file2.sysread(BYTES_AUDIO_SECTOR)
 
 			# now sort the array and see if the new read value has enough matches
 			# right index minus left index of the read value is amount of matches
 			@errors[start_chunk].sort!
 			if (@errors[start_chunk].rindex(temp) - @errors[start_chunk].index(temp)) == (@reqMatchesErrors - 1)
-				file1.pos = start_chunk + BYTES_WAV_CONTAINER
+				file1.sysseek(start_chunk + BYTES_WAV_CONTAINER, IO::SEEK_SET)
 				file1.write(temp)
 				@errors.delete(start_chunk)
 			end
