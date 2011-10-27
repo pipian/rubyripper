@@ -21,7 +21,7 @@ require 'rubyripper/system/fileAndDir'
 class LoadFreedbRecord
 
   def initialize(fileAndDir=nil)
-    @file = fileAndDir ? fileAndDir : FileAndDir.new()
+    @file = fileAndDir ? fileAndDir : FileAndDir.instance()
   end
 
   # look for local entries

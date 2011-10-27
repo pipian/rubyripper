@@ -25,7 +25,7 @@ module Preferences
       @prefs = prefs ? prefs : Preferences::Main.instance
       @filename = @prefs.filename()
       @data = @prefs.data()
-      @file = fileAndDir ? fileAndDir : FileAndDir.new
+      @file = fileAndDir ? fileAndDir : FileAndDir.instance
       save()
     end
 

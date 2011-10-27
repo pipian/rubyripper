@@ -21,7 +21,7 @@ require 'rubyripper/system/fileAndDir'
 # do this conform standards at location $HOME/.cddb/<category>/<discid>
 class SaveFreedbRecord
   def initialize(fileAndDir=nil)
-    @file = fileAndDir ? fileAndDir : FileAndDir.new()
+    @file = fileAndDir ? fileAndDir : FileAndDir.instance()
   end
 
   # * freedbRecord = the complete freedb record string with all metadata

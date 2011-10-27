@@ -23,7 +23,7 @@ module Preferences
 
     # setting up instances
     def initialize(customFilename, out=$stdout, fileAndDir=nil, prefs=nil, deps=nil)
-      @file = fileAndDir ? fileAndDir : FileAndDir.new
+      @file = fileAndDir ? fileAndDir : FileAndDir.instance
       @prefs = prefs ? prefs : Preferences::Main.instance
       @deps = deps ? deps : Dependency.instance
       @out = out

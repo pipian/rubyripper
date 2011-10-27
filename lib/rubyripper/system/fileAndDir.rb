@@ -15,8 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'singleton'
+
 # This class will help with the file and directory operations of Ruby
 class FileAndDir
+  include Singleton unless $run_specs
 
 	def mkdir(dir)
 		Dir.mkdir(dir)

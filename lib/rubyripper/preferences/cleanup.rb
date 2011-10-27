@@ -20,7 +20,7 @@ require 'rubyripper/system/fileAndDir'
 module Preferences
   class Cleanup
     def initialize(fileAndDir=nil)
-      @file = fileAndDir ? fileAndDir : FileAndDir.new
+      @file = fileAndDir ? fileAndDir : FileAndDir.instance
     end
 
     # clean up the old config files
