@@ -38,8 +38,8 @@ class Encode
     @trackSelection = trackSelection
     @disc = disc
     @md = disc.metadata
-    @deps = deps ? deps : Dependency.new
-    @exec = exec ? exec : Execute.new(@deps)
+    @deps = deps ? deps : Dependency.instance
+    @exec = exec ? exec : Execute.new()
     @cancelled = false
     @progress = 0.0
     @threads = []

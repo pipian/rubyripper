@@ -38,8 +38,8 @@ class SecureRip
     @out = outputFile
     @log = log
     @encoding = encoding
-    @deps = deps ? deps : Dependency.new()
-    @exec = exec ? exec : Execute.new(@deps)
+    @deps = deps ? deps : Dependency.instance()
+    @exec = exec ? exec : Execute.new()
     @cancelled = false
     @reqMatchesAll = @prefs.reqMatchesAll # Matches needed for all chunks
     @reqMatchesErrors = @prefs.reqMatchesErrors # Matches needed for chunks that didn't match immediately

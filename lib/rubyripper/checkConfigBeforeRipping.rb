@@ -23,12 +23,12 @@ class CheckConfigBeforeRipping
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-  def initialize(userInterface, disc, trackSelection, prefs=nil)
+  def initialize(userInterface, disc, trackSelection, prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @ui = userInterface
     @disc = disc
     @trackSelection = trackSelection
-    @deps = Dependency.new()
+    @deps = deps ? deps : Dependency.instance()
     @errors = Array.new
   end
 

@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
 
@@ -23,12 +24,12 @@ class FreedbString
 attr_reader :freedbString, :discid
 
   # setup some references to needed objects
-  def initialize(dependency, scanDiscCdparanoia, execute, scanDiscCdinfo, prefs=nil)
-    @deps = dependency
-    @prefs = prefs ? prefs : Preferences::Main.instance
+  def initialize(scanDiscCdparanoia, execute, scanDiscCdinfo, prefs=nil, deps=nil)    
     @disc = scanDiscCdparanoia
     @exec = execute
     @cdinfo = scanDiscCdinfo
+    @prefs = prefs ? prefs : Preferences::Main.instance
+    @deps = deps ? deps : Dependency.instance
   end
 
   # fetch the freedb string

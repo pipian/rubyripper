@@ -24,10 +24,8 @@ require 'open3'
 class Execute
 attr_reader :status
 
-  # * deps = instance of Dependency
-  def initialize(command, dependency = Dependency.new)
-    @command = command
-    @deps = dependency
+  def initialize(deps=nil)
+    @deps = deps ? deps : Dependency.instance
   end
 
   def eject(cdrom)

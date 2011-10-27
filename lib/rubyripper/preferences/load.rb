@@ -25,7 +25,7 @@ module Preferences
     def initialize(customFilename, out=$stdout, fileAndDir=nil, prefs=nil, deps=nil)
       @file = fileAndDir ? fileAndDir : FileAndDir.new
       @prefs = prefs ? prefs : Preferences::Main.instance
-      @deps = deps ? deps : Dependency.new
+      @deps = deps ? deps : Dependency.instance
       @out = out
 
       validateCustomFilename(customFilename)

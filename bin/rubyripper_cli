@@ -41,9 +41,9 @@ end
 class CommandLineInterface
 
   # start up the interface
-  def initialize(arguments=nil, out=nil, prefs=nil, deps=nil, disc=nil, int=nil, tracks=nil)
+  def initialize(arguments=nil, out=nil, prefs=nil, disc=nil, int=nil, tracks=nil, deps=nil)
     @out = out ? out : $stdout
-    @deps = deps ? deps : Dependency.new
+    @deps = deps ? deps : Dependency.instance
     @int = int ? int : CliGetInt.new(@out)
     @cliPrefs = prefs ? prefs : CliPreferences.new(arguments, @out, @int)
     @cliDisc = disc ? disc : CliDisc.new(@out, @int)

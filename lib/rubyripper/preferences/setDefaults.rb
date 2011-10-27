@@ -22,7 +22,7 @@ module Preferences
   class SetDefaults
     def initialize(deps=nil, prefs=nil)
       @data = prefs ? prefs.data : Preferences::Main.instance.data
-      @deps = deps ? deps : Dependency.new
+      @deps = deps ? deps : Dependency.instance
       setDefaults()
     end
 

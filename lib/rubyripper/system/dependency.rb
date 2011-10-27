@@ -15,8 +15,12 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'singleton'
+
 # The Dependency class is responsible for all dependency checking
 class Dependency
+  include Singleton unless $run_specs
+  
   attr_reader :platform
   
   def initialize(file=nil, platform=nil)

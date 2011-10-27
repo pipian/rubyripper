@@ -28,13 +28,13 @@ class Disc
 attr_reader :metadata
 
   # initialize all needed dependencies
-  def initialize(deps=nil, exec=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil, prefs=nil)
-    @deps = deps ? deps : Dependency.new
-    @exec = exec ? exec : Execute.new(@deps)
-    @perm = perm ? perm : PermissionDrive.new(@deps)
+  def initialize(exec=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil, prefs=nil, deps=nil)
+    @deps = deps ? deps : Dependency.instance
+    @exec = exec ? exec : Execute.new()
+    @perm = perm ? perm : PermissionDrive.new()
     @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm)
     @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@exec)
-    @freedb = freedb ? freedb : FreedbString.new(@deps, @cdpar, @exec, @cdinfo)
+    @freedb = freedb ? freedb : FreedbString.new(@cdpar, @exec, @cdinfo)
     @prefs = prefs ? prefs : Preferences::Main.instance
   end
 
@@ -67,7 +67,7 @@ attr_reader :metadata
   # helper function to load metadata object
   def setMetadata
     require 'rubyripper/freedb'
-    @metadata = Freedb.new(self, @deps)
+    @metadata = Freedb.new(self)
     @metadata.get()
   end
 end

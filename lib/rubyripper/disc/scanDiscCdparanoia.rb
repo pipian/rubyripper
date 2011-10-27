@@ -125,7 +125,7 @@ class ScanDiscCdparanoia
 
   def getQueryResult
     if @prefs.testdisc
-      query = File.read(File.join(@prefs.testdisc, 'cdparanoia'))
+      query = File.read(File.join(@prefs.testdisc, 'cdparanoia')).split("\n")
     else
       @multipleDriveSupport = true
       query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ")

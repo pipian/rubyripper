@@ -26,7 +26,7 @@ describe FreedbString do
   let(:cdinfo) {double('ScanDiscCdinfo').as_null_object}
 
   before(:each) do
-    @freedb = FreedbString.new(deps, scan, exec, cdinfo, prefs)
+    @freedb = FreedbString.new(scan, exec, cdinfo, prefs, deps)
     @freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
     prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')

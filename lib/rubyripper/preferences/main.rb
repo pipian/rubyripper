@@ -25,7 +25,8 @@ require 'rubyripper/preferences/save'
 module Preferences
 
   class Main
-    include Singleton
+    include Singleton unless $run_specs
+    
     attr_reader :data
     attr_accessor :filename
 

@@ -27,11 +27,11 @@ require 'rubyripper/freedb/metadata'
 class Freedb
 
   # setting up all necessary objects
-  def initialize(disc, deps=nil, loadFreedbRecord=nil, save=nil, md=nil, parser=nil, getFreedb=nil, prefs=nil)
+  def initialize(disc, loadFreedbRecord=nil, save=nil, md=nil, parser=nil, getFreedb=nil, prefs=nil, deps=nil)
     @disc = disc
     @loadFreedbRecord = loadFreedbRecord ? loadFreedbRecord : LoadFreedbRecord.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @deps = deps ? deps : Dependency.new()
+    @deps = deps ? deps : Dependency.instance()
     @save = save ? save : SaveFreedbRecord.new()
     @md = md ? md : Metadata.new()
     @parser = parser ? parser : FreedbRecordParser.new(@md)

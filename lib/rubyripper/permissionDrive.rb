@@ -22,7 +22,7 @@ class PermissionDrive
 
   # * dependency = instance of Dependency class
   def initialize(deps=nil)
-    @deps = deps ? deps : Dependency.new()
+    @deps = deps ? deps : Dependency.instance()
   end
 
   # * cdrom = location of cdrom drive
