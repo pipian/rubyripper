@@ -21,13 +21,15 @@ module Preferences
   class Load
 
     # setting up instances
-    def initialize(customFilename, out=$stdout, fileAndDir=nil, prefs=nil)
+    def initialize(customFilename, out=$stdout, fileAndDir=nil, prefs=nil, deps=nil)
       @file = fileAndDir ? fileAndDir : FileAndDir.new
       @prefs = prefs ? prefs : Preferences::Main.instance
+      @deps = deps ? deps : Dependency.new
       @out = out
 
       validateCustomFilename(customFilename)
       readPreferencesFromFile() if File.exists?(@prefs.filename)
+      setValidCdromDrive()
     end
 
 private
@@ -42,6 +44,13 @@ private
       @file.read(@prefs.filename).each_line do |line|
         key, value = getNextPreference(line)
         updatePreference(key,value)
+      end
+    end
+    
+    # make sure the user has a valid drive set
+    def setValidCdromDrive
+      if not @file.exists?(@prefs.cdrom)
+        @prefs.cdrom = @deps.cdrom
       end
     end
 
