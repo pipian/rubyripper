@@ -1981,7 +1981,7 @@ class SecureRip
 		# There was a difference, so drill down and find the individual sectors
 		pos = sectorOffset
 		endPos = pos + BYTES_SECTOR_GROUP
-		while pos < endPos && pos < @endSectorOffset
+		while pos < endPos || pos < @endSectorOffset
 			# If we haven't already recorded an error for this sector
 			if !@errors.key?(pos)
 				# Is there a mismatch
