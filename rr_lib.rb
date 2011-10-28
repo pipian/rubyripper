@@ -1981,7 +1981,7 @@ class SecureRip
 		# There was a difference, so drill down and find the individual sectors
 		pos = sectorOffset
 		endPos = pos + BYTES_SECTOR_GROUP
-		while pos < endPos
+		while pos < endPos && pos < @endSectorOffset
 			# If we haven't already recorded an error for this sector
 			if !@errors.key?(pos)
 				# Is there a mismatch
@@ -2005,11 +2005,11 @@ class SecureRip
 			files << File.new(@settings['Out'].getTempFile(track, time + 1), 'r')
 		end
 
-		endSectorOffset = @settings['cd'].getFileSize(track) - BYTES_WAV_CONTAINER
+		@endSectorOffset = @settings['cd'].getFileSize(track) - BYTES_WAV_CONTAINER
 
 		(@reqMatchesAll - 1).times do |time|
 			sectorOffset = 0
-			while sectorOffset < endSectorOffset
+			while sectorOffset < @endSectorOffset
 				compareSectorRange(files, 0, time + 1, sectorOffset)
 				sectorOffset += BYTES_SECTOR_GROUP
 			end
