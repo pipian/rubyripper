@@ -1981,7 +1981,8 @@ class SecureRip
 		# There was a difference, so drill down and find the individual sectors
 		pos = sectorOffset
 		endPos = pos + BYTES_SECTOR_GROUP
-		while pos < endPos || pos < @endSectorOffset
+    begin
+		while pos < endPos && pos < @endSectorOffset
 			# If we haven't already recorded an error for this sector
 			if !@errors.key?(pos)
 				# Is there a mismatch
@@ -1996,6 +1997,11 @@ class SecureRip
 			end
 			pos += BYTES_AUDIO_SECTOR
 		end
+    rescue EOFError
+      puts "An unexpected end-of-file error occured for position #{pos}."
+      puts "Final sector should be = #{@endSectorOffset}."
+      puts "This sector is now ignored for comparison!!"
+    end
 	end
 
 	# Compare each temp file, recording all sectors which don't match in @errors
