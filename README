@@ -6,6 +6,7 @@ TABLE OF CONTENTS
 	4. CHANGELOG
 	5. FAQ
 	6. RELEVANT URLS
+	7. RUNNING ALL TESTS
 
 
 1. INTRODUCTION
@@ -320,4 +321,16 @@ A: See the wiki for instructions
 
 6. RELEVANT URLS
 
-Bug tracker + filehosting + subversion server + wiki : http://code.google.com/p/rubyripper/
+Bug tracker + filehosting + subversion server + wiki :
+http://code.google.com/p/rubyripper/
+
+7. RUNNING ALL TESTS
+All feature tests can be run with "cucumber". Ofcourse you should have
+installed cucumber. This can be done with "gem install cucumber". The
+"gem" command should be installed by default in any Ruby installation.
+The feature tests can be found in the features folder.
+
+All unit tests can be run with "rspec". Ofcourse you should have
+installed rspec. This can be done with "gem install rspec". The
+"gem" command should be installed by default in any Ruby installation.
+The rspec tests can be found in the spec folder.
