@@ -1999,7 +1999,7 @@ class SecureRip
 		end
     rescue EOFError
       puts "An unexpected end-of-file error occured for position #{pos}."
-      puts "Final sector should be = #{@endSectorOffset}."
+      puts "Final sector should start at #{@endSectorOffset}."
       puts "This sector is now ignored for comparison!!"
     end
 	end
