@@ -15,61 +15,56 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/preferences/main'
-require 'rubyripper/system/dependency'
-require 'rubyripper/system/execute'
-require 'rubyripper/permissionDrive'
 require 'rubyripper/disc/scanDiscCdparanoia'
-require 'rubyripper/disc/scanDiscCdinfo'
-require 'rubyripper/disc/scanDiscCdcontrol'
 require 'rubyripper/disc/freedbString'
+require 'rubyripper/system/dependency'
 
-# TODO point to cdparanoia with ruby magic instead of copying functions
+# A helper class to hide lower level details
 class Disc
-attr_reader :metadata
+attr_reader :metadata, :cdparanoia
 
-  # initialize all needed dependencies
-  def initialize(exec=nil, perm=nil, cdpar=nil, cdinfo=nil, cdcontrol=nil, freedb=nil, prefs=nil, deps=nil)
+  def initialize(cdpar=nil, freedb=nil, deps=nil)
+    @cdparanoia = cdpar ? cdpar : ScanDiscCdparanoia.new()
+    @freedbString = freedb ? freedb : FreedbString.new(self)
     @deps = deps ? deps : Dependency.instance
-    @exec = exec ? exec : Execute.new()
-    @perm = perm ? perm : PermissionDrive.new()
-    @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm)
-    @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@exec)
-    @cdcontrol = cdcontrol ? cdcontrol : ScanDiscCdcontrol.new(@exec)
-    @freedb = freedb ? freedb : FreedbString.new(@cdpar, @exec, @cdinfo, @cdcontrol)
-    @prefs = prefs ? prefs : Preferences::Main.instance
   end
-
-  # after a succesfull scan setup the metadata object
-  def scan
-    @cdpar.scan
-    setMetadata() if @cdpar.status == 'ok'
+  
+  # scan the disc for a drive
+  def scan(metadata=nil)
+    @cdparanoia.scan()
+    setMetadata(metadata) if @cdparanoia.status == 'ok'
   end
-
-  # helper functions for ScanDiscCdparanoia
-  def status ; @cdpar.status ; end
-  def error ; @cdpar.error ; end
-  def playtime ; @cdpar.playtime ; end
-  def audiotracks ; @cdpar.audiotracks ; end
-  def devicename ; @cdpar.devicename ; end
-  def firstAudioTrack ; @cdpar.firstAudioTrack ; end
-  def getStartSector(track) ; @cdpar.getStartSector(track) ; end
-  def getLengthSector(track) ; @cdpar.getLengthSector(track) ; end
-  def getLengthText(track) ; @cdpar.getLengthText(track) ; end
-  def getFileSize(track) ; @cdpar.getFileSize(track) ; end
-  def multipleDriveSupport ; @cdpar.multipleDriveSupport ; end
-
+  
+  # return the object that is used for calculating the freedb string
+  def tocScannerForFreedbString(cdinfo=nil, cdcontrol=nil)
+    if @deps.installed?('cd-info')
+      require 'rubyripper/disc/scanDiscCdinfo'
+      scanner = cdinfo ? cdinfo : ScanDiscCdinfo.new()
+    elsif @deps.installed?('cdcontrol')
+      require 'rubyripper/disc/scanDiscCdcontrol'
+      scanner = cdcontrol ? cdcontrol : ScanDiscCdcontrol.new()
+    else
+      scanner = @cdparanoia
+    end
+    
+    return scanner
+  end
+  
   # helper functions for @freedb
-  def freedbString ; @freedb.freedbString ; end
-  def discid ; @freedb.discid ; end
+  def freedbString ; @freedbString.freedbString ; end
+  def discid ; @freedbString.discid; end
 
-  # helper method to return the metadata
   private
+  
+  # if the method is not found try to look it up in cdparanoia
+  def method_missing(name, *args)
+    @cdparanoia.send(name, *args)
+  end
 
   # helper function to load metadata object
-  def setMetadata
+  def setMetadata(metadata=nil)
     require 'rubyripper/freedb'
-    @metadata = Freedb.new(self)
+    @metadata = metadata ? metadata : Freedb.new(self)
     @metadata.get()
   end
 end

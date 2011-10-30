@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
 
 # A class that interprets the toc with the info of cd-info
@@ -28,10 +29,10 @@ class ScanDiscCdinfo
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
-  def initialize(execute, prefs=nil)
+  def initialize(execute=nil, prefs=nil)
+    @exec = execute ? execute : Execute.new() 
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @exec = execute
-
+    
     @startSector = Hash.new
     @dataTracks = Array.new
   end

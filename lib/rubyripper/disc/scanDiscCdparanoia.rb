@@ -16,6 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/main'
+require 'rubyripper/permissionDrive'
+require 'rubyripper/system/execute.rb'
 
 # A class that interprets the toc with the info of cdparanoia
 # It's purpose is pure for ripping the correct audio, not for
@@ -27,9 +29,9 @@ class ScanDiscCdparanoia
 
   # * execute is an instance of Execute
   # * permissionDrive is an instance of PermissionDrive
-  def initialize(execute, permissionDrive,  prefs=nil, out=nil)
-    @exec = execute
-    @perm = permissionDrive
+  def initialize(execute=nil, permissionDrive=nil,  prefs=nil, out=nil)
+    @exec = execute ? execute : Execute.new()
+    @perm = permissionDrive ? permissionDrive : PermissionDrive.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
     @out = out ? out : $stdout
   end

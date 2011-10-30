@@ -15,48 +15,38 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/disc/disc'
+require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
-require 'rubyripper/preferences/main'
 
 # class that gets the freedb string
 class FreedbString
-attr_reader :freedbString, :discid
 
   # setup some references to needed objects
-  def initialize(scanDiscCdparanoia, execute, scanDiscCdinfo, scanDiscCdcontrol, prefs=nil, deps=nil)    
-    @disc = scanDiscCdparanoia
-    @exec = execute
-    @cdinfo = scanDiscCdinfo
-    @cdcontrol = scanDiscCdcontrol
+  def initialize(disc, prefs=nil, deps=nil,exec=nil)    
+    @disc = disc
+    @exec = exec ? exec : Execute.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance
   end
 
   # fetch the freedb string
   def freedbString
-    @freedbString ||= getFreedbString
+    getFreedbString() if @freedbString.nil?
+    @freedbString
   end
 
   # fetch the discid
   def discid
-    @discid ||= getDiscId
+    getFreedbString() if @freedbString.nil?
+    @discid
   end
 
 private
 
-  def getFreedbString
-    get()
-    @freedbString
-  end
-
-  def getDiscId
-    get()
-    @discid
-  end
-
   # try to get the freedbstring
-  def get
+  def getFreedbString()
     autoCalcFreedb()
 
     if @freedbString.nil?
@@ -95,14 +85,7 @@ private
 
   # try to calculate it ourselves, prefer cd-info if available
   def manualCalcFreedb
-    @scan = @disc
-    [@cdinfo, @cdcontrol].each do |cdScanner|
-      cdScanner.scan
-      if cdScanner.status == 'ok'
-        @scan = cdScanner
-        break
-      end
-    end
+    @scan = @disc.tocScannerForFreedbString
     setDiscId()
     buildFreedbString()
   end
