@@ -24,9 +24,10 @@ describe FreedbString do
   let(:scan) {double('ScanDiscCdparanoia').as_null_object}
   let(:exec) {double('Execute').as_null_object}
   let(:cdinfo) {double('ScanDiscCdinfo').as_null_object}
+  let(:cdcontrol) {double('ScanDiscCdcontrol').as_null_object}
 
   before(:each) do
-    @freedb = FreedbString.new(scan, exec, cdinfo, prefs, deps)
+    @freedb = FreedbString.new(scan, exec, cdinfo, cdcontrol, prefs, deps)
     @freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
     prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
@@ -76,14 +77,34 @@ describe FreedbString do
       deps.should_receive(:installed?).with('cd-discid').and_return false
     end
 
-    it "should try to read values from cd-info, but skip to cdparanoia" do
+    it "should fall back on cdparanoia if nothing better is available" do
       cdinfo.should_receive(:scan).and_return true
       cdinfo.should_receive(:status).and_return false
+
+      cdcontrol.should_receive(:scan).and_return true
+      cdcontrol.should_receive(:status).and_return false
 
       scan.should_receive(:tracks).at_least(:once).and_return(10)
       scan.should_receive(:totalSectors).at_least(:once).and_return(162919)
       (1..10).each do |number|
         scan.should_receive(:getStartSector).with(number).at_least(:once).and_return @start[number]
+      end
+
+      @freedb.freedbString.should == @freedbString
+      @freedb.discid.should == "7F087C0A"
+    end
+
+    it "should read cdcontrol values when cd-info is not available" do
+      cdinfo.should_receive(:scan).and_return true
+      cdinfo.should_receive(:status).and_return false
+
+      cdcontrol.should_receive(:scan).and_return true
+      cdcontrol.should_receive(:status).and_return 'ok'
+
+      cdcontrol.should_receive(:tracks).at_least(:once).and_return(10)
+      cdcontrol.should_receive(:totalSectors).at_least(:once).and_return(162919)
+      (1..10).each do |number|
+        cdcontrol.should_receive(:getStartSector).with(number).at_least(:once).and_return @start[number]
       end
 
       @freedb.freedbString.should == @freedbString

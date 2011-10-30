@@ -36,7 +36,7 @@ attr_reader :metadata
     @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm)
     @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@exec)
     @cdcontrol = cdcontrol ? cdcontrol : ScanDiscCdcontrol.new(@exec)
-    @freedb = freedb ? freedb : FreedbString.new(@cdpar, @exec, @cdinfo)
+    @freedb = freedb ? freedb : FreedbString.new(@cdpar, @exec, @cdinfo, @cdcontrol)
     @prefs = prefs ? prefs : Preferences::Main.instance
   end
 

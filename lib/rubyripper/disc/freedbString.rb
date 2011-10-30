@@ -24,10 +24,11 @@ class FreedbString
 attr_reader :freedbString, :discid
 
   # setup some references to needed objects
-  def initialize(scanDiscCdparanoia, execute, scanDiscCdinfo, prefs=nil, deps=nil)    
+  def initialize(scanDiscCdparanoia, execute, scanDiscCdinfo, scanDiscCdcontrol, prefs=nil, deps=nil)    
     @disc = scanDiscCdparanoia
     @exec = execute
     @cdinfo = scanDiscCdinfo
+    @cdcontrol = scanDiscCdcontrol
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance
   end
@@ -94,8 +95,14 @@ private
 
   # try to calculate it ourselves, prefer cd-info if available
   def manualCalcFreedb
-    @cdinfo.scan
-    @scan = @cdinfo.status == 'ok' ? @cdinfo : @disc
+    @scan = @disc
+    [@cdinfo, @cdcontrol].each do |cdScanner|
+      cdScanner.scan
+      if cdScanner.status == 'ok'
+        @scan = cdScanner
+        break
+      end
+    end
     setDiscId()
     buildFreedbString()
   end
