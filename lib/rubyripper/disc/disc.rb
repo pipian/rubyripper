@@ -21,7 +21,7 @@ require 'rubyripper/system/dependency'
 
 # A helper class to hide lower level details
 class Disc
-attr_reader :metadata, :cdparanoia
+attr_reader :metadata
 
   def initialize(cdpar=nil, freedb=nil, deps=nil)
     @cdparanoia = cdpar ? cdpar : ScanDiscCdparanoia.new()
