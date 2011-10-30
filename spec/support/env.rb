@@ -20,18 +20,4 @@ def _(txt)
   return txt
 end
 
-$rr_version = 'test'
 $run_specs = true
-
-require 'rubyripper/freedb/saveFreedbRecord'
-require 'rubyripper/freedb/loadFreedbRecord'
-require 'rubyripper/freedb/getFreedbRecord'
-require 'rubyripper/freedb/cgiHttpHandler'
-require 'rubyripper/freedb/freedbRecordParser'
-require 'rubyripper/disc'
-require 'rubyripper/disc/freedbString'
-require 'rubyripper/disc/scanDiscCdparanoia'
-require 'rubyripper/disc/scanDiscCdinfo'
-require 'rubyripper/disc/scanDiscCdcontrol'
-require 'rubyripper/disc/scanDiscCdrdao'
-require 'rubyripper/system/dependency'

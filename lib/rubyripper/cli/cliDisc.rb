@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc'
+require 'rubyripper/disc/disc.rb'
 require 'rubyripper/cli/cliGetAnswer'
 require 'rubyripper/errors'
 require 'rubyripper/preferences/main'
