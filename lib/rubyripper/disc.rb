@@ -21,6 +21,7 @@ require 'rubyripper/system/execute'
 require 'rubyripper/permissionDrive'
 require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/scanDiscCdinfo'
+require 'rubyripper/disc/scanDiscCdcontrol'
 require 'rubyripper/disc/freedbString'
 
 # TODO point to cdparanoia with ruby magic instead of copying functions
@@ -28,12 +29,13 @@ class Disc
 attr_reader :metadata
 
   # initialize all needed dependencies
-  def initialize(exec=nil, perm=nil, cdpar=nil, cdinfo=nil, freedb=nil, prefs=nil, deps=nil)
+  def initialize(exec=nil, perm=nil, cdpar=nil, cdinfo=nil, cdcontrol=nil, freedb=nil, prefs=nil, deps=nil)
     @deps = deps ? deps : Dependency.instance
     @exec = exec ? exec : Execute.new()
     @perm = perm ? perm : PermissionDrive.new()
     @cdpar = cdpar ? cdpar : ScanDiscCdparanoia.new(@exec, @perm)
     @cdinfo = cdinfo ? cdinfo : ScanDiscCdinfo.new(@exec)
+    @cdcontrol = cdcontrol ? cdcontrol : ScanDiscCdcontrol.new(@exec)
     @freedb = freedb ? freedb : FreedbString.new(@cdpar, @exec, @cdinfo)
     @prefs = prefs ? prefs : Preferences::Main.instance
   end
