@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/main'
+require 'rubyripper/system/execute'
 
 # A class that interprets the toc with the info of cdcontrol (from
 # FreeBSD) Quite reliable for detecting data tracks and can even
