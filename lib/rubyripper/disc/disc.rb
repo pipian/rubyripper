@@ -17,16 +17,19 @@
 
 require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/freedbString'
+require 'rubyripper/disc/musicbrainzLookupPath'
 require 'rubyripper/system/dependency'
 
 # A helper class to hide lower level details
 class Disc
 attr_reader :metadata
 
-  def initialize(cdpar=nil, freedb=nil, deps=nil)
+  def initialize(cdpar=nil, freedb=nil, musicbrainz=nil, deps=nil, prefs=nil)
     @cdparanoia = cdpar ? cdpar : ScanDiscCdparanoia.new()
     @freedbString = freedb ? freedb : FreedbString.new(self)
+    @musicbrainzLookupPath = musicbrainz ? musicbrainz : MusicBrainzLookupPath.new(self)
     @deps = deps ? deps : Dependency.instance
+    @prefs = prefs ? prefs : Preferences::Main.instance
   end
   
   # scan the disc for a drive
@@ -54,6 +57,10 @@ attr_reader :metadata
   def freedbString ; @freedbString.freedbString ; end
   def discid ; @freedbString.discid; end
 
+  # helper functions for @musicbrainz
+  def musicbrainzLookupPath ; @musicbrainzLookupPath.musicbrainzLookupPath ; end
+  def musicbrainzDiscid ; @musicbrainzLookupPath.discid ; end
+
   private
   
   # if the method is not found try to look it up in cdparanoia
@@ -63,9 +70,17 @@ attr_reader :metadata
 
   # helper function to load metadata object
   def setMetadata(metadata=nil)
-    require 'rubyripper/freedb'
-    @metadata = metadata ? metadata : Freedb.new(self)
-    @metadata.get()
+    if @prefs.musicbrainz
+      require 'rubyripper/musicbrainz'
+      @metadata = metadata ? metadata : MusicBrainz.new(self)
+      @metadata.get()
+    end
+    # Fall back on freedb
+    if not @prefs.musicbrainz or @metadata.status != 'ok'
+      require 'rubyripper/freedb'
+      @metadata = metadata ? metadata : Freedb.new(self)
+      @metadata.get()
+    end
   end
 end
 

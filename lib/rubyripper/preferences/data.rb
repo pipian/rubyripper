@@ -128,6 +128,24 @@ module Preferences
     # Freedb hostname for authentication
     attr_accessor :hostname
 
+    # MUSICBRAINZ PREFERENCES
+    # Fetch metadata for the disc with MusicBrainz (falling back on
+    # freedb if enabled)
+    attr_accessor :musicbrainz
+
+    # Order of countries from which releases are preferred (from best
+    # to worst; anything not in the list is preferred equally less than
+    # anything in the list)
+    attr_accessor :preferMusicBrainzCountries
+
+    # Prefer dates which are earlier/later (or don't prefer by dates at all)
+    attr_accessor :preferMusicBrainzDate
+
+    # Use the earliest release date in the release-group to set the
+    # year, rather than the date of the selected release (i.e. prefer
+    # LP release dates to CD release dates)
+    attr_accessor :useEarliestDate
+
     # OTHER PREFERENCES
     # Base output directory for all your rips
     attr_accessor :basedir

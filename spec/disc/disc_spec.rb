@@ -21,9 +21,11 @@ describe Disc do
   
   let(:cdpar) {double('ScanDiscCdparanoia').as_null_object}
   let(:freedb) {double('FreedbString').as_null_object}
+  let(:musicbrainz) {double('MusicBrainzLookupPath').as_null_object}
   let(:deps) {double('Dependency').as_null_object}
+  let(:prefs) {double('Preferences').as_null_object}
   let(:metadata) {double('Freedb').as_null_object}
-  let(:disc) {Disc.new(cdpar, freedb, deps)}
+  let(:disc) {Disc.new(cdpar, freedb, musicbrainz, deps, prefs)}
   
   context "When a disc is requested to be scanned" do
     before(:each) do
@@ -35,9 +37,29 @@ describe Disc do
       disc.scan()
     end
     
-    it "should trigger the metadata if a disc is found" do
+    it "should trigger the metadata once if a disc is found and MusicBrainz is enabled" do
       cdpar.should_receive(:status).once().and_return 'ok'
+      prefs.should_receive(:musicbrainz).at_least(:twice).and_return true
       metadata.should_receive(:get).once().and_return true
+      metadata.should_receive(:status).once().and_return 'ok'
+      disc.scan(metadata)
+    end
+    
+    it "should still trigger the metadata once if MusicBrainz is disabled" do
+      cdpar.should_receive(:status).once().and_return 'ok'
+      prefs.should_receive(:musicbrainz).at_least(:twice).and_return false
+      metadata.should_receive(:get).once().and_return true
+      # No sense in checking the status if MusicBrainz is disabled.
+      metadata.should_not_receive(:status)
+      disc.scan(metadata)
+    end
+    
+    it "should fall back on freedb if MusicBrainz is enabled and fails to find the disc" do
+      cdpar.should_receive(:status).once().and_return 'ok'
+      prefs.should_receive(:musicbrainz).at_least(:twice).and_return true
+      # The extra call to get() is the fall-back.
+      metadata.should_receive(:get).twice().and_return true
+      metadata.should_receive(:status).once().and_return 'noMatches'
       disc.scan(metadata)
     end
     
@@ -76,6 +98,16 @@ describe Disc do
     it "should forward the discid method to the freedbstring object" do
       freedb.should_receive(:discid).once.and_return true
       disc.discid()
+    end
+    
+    it "should forward the musicbrainzlookuppath method to the musicbrainzlookuppath object" do
+      musicbrainz.should_receive(:musicbrainzLookupPath).once.and_return true
+      disc.musicbrainzLookupPath()
+    end
+    
+    it "should forward the musicbrainzdiscid method to the musicbrainzlookuppath object" do
+      musicbrainz.should_receive(:discid).once.and_return true
+      disc.musicbrainzDiscid()
     end
     
     # all unknown commands should be redirected to cdparanoia

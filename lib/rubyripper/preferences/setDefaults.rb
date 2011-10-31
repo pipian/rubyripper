@@ -31,6 +31,7 @@ module Preferences
       setTocAnalysisDefaults()
       setCodecDefaults()
       setFreedbDefaults()
+      setMusicBrainzDefaults()
       setOtherDefaults()
     end
 
@@ -79,6 +80,13 @@ module Preferences
       @data.site = 'http://freedb.freedb.org/~cddb/cddb.cgi'
       @data.username = 'anonymous'
       @data.hostname = 'my_secret.com'
+    end
+
+    def setMusicBrainzDefaults
+      @data.musicbrainz = true
+      @data.preferMusicBrainzCountries = 'US,UK,XW,XE,JP'
+      @data.preferMusicBrainzDate = 'earlier'
+      @data.useEarliestDate = true
     end
 
     def setOtherDefaults
