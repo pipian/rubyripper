@@ -29,9 +29,9 @@ class ScanDiscCdcontrol
 
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cdcontrol for unit testing purposes
-  def initialize(execute, prefs=nil)
+  def initialize(execute=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @exec = execute
+    @exec = execute ? execute : Execute.new()
 
     @startSector = Hash.new
     @dataTracks = Array.new
