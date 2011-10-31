@@ -86,6 +86,7 @@ private
   # try to calculate it ourselves, prefer cd-info if available
   def manualCalcFreedb
     @scan = @disc.tocScannerForFreedbString
+    @scan.scan
     setDiscId()
     buildFreedbString()
   end
