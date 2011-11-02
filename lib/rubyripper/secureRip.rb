@@ -356,7 +356,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       command += " #{@prefs.rippersettings}"
     end
 
-    command += " [.#{@disc.getStartSector(track)}]-"
+    command += " [.#{@disc.getStartSector(track)+@prefs.offset/588}]-"
 
     # for the last track tell cdparanoia to rip till end to prevent problems on some drives
     if !@prefs.image && track != @disc.audiotracks
