@@ -25,8 +25,9 @@ class Log
 attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
-  def initialize(disc, outputFile, userInterface, updatePercForEachTrack, prefs=nil)
+  def initialize(disc, outputFile, userInterface, updatePercForEachTrack, prefs=nil, fileAndDir=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
+    @file = fileAndDir ? fileAndDir : FileAndDir.instance
     @md = disc.metadata
     @out = outputFile
     @ui = userInterface
@@ -46,7 +47,11 @@ attr_writer :encodingErrors
   def createLog
     @logfiles = Array.new
     ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-      @logfiles << File.open(@out.getLogFile(codec), 'a') if @prefs.send(codec)
+      if @prefs.send(codec)
+        path = @out.getLogFile(codec)
+        @file.createDirs(path)
+        @logfiles << File.open(path, 'a')
+      end
     end
   end
 
