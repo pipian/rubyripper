@@ -17,7 +17,8 @@
 
 require 'rubyripper/system/dependency'
 
-# check the permissions of the drive
+# This class checks the permissions of the drive
+# Used by ScanDiscCdparanoia to check potential problems later on
 class PermissionDrive
 
   # * dependency = instance of Dependency class
