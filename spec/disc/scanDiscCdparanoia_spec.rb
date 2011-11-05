@@ -55,7 +55,6 @@ describe ScanDiscCdparanoia do
     before(:each) do
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
       perm.should_receive(:problems?).once.and_return(false)
-      perm.should_receive(:problemsSCSI?).once.and_return(false)
     end
 
     it "should abort when cdparanoia is not installed" do
