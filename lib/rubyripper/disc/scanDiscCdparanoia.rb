@@ -37,7 +37,16 @@ class ScanDiscCdparanoia
   end
 
   # scan the disc for input and return the object
-  def scan ; waitForDisc() ; end
+  def scan
+    if @perm.problems?(@prefs.cdrom)
+      setError(:permissionDrive, @perm.error)
+    else
+      waitForDisc()
+      if @perm.problemsSCSI?(@query)
+        setError(:permissionScsiDrive, @perm.error)
+      end
+    end   
+  end
 
   # return the startSector, example for track 1 getStartSector(1)
   # if image, return the start sector for the lowest tracknumber

@@ -20,32 +20,38 @@ require 'rubyripper/system/dependency'
 # This class checks the permissions of the drive
 # Used by ScanDiscCdparanoia to check potential problems later on
 class PermissionDrive
+  attr_reader :error
 
   # * dependency = instance of Dependency class
   def initialize(deps=nil)
     @deps = deps ? deps : Dependency.instance()
   end
-
-  # * cdrom = location of cdrom drive
-  # * query = cdparanoia query
-  def check(cdrom, query)
+  
+  # before trying to query cdparanoia check if permissions of the drive are ok
+  def problems?(cdrom)
     @cdrom = cdrom
-    @query = query
-
     checkDevice()
+    return !@error.nil?
+  end
+  
+  # before ripping make sure scsi drive permission are ok as well
+  # * query = cdparanoia query
+  def problemsSCSI?(query)
+    @query = query
     checkGenericDevice()
-    
-    return @error.nil? ? 'ok' : @error
+    return !@error.nil?
   end
 
 private
 
   # first lookup the real drive, then check permissions
   # a block device is required on linux, not on other platforms (issue 480)
+  # writable access is required on linux, not on other platforms (issue 488)
   def checkDevice
     getRealDevice()
     isBlockDevice? if @deps.platform =~ /linux/
-    isReadAndWritable?
+    isDriveReadable?
+    isDriveWritable? if @deps.platform =~ /linux/
   end
   
   # a generic drive means a scsi drive
@@ -76,9 +82,10 @@ Please configure your cdrom drive first.") % [@cdrom]
     end
   end
   
-  def isReadAndWritable?
-    unless (File.readable?(@cdrom) && File.writable?(@cdrom))
-      @error = _("You don't have read and write permission for device\n
+  # check is the user has read permissions for the drive
+  def isDriveReadable?
+    unless File.readable?(@cdrom)
+      @error = _("You don't have read permissions for device\n
 %s on your system! These permissions are necessary for\n
 cdparanoia to scan your drive. You might want to add yourself\n
 to the necessary group with gpasswd.") % [@cdrom]
@@ -89,6 +96,21 @@ to the necessary group with gpasswd.") % [@cdrom]
     end
   end
   
+  # check if the user has write permissions for the drive
+  def isDriveWritable?
+    unless File.writable?(@cdrom)
+      @error = _("You don't have write permissions for device\n
+%s on your system! These permissions are necessary for\n
+cdparanoia to scan your drive. You might want to add yourself\n
+to the necessary group with gpasswd.") % [@cdrom]
+      if @deps.installed?('ls')
+        permission = `ls -l #{@cdrom}`
+        @error +=  _("\n\nls -l shows %s") % [permission]
+      end
+    end
+  end
+  
+  # detect the generic drive (if it exists) with the cdparanoia query
   def getGenericDrive
     @query.each do |line|
       if line =~ /generic device: /
