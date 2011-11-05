@@ -54,6 +54,8 @@ describe ScanDiscCdparanoia do
   context "When trying to scan a disc" do
     before(:each) do
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
+      perm.should_receive(:problems?).once.and_return(false)
+      perm.should_receive(:problemsSCSI?).once.and_return(false)
     end
 
     it "should abort when cdparanoia is not installed" do
@@ -89,7 +91,8 @@ describe ScanDiscCdparanoia do
   context "When a disc is found" do
     before(:each) do
       @cdparanoia ||= File.read('spec/disc/data/cdparanoia').split("\n")
-      perm.should_receive(:check).with('/dev/cdrom', @cdparanoia).and_return 'ok'
+      perm.should_receive(:problems?).once.and_return(false)
+      perm.should_receive(:problemsSCSI?).once.and_return(false)
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
 

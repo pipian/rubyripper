@@ -42,8 +42,10 @@ class ScanDiscCdparanoia
       setError(:permissionDrive, @perm.error)
     else
       waitForDisc()
-      if @perm.problemsSCSI?(@query)
+      if @error.nil? && @perm.problemsSCSI?(@query)
         setError(:permissionScsiDrive, @perm.error)
+      elsif @error.nil?
+        @status = 'ok'
       end
     end   
   end
@@ -130,47 +132,41 @@ class ScanDiscCdparanoia
   end
 
   def readDisc
-    query = getQueryResult()
-    parseQueryResult(query)
+    getQueryResult()
+    parseQueryResult()
   end
 
   def getQueryResult
     if @prefs.testdisc
-      query = File.read(File.join(@prefs.testdisc, 'cdparanoia')).split("\n")
+      @query = File.read(File.join(@prefs.testdisc, 'cdparanoia')).split("\n")
     else
       @multipleDriveSupport = true
-      query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ")
+      @query = @exec.launch("cdparanoia -d #{@prefs.cdrom} -vQ")
       # some versions of cdparanoia don't support the cdrom parameter
       
-      if query != nil && query.include?('USAGE')
-        query = @exec.launch("cdparanoia -vQ")
+      if @query != nil && @query.include?('USAGE')
+        @query = @exec.launch("cdparanoia -vQ")
         @multipleDriveSupport = false
       end
     end
-    return query
   end
 
-  def parseQueryResult(query)
-    if isValidQuery(query)
-      parseQuery(query)
+  def parseQueryResult
+    if isValidQuery()
+      parseQuery()
       addExtraInfo()
       checkOffsetFirstTrack()
-      if not @prefs.testdisc
-        @status = @perm.check(@prefs.cdrom, query)
-      else
-        @status = 'ok'
-      end
     end
   end
 
   # check the query result for errors
-  def isValidQuery(query)
-    if query.nil?
+  def isValidQuery()
+    if @query.nil?
       setError(:notInstalled, 'cdparanoia')
       return false
     end
     
-    query.each do |line|
+    @query.each do |line|
       case line
         when /Unable to open disc/ then setError(:noDiscInDrive, @prefs.cdrom) ; break
         when /USAGE/ then setError(:wrongParameters, 'cdparanoia') ; break
@@ -199,10 +195,10 @@ class ScanDiscCdparanoia
   end
 
   # store the info of the query in variables
-  def parseQuery(query)
+  def parseQuery()
     setupDisc()
     currentTrack = 0
-    query.each do |line|
+    @query.each do |line|
       if line[0,5] =~ /\s+\d+\./
         currentTrack += 1
         addTrack(line, currentTrack)

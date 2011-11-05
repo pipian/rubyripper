@@ -23,7 +23,8 @@ class PermissionDrive
   attr_reader :error
 
   # * dependency = instance of Dependency class
-  def initialize(deps=nil)
+  def initialize(prefs=nil, deps=nil)
+    @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance()
   end
   
@@ -31,7 +32,7 @@ class PermissionDrive
   def problems?(cdrom)
     @cdrom = cdrom
     checkDevice()
-    return !@error.nil?
+    return !(@error.nil? || @prefs.testdisc)
   end
   
   # before ripping make sure scsi drive permission are ok as well
@@ -39,7 +40,7 @@ class PermissionDrive
   def problemsSCSI?(query)
     @query = query
     checkGenericDevice()
-    return !@error.nil?
+    return !(@error.nil? || @prefs.testdisc)
   end
 
 private
