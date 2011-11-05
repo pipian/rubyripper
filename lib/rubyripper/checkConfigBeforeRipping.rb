@@ -48,36 +48,29 @@ private
   end
 
   def checkPreferences
-    checkDevice()
     checkMinOneCodec()
   end
 
-  def checkDevice
-    if !(File.symlink?(@prefs.cdrom) || File.blockdev?(@prefs.cdrom))
-      addError(:unknownDrive, @prefs.cdrom)
+  def checkMinOneCodec()
+    unless @prefs.flac || @prefs.vorbis || @prefs.mp3 || @prefs.wav || @prefs.other
+      addError(:noCodecSelected)
     end
   end
 
-	def checkMinOneCodec()
-	  unless @prefs.flac || @prefs.vorbis || @prefs.mp3 || @prefs.wav || @prefs.other
-	    addError(:noCodecSelected)
- 		end
-	end
+  def checkUserInterface
+    addError(:noValidUserInterface) unless @ui.respond_to?(:update)
+  end
 
-	def checkUserInterface
-	  addError(:noValidUserInterface) unless @ui.respond_to?(:update)
-	end
+  def checkDisc
+    addError(:noDiscInDrive, @prefs.cdrom) if @disc.status != 'ok'
+  end
 
-	def checkDisc
-	  addError(:noDiscInDrive, @prefs.cdrom) if @disc.status != 'ok'
-	end
-
-	# notice that image rips don't require track selection
-	def checkTrackSelection
-	  if !@prefs.image && @trackSelection.empty?
-	    addError(:noTrackSelection)
-	  end
-	end
+  # notice that image rips don't require track selection
+  def checkTrackSelection
+    if !@prefs.image && @trackSelection.empty?
+      addError(:noTrackSelection)
+    end
+  end
 
   def checkBinaries
     isFound?('cdparanoia')
