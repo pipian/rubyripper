@@ -100,9 +100,8 @@ private
     @out.puts ' 1) ' + _('Secure ripping')
     @out.puts ' 2) ' + _('Toc analysis')
     @out.puts ' 3) ' + _('Codecs')
-    @out.puts ' 4) ' + _('Freedb')
-    @out.puts ' 5) ' + _('MusicBrainz')
-    @out.puts ' 6) ' + _('Other')
+    @out.puts ' 4) ' + _('Metadata')
+    @out.puts ' 5) ' + _('Other')
     @out.puts '99) ' + _("Don't change any setting")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -115,9 +114,8 @@ private
       when 1 then loopSubMenuRipping()
       when 2 then loopSubMenuToc()
       when 3 then loopSubMenuCodecs()
-      when 4 then loopSubMenuFreedb()
-      when 5 then loopSubMenuMusicBrainz()
-      when 6 then loopSubMenuOther()
+      when 4 then loopSubMenuMetadata()
+      when 5 then loopSubMenuOther()
     else
       noValidChoiceMessage(choice)
       loopMainMenu()
@@ -287,7 +285,7 @@ private
   end
 
   # show the freedb menu
-  def showSubMenuFreedb
+  def showSubMenuMetadata
     @out.puts ''
     @out.puts _("*** METADATA PREFERENCES ***")
     @out.puts ''
@@ -305,8 +303,8 @@ private
   end
 
   # loop through the freedb menu
-  def loopSubMenuFreedb
-    case choice = showSubMenuFreedb()
+  def loopSubMenuMetadata
+    case choice = showSubMenuMetadata()
       when 99 then loopMainMenu()
       when 1 then setMetadataProvider()
       when 2 then switchBool('firstHit')
