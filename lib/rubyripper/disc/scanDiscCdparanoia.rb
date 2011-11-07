@@ -125,7 +125,7 @@ class ScanDiscCdparanoia
     (1..10).each do |trial|
       unsetError()
       readDisc()
-      break if @status == 'ok' || @prefs.testdisc || $run_specs
+      break if @error.nil? || @prefs.testdisc || $run_specs
       @out.puts _("No disc found at trial %s!") % [trial]
       sleep(1)
     end
