@@ -15,7 +15,7 @@ Feature: Manage rubyripper preferences
      1) Secure ripping
      2) Toc analysis
      3) Codecs
-     4) Freedb
+     4) Metadata
      5) Other
     99) Don't change any setting
 
@@ -194,43 +194,52 @@ Feature: Manage rubyripper preferences
       Please type the number of the setting you wish to change [99] : 
       """
       
-    Scenario: Show the Freedb submenu
+    Scenario: Show the Metadata submenu
       When I choose "1" in order to get to the preferences menu
       And I choose "4" in order to get to the freedb submenu
       And I press ENTER "3" times to close the application
       Then the output should contain:
       """
-      *** FREEDB PREFERENCES ***
-
-       1) Fetch cd info with freedb [*]
-       2) Always use first hit [*]
+      *** METADATA PREFERENCES ***
+      
+       1) Metadata provider: freedb
+       2) Freedb use first hit [*]
        3) Freedb server: http://freedb.freedb.org/~cddb/cddb.cgi
        4) Freedb username: anonymous
        5) Freedb hostname: my_secret.com
+       6) Musicbrainz preferred countries (1st, 2nd,...): US,UK,XW,XE,JP
+       7) Musicbrainz preferred date: earlier
+       8) Musicbrainz use first known year (including LPs) [*]
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
       """
 
-    Scenario: Update the Freedb Preferences
+    Scenario: Update the Metadata Preferences
       When I choose "1" in order to get to the preferences menu
       And I choose "4" in order to get to the freedb submenu
       And I change each preferences item in the menu
-        | 1  |                    |
+        | 1  | 1                  |
         | 2  |                    |
         | 3  | www.google.nl      |
         | 4  | joe                |
         | 5  | dalton.com         |
+        | 6  | UK,US             |
+        | 7  | 2                  |
+        | 8  |                    |
       And I press ENTER "3" times to close the application
       Then the output should contain:
       """
-      *** FREEDB PREFERENCES ***
+      *** METADATA PREFERENCES ***
 
-       1) Fetch cd info with freedb [ ]
-       2) Always use first hit [ ]
+       1) Metadata provider: none
+       2) Freedb use first hit [ ]
        3) Freedb server: www.google.nl
        4) Freedb username: joe
        5) Freedb hostname: dalton.com
+       6) Musicbrainz preferred countries (1st, 2nd,...): UK,US
+       7) Musicbrainz preferred date: later
+       8) Musicbrainz use first known year (including LPs) [ ]
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
