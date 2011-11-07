@@ -71,13 +71,13 @@ attr_reader :metadata
   # helper function to load metadata object
   def setMetadata(metadata=nil)
     if @prefs.musicbrainz
-      require 'rubyripper/musicbrainz'
+      require 'rubyripper/metadata/musicbrainz'
       @metadata = metadata ? metadata : MusicBrainz.new(self)
       @metadata.get()
     end
     # Fall back on freedb
     if not @prefs.musicbrainz or @metadata.status != 'ok'
-      require 'rubyripper/freedb'
+      require 'rubyripper/metadata/freedb'
       @metadata = metadata ? metadata : Freedb.new(self)
       @metadata.get()
     end

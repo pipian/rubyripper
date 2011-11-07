@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # helper class to handle the http traffic
-require 'rubyripper/musicbrainz/musicbrainzWebService'
+require 'rubyripper/metadata/musicbrainz/musicbrainzWebService'
 require 'rubyripper/preferences/main'
 
 #for parsing xml

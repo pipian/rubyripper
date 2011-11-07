@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/musicbrainz/musicbrainzReleaseParser'
+require 'rubyripper/metadata/musicbrainz/musicbrainzReleaseParser'
 require 'rexml/document'
 
 describe MusicBrainzReleaseParser do

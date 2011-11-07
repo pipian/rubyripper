@@ -17,8 +17,8 @@
 
 require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
-require 'rubyripper/musicbrainz/musicbrainzReleaseParser'
-require 'rubyripper/musicbrainz/getMusicBrainzRelease'
+require 'rubyripper/metadata/musicbrainz/musicbrainzReleaseParser'
+require 'rubyripper/metadata/musicbrainz/getMusicBrainzRelease'
 # Eeeeh, this didn't need porting from freedb...  Can this be generalized?
 require 'rubyripper/metadata/metadata'
 

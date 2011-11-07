@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/musicbrainz/musicbrainzWebService'
+require 'rubyripper/metadata/musicbrainz/musicbrainzWebService'
 
 # needed to test query
 $rr_version = 'test'
