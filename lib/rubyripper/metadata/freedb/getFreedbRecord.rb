@@ -16,11 +16,8 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # helper class to handle the http traffic
-require 'rubyripper/metadata/cgiHttpHandler.rb'
+require 'rubyripper/system/network.rb'
 require 'rubyripper/preferences/main'
-
-#for translating characters to HTTP codes, space = %20 for instance
-require 'cgi'
 
 # This class tries to implement the freedb HTTP protocol (read-only)
 # See http://ftp.freedb.org/pub/freedb/latest/CDDBPROTO for specs
@@ -28,14 +25,15 @@ require 'cgi'
 class GetFreedbRecord
   attr_reader :status, :freedbRecord, :choices, :category, :finalDiscId
 
-  def initialize(server=nil, prefs=nil)
+  def initialize(network=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @server = server ? server : CgiHttpHandler.new()
+    @network = network ? network : Network.new()
   end
 
   # handle the initial connection with the freedb server
   def queryDisc(freedbString)
     @freedbString = freedbString
+    @network.setupConnection('cgi')
     analyzeQueryResult(queryFreedbForMatches())
   end
 
@@ -57,12 +55,12 @@ private
   # Query the freedb database for available matches.
   # There can be none, one or multiple hits, depending on the return code
   def queryFreedbForMatches()
-    query = @server.path + "?cmd=cddb+query+" + CGI.escape("#{@freedbString}") +
-"&hello=" + CGI.escape("#{@prefs.username} #{@prefs.hostname} \
+    query = @network.path + "?cmd=cddb+query+" + @network.encode("#{@freedbString}") +
+"&hello=" + @network.encode("#{@prefs.username} #{@prefs.hostname} \
 rubyripper #{$rr_version}") + "&proto=6"
 
     # http requests return all output at once, even if multiple lines
-    return @server.get(query)
+    return @network.get(query)
   end
 
   # analyze the reponse code and assign neccesary action
@@ -112,11 +110,11 @@ rubyripper #{$rr_version}") + "&proto=6"
 
   # retrieve the record
   def getRecord(category, discid)
-    query = "#{@server.path}?cmd=cddb+read+" + CGI.escape("#{category} #{discid}") +
+    query = "#{@network.path}?cmd=cddb+read+" + @network.encode("#{category} #{discid}") +
 "&hello=" + CGI.escape("#{@prefs.username} #{@prefs.hostname} \
 rubyripper #{$rr_version}") + "&proto=6"
 
-    reply = @server.get(query)
+    reply = @network.get(query)
 
     if reply[0..2] == '210'
       code, @category, @finalDiscId = reply.split()
@@ -147,41 +145,3 @@ rubyripper #{$rr_version}") + "&proto=6"
     end
   end
 end
-
-
-#	# save it locally for later use TODO
-#	def saveResponse
-#		if File.exist?(@settings['freedbCache'])
-#			@metadataFile = YAML.load(File.open(@settings['freedbCache']))
-#		else
-#			@metadataFile = Hash.new
-#		end
-#
-#		@metadataFile[@disc.freedbString] = @rawResponse
-#
-#		file = File.new(@settings['freedbCache'], 'w')
-#		file.write(@metadataFile.to_yaml)
-#		file.close()
-#	end
-#end
-
-#	def undoVarArtist TODO
-#		# first backup in case we want to revert back
-#		@varArtistsBackup = @varArtists.dup()
-#		@varTracklistBackup = @tracklist.dup()
-#
-#		# reset original values
-#		@varArtists = Array.new
-#
-#		# restore the tracklist
-#		@tracklist = @backupTracklist.dup
-#	end
-
-#reset to various artists when originally detected as such and made undone
-#	def redoVarArtist TODO
-#		if !@backupTracklist.empty? && !@varArtistsBackup.empty?
-#			@tracklist = @varTracklistBackup
-#			@varArtists = @varArtistsBackup
-#		end
-#	end
-#end

@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/metadata/freedb/getFreedbRecord'
+require 'cgi'
 
 # needed to test query
 $rr_version = 'test'
@@ -25,7 +26,9 @@ describe GetFreedbRecord do
   # helper function to return the query message in the stub
   def setQueryReply(query=nil)
     query ||= '200 blues 7F087C0A Some random artist / Some random album'
-    http.should_receive(:get).with(@query_disc).and_return query
+    network.should_receive(:setupConnection).once.with('cgi')
+    network.should_receive(:encode).at_least(:once).with(anything()).and_return {|a| CGI.escape(a)}
+    network.should_receive(:get).with(@query_disc).and_return query
   end
 
   # helper function to return the read message in the stub
@@ -34,7 +37,7 @@ describe GetFreedbRecord do
 Joe+fakestation+rubyripper+test&proto=6"
     response ||= "210 metal 7F087C01\n" + @file + "\n."
 
-    http.should_receive(:get).with(request).and_return response
+    network.should_receive(:get).with(request).and_return response
   end
 
   before(:all) do
@@ -47,8 +50,8 @@ fakestation+rubyripper+test&proto=6"
   end
 
   let(:prefs) {double('Preferences').as_null_object}
-  let(:http) {double('CgiHttpHandler').as_null_object}
-  let(:getFreedb) {GetFreedbRecord.new(http, prefs)}
+  let(:network) {double('Network').as_null_object}
+  let(:getFreedb) {GetFreedbRecord.new(network, prefs)}
 
   context "Given there is only an empty instance" do
     it "should not crash if there are no choices but the caller still chooses" do
@@ -65,7 +68,7 @@ fakestation+rubyripper+test&proto=6"
     before(:each) do
       prefs.should_receive(:hostname).at_least(:once).and_return 'fakestation'
       prefs.should_receive(:username).at_least(:once).and_return 'Joe'
-      http.should_receive(:path).at_least(:once).and_return "/~cddb/cddb.cgi"
+      network.should_receive(:path).at_least(:once).and_return "/~cddb/cddb.cgi"
     end
 
     it "should handle the response in case no disc is reported" do

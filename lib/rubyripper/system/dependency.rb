@@ -43,6 +43,10 @@ class Dependency
     forceDepsRuntime() if runtime == true
   end
 
+  def env(var)
+    return ENV[var]
+  end
+  
   # an array with dirs in which binary files are launchable
   def path ; ENV['PATH'].split(':') + ['.'] ; end
 

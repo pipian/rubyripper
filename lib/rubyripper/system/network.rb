@@ -17,37 +17,57 @@
 
 # TODO require 'timeout' # in case of no connection
 
+require 'rubyripper/system/dependency'
 require 'rubyripper/preferences/main'
 require 'net/http' #automatically loads the 'uri' library
+require 'cgi'#for translating characters to HTTP codes, space = %20 for instance
 
 # This class handles all connectivity with a http server
-class CgiHttpHandler
+class Network
+  attr_reader :path
 
-  def initialize(prefs=nil)
+  def initialize(prefs=nil, deps=nil, uri=nil, http=nil, cgi=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
+    @deps = deps ? deps : Dependency.instance()
+    @uri = uri ? uri : URI
+    @http = http ? http : Net::HTTP
+    @cgi = cgi ? cgi : CGI
   end
-
-  # return the path for the specified url in preferences
-  def path ; return @path ||= config ; end
+  
+  # make a connection of a certain type
+  def setupConnection(type='cgi')
+    if type == 'cgi'
+      @type = 'cgi'
+      setupCgiConnection()
+    end
+  end
 
   # fire up a CGI command to the server
   def get(query)
-    config() if @connection.nil?
-    responsCode, answer = @connection.get(query)
+    if @type == 'cgi'
+      responsCode, answer = @connection.get(query)
+    end
     return answer
+  end
+  
+  # encode for a specific protocol in order to escape certain characters
+  def encode(string)
+    if @type == 'cgi'
+      @cgi.escape(string)
+    end
   end
 
 private
   # first configure the connection (with proxy if needed)
-  def config
-    url = URI.parse(@prefs.site)
+  def setupCgiConnection
+    url = @uri.parse(@prefs.site)
 
-    if ENV['http_proxy']
-      proxy = URI.parse(ENV['http_proxy'])
-      @connection = Net::HTTP.new(url.host, url.port, proxy.host,
-      proxy.port, proxy.user, proxy.password ? CGI.unescape(proxy.password) : '')
+    if @deps.env('http_proxy')
+      proxy = @uri.parse(@deps.env('http_proxy'))
+      @connection = @http.new(url.host, url.port, proxy.host,
+      proxy.port, proxy.user, proxy.password ? @cgi.unescape(proxy.password) : '')
     else
-      @connection = Net::HTTP.new(url.host, url.port)
+      @connection = @http.new(url.host, url.port)
     end
     @path = url.path
   end

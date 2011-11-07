@@ -15,17 +15,11 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/metadata/cgiHttpHandler'
+require 'rubyripper/system/network'
 
-describe CgiHttpHandler do
+describe Network do
 
   let(:prefs) {double('Preferences').as_null_object}
 
-  it "should return the path correctly and configure only once" do
-    site = "http://freedb.freedb.org/~cddb/cddb.cgi"
-    prefs.should_receive(:site).and_return(site)
-    @cgi = CgiHttpHandler.new(prefs)
-    @cgi.path.should == "/~cddb/cddb.cgi"
-    @cgi.path.should == "/~cddb/cddb.cgi"
-  end
+  it "should return the path correctly and configure only once" 
 end
