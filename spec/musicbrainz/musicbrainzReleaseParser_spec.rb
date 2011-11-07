@@ -16,7 +16,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/musicbrainz/musicbrainzReleaseParser'
-require 'rubyripper/freedb/metadata'
 require 'rexml/document'
 
 describe MusicBrainzReleaseParser do

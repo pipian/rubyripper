@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/freedb/cgiHttpHandler'
+require 'rubyripper/metadata/cgiHttpHandler'
 
 describe CgiHttpHandler do
 

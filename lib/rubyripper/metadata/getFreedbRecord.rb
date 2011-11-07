@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # helper class to handle the http traffic
-require 'rubyripper/freedb/cgiHttpHandler.rb'
+require 'rubyripper/metadata/cgiHttpHandler.rb'
 require 'rubyripper/preferences/main'
 
 #for translating characters to HTTP codes, space = %20 for instance

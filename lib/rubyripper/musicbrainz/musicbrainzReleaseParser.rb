@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/musicbrainz/musicbrainzWebService'
-require 'rubyripper/freedb/metadata'
+require 'rubyripper/metadata/metadata'
 require 'rubyripper/preferences/main'
 
 # This class can interpret MusicBrainz release XML

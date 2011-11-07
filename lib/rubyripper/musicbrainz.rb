@@ -20,7 +20,7 @@ require 'rubyripper/system/dependency'
 require 'rubyripper/musicbrainz/musicbrainzReleaseParser'
 require 'rubyripper/musicbrainz/getMusicBrainzRelease'
 # Eeeeh, this didn't need porting from freedb...  Can this be generalized?
-require 'rubyripper/freedb/metadata'
+require 'rubyripper/metadata/metadata'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class MusicBrainz

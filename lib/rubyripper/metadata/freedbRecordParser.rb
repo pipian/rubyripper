@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/freedb/metadata'
+require 'rubyripper/metadata/metadata'
 
 # This class can read and interpret a freedb metadata message
 class FreedbRecordParser

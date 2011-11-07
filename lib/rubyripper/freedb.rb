@@ -17,11 +17,11 @@
 
 require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
-require 'rubyripper/freedb/loadFreedbRecord'
-require 'rubyripper/freedb/saveFreedbRecord'
-require 'rubyripper/freedb/freedbRecordParser'
-require 'rubyripper/freedb/getFreedbRecord'
-require 'rubyripper/freedb/metadata'
+require 'rubyripper/metadata/loadFreedbRecord'
+require 'rubyripper/metadata/saveFreedbRecord'
+require 'rubyripper/metadata/freedbRecordParser'
+require 'rubyripper/metadata/getFreedbRecord'
+require 'rubyripper/metadata/metadata'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class Freedb
