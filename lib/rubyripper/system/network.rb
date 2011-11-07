@@ -25,6 +25,7 @@ require 'cgi'#for translating characters to HTTP codes, space = %20 for instance
 # This class handles all connectivity with a http server
 class Network
   attr_reader :path
+  attr_writer :type
 
   def initialize(prefs=nil, deps=nil, uri=nil, http=nil, cgi=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
