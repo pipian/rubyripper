@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/metadata/getFreedbRecord'
+require 'rubyripper/metadata/freedb/getFreedbRecord'
 
 # needed to test query
 $rr_version = 'test'
