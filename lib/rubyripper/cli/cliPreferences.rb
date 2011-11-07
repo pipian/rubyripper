@@ -320,7 +320,7 @@ private
       when 8 then switchBool('useEarliestDate')
     else noValidChoiceMessage(choice)
     end
-    loopSubMenuFreedb() unless choice == 99
+    loopSubMenuMetadata() unless choice == 99
   end
   
   def setMetadataProvider
