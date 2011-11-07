@@ -21,7 +21,7 @@ describe GetMusicBrainzRelease do
 
   # helper function to return the query message in the stub
   def setQueryReply(query=nil)
-    query ||= File.read('spec/musicbrainz/data/oneReleaseFound.xml')
+    query ||= File.read('spec/metadata/musicbrainz/data/oneReleaseFound.xml')
     @releaseId = 'f15d1f3a-5bf4-3a96-95be-a801b3889dc6'
     http.should_receive(:get).with(@query_disc).and_return query
   end
@@ -81,7 +81,7 @@ describe GetMusicBrainzRelease do
     end
 
     it "should handle the response in case no disc is reported" do
-      setQueryReply(File.read('spec/musicbrainz/data/noReleasesFound.xml'))
+      setQueryReply(File.read('spec/metadata/musicbrainz/data/noReleasesFound.xml'))
       getMusicBrainz.queryDisc(@disc)
 
       getMusicBrainz.status.should == 'noMatches'
@@ -102,7 +102,7 @@ describe GetMusicBrainzRelease do
       # Only rely on country preferences.
       prefs.stub(:preferMusicBrainzCountries).and_return 'AU'
       prefs.stub(:preferMusicBrainzDate).and_return 'no'
-      setQueryReply(File.read('spec/musicbrainz/data/multipleReleasesFound.xml'))
+      setQueryReply(File.read('spec/metadata/musicbrainz/data/multipleReleasesFound.xml'))
       @releaseId = '0923a33a-45c4-3eed-aae8-8b50e1a545de'
       getMusicBrainz.queryDisc(@disc)
 
@@ -115,7 +115,7 @@ describe GetMusicBrainzRelease do
       # Only rely on date preferences.
       prefs.stub(:preferMusicBrainzCountries).and_return ''
       prefs.stub(:preferMusicBrainzDate).and_return 'earlier'
-      setQueryReply(File.read('spec/musicbrainz/data/multipleReleasesFound.xml'))
+      setQueryReply(File.read('spec/metadata/musicbrainz/data/multipleReleasesFound.xml'))
       @releaseId = '6bb3793b-f991-378e-9bff-0bd3117f2298'
       getMusicBrainz.queryDisc(@disc)
 
@@ -128,7 +128,7 @@ describe GetMusicBrainzRelease do
       # Only rely on date preferences.
       prefs.stub(:preferMusicBrainzCountries).and_return 'US'
       prefs.stub(:preferMusicBrainzDate).and_return 'later'
-      setQueryReply(File.read('spec/musicbrainz/data/multipleReleasesFound.xml'))
+      setQueryReply(File.read('spec/metadata/musicbrainz/data/multipleReleasesFound.xml'))
       getMusicBrainz.queryDisc(@disc)
 
       getMusicBrainz.status.should == 'ok'
@@ -140,7 +140,7 @@ describe GetMusicBrainzRelease do
       before(:each) do
         prefs.stub(:preferMusicBrainzCountries).and_return ''
         prefs.stub(:preferMusicBrainzDate).and_return 'no'
-        setQueryReply(File.read('spec/musicbrainz/data/multipleReleasesFound.xml'))
+        setQueryReply(File.read('spec/metadata/musicbrainz/data/multipleReleasesFound.xml'))
         getMusicBrainz.queryDisc(@disc)
       end
 

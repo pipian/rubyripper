@@ -44,12 +44,12 @@ describe MusicBrainzReleaseParser do
   context "When parsing a MusicBrainz release XML element" do
     before(:each) do
       prefs.stub(:useEarliestDate).and_return false
-      http.stub(:get).and_return File.read('spec/musicbrainz/data/noTags.xml')
+      http.stub(:get).and_return File.read('spec/metadata/musicbrainz/data/noTags.xml')
       http.stub(:path).and_return '/ws/2/'
     end
 
     it "should parse all standard info" do
-      parser.parse(readRelease('spec/musicbrainz/data/standardRelease.xml'),
+      parser.parse(readRelease('spec/metadata/musicbrainz/data/standardRelease.xml'),
                    '4vi.H1hC7BRP18_a.7D4r4NOYL8-', 'e50b3c11')
 
       parser.status.should == 'ok'
@@ -62,7 +62,7 @@ describe MusicBrainzReleaseParser do
     end
 
     it "should pick the correct disc of a multi-disc release" do
-      parser.parse(readRelease('spec/musicbrainz/data/multiDiscRelease.xml'),
+      parser.parse(readRelease('spec/metadata/musicbrainz/data/multiDiscRelease.xml'),
                    '0gLvTHxPtWugkT0Pf26t5Bjo0GQ-', 'b20b140d')
 
       parser.status.should == 'ok'
@@ -76,7 +76,7 @@ describe MusicBrainzReleaseParser do
 
     it "should use the earliest release date is useEarliestDate is set" do
       prefs.stub(:useEarliestDate).and_return true
-      parser.parse(readRelease('spec/musicbrainz/data/standardRelease.xml'),
+      parser.parse(readRelease('spec/metadata/musicbrainz/data/standardRelease.xml'),
                    '4vi.H1hC7BRP18_a.7D4r4NOYL8-', 'e50b3c11')
 
       parser.status.should == 'ok'
@@ -84,7 +84,7 @@ describe MusicBrainzReleaseParser do
     end
 
     it "should never behave like a various artists disc if there is only one (non-Various Artists) album artist" do
-      parser.parse(readRelease('spec/musicbrainz/data/oneAlbumArtist.xml'),
+      parser.parse(readRelease('spec/metadata/musicbrainz/data/oneAlbumArtist.xml'),
                    'cm9L.BbeuJ_zNOwr0C_e.K0.D0E-', '86099d0c')
 
       parser.status.should == 'ok'
@@ -94,16 +94,16 @@ describe MusicBrainzReleaseParser do
 
     context "when guessing the genre" do
       it "should guess the most popular artist tag which is also an ID3 genre name" do
-        http.should_receive(:get).with('/ws/2/artist/b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d?inc=tags').and_return File.read('spec/musicbrainz/data/artistTags.xml')
-        parser.parse(readRelease('spec/musicbrainz/data/multiDiscRelease.xml'),
+        http.should_receive(:get).with('/ws/2/artist/b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d?inc=tags').and_return File.read('spec/metadata/musicbrainz/data/artistTags.xml')
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/multiDiscRelease.xml'),
                      '0gLvTHxPtWugkT0Pf26t5Bjo0GQ-', 'b20b140d')
 
         parser.md.genre.should == 'Rock'
       end
 
       it "should prefer release-group tags for genre over artist tags" do
-        http.should_receive(:get).with('/ws/2/release-group/9162580e-5df4-32de-80cc-f45a8d8a9b1d?inc=tags').and_return File.read('spec/musicbrainz/data/releaseGroupTags.xml')
-        parser.parse(readRelease('spec/musicbrainz/data/standardRelease.xml'),
+        http.should_receive(:get).with('/ws/2/release-group/9162580e-5df4-32de-80cc-f45a8d8a9b1d?inc=tags').and_return File.read('spec/metadata/musicbrainz/data/releaseGroupTags.xml')
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/standardRelease.xml'),
                      '4vi.H1hC7BRP18_a.7D4r4NOYL8-', 'e50b3c11')
 
         parser.md.genre.should == 'Rock'
@@ -111,15 +111,15 @@ describe MusicBrainzReleaseParser do
 
       it "shouldn't set the genre if no good tag could be found" do
         # By default we return no tags
-        parser.parse(readRelease('spec/musicbrainz/data/oneAlbumArtist.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/oneAlbumArtist.xml'),
                      'cm9L.BbeuJ_zNOwr0C_e.K0.D0E-', '86099d0c')
 
         parser.md.genre.should == nil
       end
 
       it "should map certain non-ID3-genre tags to ID3 genres" do
-        http.should_receive(:get).with('/ws/2/artist/7dbac7e6-f351-42da-9dce-b0249ca2dd03?inc=tags').and_return File.read('spec/musicbrainz/data/mapTags.xml')
-        parser.parse(readRelease('spec/musicbrainz/data/splitRelease.xml'),
+        http.should_receive(:get).with('/ws/2/artist/7dbac7e6-f351-42da-9dce-b0249ca2dd03?inc=tags').and_return File.read('spec/metadata/musicbrainz/data/mapTags.xml')
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/splitRelease.xml'),
                      'a2njxz76PKV7jgnudcTXDbV_OQs-', '79098308')
 
         # NOTE: Also shows capitalization
@@ -129,7 +129,7 @@ describe MusicBrainzReleaseParser do
 
     context "when a various artists release is encountered" do
       it "should correctly know the artist for each track" do
-        parser.parse(readRelease('spec/musicbrainz/data/variousArtists.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/variousArtists.xml'),
                      'c.J3z3pava1oPzXD0K2e9q48lJc-', 'c70ecd0f')
 
         parser.status.should == 'ok'
@@ -142,22 +142,22 @@ describe MusicBrainzReleaseParser do
       end
 
       it "should automatically join artist splits according to the joinphrase" do
-        parser.parse(readRelease('spec/musicbrainz/data/variousArtists.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/variousArtists.xml'),
                      'c.J3z3pava1oPzXD0K2e9q48lJc-', 'c70ecd0f')
 
         parser.md.getVarArtist(3).should == 'Feist and Ben Gibbard'
       end
 
       it "should automatically join artist splits with ' / ' if there's no joinphrase" do
-        parser.parse(readRelease('spec/musicbrainz/data/variousArtists.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/variousArtists.xml'),
                      'c.J3z3pava1oPzXD0K2e9q48lJc-', 'c70ecd0f')
 
         parser.md.getVarArtist(14).should == 'Grizzly Bear / Feist'
       end
 
       it "should rely on the track artists to pick the genre" do
-        http.should_receive(:get).with('/ws/2/artist/1270af14-9c17-4400-8ebb-3f0ac40dcfb0?inc=tags').and_return File.read('spec/musicbrainz/data/artistTags.xml')
-        parser.parse(readRelease('spec/musicbrainz/data/variousArtists.xml'),
+        http.should_receive(:get).with('/ws/2/artist/1270af14-9c17-4400-8ebb-3f0ac40dcfb0?inc=tags').and_return File.read('spec/metadata/musicbrainz/data/artistTags.xml')
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/variousArtists.xml'),
                      'c.J3z3pava1oPzXD0K2e9q48lJc-', 'c70ecd0f')
 
         parser.md.genre.should == 'Rock'
@@ -166,7 +166,7 @@ describe MusicBrainzReleaseParser do
 
     context "When a split artist release is encountered" do
       it "should automatically join album artist splits according to the joinphrase" do
-        parser.parse(readRelease('spec/musicbrainz/data/splitReleaseOneArtist.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/splitReleaseOneArtist.xml'),
                      '7K8x8VRn_7QehSNMqHrzDhjZV_k-', 'b10df50d')
 
         parser.status.should == 'ok'
@@ -174,7 +174,7 @@ describe MusicBrainzReleaseParser do
       end
 
       it "should automatically join album artist splits with ' / ' if there's no joinphrase" do
-        parser.parse(readRelease('spec/musicbrainz/data/splitRelease.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/splitRelease.xml'),
                      'a2njxz76PKV7jgnudcTXDbV_OQs-', '79098308')
 
         parser.status.should == 'ok'
@@ -183,7 +183,7 @@ describe MusicBrainzReleaseParser do
       end
 
       it "should behave like a various artists disc" do
-        parser.parse(readRelease('spec/musicbrainz/data/splitRelease.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/splitRelease.xml'),
                      'a2njxz76PKV7jgnudcTXDbV_OQs-', '79098308')
 
         parser.md.various?.should == true
@@ -194,15 +194,15 @@ describe MusicBrainzReleaseParser do
       end
 
       it "should never behave like a various artists disc if all tracks have the same artist" do
-        parser.parse(readRelease('spec/musicbrainz/data/splitReleaseOneArtist.xml'),
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/splitReleaseOneArtist.xml'),
                      '7K8x8VRn_7QehSNMqHrzDhjZV_k-', 'b10df50d')
 
         parser.md.various?.should == false
       end
 
       it "should rely on the album artists to pick the genre" do
-        http.should_receive(:get).with('/ws/2/artist/5e372a49-5672-4fb8-ba14-18c90780c4f9?inc=tags').and_return File.read('spec/musicbrainz/data/artistTags.xml')
-        parser.parse(readRelease('spec/musicbrainz/data/splitReleaseOneArtist.xml'),
+        http.should_receive(:get).with('/ws/2/artist/5e372a49-5672-4fb8-ba14-18c90780c4f9?inc=tags').and_return File.read('spec/metadata/musicbrainz/data/artistTags.xml')
+        parser.parse(readRelease('spec/metadata/musicbrainz/data/splitReleaseOneArtist.xml'),
                      '7K8x8VRn_7QehSNMqHrzDhjZV_k-', 'b10df50d')
 
         parser.md.genre.should == 'Rock'
