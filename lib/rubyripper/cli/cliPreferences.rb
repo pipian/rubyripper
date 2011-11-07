@@ -291,7 +291,7 @@ private
     @out.puts ''
     @out.puts _("*** METADATA PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Metadata provider") + ": %s") % [@prefs.metadataProvider)]
+    @out.puts ' 1) ' + _("Metadata provider") + ": %s" % [@prefs.metadataProvider]
     @out.puts ' 2) ' + _("Freedb use first hit %s") % [showBool(@prefs.firstHit)]
     @out.puts ' 3) ' + _("Freedb server") + ": %s" % [@prefs.site]
     @out.puts ' 4) ' + _("Freedb username") + ": %s" % [@prefs.username]
