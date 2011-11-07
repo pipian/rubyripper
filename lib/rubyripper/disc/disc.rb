@@ -70,16 +70,19 @@ attr_reader :metadata
 
   # helper function to load metadata object
   def setMetadata(metadata=nil)
-    if @prefs.musicbrainz
+    provider = @prefs.metadataProvider
+    if provider == 'musicbrainz'
       require 'rubyripper/metadata/musicbrainz'
       @metadata = metadata ? metadata : MusicBrainz.new(self)
       @metadata.get()
     end
-    # Fall back on freedb
-    if not @prefs.musicbrainz or @metadata.status != 'ok'
+    
+    if provider == 'freedb' || @metadata.status != 'ok'
       require 'rubyripper/metadata/freedb'
       @metadata = metadata ? metadata : Freedb.new(self)
       @metadata.get()
+    elsif provider == 'none'
+      # TODO
     end
   end
 end

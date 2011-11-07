@@ -289,13 +289,16 @@ private
   # show the freedb menu
   def showSubMenuFreedb
     @out.puts ''
-    @out.puts _("*** FREEDB PREFERENCES ***")
+    @out.puts _("*** METADATA PREFERENCES ***")
     @out.puts ''
-    @out.puts ' 1) ' + _("Fetch cd info with freedb %s") % [showBool(@prefs.freedb)]
-    @out.puts ' 2) ' + _("Always use first hit %s") % [showBool(@prefs.firstHit)]
+    @out.puts ' 1) ' + _("Metadata provider") + ": %s") % [@prefs.metadataProvider)]
+    @out.puts ' 2) ' + _("Freedb use first hit %s") % [showBool(@prefs.firstHit)]
     @out.puts ' 3) ' + _("Freedb server") + ": %s" % [@prefs.site]
     @out.puts ' 4) ' + _("Freedb username") + ": %s" % [@prefs.username]
     @out.puts ' 5) ' + _("Freedb hostname") + ": %s" % [@prefs.hostname]
+    @out.puts ' 6) ' + _("Musicbrainz preferred countries (1st, 2nd,...)") + ": %s" % [@prefs.preferMusicBrainzCountries]
+    @out.puts ' 7) ' + _("Musicbrainz preferred date") + ": %s" % [@prefs.preferMusicBrainzDate]
+    @out.puts ' 8) ' + _("Musicbrainz use first known year (including LPs) %s") % [showBool(@prefs.useEarliestDate)]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -305,7 +308,7 @@ private
   def loopSubMenuFreedb
     case choice = showSubMenuFreedb()
       when 99 then loopMainMenu()
-      when 1 then switchBool('freedb')
+      when 1 then setMetadataProvider()
       when 2 then switchBool('firstHit')
       when 3 then @prefs.site = @string.get(_("Freedb server"),
         'http://freedb.freedb.org/~cddb/cddb.cgi')
@@ -313,37 +316,20 @@ private
         'anonymous')
       when 5 then @prefs.hostname = @string.get(_("Freedb hostname"),
         'my_secret.com')
+      when 6 then @prefs.preferMusicBrainzCountries = @string.get(_("Prefer releases from countries (better,worse,...)"),
+        'US,UK,XW,XE,JP')
+      when 7 then setPreferMusicBrainzDate()
+      when 8 then switchBool('useEarliestDate')
     else noValidChoiceMessage(choice)
     end
     loopSubMenuFreedb() unless choice == 99
   end
-
-  # show the MusicBrainz menu
-  def showSubMenuMusicBrainz
-    @out.puts ''
-    @out.puts _("*** MUSICBRAINZ PREFERENCES ***")
-    @out.puts ''
-    @out.puts ' 1) ' + _("Fetch cd info with MusicBrainz (and fall back on freedb if enabled) %s") % [showBool(@prefs.musicbrainz)]
-    @out.puts ' 2) ' + _("Prefer releases from countries (better,worse,...)") + ": %s" % [@prefs.preferMusicBrainzCountries]
-    @out.puts ' 3) ' + _("Prefer releases by date") + ": %s" % [@prefs.preferMusicBrainzDate]
-    @out.puts ' 4) ' + _("Set year from earliest release date (including LPs) %s") % [showBool(@prefs.useEarliestDate)]
-    @out.puts '99) ' + _("Back to settings main menu")
-    @out.puts ""
-    @int.get("Please type the number of the setting you wish to change", 99)
-  end
-
-  # loop through the MusicBrainz menu
-  def loopSubMenuMusicBrainz
-    case choice = showSubMenuMusicBrainz()
-      when 99 then loopMainMenu()
-      when 1 then switchBool('musicbrainz')
-      when 2 then @prefs.preferMusicBrainzCountries = @string.get(_("Prefer releases from countries (better,worse,...)"),
-        'US,UK,XW,XE,JP')
-      when 3 then setPreferMusicBrainzDate()
-      when 4 then switchBool('useEarliestDate')
-    else noValidChoiceMessage(choice)
-    end
-    loopSubMenuMusicBrainz() unless choice == 99
+  
+  def setMetadataProvider
+    choices = [['none', _("Don't fetch metadata from the internet")],
+      ['freedb', _('Use the freedb protocol as primary resource')],
+      ['musicbrainz', _('Use the musicbrainz protocol as primary resource')]]
+    @prefs.metadataProvider = multipleChoice(choices)
   end
 
   def setPreferMusicBrainzDate

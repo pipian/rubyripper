@@ -112,9 +112,9 @@ module Preferences
     # Set the gain in the tags only
     attr_accessor :gainTagsOnly
 
-    # FREEDB PREFERENCES
-    # Fetch metadata for the disc with freedb
-    attr_accessor :freedb
+    # METADATA PREFERENCES
+    # Choose metadata provider 'none' || 'freedb' || 'musicbrainz' 
+    attr_accessor :metadataProvider
 
     # Always use first hit from freedb
     attr_accessor :firstHit
@@ -129,10 +129,6 @@ module Preferences
     attr_accessor :hostname
 
     # MUSICBRAINZ PREFERENCES
-    # Fetch metadata for the disc with MusicBrainz (falling back on
-    # freedb if enabled)
-    attr_accessor :musicbrainz
-
     # Order of countries from which releases are preferred (from best
     # to worst; anything not in the list is preferred equally less than
     # anything in the list)

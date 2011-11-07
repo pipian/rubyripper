@@ -75,7 +75,7 @@ module Preferences
     end
 
     def setFreedbDefaults
-      @data.freedb = true
+      @data.metadataProvider = 'freedb'
       @data.firstHit = true
       @data.site = 'http://freedb.freedb.org/~cddb/cddb.cgi'
       @data.username = 'anonymous'
@@ -83,7 +83,6 @@ module Preferences
     end
 
     def setMusicBrainzDefaults
-      @data.musicbrainz = true
       @data.preferMusicBrainzCountries = 'US,UK,XW,XE,JP'
       @data.preferMusicBrainzDate = 'earlier'
       @data.useEarliestDate = true

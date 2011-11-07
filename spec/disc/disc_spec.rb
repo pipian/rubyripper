@@ -37,27 +37,24 @@ describe Disc do
       disc.scan()
     end
     
-    it "should trigger the metadata once if a disc is found and MusicBrainz is enabled" do
+    it "should use Musicbrainz as metadata provider if that is the preference" do
       cdpar.should_receive(:status).once().and_return 'ok'
-      prefs.should_receive(:musicbrainz).at_least(:twice).and_return true
+      prefs.should_receive(:metadataProvider).once.and_return 'musicbrainz'
       metadata.should_receive(:get).once().and_return true
       metadata.should_receive(:status).once().and_return 'ok'
       disc.scan(metadata)
     end
     
-    it "should still trigger the metadata once if MusicBrainz is disabled" do
+    it "should use Freedb as metadata provider if that is the preference" do
       cdpar.should_receive(:status).once().and_return 'ok'
-      prefs.should_receive(:musicbrainz).at_least(:twice).and_return false
+      prefs.should_receive(:metadataProvider).once().and_return 'freedb'
       metadata.should_receive(:get).once().and_return true
-      # No sense in checking the status if MusicBrainz is disabled.
-      metadata.should_not_receive(:status)
       disc.scan(metadata)
     end
     
-    it "should fall back on freedb if MusicBrainz is enabled and fails to find the disc" do
+    it "should fall back to Freedb if Musicbrainz is preferred but fails" do
       cdpar.should_receive(:status).once().and_return 'ok'
-      prefs.should_receive(:musicbrainz).at_least(:twice).and_return true
-      # The extra call to get() is the fall-back.
+      prefs.should_receive(:metadataProvider).once.and_return 'musicbrainz'
       metadata.should_receive(:get).twice().and_return true
       metadata.should_receive(:status).once().and_return 'noMatches'
       disc.scan(metadata)
