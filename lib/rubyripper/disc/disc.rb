@@ -18,6 +18,7 @@
 require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/freedbString'
 require 'rubyripper/system/dependency'
+require 'rubyripper/preferences/main'
 
 # A helper class to hide lower level details
 class Disc
@@ -27,6 +28,7 @@ attr_reader :metadata
     @cdparanoia = cdpar ? cdpar : ScanDiscCdparanoia.new()
     @freedbString = freedb ? freedb : FreedbString.new(self)
     @deps = deps ? deps : Dependency.instance
+    @prefs = prefs ? prefs : Preferences::Main.instance
   end
   
   # scan the disc for a drive
@@ -53,6 +55,23 @@ attr_reader :metadata
   # helper functions for @freedb
   def freedbString ; @freedbString.freedbString ; end
   def discid ; @freedbString.discid; end
+
+  def getLengthSector(track)
+    scanner = tocScannerForFreedbString
+    if scanner != @cdparanoia
+      scanner.scan
+      if @prefs.image and scanner.dataTracks.include?(scanner.audiotracks + 1)
+        return getStartSector(scanner.audiotracks) + scanner.getLengthSector(scanner.audiotracks) - 11400 - getStartSector(track)
+      elsif !@prefs.image and scanner.dataTracks.include?(track + 1)
+        return scanner.getLengthSector(track) - 11400
+      end
+    end
+    @cdparanoia.getLengthSector(track)
+  end
+
+  def getFileSize(track)
+    44 + getLengthSector(track) * 2352
+  end
 
   private
   
