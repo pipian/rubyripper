@@ -107,7 +107,7 @@ class SecureRip
   end
 
   def sizeTest(track)
-    puts "Expected filesize for #{if track == "image" ; track else "track #{track}" end} \
+    puts "Expected filesize for #{if @prefs.image ; "image" else "track #{track}" end} \
 is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     if @deps.installed?('df')
@@ -182,7 +182,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       # expected size matches exactly
     elsif sizeDiff < 0
       puts "More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_SECTOR} sector(s)" if @prefs.debug
-    elsif @prefs['offset'] != 0 && (track == "image" || track == @disc.audiotracks)
+    elsif @prefs.offset != 0 && (@prefs.image || track == @disc.audiotracks)
       @log.add(_("The ripped file misses %s sectors.\n") % [sizeDiff / BYTES_AUDIO_SECTOR.to_f])
       @log.add(_("This is known behaviour for some drives when using an offset.\n"))
       @log.add(_("Notice that each sector is 1/75 second.\n"))
@@ -331,7 +331,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   def cooldownNeeded
     puts "Minutes ripping is #{(Time.now - @timeStarted) / 60}." if @prefs.debug
 
-    if (((Time.now - @timeStarted) / 60) > 30 && @prefs['maxThreads'] != 0)
+    if (((Time.now - @timeStarted) / 60) > 30 && @prefs.maxThreads != 0)
       @log.add(_("The drive is spinning for more than 30 minutes.\n"))
       @log.add(_("Taking a timeout of 2 minutes to protect the hardware.\n"))
       sleep(120)
