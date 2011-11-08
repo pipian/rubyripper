@@ -37,6 +37,7 @@ module Preferences
     def setRippingDefaults
       @data.cdrom = @deps.cdrom()
       @data.offset = 0
+      @data.padMissingSamples = true
       @data.rippersettings = '-Z'
       @data.reqMatchesAll = 2
       @data.reqMatchesErrors = 3

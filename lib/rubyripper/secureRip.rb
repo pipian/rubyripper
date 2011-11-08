@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'digest/md5' # Needed for secure class, only have to load them ones here.
+require 'rubyripper/waveFile'
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
@@ -356,21 +357,41 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       command += " #{@prefs.rippersettings}"
     end
 
-    command += " [.#{@disc.getStartSector(track)+@prefs.offset/588}]-"
+    # What start/length do we expect?
+    start = @disc.getStartSector(track) + @prefs.offset / 588
+    length = @disc.getLengthSector(track) - 1
 
-    # for the last track tell cdparanoia to rip till end to prevent problems on some drives
-    if !@prefs.image && track != @disc.audiotracks
-      command += "[.#{@disc.getLengthSector(track) - 1}]"
+    if start < 0 and @prefs.offset < 0
+      # Adjust the start so that we never read into the lead-in.
+      start = 0
+      noOffset = true
+    elsif @prefs.offset > 0 && (@prefs.image || track == @disc.audiotracks)
+      # Adjust the start so that we never read into the lead-out.
+      start -= @prefs.offset / 588
+      noOffset = true
     end
+    command += " [.#{start}]-[.#{length}]"
 
     # the ported cdparanoia for MacOS misses the -d option, default drive will be used.
     if @disc.multipleDriveSupport ; command += " -d #{@prefs.cdrom}" end
 
-    command += " -O #{@prefs.offset}"
+    if !noOffset
+      command += " -O #{@prefs.offset}"
+    end
     command += " \"#{@out.getTempFile(track, @trial)}\""
     puts command if @prefs.debug
     @exec.launch(command) if @cancelled == false #Launch the cdparanoia command
     @log.add(" (#{(Time.now - timeStarted).to_i} #{_("seconds")})\n")
+    
+    if noOffset
+      # Range includes either the start of a negative offset or the
+      # end of a positive offset, and we need to trim and pad the
+      # appropriate sides.
+      file = WaveFile.new(@out.getTempFile(track, @trial))
+      file.offset = @prefs.offset
+      file.padMissingSamples = @prefs.padMissingSamples
+      file.save!
+    end
   end
 
   def getDigest(track)
