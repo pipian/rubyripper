@@ -50,11 +50,15 @@ class SecureRip
   def ripTracks
     @log.updateRippingProgress() # Give a hint to the gui that ripping has started
 
-    @trackSelection.each do |track|
-      break if @cancelled == true
-      puts "Ripping track #{track}" if @prefs.debug && !@prefs.image
-      puts "Ripping image" if @prefs.debug && @prefs.image
-      ripTrack(track)
+    if @prefs.image
+      puts "Ripping image" if @prefs.debug
+      ripTrack(@trackSelection[0])
+    else
+      @trackSelection.each do |track|
+        break if @cancelled == true
+        puts "Ripping track #{track}" if @prefs.debug
+        ripTrack(track)
+      end
     end
 
     @exec.eject(@prefs.cdrom) if @prefs.eject
