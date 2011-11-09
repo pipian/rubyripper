@@ -39,7 +39,7 @@ attr_reader :metadata
   end
   
   # return the object that is used for calculating the freedb string
-  def tocScannerForFreedbString(cdinfo=nil, cdcontrol=nil)
+  def advancedTocScanner(cdinfo=nil, cdcontrol=nil)
     if @deps.installed?('cd-info')
       require 'rubyripper/disc/scanDiscCdinfo'
       scanner = cdinfo ? cdinfo : ScanDiscCdinfo.new()

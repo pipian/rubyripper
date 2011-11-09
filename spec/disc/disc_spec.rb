@@ -70,19 +70,19 @@ describe Disc do
   context "When a toc analyzer is requested for calculating the freedb string" do
     it "should first refer to the cd-info scanner if it is installed" do
       deps.should_receive(:installed?).with('cd-info').and_return true
-      disc.tocScannerForFreedbString(cdinfo='a', cdcontrol='b').should == 'a'
+      disc.advancedTocScanner(cdinfo='a', cdcontrol='b').should == 'a'
     end
     
     it "should then refer to the cdcontrol scanner if it is installed" do
       deps.should_receive(:installed?).with('cd-info').and_return false
       deps.should_receive(:installed?).with('cdcontrol').and_return true
-      disc.tocScannerForFreedbString(cdinfo='a', cdcontrol='b').should == 'b'
+      disc.advancedTocScanner(cdinfo='a', cdcontrol='b').should == 'b'
     end
     
     it "should fall back to cdparanoia if nothing better is available" do
       deps.should_receive(:installed?).with('cd-info').and_return false
       deps.should_receive(:installed?).with('cdcontrol').and_return false
-      disc.tocScannerForFreedbString(cdinfo='a', cdcontrol='b').should == cdpar
+      disc.advancedTocScanner(cdinfo='a', cdcontrol='b').should == cdpar
     end
   end
   
@@ -98,7 +98,7 @@ describe Disc do
     end
     
     it "should forward the musicbrainzlookuppath method to the calcMusicbrainzID object" do
-      musicbrainz.should_receive(:musicbrainzLookupPath).once.and_return true
+      musicbrainz.should_receive(:advancedTocScanner).once.and_return true
       disc.musicbrainzLookupPath()
     end
     

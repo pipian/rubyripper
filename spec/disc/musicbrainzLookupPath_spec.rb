@@ -20,7 +20,7 @@ require 'rubyripper/disc/calcMusicbrainzID'
 describe CalcMusicbrainzID do
 
   let(:disc) {double{'Disc'}.as_null_object}
-  let(:scanner) {double{'tocScannerForFreedbString'}.as_null_object}
+  let(:scanner) {double{'AdvancedTocScanner'}.as_null_object}
 
   before(:each) do
     @musicbrainz = CalcMusicbrainzID.new(disc)
@@ -31,7 +31,7 @@ describe CalcMusicbrainzID do
     before(:each) do
       @start = {1=>0, 2=>22617, 3=>41737, 4=>58167, 5=>71952, 6=>91225,
 7=>104502, 8=>115230, 9=>132015, 10=>143782, 11=>159720, 12=>174447, 13=>267107+11400}
-      disc.should_receive(:tocScannerForFreedbString).once.and_return scanner
+      disc.should_receive(:advancedTocScanner).once.and_return scanner
     end
 
     it "should use the provided toc scanner to calculate the disc" do

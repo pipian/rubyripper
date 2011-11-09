@@ -46,7 +46,7 @@ private
 
   # try to calculate it ourselves, prefer cd-info if available
   def getMusicBrainzLookupPath()
-    @scan = @disc.tocScannerForFreedbString
+    @scan = @disc.advancedTocScanner
     @scan.scan
     setDiscId()
     buildMusicBrainzLookupPath()

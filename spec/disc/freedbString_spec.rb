@@ -20,7 +20,7 @@ require 'rubyripper/disc/calcFreedbID'
 describe CalcFreedbID do
 
   let(:disc) {double{'Disc'}.as_null_object}
-  let(:scanner) {double{'tocScannerForFreedbString'}.as_null_object}
+  let(:scanner) {double{'AdvancedTocScanner'}.as_null_object}
   let(:prefs) {double('Preferences').as_null_object}
   let(:deps) {double('Dependency').as_null_object}
   let(:exec) {double('Execute').as_null_object}
@@ -73,7 +73,7 @@ describe CalcFreedbID do
 7=>87182, 8=>106732, 9=>122218, 10=>124080}
       prefs.should_receive(:debug).and_return false
       deps.should_receive(:installed?).twice.and_return false
-      disc.should_receive(:tocScannerForFreedbString).once.and_return scanner
+      disc.should_receive(:advancedTocScanner).once.and_return scanner
     end
 
     it "should use the provided toc scanner to calculate the disc" do
