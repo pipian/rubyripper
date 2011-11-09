@@ -21,7 +21,7 @@ require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
 
 # class that gets the freedb string
-class FreedbString
+class CalcFreedbID
 
   # setup some references to needed objects
   def initialize(disc, prefs=nil, deps=nil,exec=nil)    

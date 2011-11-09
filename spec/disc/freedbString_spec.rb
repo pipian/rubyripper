@@ -15,9 +15,9 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc/freedbString'
+require 'rubyripper/disc/calcFreedbID'
 
-describe FreedbString do
+describe CalcFreedbID do
 
   let(:disc) {double{'Disc'}.as_null_object}
   let(:scanner) {double{'tocScannerForFreedbString'}.as_null_object}
@@ -26,7 +26,7 @@ describe FreedbString do
   let(:exec) {double('Execute').as_null_object}
 
   before(:each) do
-    @freedb = FreedbString.new(disc, prefs, deps, exec)
+    @freedb = CalcFreedbID.new(disc, prefs, deps, exec)
     @freedbString = "7F087C0A 10 150 13359 36689 53647 68322 81247 87332 \
 106882 122368 124230 2174"
     prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')

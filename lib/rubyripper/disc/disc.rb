@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/disc/scanDiscCdparanoia'
-require 'rubyripper/disc/freedbString'
+require 'rubyripper/disc/calcFreedbID'
 require 'rubyripper/disc/musicbrainzLookupPath'
 require 'rubyripper/system/dependency'
 
@@ -26,7 +26,7 @@ attr_reader :metadata
 
   def initialize(cdpar=nil, freedb=nil, musicbrainz=nil, deps=nil, prefs=nil)
     @cdparanoia = cdpar ? cdpar : ScanDiscCdparanoia.new()
-    @freedbString = freedb ? freedb : FreedbString.new(self)
+    @freedbString = freedb ? freedb : CalcFreedbID.new(self)
     @musicbrainzLookupPath = musicbrainz ? musicbrainz : MusicBrainzLookupPath.new(self)
     @deps = deps ? deps : Dependency.instance
     @prefs = prefs ? prefs : Preferences::Main.instance
