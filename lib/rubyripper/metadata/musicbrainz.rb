@@ -40,7 +40,7 @@ attr_reader :status
   def get()
     @getMusicBrainz.queryDisc(@disc.musicbrainzLookupPath)
     if @getMusicBrainz.status == 'ok'
-      @parser.parse(@getMusicBrainz.musicbrainzRelease, @disc.musicbrainzDiscid, @disc.discid)
+      @parser.parse(@getMusicBrainz.musicbrainzRelease, @disc.musicbrainzDiscid, @disc.freedbDiscid)
       @status = @parser.status
     elsif @getMusicBrainz.status == 'multipleReleases'
       #multiple records

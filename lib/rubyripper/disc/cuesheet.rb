@@ -56,7 +56,7 @@ class Cuesheet
 		@cuesheet << "REM GENRE #{@settings['Out'].genre}"
 		@cuesheet << "REM DATE #{@settings['Out'].year}"
 		@cuesheet << "REM COMMENT \"Rubyripper #{$rr_version}\""
-		@cuesheet << "REM DISCID #{@settings['cd'].discId}"
+		@cuesheet << "REM DISCID #{@settings['cd'].freedbDiscId}"
 		@cuesheet << "REM FREEDB_QUERY \"#{@settings['cd'].freedbString.chomp}\""
 		@cuesheet << "PERFORMER \"#{@settings['Out'].artist}\""
 		@cuesheet << "TITLE \"#{@settings['Out'].album}\""

@@ -55,7 +55,7 @@ attr_reader :metadata
   
   # helper functions for @freedb
   def freedbString ; @calcFreedbID.freedbString ; end
-  def discid ; @calcFreedbID.discid; end
+  def freedbDiscid ; @calcFreedbID.discid; end
 
   # helper functions for @musicbrainz
   def musicbrainzLookupPath ; @calcMusicbrainzID.musicbrainzLookupPath ; end

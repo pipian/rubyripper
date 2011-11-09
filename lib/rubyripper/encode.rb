@@ -228,7 +228,7 @@ class Encode
     tags += "--tag ALBUM=\"#{@out.album}\" "
     tags += "--tag DATE=\"#{@out.year}\" "
     tags += "--tag GENRE=\"#{@out.genre}\" "
-    tags += "--tag DISCID=\"#{@disc.discid}\" "
+    tags += "--tag DISCID=\"#{@disc.freedbDiscid}\" "
     tags += "--tag DISCNUMBER=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
@@ -263,7 +263,7 @@ class Encode
     tags += "-c ALBUM=\"#{@out.album}\" "
     tags += "-c DATE=\"#{@out.year}\" "
     tags += "-c GENRE=\"#{@out.genre}\" "
-    tags += "-c DISCID=\"#{@disc.discid}\" "
+    tags += "-c DISCID=\"#{@disc.freedbDiscid}\" "
     tags += "-c DISCNUMBER=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
@@ -296,7 +296,7 @@ class Encode
     tags += "--tl \"#{@out.album}\" "
     tags += "--ty \"#{@out.year}\" "
     tags += "--tg \"#{@out.genre}\" "
-    tags += "--tv TXXX=DISCID=\"#{@disc.discId}\" "
+    tags += "--tv TXXX=DISCID=\"#{@disc.freedbDiscid}\" "
     tags += "--tv TPOS=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently

@@ -87,18 +87,18 @@ describe Disc do
   end
   
   context "When methods need to be forwarded" do
-    it "should forward the freedbstring method to the freedbstring object" do
+    it "should forward the freedbstring method to the calcFreedbID object" do
       freedb.should_receive(:freedbString).once.and_return true
       disc.freedbString()
     end
     
-    it "should forward the discid method to the freedbstring object" do
+    it "should forward the freedb discid method to the calcFreedbID object" do
       freedb.should_receive(:discid).once.and_return true
-      disc.discid()
+      disc.freedbDiscid()
     end
     
     it "should forward the musicbrainzlookuppath method to the calcMusicbrainzID object" do
-      musicbrainz.should_receive(:advancedTocScanner).once.and_return true
+      musicbrainz.should_receive(:musicbrainzLookupPath).once.and_return true
       disc.musicbrainzLookupPath()
     end
     

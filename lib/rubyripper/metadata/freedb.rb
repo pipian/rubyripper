@@ -61,7 +61,7 @@ class Freedb
     if @prefs.testdisc
       @loadFreedbRecord.read(@prefs.testdisc)
     else
-      @loadFreedbRecord.scan(@disc.discid)
+      @loadFreedbRecord.scan(@disc.freedbDiscid)
     end
     
     @loadFreedbRecord.freedbRecord != nil && @loadFreedbRecord.status == 'ok'
@@ -79,7 +79,7 @@ class Freedb
   # always save the file first and reload it (to fix encoding errors)
   def handleRemote()
     if @getFreedb.status == 'ok'
-      @save.save(@getFreedb.freedbRecord, @getFreedb.category, @disc.discid)
+      @save.save(@getFreedb.freedbRecord, @getFreedb.category, @disc.freedbDiscid)
       get()
     else
       #multiple records
