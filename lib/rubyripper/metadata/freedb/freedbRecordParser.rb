@@ -15,14 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/metadata/metadata'
+require 'rubyripper/metadata/data'
 
 # This class can read and interpret a freedb metadata message
 class FreedbRecordParser
 attr_reader :status, :md
 
   def initialize(md=nil)
-    @md = md ? md : Metadata.new
+    @md = md ? md : Metadata::Data.new()
   end
 
   # setup actions to analyze the result

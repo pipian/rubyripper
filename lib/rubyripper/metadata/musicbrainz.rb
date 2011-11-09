@@ -20,7 +20,7 @@ require 'rubyripper/system/dependency'
 require 'rubyripper/metadata/musicbrainz/musicbrainzReleaseParser'
 require 'rubyripper/metadata/musicbrainz/getMusicBrainzRelease'
 # Eeeeh, this didn't need porting from freedb...  Can this be generalized?
-require 'rubyripper/metadata/metadata'
+require 'rubyripper/metadata/data'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class MusicBrainz
@@ -31,7 +31,7 @@ attr_reader :status
     @disc = disc
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance()
-    @md = md ? md : Metadata.new()
+    @md = md ? md : Metadata::Data.new()
     @parser = parser ? parser : MusicBrainzReleaseParser.new(@md)
     @getMusicBrainz = getMusicBrainz ? getMusicBrainz : GetMusicBrainzRelease.new()
   end

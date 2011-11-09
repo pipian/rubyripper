@@ -21,7 +21,7 @@ require 'rubyripper/metadata/freedb/loadFreedbRecord'
 require 'rubyripper/metadata/freedb/saveFreedbRecord'
 require 'rubyripper/metadata/freedb/freedbRecordParser'
 require 'rubyripper/metadata/freedb/getFreedbRecord'
-require 'rubyripper/metadata/metadata'
+require 'rubyripper/metadata/data'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class Freedb
@@ -33,7 +33,7 @@ class Freedb
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance()
     @save = save ? save : SaveFreedbRecord.new()
-    @md = md ? md : Metadata.new()
+    @md = md ? md : Metadata::Data.new()
     @parser = parser ? parser : FreedbRecordParser.new(@md)
     @getFreedb = getFreedb ? getFreedb : GetFreedbRecord.new()
   end

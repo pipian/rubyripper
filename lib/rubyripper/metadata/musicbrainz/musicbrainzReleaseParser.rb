@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/metadata/musicbrainz/musicbrainzWebService'
-require 'rubyripper/metadata/metadata'
+require 'rubyripper/metadata/data'
 require 'rubyripper/preferences/main'
 
 # This class can interpret MusicBrainz release XML
@@ -27,7 +27,7 @@ attr_reader :status, :md
   MMD_NAMESPACE = 'http://musicbrainz.org/ns/mmd-2.0#'
 
   def initialize(md=nil, server=nil, prefs=nil)
-    @md = md ? md : Metadata.new
+    @md = md ? md : Metadata::Data.new()
     @server = server ? server : MusicBrainzWebService.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
   end
