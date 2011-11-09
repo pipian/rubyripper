@@ -21,7 +21,7 @@ describe Disc do
   
   let(:cdpar) {double('ScanDiscCdparanoia').as_null_object}
   let(:freedb) {double('FreedbString').as_null_object}
-  let(:musicbrainz) {double('MusicBrainzLookupPath').as_null_object}
+  let(:musicbrainz) {double('CalcMusicbrainzID').as_null_object}
   let(:deps) {double('Dependency').as_null_object}
   let(:prefs) {double('Preferences').as_null_object}
   let(:metadata) {double('Freedb').as_null_object}
@@ -97,12 +97,12 @@ describe Disc do
       disc.discid()
     end
     
-    it "should forward the musicbrainzlookuppath method to the musicbrainzlookuppath object" do
+    it "should forward the musicbrainzlookuppath method to the calcMusicbrainzID object" do
       musicbrainz.should_receive(:musicbrainzLookupPath).once.and_return true
       disc.musicbrainzLookupPath()
     end
     
-    it "should forward the musicbrainzdiscid method to the musicbrainzlookuppath object" do
+    it "should forward the musicbrainzdiscid method to the calcMusicbrainzID object" do
       musicbrainz.should_receive(:discid).once.and_return true
       disc.musicbrainzDiscid()
     end

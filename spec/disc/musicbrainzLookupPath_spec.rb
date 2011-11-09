@@ -15,15 +15,15 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/disc/musicbrainzLookupPath'
+require 'rubyripper/disc/calcMusicbrainzID'
 
-describe MusicBrainzLookupPath do
+describe CalcMusicbrainzID do
 
   let(:disc) {double{'Disc'}.as_null_object}
   let(:scanner) {double{'tocScannerForFreedbString'}.as_null_object}
 
   before(:each) do
-    @musicbrainz = MusicBrainzLookupPath.new(disc)
+    @musicbrainz = CalcMusicbrainzID.new(disc)
     @musicbrainzLookupPath = "discid/I5l9cCSFccLKFEKS.7wqSZAorPU-?toc=1+12+267257+150+22767+41887+58317+72102+91375+104652+115380+132165+143932+159870+174597"
   end
 

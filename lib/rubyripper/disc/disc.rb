@@ -17,7 +17,7 @@
 
 require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/calcFreedbID'
-require 'rubyripper/disc/musicbrainzLookupPath'
+require 'rubyripper/disc/calcMusicbrainzID'
 require 'rubyripper/system/dependency'
 
 # A helper class to hide lower level details
@@ -26,8 +26,8 @@ attr_reader :metadata
 
   def initialize(cdpar=nil, freedb=nil, musicbrainz=nil, deps=nil, prefs=nil)
     @cdparanoia = cdpar ? cdpar : ScanDiscCdparanoia.new()
-    @freedbString = freedb ? freedb : CalcFreedbID.new(self)
-    @musicbrainzLookupPath = musicbrainz ? musicbrainz : MusicBrainzLookupPath.new(self)
+    @calcFreedbID = freedb ? freedb : CalcFreedbID.new(self)
+    @calcMusicbrainzID = musicbrainz ? musicbrainz : CalcMusicbrainzID.new(self)
     @deps = deps ? deps : Dependency.instance
     @prefs = prefs ? prefs : Preferences::Main.instance
   end
@@ -54,12 +54,12 @@ attr_reader :metadata
   end
   
   # helper functions for @freedb
-  def freedbString ; @freedbString.freedbString ; end
-  def discid ; @freedbString.discid; end
+  def freedbString ; @calcFreedbID.freedbString ; end
+  def discid ; @calcFreedbID.discid; end
 
   # helper functions for @musicbrainz
-  def musicbrainzLookupPath ; @musicbrainzLookupPath.musicbrainzLookupPath ; end
-  def musicbrainzDiscid ; @musicbrainzLookupPath.discid ; end
+  def musicbrainzLookupPath ; @calcMusicbrainzID.musicbrainzLookupPath ; end
+  def musicbrainzDiscid ; @calcMusicbrainzID.discid ; end
 
   private
   

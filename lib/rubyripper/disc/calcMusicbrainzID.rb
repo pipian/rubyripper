@@ -23,7 +23,7 @@ require 'base64'
 require 'rubyripper/disc/disc'
 
 # class that gets the MusicBrainz web service lookup path
-class MusicBrainzLookupPath
+class CalcMusicbrainzID
 
   # setup some references to needed objects
   def initialize(disc)
