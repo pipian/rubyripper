@@ -30,7 +30,7 @@ attr_reader :display
     @display.text = _("Welcome to rubyripper %s.\nScanning drive %s for an audio disc...") % [$rr_version, @prefs.cdrom]
   end
 
-  def no_disc_found
+  def noDiscFound
     @display.text = _("No disc found in %s!\nPlease insert a disc and push 'Scan drive'.\n\nThe cdrom drive can be set in 'Preferences'.") % [@prefs.cdrom]
   end
 
@@ -48,6 +48,11 @@ attr_reader :display
 
   def no_eject_found
     @display.text = _("The eject utility is not found on your system!")
+  end
+  
+  def showError(error)
+    require 'rubyripper/errors'
+    @display.text = Errors.send(error[0], error[1])
   end
 
   def show_message(message)

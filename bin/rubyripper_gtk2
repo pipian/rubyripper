@@ -2,8 +2,9 @@
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
 #    Copyright (C) 2007 - 2011 Bouke Woudstra (boukewoudstra@gmail.com)
 #
-#    This file is part of Rubyripper. Rubyripper is free software: you can redistribute it and/or modify
-#    it under the terms of the GNU General Public License as published by
+#    This file is part of Rubyripper. Rubyripper is free software: 
+#    you can redistribute it and/or modify it under the terms of 
+#    the GNU General Public License as published by
 #    the Free Software Foundation, either version 3 of the License, or
 #    (at your option) any later version.
 #
@@ -25,7 +26,6 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 begin
   require 'rubyripper/base'
   require 'rubyripper/system/dependency'
-  require 'rubyripper/errors'
   require 'rubyripper/preferences/main'
   require 'rubyripper/gtk2/shortMessage'
 rescue LoadError
@@ -62,30 +62,107 @@ attr_reader :instances
     setupMainContainer()
     showWelcomeMessage()
     @gtkWindow.show_all()
-    #@deps.verify()
-    # preferences
-    # disc
+    Thread.new{showDisc()}
+    Gtk.main
+  end
+  
+  def update(modus, value=false)
+    @updateThread.join if @updateThread != nil # one gui update at a time please
+    @updateThread = Thread.new do
+      if modus == "error"
+        @instances['ShortMessage'].show_message(value)
+        changeDisplay(@instances['ShortMessage'])
+        sleep(5)
+        changeDisplay(@instances['GtkMetadata'])
+        @buttons.each{|button| button.sensitive = true}
+      elsif modus == "ripping_progress"
+        @instances['RipStatus'].updateProgress('ripping', value)
+      elsif modus == "encoding_progress"
+        @instances['RipStatus'].updateProgress('encoding', value)
+      elsif modus == "log_change"
+        @instances['RipStatus'].logChange(value)
+      elsif modus == "dir_exists"
+        @instances['DirExists'] = DirExists.new(self, @rubyripper, value)
+        changeDisplay(@instances['DirExists'])
+      elsif modus == "finished"
+        showSummary(value)
+        if @settings['eject'] == true
+          @buttontext[2].text =_("Close tray")
+          @buttonicons[2].stock = Gtk::Stock::GOTO_TOP
+        end
+      else
+        puts _("Ehh.. There shouldn't be anything else. WTF?")
+        puts _("Secret modus = %s") % [modus]
+      end
+    end
   end
   
   private
-  
-  # TODO
-  def setInstances
-    @currentInstance = false
-    @instances = {'Preferences' => false, 
-                  'GtkMetadata' => false, 
-                  'ShortMessage' => false,
-                  'RipStatus' => false,
-                  'DirExists' => false,
-                  'MultipleFreedbHits' => false,
-                  'Summary' => false}
-  end
-  
+
   # set the name, icon and size
   def prepareMainWindow
     @gtkWindow = Gtk::Window.new('Rubyripper')
     setIconForWindow()
     @gtkWindow.set_default_size(530, 440) #width, height
+  end
+  
+  # setup the central container
+  def setupMainContainer
+    @mainHbox = Gtk::HBox.new(false,5)
+    createButtonsLeftside()
+    setButtonsLeftsideSignals()
+    @mainHbox.pack_start(@vbuttonbox1,false,false,0)
+    @gtkWindow.add(@mainHbox)
+  end
+  
+  # launch the welcome message and announce the scanning
+  def showWelcomeMessage
+    @shortMessage.welcome()
+    changeDisplay(@shortMessage)
+  end
+  
+  # setup the scanning for the disc and show results
+  def showDisc
+    require 'rubyripper/gtk2/gtkDisc'
+    @disc = GtkDisc.new()
+    @disc.start()
+    if @disc.error.nil?
+      changeDisplay(@disc)
+    else
+      @shortMessage.showError(@disc.error)
+      changeDisplay(@shortMessage)
+    end
+  end
+  
+  # The central function that manages the display on the right side
+  def changeDisplay(object)
+    # reset exit button
+    if @currentInstance == "RipStatus"
+      @buttontext[4].set_text('_' + _("Exit"), true)
+      @buttonicons[4].stock = Gtk::Stock::QUIT
+    end
+
+    @mainHbox.remove(@mainHbox.children[-1]) if @currentInstance
+
+    @currentInstance = object.class.to_s #the name of the instance type
+    @mainHbox.add(object.display)
+
+    # update the Exit button to Abort button
+    if @currentInstance == "RipStatus"
+      @buttontext[4].set_text('_' + _("Abort"), true)
+      @buttonicons[4].stock = Gtk::Stock::CANCEL
+    end
+
+    object.display.show_all()
+  end
+  
+  # TODO
+  def setInstances
+    @currentInstance = false
+    @instances = {'RipStatus' => false,
+                  'DirExists' => false,
+                  'MultipleFreedbHits' => false,
+                  'Summary' => false}
   end
   
   # find the icon
@@ -99,15 +176,6 @@ attr_reader :instances
     end
   end
   
-  # setup the central container
-  def setupMainContainer
-    @mainHbox = Gtk::HBox.new(false,5)
-    createButtonsLeftside()
-    setButtonsLeftsideSignals()
-    @mainHbox.pack_start(@vbuttonbox1,false,false,0)
-    @gtkWindow.add(@mainHbox)
-  end
-
   def createButtonsLeftside
     @vbuttonbox1 = Gtk::VButtonBox.new #child of @mainHbox
     @buttons = [Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new]
@@ -137,11 +205,6 @@ attr_reader :instances
     @buttons[4].signal_connect("clicked") {exitButton()}
   end
   
-  def showWelcomeMessage
-    @shortMessage.welcome()
-    changeDisplay(@shortMessage)
-  end
-    
   # TODO
   def something        
     @settingsClass = Settings.new()
@@ -182,28 +245,7 @@ attr_reader :instances
     Gtk.main_quit
   end
 
-  def changeDisplay(object) #help function to manage the dynamic part of the window, the object is a class with a variable 'display' which contains everything
-    # reset exit button
-    if @currentInstance == "RipStatus"
-      @buttontext[4].set_text('_' + _("Exit"), true)
-      @buttonicons[4].stock = Gtk::Stock::QUIT
-    end
 
-    unless @currentInstance == false
-      @mainHbox.remove(@mainHbox.children[-1])
-    end
-
-    @currentInstance = object.class.to_s #the name of the instance type
-    @mainHbox.add(object.display)
-
-    # update the Exit button to Abort button
-    if @currentInstance == "RipStatus"
-      @buttontext[4].set_text('_' + _("Abort"), true)
-      @buttonicons[4].stock = Gtk::Stock::CANCEL
-    end
-
-    object.display.show_all()
-  end
 
   def showInfo
     @buttons.each{|button| button.sensitive = false}
@@ -369,41 +411,11 @@ attr_reader :instances
     @rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
   end
 
-  def update(modus, value=false)
-    @updateThread.join if @updateThread != nil # one gui update at a time please
-    @updateThread = Thread.new do
-      if modus == "error"
-        @instances['ShortMessage'].show_message(value)
-        changeDisplay(@instances['ShortMessage'])
-        sleep(5)
-        changeDisplay(@instances['GtkMetadata'])
-        @buttons.each{|button| button.sensitive = true}
-      elsif modus == "ripping_progress"
-        @instances['RipStatus'].updateProgress('ripping', value)
-      elsif modus == "encoding_progress"
-        @instances['RipStatus'].updateProgress('encoding', value)
-      elsif modus == "log_change"
-        @instances['RipStatus'].logChange(value)
-      elsif modus == "dir_exists"
-        @instances['DirExists'] = DirExists.new(self, @rubyripper, value)
-        changeDisplay(@instances['DirExists'])
-      elsif modus == "finished"
-        showSummary(value)
-        if @settings['eject'] == true
-          @buttontext[2].text =_("Close tray")
-          @buttonicons[2].stock = Gtk::Stock::GOTO_TOP
-        end
-      else
-        puts _("Ehh.. There shouldn't be anything else. WTF?")
-        puts _("Secret modus = %s") % [modus]
-      end
-    end
-  end
+
 end
 
 if __FILE__ == $0
   Gtk.init
   app = GraphicalUserInterface.new()
   app.start()
-  Gtk.main
 end
