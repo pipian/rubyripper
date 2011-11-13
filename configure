@@ -17,6 +17,10 @@
 
 # TODO fix the config script, to not default to /usr/local/share
 
+puts "The configure script has to be updated for the 0.7.0 release."
+puts "Please use the stable branch if you want to install rubyripper: git checkout stable"
+puts "You can also run rubyripper directly without installing: ./bin/rubyripper_cli"
+raise "CONFIG SCRIPT NOT READY"
 
 if ENV['PWD'] == nil
 	puts "Your current working directory cannot be determined."
