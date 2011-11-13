@@ -58,7 +58,7 @@ attr_reader :instances
     setupMainContainer()
     showWelcomeMessage()
     @gtkWindow.show_all()
-    Thread.new{showDiscFirstTime()}
+    Thread.new{scanDisc()}
     Gtk.main
   end
   
@@ -66,8 +66,8 @@ attr_reader :instances
     @updateThread.join if @updateThread != nil # one gui update at a time please
     @updateThread = Thread.new do
       if modus == "error"
-        @instances['ShortMessage'].show_message(value)
-        changeDisplay(@instances['ShortMessage'])
+        @shortMessage.show_message(value)
+        changeDisplay(@shortMessage)
         sleep(5)
         changeDisplay(@instances['GtkMetadata'])
         @buttons.each{|button| button.sensitive = true}
@@ -116,20 +116,22 @@ attr_reader :instances
     @shortMessage.welcome()
     changeDisplay(@shortMessage)
   end
-  
-  # setup the scanning for the disc and show results
-  def showDiscFirstTime
-    require 'rubyripper/gtk2/gtkDisc'
-    @disc = GtkDisc.new()
-    scanDisc(firsttime = true)
+   
+  def scanDisc
+    @buttons.each{|button| button.sensitive = false}
+    if @disc ; @disc.refresh
+    else
+      require 'rubyripper/gtk2/gtkDisc'
+      @disc = GtkDisc.new()
+      @disc.start()
+    end
+    
+    scanDiscResults()
   end
   
   # TODO cancel tocscan
   # TODO freedb multiple choice
-  def scanDisc(firsttime=false)
-    @buttons.each{|button| button.sensitive = false}
-    firsttime ? @disc.start() : @disc.refresh()
-    
+  def scanDiscResults   
     if @disc.error.nil?
       showAbleToEjectDisc()
       @buttons.each{|button| button.sensitive = true}
@@ -206,7 +208,7 @@ attr_reader :instances
     @gtkWindow.signal_connect("delete_event") {savePreferences(); exit()}
     @buttons[0].signal_connect("activate") {@buttons[0].signal_emit("released")}
     @buttons[0].signal_connect("released") {savePreferences(); showInfo()} # need this hack to keep the gui responsive
-    @buttons[1].signal_connect("clicked") {savePreferences(); scanDrive()}
+    @buttons[1].signal_connect("clicked") {savePreferences(); scanDisc()}
     @buttons[2].signal_connect("clicked") {savePreferences(); handle_tray()}
     @buttons[3].signal_connect("clicked") {savePreferences(); startRip()}
     @buttons[4].signal_connect("clicked") {exitButton()}
