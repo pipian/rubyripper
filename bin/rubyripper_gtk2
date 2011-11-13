@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2011 Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-ICONDIR=[ENV['PWD'], "/usr/local/share/icons/hicolor/128x128/apps"]
-
 # set the directory of the local installation
 $localdir = File.expand_path(File.dirname(File.dirname(__FILE__)))
 
@@ -28,6 +26,8 @@ begin
   require 'rubyripper/base'
   require 'rubyripper/system/dependency'
   require 'rubyripper/errors'
+  require 'rubyripper/preferences/main'
+  require 'rubyripper/gtk2/shortMessage'
 rescue LoadError
   puts 'The rubyripper lib files can\'t be found!'
   puts 'Perhaps you need to add the directory to the RUBYLIB variable?'
@@ -48,30 +48,66 @@ end
 class GraphicalUserInterface
 attr_reader :instances
 
-  def initialize
-    @instances = {'Preferences' => false, 'GtkMetadata' => false, 'ShortMessage' => false, 'RipStatus' => false, 'DirExists' => false, 'MultipleFreedbHits' => false, 'Summary' => false}
-    @currentInstance = false
-    @gtkWindow = Gtk::Window.new('Rubyripper')
-    ICONDIR.each{|dir| if File.exist?(file = File.join(dir, 'rubyripper.png')) ; @gtkWindow.icon = Gdk::Pixbuf.new(file) ; break end }
-    @gtkWindow.set_default_size(530, 440) #width, height
-
-    @hbox1 = Gtk::HBox.new(false,5)
-
-    createButtonbox()
-    createSignals()
-
-    @settingsClass = Settings.new()
-    @settings = @settingsClass.settings
+  def initialize(deps=nil, prefs=nil, short=nil)
+    @deps = deps ? deps : Dependency.instance
+    @prefs = prefs ? prefs : Preferences::Main.instance
+    @shortMessage = short ? short : ShortMessage.new()
+    setInstances()
+  end
+  
+  def start
+    @prefs.load()
+    prepareMainWindow()
+    setupMainContainer()
     showWelcomeMessage()
-
-    @lock = Monitor.new()
-    @updateThread = nil
-    @gtkWindow.show_all() #The user interface is up, now load the library
-    scanDrive()
+    @gtkWindow.show_all()
+    #@deps.verify()
+    # preferences
+    # disc
+  end
+  
+  private
+  
+  def setInstances
+    @currentInstance = false
+    @instances = {'Preferences' => false, 
+                  'GtkMetadata' => false, 
+                  'ShortMessage' => false,
+                  'RipStatus' => false,
+                  'DirExists' => false,
+                  'MultipleFreedbHits' => false,
+                  'Summary' => false}
+  end
+  
+  # set the name, icon and size
+  def prepareMainWindow
+    @gtkWindow = Gtk::Window.new('Rubyripper')
+    setIconForWindow()
+    @gtkWindow.set_default_size(530, 440) #width, height
+  end
+  
+  # find the icon
+  def setIconForWindow
+    iconPaths = [File.expand_path('../..', __FILE__), "/usr/local/share/icons/hicolor/128x128/apps"]
+    iconPaths.each do |path|
+      if File.exist?(file = File.join(path, 'rubyripper.png'))
+        @gtkWindow.icon = Gdk::Pixbuf.new(file)
+        break
+      end
+    end
+  end
+  
+  # setup the central container
+  def setupMainContainer
+    @mainHbox = Gtk::HBox.new(false,5)
+    createButtonsLeftside()
+    setButtonsLeftsideSignals()
+    @mainHbox.pack_start(@vbuttonbox1,false,false,0)
+    @gtkWindow.add(@mainHbox)
   end
 
-  def createButtonbox #left side of the window, above the statusbar
-    @vbuttonbox1 = Gtk::VButtonBox.new #child of @hbox1
+  def createButtonsLeftside
+    @vbuttonbox1 = Gtk::VButtonBox.new #child of @mainHbox
     @buttons = [Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new]
     @buttons[3].sensitive = false #only activate the RipCdNow button when a disc is found
     @buttontext = [Gtk::Label.new('_'+_('Preferences'),true), Gtk::Label.new('_'+_("Scan drive"), true), Gtk::Label.new('_'+_("Open tray"),true), Gtk::Label.new('_'+_("Rip cd now!"),true), Gtk::Label.new('_'+_("Exit"),true)]
@@ -86,21 +122,33 @@ attr_reader :instances
       index += 1
     end
     @buttons.each{|button| @vbuttonbox1.pack_start(button,false,false)}
-    @hbox1.pack_start(@vbuttonbox1,false,false,0) #pack the buttonbox into the mainwindow
-    @gtkWindow.add(@hbox1)
   end
 
-  def createSignals
+  def setButtonsLeftsideSignals
     @gtkWindow.signal_connect("destroy") {savePreferences(); exit()}
     @gtkWindow.signal_connect("delete_event") {savePreferences(); exit()}
     @buttons[0].signal_connect("activate") {@buttons[0].signal_emit("released")}
-    @buttons[0].signal_connect("released") {savePreferences(); show_info()} # need this hack to keep the gui responsive
+    @buttons[0].signal_connect("released") {savePreferences(); showInfo()} # need this hack to keep the gui responsive
     @buttons[1].signal_connect("clicked") {savePreferences(); scanDrive()}
     @buttons[2].signal_connect("clicked") {savePreferences(); handle_tray()}
     @buttons[3].signal_connect("clicked") {savePreferences(); startRip()}
     @buttons[4].signal_connect("clicked") {exitButton()}
   end
-
+  
+  def showWelcomeMessage
+    @shortMessage.welcome()
+    changeDisplay(@shortMessage)
+  end
+    
+  # TODO
+  def something        
+    @settingsClass = Settings.new()
+    @settings = @settingsClass.settings
+    @lock = Monitor.new()
+    @updateThread = nil
+    scanDrive()
+  end
+  
   def exitButton
     if @buttontext[4].text == _("Exit")
       savePreferences(); exit()
@@ -140,11 +188,11 @@ attr_reader :instances
     end
 
     unless @currentInstance == false
-      @hbox1.remove(@hbox1.children[-1])
+      @mainHbox.remove(@mainHbox.children[-1])
     end
 
     @currentInstance = object.class.to_s #the name of the instance type
-    @hbox1.add(object.display)
+    @mainHbox.add(object.display)
 
     # update the Exit button to Abort button
     if @currentInstance == "RipStatus"
@@ -155,12 +203,7 @@ attr_reader :instances
     object.display.show_all()
   end
 
-  def showWelcomeMessage
-    @instances['ShortMessage'] = ShortMessage.new(@settings['cdrom'])
-    changeDisplay(@instances['ShortMessage'])
-  end
-
-  def show_info
+  def showInfo
     @buttons.each{|button| button.sensitive = false}
     Thread.new do
       if @currentInstance != 'Preferences'
@@ -358,6 +401,7 @@ end
 
 if __FILE__ == $0
   Gtk.init
-  GraphicalUserInterface.new()
+  app = GraphicalUserInterface.new()
+  app.start()
   Gtk.main
 end
