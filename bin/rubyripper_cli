@@ -41,6 +41,7 @@ class CommandLineInterface
 
   # start up the interface
   def initialize(arguments=nil, out=nil, prefs=nil, disc=nil, int=nil, tracks=nil)
+    @arguments = arguments
     @out = out ? out : $stdout
     @int = int ? int : CliGetInt.new(@out)
     @cliPrefs = prefs ? prefs : CliPreferences.new(arguments, @out, @int)
@@ -50,6 +51,7 @@ class CommandLineInterface
 
   def start
     prepare()
+    startRip if @arguments.options['defaults']
     loopMainMenu()
   end
 
