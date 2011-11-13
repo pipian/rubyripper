@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # helper class to handle the http traffic
-require 'rubyripper/system/network.rb'
+require 'rubyripper/system/network'
 require 'rubyripper/preferences/main'
 
 # This class tries to implement the freedb HTTP protocol (read-only)

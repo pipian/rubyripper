@@ -45,8 +45,9 @@ class Network
   # fire up a CGI command to the server
   def get(query)
     if @type == 'cgi'
-      responsCode, answer = @connection.get(query)
+      answer = @connection.get(query).body
     end
+
     return answer
   end
   
