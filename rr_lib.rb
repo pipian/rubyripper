@@ -1178,7 +1178,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		if @verbose ; puts "Created query string: #{@query}" end
 
 		begin
-			respons, @answer = @server.get(@query)
+			@answer = @server.get(@query).body
 			requestDisc()
 		rescue
 			puts "Exception thrown: #{$!}"
@@ -1229,7 +1229,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 			CGI.escape("#{@freedbSettings['username']} #{@freedbSettings['hostname']} rubyripper #{$rr_version}") + "&proto=6"
 		if @verbose ; puts "Created fetch string: #{@query}" end
 		
-		response, answer = @server.get(@query)
+		answer = @server.get(@query).body
 		answers = answer.split("\n")
 		answers.each do |line|
 			line.chomp!
