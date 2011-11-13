@@ -25,6 +25,7 @@ require 'rubyripper/metadata/data'
 
 # This class is responsible for getting all metadata of the disc and tracks
 class Freedb
+  attr_reader :status
 
   # setting up all necessary objects
   def initialize(disc, loadFreedbRecord=nil, save=nil, md=nil, parser=nil, getFreedb=nil, prefs=nil, deps=nil)
@@ -69,6 +70,7 @@ class Freedb
 
   def handleLocal
     @parser.parse(@loadFreedbRecord.freedbRecord)
+    @status = 'ok'
   end
 
   def isRemoteFileFound?
@@ -81,6 +83,7 @@ class Freedb
     if @getFreedb.status == 'ok'
       @save.save(@getFreedb.freedbRecord, @getFreedb.category, @disc.freedbDiscid)
       get()
+      @status = 'ok'
     else
       #multiple records
     end

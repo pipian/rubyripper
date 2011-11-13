@@ -70,7 +70,7 @@ attr_reader :metadata
   # helper function to load metadata object
   def setMetadata(metadata=nil)
     require 'rubyripper/metadata/main'
-    @metadata = metadata ? metadata : Metadata::Main.new
+    @metadata = metadata ? metadata : Metadata::Main.new(self)
     @metadata = @metadata.get()
   end
 end
