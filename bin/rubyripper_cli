@@ -19,7 +19,7 @@
 $localdir = File.expand_path('../..', __FILE__)
 
 # Put the local lib directory on top of the ruby default lib search path
-$:.insert(0, File.expand_path('../../lib', File.dirname(__FILE__)))
+$:.insert(0, File.expand_path('../../lib', __FILE__))
 
 # Try to find the rubyripper lib files
 begin
@@ -82,7 +82,7 @@ private
   def prepare
     @out.puts _("Rubyripper version %s") % [$rr_version]
     @out.puts ""
-    @deps.verify()
+    @deps.startupCheck()
     @cliPrefs.read()
     @cliDisc.show()
   end

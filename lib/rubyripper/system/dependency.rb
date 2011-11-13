@@ -27,6 +27,11 @@ class Dependency
     @platform = platform ? platform : RUBY_PLATFORM
     @file = file ? file : File
   end
+  
+  # should be triggered by any user interface
+  def startupCheck
+    checkForcedDeps()
+  end
 
   # verify all dependencies are met
   # * verbose = print extra info to the terminal. Used in configure script.

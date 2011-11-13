@@ -56,6 +56,7 @@ attr_reader :instances
   end
   
   def start
+    @deps.startupCheck()
     @prefs.load()
     prepareMainWindow()
     setupMainContainer()
@@ -68,6 +69,7 @@ attr_reader :instances
   
   private
   
+  # TODO
   def setInstances
     @currentInstance = false
     @instances = {'Preferences' => false, 
