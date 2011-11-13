@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2011 Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -37,37 +37,22 @@ describe Disc do
       disc.scan()
     end
     
-    it "should use Musicbrainz as metadata provider if that is the preference" do
+    it "should trigger the metadata class if a disc is found" do
       cdpar.should_receive(:status).once().and_return 'ok'
-      prefs.should_receive(:metadataProvider).once.and_return 'musicbrainz'
-      metadata.should_receive(:get).once().and_return true
-      metadata.should_receive(:status).once().and_return 'ok'
+      metadata.should_receive(:get).once().and_return 1
       disc.scan(metadata)
-    end
-    
-    it "should use Freedb as metadata provider if that is the preference" do
-      cdpar.should_receive(:status).once().and_return 'ok'
-      prefs.should_receive(:metadataProvider).once().and_return 'freedb'
-      metadata.should_receive(:get).once().and_return true
-      disc.scan(metadata)
-    end
-    
-    it "should fall back to Freedb if Musicbrainz is preferred but fails" do
-      cdpar.should_receive(:status).once().and_return 'ok'
-      prefs.should_receive(:metadataProvider).once.and_return 'musicbrainz'
-      metadata.should_receive(:get).twice().and_return true
-      metadata.should_receive(:status).once().and_return 'noMatches'
-      disc.scan(metadata)
+      disc.metadata.should == 1
     end
     
     it "should not trigger the metadata if no disc is found" do
       cdpar.should_receive(:status).once().and_return false
       metadata.should_not_receive(:get)
       disc.scan(nil)
+      disc.metadata.should == nil
     end
   end
   
-  context "When a toc analyzer is requested for calculating the freedb string" do
+  context "When a toc analyzer is requested for calculating the disc id" do
     it "should first refer to the cd-info scanner if it is installed" do
       deps.should_receive(:installed?).with('cd-info').and_return true
       disc.advancedTocScanner(cdinfo='a', cdcontrol='b').should == 'a'

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2011  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -29,7 +29,6 @@ attr_reader :metadata
     @calcFreedbID = freedb ? freedb : CalcFreedbID.new(self)
     @calcMusicbrainzID = musicbrainz ? musicbrainz : CalcMusicbrainzID.new(self)
     @deps = deps ? deps : Dependency.instance
-    @prefs = prefs ? prefs : Preferences::Main.instance
   end
   
   # scan the disc for a drive
@@ -70,20 +69,9 @@ attr_reader :metadata
 
   # helper function to load metadata object
   def setMetadata(metadata=nil)
-    provider = @prefs.metadataProvider
-    if provider == 'musicbrainz'
-      require 'rubyripper/metadata/musicbrainz'
-      @metadata = metadata ? metadata : MusicBrainz.new(self)
-      @metadata.get()
-    end
-    
-    if provider == 'freedb' || @metadata.status != 'ok'
-      require 'rubyripper/metadata/freedb'
-      @metadata = metadata ? metadata : Freedb.new(self)
-      @metadata.get()
-    elsif provider == 'none'
-      # TODO
-    end
+    require 'rubyripper/metadata/main'
+    @metadata = metadata ? metadata : Metadata::Main.new
+    @metadata = @metadata.get()
   end
 end
 
