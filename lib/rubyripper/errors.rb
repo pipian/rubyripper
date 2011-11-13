@@ -32,7 +32,7 @@ private
   def self.method_missing(name, *args)
     #super() if name == '%'
     if @@list.key?(name)
-      return @@list[name] % args.to_ary
+      return _("Error:") + ' ' + @@list[name] % args.to_ary
     else
       puts "WARNING: #{name} {args} not found in error list"
     end  

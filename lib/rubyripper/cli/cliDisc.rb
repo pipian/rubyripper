@@ -22,7 +22,7 @@ require 'rubyripper/preferences/main'
 
 # Metadata class is responsible for showing and editing the metadata
 class CliDisc
-attr_reader :cd
+attr_reader :cd, :error
 
   # setup the different objects
   def initialize(out=nil, int=nil, bool=nil, string=nil, prefs=nil)
@@ -54,12 +54,6 @@ attr_reader :cd
 private
   def discReady? ; @cd.status == 'ok' ; end
 
-  def showDiscNotReady
-    @out.print "WARNING: "
-    puts Errors.send(@cd.error[0], @cd.error[1])
-    @out.puts ''
-  end
-
   # read the disc contents
   def refreshDisc ; @cd.scan() ; end
 
@@ -74,7 +68,7 @@ private
       @out.puts ""
       @md = @cd.metadata
     else
-      showDiscNotReady()
+      @error = @cd.error
     end
   end
 

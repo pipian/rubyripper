@@ -7,7 +7,7 @@ Feature: Show an interactive main menu after starting
     And I choose "99" in order to close the application
     Then the output should contain:
     """
-    WARNING: There is no audio disc ready in drive /dev/cdrom.
+    Error: There is no audio disc ready in drive /dev/cdrom.
 
     * RUBYRIPPER MAIN MENU *
 

@@ -25,7 +25,6 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 # Try to find the rubyripper lib files
 begin
   require 'rubyripper/base'
-  require 'rubyripper/system/dependency'
   require 'rubyripper/preferences/main'
   require 'rubyripper/gtk2/shortMessage'
 rescue LoadError
@@ -48,15 +47,13 @@ end
 class GraphicalUserInterface
 attr_reader :instances
 
-  def initialize(deps=nil, prefs=nil, short=nil)
-    @deps = deps ? deps : Dependency.instance
+  def initialize(prefs=nil, short=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @shortMessage = short ? short : ShortMessage.new()
     setInstances()
   end
   
   def start
-    @deps.startupCheck()
     @prefs.load()
     prepareMainWindow()
     setupMainContainer()
