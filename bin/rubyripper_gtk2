@@ -50,7 +50,6 @@ attr_reader :instances
   def initialize(prefs=nil, short=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @shortMessage = short ? short : ShortMessage.new()
-    setInstances()
   end
   
   def start
@@ -59,7 +58,7 @@ attr_reader :instances
     setupMainContainer()
     showWelcomeMessage()
     @gtkWindow.show_all()
-    Thread.new{showDisc()}
+    Thread.new{showDiscFirstTime()}
     Gtk.main
   end
   
@@ -119,15 +118,34 @@ attr_reader :instances
   end
   
   # setup the scanning for the disc and show results
-  def showDisc
+  def showDiscFirstTime
     require 'rubyripper/gtk2/gtkDisc'
     @disc = GtkDisc.new()
-    @disc.start()
+    scanDisc(firsttime = true)
+  end
+  
+  # TODO cancel tocscan
+  # TODO freedb multiple choice
+  def scanDisc(firsttime=false)
+    @buttons.each{|button| button.sensitive = false}
+    firsttime ? @disc.start() : @disc.refresh()
+    
     if @disc.error.nil?
+      showAbleToEjectDisc()
+      @buttons.each{|button| button.sensitive = true}
       changeDisplay(@disc)
     else
       @shortMessage.showError(@disc.error)
+      @buttons[0..2].each{|button| button.sensitive = true} ; @buttons[4].sensitive = true
       changeDisplay(@shortMessage)
+    end
+  end
+  
+  # change the icon and text of the button
+  def showAbleToEjectDisc
+    if @buttontext[2].text != _("Open tray")
+      @buttontext[2].set_text('_'+_("Open tray"),true)
+      @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
     end
   end
   
@@ -152,16 +170,7 @@ attr_reader :instances
 
     object.display.show_all()
   end
-  
-  # TODO
-  def setInstances
-    @currentInstance = false
-    @instances = {'RipStatus' => false,
-                  'DirExists' => false,
-                  'MultipleFreedbHits' => false,
-                  'Summary' => false}
-  end
-  
+   
   # find the icon
   def setIconForWindow
     iconPaths = [File.expand_path('../..', __FILE__), "/usr/local/share/icons/hicolor/128x128/apps"]
@@ -173,10 +182,11 @@ attr_reader :instances
     end
   end
   
+  # the leftside menu that is always visible
   def createButtonsLeftside
     @vbuttonbox1 = Gtk::VButtonBox.new #child of @mainHbox
     @buttons = [Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new, Gtk::Button.new]
-    @buttons[3].sensitive = false #only activate the RipCdNow button when a disc is found
+    @buttons.each{|button| button.sensitive = false}
     @buttontext = [Gtk::Label.new('_'+_('Preferences'),true), Gtk::Label.new('_'+_("Scan drive"), true), Gtk::Label.new('_'+_("Open tray"),true), Gtk::Label.new('_'+_("Rip cd now!"),true), Gtk::Label.new('_'+_("Exit"),true)]
     @buttonicons = [Gtk::Image.new(Gtk::Stock::PREFERENCES, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::REFRESH, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::GOTO_BOTTOM, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::CDROM, Gtk::IconSize::LARGE_TOOLBAR), Gtk::Image.new(Gtk::Stock::QUIT, Gtk::IconSize::LARGE_TOOLBAR)]
     @vboxes = [Gtk::VBox.new, Gtk::VBox.new, Gtk::VBox.new,  Gtk::VBox.new, Gtk::VBox.new]
@@ -242,8 +252,6 @@ attr_reader :instances
     Gtk.main_quit
   end
 
-
-
   def showInfo
     @buttons.each{|button| button.sensitive = false}
     Thread.new do
@@ -259,55 +267,6 @@ attr_reader :instances
         @buttons.each{|button| button.sensitive = true}
       else
         scanDrive()
-      end
-    end
-  end
-
-  # give the cdrom drive a few seconds to read the disc
-  def waitForDisc
-    succes = false
-    trial = 1
-
-    while trial < 10
-      @settings['cd'] = QuickScanDisc.new(@settings, self,
-        @settings.key?('cd') ? @settings['cd'].freedbString : '')
-      if @settings['cd'].audiotracks != 0
-        succes = true
-        break
-      else
-        puts "No disc found at trial #{trial}!"
-        sleep(1)
-        trial += 1
-      end
-    end
-    return succes
-  end
-
-  def scanDrive
-    cancelTocScan()
-    @buttons.each{|button| button.sensitive = false}
-    Thread.new do
-      # Analyze audio-cd, don't look at freedb yet.
-      #If the current freedb string is the same don't use yaml for metadata
-      if waitForDisc() # if true, a cd is found
-        if @buttontext[2].text != _("Open tray") # We know there's a cd inside so make sure that eject is shown instead of close tray
-          @buttontext[2].set_text('_'+_("Open tray"),true)
-          @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
-        end
-
-        if @instances['GtkMetadata'] != false
-          @instances['GtkMetadata'].refreshDisc(@settings['cd'])
-        else
-          @instances['GtkMetadata'] = GtkMetadata.new(@settings['cd']) #build the cdinfo for the gui
-        end
-        changeDisplay(@instances['GtkMetadata']) #show this info on the display
-
-        if @settings['freedb'] ; handleFreedb() end
-        @buttons.each{|button| button.sensitive = true}
-      else
-        @instances['ShortMessage'].show_message(@settings['cd'].error)
-        changeDisplay(@instances['ShortMessage'])
-        @buttons[0..2].each{|button| button.sensitive = true} ; @buttons[4].sensitive = true
       end
     end
   end
