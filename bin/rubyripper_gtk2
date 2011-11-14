@@ -119,11 +119,11 @@ attr_reader :instances
    
   def scanDisc
     @buttons.each{|button| button.sensitive = false}
-    if @disc ; @disc.refresh
+    if @gtkDisc ; @gtkDisc.refresh
     else
       require 'rubyripper/gtk2/gtkDisc'
-      @disc = GtkDisc.new()
-      @disc.start()
+      @gtkDisc = GtkDisc.new()
+      @gtkDisc.start()
     end
     
     scanDiscResults()
@@ -132,12 +132,12 @@ attr_reader :instances
   # TODO cancel tocscan
   # TODO freedb multiple choice
   def scanDiscResults   
-    if @disc.error.nil?
+    if @gtkDisc.error.nil?
       showAbleToEjectDisc()
       @buttons.each{|button| button.sensitive = true}
-      changeDisplay(@disc)
+      changeDisplay(@gtkDisc)
     else
-      @shortMessage.showError(@disc.error)
+      @shortMessage.showError(@gtkDisc.error)
       @buttons[0..2].each{|button| button.sensitive = true} ; @buttons[4].sensitive = true
       changeDisplay(@shortMessage)
     end
@@ -207,7 +207,7 @@ attr_reader :instances
     @gtkWindow.signal_connect("destroy") {savePreferences(); exit()}
     @gtkWindow.signal_connect("delete_event") {savePreferences(); exit()}
     @buttons[0].signal_connect("activate") {@buttons[0].signal_emit("released")}
-    @buttons[0].signal_connect("released") {savePreferences(); showInfo()} # need this hack to keep the gui responsive
+    @buttons[0].signal_connect("released") {savePreferences(); showDiscOrPreferences()}
     @buttons[1].signal_connect("clicked") {savePreferences(); scanDisc()}
     @buttons[2].signal_connect("clicked") {savePreferences(); handle_tray()}
     @buttons[3].signal_connect("clicked") {savePreferences(); startRip()}
@@ -242,10 +242,10 @@ attr_reader :instances
   end
 
   def savePreferences
-    if @currentInstance == 'Preferences'
+    if @currentInstance == 'GtkPreferences'
       @buttontext[0].set_text('_'+_('Preferences'),true)
       @buttonicons[0].stock = Gtk::Stock::PREFERENCES
-      @instances['Preferences'].save #save any preferences when closing that window
+      @gtkPrefs.save
     end
   end
 
@@ -253,22 +253,32 @@ attr_reader :instances
     `killall cdparanoia 2>&1`
     Gtk.main_quit
   end
+  
+  def startupPreferences
+    if not @gtkPrefs
+      require 'rubyripper/gtk2/gtkPreferences'
+      @gtkPrefs = GtkPreferences.new()
+      @gtkPrefs.start()
+    end
+    @gtkPrefs.display.page = 0
+    changeDisplay(@gtkPrefs) 
+  end
 
-  def showInfo
+  def showDiscOrPreferences
     @buttons.each{|button| button.sensitive = false}
     Thread.new do
-      if @currentInstance != 'Preferences'
-        @buttontext[0].set_text('_'+_('Disc info'),true)
+      if @currentInstance != 'GtkPreferences'
+        @buttontext[0].set_text('_'+_('Disc info'), true)
         @buttonicons[0].stock = Gtk::Stock::INFO
-        unless @instances['Preferences'] ; @instances['Preferences'] = GtkSettings.new(@settings, @settingsClass) end
-        @instances['Preferences'].display.page = 0
-        changeDisplay(@instances['Preferences'])
-        @buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] ; @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
-      elsif @instances['GtkMetadata']
-        changeDisplay(@instances['GtkMetadata'])
+        startupPreferences()
+        @buttons[0..2].each{|button| button.sensitive = true}
+        @buttons[3].sensitive = true if @gtkDisc && @gtkDisc.error.nil?
+        @buttons[4].sensitive = true
+      elsif @gtkDisc
+        changeDisplay(@gtkDisc)
         @buttons.each{|button| button.sensitive = true}
       else
-        scanDrive()
+        scanDisc()
       end
     end
   end

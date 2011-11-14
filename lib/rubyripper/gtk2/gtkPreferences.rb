@@ -21,8 +21,9 @@
 class GtkPreferences
 attr_reader :display
 
-  def initialize(prefs=nil)
+  def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
+    @deps = deps ? deps : Dependency.instance
   end
   
   def start
@@ -99,45 +100,74 @@ attr_reader :display
   
   def loadNormalizer
     case @prefs.normalizer
-      when 'none' then 0
-      when 'replaygain' then 1
-      else 2
+      when _('none') then 0
+      when _('replaygain') then 1
+      when _('normalize') then 2
     end
   end
 
   def save # Update the settings hash from the preferences window
 #ripping settings
-    @settings['cdrom'] = @cdromEntry.text
-    @settings['offset'] = @cdromOffsetSpin.value.to_i
-    @settings['req_matches_all'] = @allChunksSpin.value.to_i
-    @settings['req_matches_errors'] = @errChunksSpin.value.to_i
-    @settings['max_tries'] = @maxSpin.value.to_i
-    @settings['rippersettings'] = @ripEntry.text
-    @settings['eject'] = @eject.active?
-    @settings['no_log'] = @noLog.active?
+    @prefs.cdrom = @cdromEntry.text
+    @prefs.offset = @cdromOffsetSpin.value.to_i
+    @prefs.reqMatchesAll = @allChunksSpin.value.to_i
+    @prefs.reqMatchesErrors = @errChunksSpin.value.to_i
+    @prefs.maxTries = @maxSpin.value.to_i
+    @prefs.rippersettings = @ripEntry.text
+    @prefs.eject = @eject.active?
+    @prefs.noLog = @noLog.active?
 #toc settings
-    @settings['create_cue'] = @createCue.active?
-    @settings['image'] = @image.active?
-    @settings['ripHiddenAudio'] = @ripHiddenAudio.active?
-    @settings['minLengthHiddenTrack'] = @minLengthHiddenTrackSpin.value.to_i
-    @settings['pregaps'] = @appendPregaps.active? ? 'append' : 'prepend'
-    @settings['preEmphasis'] = @correctPreEmphasis.active? ? 'sox' : 'cue'
+    @prefs.createCue = @createCue.active?
+    @prefs.image = @image.active?
+    @prefs.ripHiddenAudio = @ripHiddenAudio.active?
+    @prefs.minLengthHiddenTrack = @minLengthHiddenTrackSpin.value.to_i
+    @prefs.preGaps = @appendPregaps.active? ? 'append' : 'prepend'
+    @prefs.preEmphasis = @correctPreEmphasis.active? ? 'sox' : 'cue'
 #codec settings
-    @settings['flac'] = @flac.active?
-    @settings['vorbis'] = @vorbis.active?
-    @settings['mp3'] = @mp3.active?
-    @settings['wav'] = @wav.active?
-    @settings['other'] = @other.active?
-    @settings['flacsettings'] = @flacEntry.text
-    @settings['vorbissettings'] = @vorbisEntry.text
-    @settings['mp3settings'] = @mp3Entry.text
-    @settings['othersettings'] = @otherEntry.text
-    @settings['playlist'] = @playlist.active?
-    @settings['noSpaces'] = @noSpaces.active?
-    @settings['noCapitals'] = @noCapitals.active?
-    @settings['maxThreads'] = @maxThreads.value.to_i
+    @prefs.flac = @flac.active?
+    @prefs.vorbis = @vorbis.active?
+    @prefs.mp3 = @mp3.active?
+    @prefs.wav = @wav.active?
+    @prefs.other = @other.active?
+    @prefs.settingsFlac = @flacEntry.text
+    @prefs.settingsVorbis = @vorbisEntry.text
+    @prefs.settingsMp3 = @mp3Entry.text
+    @prefs.settingsOther = @otherEntry.text
+    @prefs.playlist = @playlist.active?
+    @prefs.noSpaces = @noSpaces.active?
+    @prefs.noCapitals = @noCapitals.active?
+    @prefs.maxThreads = @maxThreads.value.to_i
+    preventThreadProblemsOnOlderBindings()
+    @prefs.normalizer = saveNormalizer()
+    @prefs.gain = @modus.active == 0 ? "album" : "track"
+#freedb
+    @prefs.metadataProvider = @enableFreedb.active? ? 'freedb' : 'none' 
+    @prefs.firstHit = @firstHit.active?
+    @prefs.site = @freedbServerEntry.text
+    @prefs.username = @freedbUsernameEntry.text
+    @prefs.hostname = @freedbHostnameEntry.text
+#other
+    @prefs.basedir = @basedirEntry.text
+    @prefs.namingNormal = @namingNormalEntry.text
+    @prefs.namingVarious = @namingVariousEntry.text
+    @prefs.namingImage = @namingImageEntry.text
+    @prefs.verbose = @verbose.active?
+    @prefs.debug = @debug.active?
+    @prefs.editor = @editorEntry.text
+    @prefs.filemanager = @filemanagerEntry.text
+    @prefs.save() #also update the config file
+  end
+  
+  def saveNormalizer
+    case @normalize.active
+      when 0 then 'none'
+      when 1 then 'replaygain'
+      when 2 then 'normalize'
+    end
+  end
 
-    # The gtk2 interface gets crazy on older versions of the bindings and threads
+  # The interface can't handle threads nicely on old versions        
+  def preventThreadProblemsOnOlderBindings
     if Gtk::BINDING_VERSION[0] < 1 && 
         Gtk::BINDING_VERSION[1] < 18 && @prefs.maxThreads > 0
       @prefs.maxThreads = 0
@@ -145,25 +175,6 @@ attr_reader :display
       puts "that are older than 0.18.0. Setting them to zero."
       puts "Please upgrade your bindings if you want threads."
     end
-
-    @settings['normalize'] = if @normalize.active == 0 ; false elsif @normalize.active == 1 ; "replaygain" else "normalize" end
-    @settings['gain'] = if @modus.active ==0 ; "album" else "track" end
-#freedb
-    @settings['freedb'] = @enableFreedb.active?
-    @settings['first_hit'] = @firstHit.active?
-    @settings['site'] = @freedbServerEntry.text
-    @settings['username'] = @freedbUsernameEntry.text
-    @settings['hostname'] = @freedbHostnameEntry.text
-#other
-    @settings['basedir'] = @basedirEntry.text
-    @settings['namingNormal'] = @namingNormalEntry.text
-    @settings['namingVarious'] = @namingVariousEntry.text
-    @settings['namingImage'] = @namingImageEntry.text
-    @settings['verbose'] = @verbose.active?
-    @settings['debug'] = @debug.active?
-    @settings['editor'] = @editorEntry.text
-    @settings['filemanager'] = @filemanagerEntry.text
-    @settingsClass.save(@settings) #also update the config file
   end
 
 #Today is a great day to start counting with 40 :) Actually I worked backwards and needed to make sure I had enough room in the beginning.
@@ -356,7 +367,7 @@ attr_reader :display
 
 	#check if cdrdao is installed
 	def cdrdaoInstalled
-		if installed('cdrdao')
+		if @deps.installed?('cdrdao')
 			@cdrdaoImage.stock = Gtk::Stock::APPLY
 			@frameToc2.each{|child| child.sensitive = true}
 		else
