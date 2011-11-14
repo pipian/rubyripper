@@ -791,7 +791,8 @@ attr_reader :display
 		@settings['maxThreads'] = @maxThreads.value.to_i
 
 		# The gtk2 interface gets crazy on older versions of the bindings and threads
-		if Gtk::BINDING_VERSION[1] < 18 && @settings['maxThreads'] > 0
+    if Gtk::BINDING_VERSION[0] < 1 && 
+      Gtk::BINDING_VERSION[1] < 18 && @settings['maxThreads'] > 0
 			@settings['maxThreads'] = 0
 			puts "WARNING: Threads are not supported on ruby gtk2-bindings"
 			puts "that are older than 0.18.0. Setting them to zero."
