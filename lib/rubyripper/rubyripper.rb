@@ -83,9 +83,21 @@ attr_reader :outputDir, :outputFile, :log
   end
 
   def autofixCommonMistakes
+    freedbHostnameAndUsernameCanNotBeEmpty()
     flacIsNotAllowedToDeleteInputFile() if @prefs.flac
     repairOtherPrefs() if @prefs.other
     rippingErrorSectorsMustAtLeastEqualRippingNormalSectors()
+  end
+  
+  # otherwise the freedb server returns an error
+  def freedbHostnameAndUsernameCanNotBeEmpty  
+    if @prefs.username.strip().empty?
+      @prefs.username = 'anonymous'
+    end
+    
+    if @prefs.hostname.strip().empty?
+      @prefs.hostname = 'my_secret.com'
+    end
   end
 
   # filter out encoding flags that do non-encoding tasks
