@@ -1175,6 +1175,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 		
 		@query = @url.path + "?cmd=cddb+query+" + CGI.escape("#{@disc.freedbString.chomp}") + "&hello=" + 
 			CGI.escape("#{@freedbSettings['username']} #{@freedbSettings['hostname']} rubyripper #{$rr_version}") + "&proto=6"
+    puts "cddb query 1 = #{@query}" if @settings['debug']
 		if @verbose ; puts "Created query string: #{@query}" end
 
 		begin
@@ -1227,6 +1228,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 	def rawResponse #Retrieve all usefull metadata into @rawResponse
 		@query = @url.path + "?cmd=cddb+read+" + CGI.escape("#{@category} #{@discid}") + "&hello=" + 
 			CGI.escape("#{@freedbSettings['username']} #{@freedbSettings['hostname']} rubyripper #{$rr_version}") + "&proto=6"
+    puts "cddb query 2 = #{@query}" if @settings['debug']
 		if @verbose ; puts "Created fetch string: #{@query}" end
 		
 		answer = @server.get(@query).body
