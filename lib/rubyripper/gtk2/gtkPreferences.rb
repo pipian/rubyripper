@@ -28,13 +28,8 @@ attr_reader :display
   
   def start
     @display = Gtk::Notebook.new # Create a notebook (multiple pages)
-    ripobjects_frame1()
-    ripobjects_frame2()
-    ripobjects_frame3()
-    gapObjectsFrame1()
-    gapObjectsFrame2()
-    gapObjectsFrame3()
-    gapObjectsFrame4()
+    buildSecureRippingTab()
+    buildTocAnalysisTab()
     codecobjects_frame1()
     codecobjects_frame2()
     codecobjects_frame3()
@@ -44,6 +39,21 @@ attr_reader :display
     otherobjects_frame3()
     pack_other_frames()
     load()
+  end
+  
+  # build first tab
+  def buildSecureRippingTab
+    buildFrameCdromDevice()
+    buildFrameRippingOptions()
+    buildFrameRippingRelated()
+  end
+  
+  # build second tab
+  def buildTocAnalysisTab
+    buildFrameAudioSectorsBeforeTrackOne()
+    buildFrameAdvancedTocAnalysis()
+    buildFrameHandlingPregapsOtherThanTrackOne()
+    buildFrameHandlingTracksWithPreEmphasis()
   end
 
   def load # load the settings
@@ -177,230 +187,235 @@ attr_reader :display
     end
   end
 
-#Today is a great day to start counting with 40 :) Actually I worked backwards and needed to make sure I had enough room in the beginning.
-	def ripobjects_frame1 # Cdrom device frame
-		@table40 = Gtk::Table.new(3,2,false)
-		@table40.column_spacings = 5
-		@table40.row_spacings = 4
-		@table40.border_width = 7
+  # 1st frame on secure ripping tab
+  def buildFrameCdromDevice
+    @table40 = Gtk::Table.new(3,2,false)
+    @table40.column_spacings = 5
+    @table40.row_spacings = 4
+    @table40.border_width = 7
 #creating objects
-		@cdrom_label = Gtk::Label.new(_("Cdrom device:")) ; @cdrom_label.set_alignment(0.0, 0.5) # Align to the left instead of center
-		@cdrom_offset_label = Gtk::Label.new(_("Cdrom offset:")) ; @cdrom_offset_label.set_alignment(0.0, 0.5)
-		@cdromEntry = Gtk::Entry.new ; @cdromEntry.width_request = 120
-		@cdromOffsetSpin = Gtk::SpinButton.new(-1500.0, 1500.0, 1.0) ; @cdromOffsetSpin.value = 0.0
-		@offset_button = Gtk::LinkButton.new(_('List with offsets')) ; @offset_button.uri = "http://www.accuraterip.com/driveoffsets.htm"
-		@offset_button.tooltip_text = _("A website which lists the offset for most drives.\nYour drivename can be found in each logfile.")
+    @cdrom_label = Gtk::Label.new(_("Cdrom device:"))
+    @cdrom_label.set_alignment(0.0, 0.5) # Align to the left
+    @cdrom_offset_label = Gtk::Label.new(_("Cdrom offset:"))
+    @cdrom_offset_label.set_alignment(0.0, 0.5)
+    @cdromEntry = Gtk::Entry.new ; @cdromEntry.width_request = 120
+    @cdromOffsetSpin = Gtk::SpinButton.new(-1500.0, 1500.0, 1.0)
+    @cdromOffsetSpin.value = 0.0
+    @offset_button = Gtk::LinkButton.new(_('List with offsets'))
+    @offset_button.uri = "http://www.accuraterip.com/driveoffsets.htm"
+    @offset_button.tooltip_text = _("A website which lists the offset for most drives.\nYour drivename can be found in each logfile.")
 #pack objects
-		@table40.attach(@cdrom_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table40.attach(@cdrom_offset_label, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table40.attach(@cdromEntry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-		@table40.attach(@cdromOffsetSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table40.attach(@offset_button, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table40.attach(@cdrom_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table40.attach(@cdrom_offset_label, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table40.attach(@cdromEntry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
+    @table40.attach(@cdromOffsetSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table40.attach(@offset_button, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect signal
-		@offset_button.signal_connect("clicked") {Thread.new{`#{@settings['browser']} #{@offset_button.uri}`}}
+    @offset_button.signal_connect("clicked") {Thread.new{`#{@settings['browser']} #{@offset_button.uri}`}}
 #create frame
-		@frame40 = Gtk::Frame.new(_('Cdrom device'))
-		@frame40.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frame40.border_width = 5
-		@frame40.add(@table40)
-	end
+    @frame40 = Gtk::Frame.new(_('Cdrom device'))
+    @frame40.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frame40.border_width = 5
+    @frame40.add(@table40)
+  end
 
-	def ripobjects_frame2 # Ripping options frame
-		@table50 = Gtk::Table.new(3,3,false)
-		@table50.column_spacings = 5
-		@table50.row_spacings = 4
-		@table50.border_width = 7
+  # 2nd frame on secure ripping tab
+  def buildFrameRippingOptions
+    @table50 = Gtk::Table.new(3,3,false)
+    @table50.column_spacings = 5
+    @table50.row_spacings = 4
+    @table50.border_width = 7
 #create objects
-		@all_chunks = Gtk::Label.new(_("Match all chunks:")) ; @all_chunks.set_alignment(0.0, 0.5)
-		@err_chunks = Gtk::Label.new(_("Match erroneous chunks:")) ; @err_chunks.set_alignment(0.0, 0.5)
-		@max_label = Gtk::Label.new(_("Maximum trials (0 = unlimited):")) ; @max_label.set_alignment(0.0, 0.5)
-		@allChunksSpin = Gtk::SpinButton.new(2.0,  100.0, 1.0)
-		@errChunksSpin = Gtk::SpinButton.new(2.0, 100.0, 1.0)
-		@maxSpin = Gtk::SpinButton.new(0.0, 100.0, 1.0)
-		@time1 = Gtk::Label.new(_("times"))
-		@time2 = Gtk::Label.new(_("times"))
-		@time3 = Gtk::Label.new(_("times"))
+    @all_chunks = Gtk::Label.new(_("Match all chunks:")) ; @all_chunks.set_alignment(0.0, 0.5)
+    @err_chunks = Gtk::Label.new(_("Match erroneous chunks:")) ; @err_chunks.set_alignment(0.0, 0.5)
+    @max_label = Gtk::Label.new(_("Maximum trials (0 = unlimited):")) ; @max_label.set_alignment(0.0, 0.5)
+    @allChunksSpin = Gtk::SpinButton.new(2.0,  100.0, 1.0)
+    @errChunksSpin = Gtk::SpinButton.new(2.0, 100.0, 1.0)
+    @maxSpin = Gtk::SpinButton.new(0.0, 100.0, 1.0)
+    @time1 = Gtk::Label.new(_("times"))
+    @time2 = Gtk::Label.new(_("times"))
+    @time3 = Gtk::Label.new(_("times"))
 #pack objects
-		@table50.attach(@all_chunks, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column
-		@table50.attach(@err_chunks, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table50.attach(@max_label, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table50.attach(@allChunksSpin, 1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column
-		@table50.attach(@errChunksSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table50.attach(@maxSpin, 1, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table50.attach(@time1, 2, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #3rd column
-		@table50.attach(@time2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table50.attach(@time3, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table50.attach(@all_chunks, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column
+    @table50.attach(@err_chunks, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table50.attach(@max_label, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table50.attach(@allChunksSpin, 1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column
+    @table50.attach(@errChunksSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table50.attach(@maxSpin, 1, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table50.attach(@time1, 2, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #3rd column
+    @table50.attach(@time2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table50.attach(@time3, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect a signal to @all_chunks to make sure @err_chunks get always at least the same amount of rips as @all_chunks
-		@allChunksSpin.signal_connect("value_changed") {if @errChunksSpin.value < @allChunksSpin.value ; @errChunksSpin.value = @allChunksSpin.value end ; @errChunksSpin.set_range(@allChunksSpin.value,100.0)} #ensure all_chunks cannot be smaller that err_chunks.
+    @allChunksSpin.signal_connect("value_changed") {if @errChunksSpin.value < @allChunksSpin.value ; @errChunksSpin.value = @allChunksSpin.value end ; @errChunksSpin.set_range(@allChunksSpin.value,100.0)} #ensure all_chunks cannot be smaller that err_chunks.
 #create frame
-		@frame50= Gtk::Frame.new(_('Ripping options'))
-		@frame50.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frame50.border_width = 5
-		@frame50.add(@table50)
-	end
+    @frame50= Gtk::Frame.new(_('Ripping options'))
+    @frame50.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frame50.border_width = 5
+    @frame50.add(@table50)
+  end
 
-	def ripobjects_frame3 #Ripping related frame
-		@table60 = Gtk::Table.new(2,3,false)
-		@table60.column_spacings = 5
-		@table60.row_spacings = 4
-		@table60.border_width = 7
+  def buildFrameRippingRelated
+    @table60 = Gtk::Table.new(2,3,false)
+    @table60.column_spacings = 5
+    @table60.row_spacings = 4
+    @table60.border_width = 7
 #create objects
-		@rip_label = Gtk::Label.new(_("Pass cdparanoia options:")) ; @rip_label.set_alignment(0.0, 0.5)
-		@eject= Gtk::CheckButton.new(_('Eject cd when finished'))
-		@noLog = Gtk::CheckButton.new(_('Only keep logfile if correction is needed'))
-		@ripEntry= Gtk::Entry.new ; @ripEntry.width_request = 120
+    @rip_label = Gtk::Label.new(_("Pass cdparanoia options:")) ; @rip_label.set_alignment(0.0, 0.5)
+    @eject= Gtk::CheckButton.new(_('Eject cd when finished'))
+    @noLog = Gtk::CheckButton.new(_('Only keep logfile if correction is needed'))
+    @ripEntry= Gtk::Entry.new ; @ripEntry.width_request = 120
 #pack objects
-		@table60.attach(@rip_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table60.attach(@ripEntry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-		@table60.attach(@eject, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@table60.attach(@noLog, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
+    @table60.attach(@rip_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table60.attach(@ripEntry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
+    @table60.attach(@eject, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table60.attach(@noLog, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
 #create frame
-		@frame60 = Gtk::Frame.new(_('Ripping related'))
-		@frame60.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frame60.border_width = 5
-		@frame60.add(@table60)
+    @frame60 = Gtk::Frame.new(_('Ripping related'))
+    @frame60.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frame60.border_width = 5
+    @frame60.add(@table60)
 #pack all frames into a single page
-		@page1 = Gtk::VBox.new #One VBox to rule them all
-		[@frame40, @frame50, @frame60].each{|frame| @page1.pack_start(frame,false,false)}
-		@page1_label = Gtk::Label.new(_("Secure Ripping"))
-		@display.append_page(@page1, @page1_label)
-	end
+    @page1 = Gtk::VBox.new #One VBox to rule them all
+    [@frame40, @frame50, @frame60].each{|frame| @page1.pack_start(frame,false,false)}
+    @page1_label = Gtk::Label.new(_("Secure Ripping"))
+    @display.append_page(@page1, @page1_label)
+  end
 
-	def gapObjectsFrame1
-		@tableToc1 = Gtk::Table.new(3,3,false)
-		@tableToc1.column_spacings = 5
-		@tableToc1.row_spacings = 4
-		@tableToc1.border_width = 7
+  def buildFrameAudioSectorsBeforeTrackOne
+    @tableToc1 = Gtk::Table.new(3,3,false)
+    @tableToc1.column_spacings = 5
+    @tableToc1.row_spacings = 4
+    @tableToc1.border_width = 7
 #create objects
-		@ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors'))
-		@markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when bigger than'))
-		@markHiddenTrackLabel2 = Gtk::Label.new(_('seconds'))
-		@minLengthHiddenTrackSpin = Gtk::SpinButton.new(0, 30, 1)
-		@minLengthHiddenTrackSpin.value = 2.0
-		@ripHiddenAudio.tooltip_text = _("Uncheck this if cdparanoia crashes with your ripping drive.")
-		text = _("A hidden track will rip to a seperate file if used in track modus.\nIf it's smaller the sectors will be prepended to the first track.")
-		@minLengthHiddenTrackSpin.tooltip_text = text
-		@markHiddenTrackLabel1.tooltip_text = text
-		@markHiddenTrackLabel2.tooltip_text = text
+    @ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors'))
+    @markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when bigger than'))
+    @markHiddenTrackLabel2 = Gtk::Label.new(_('seconds'))
+    @minLengthHiddenTrackSpin = Gtk::SpinButton.new(0, 30, 1)
+    @minLengthHiddenTrackSpin.value = 2.0
+    @ripHiddenAudio.tooltip_text = _("Uncheck this if cdparanoia crashes with your ripping drive.")
+    text = _("A hidden track will rip to a seperate file if used in track modus.\nIf it's smaller the sectors will be prepended to the first track.")
+    @minLengthHiddenTrackSpin.tooltip_text = text
+    @markHiddenTrackLabel1.tooltip_text = text
+    @markHiddenTrackLabel2.tooltip_text = text
 #pack objects
-		@tableToc1.attach(@ripHiddenAudio, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc1.attach(@markHiddenTrackLabel1, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc1.attach(@minLengthHiddenTrackSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc1.attach(@markHiddenTrackLabel2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc1.attach(@ripHiddenAudio, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc1.attach(@markHiddenTrackLabel1, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc1.attach(@minLengthHiddenTrackSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc1.attach(@markHiddenTrackLabel2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #create frame
-		@ripHiddenAudio.signal_connect("clicked"){@minLengthHiddenTrackSpin.sensitive = @ripHiddenAudio.active?}
-		@frameToc1 = Gtk::Frame.new(_('Audio sectors before track 1'))
-		@frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frameToc1.border_width = 5
-		@frameToc1.add(@tableToc1)
-	end
+    @ripHiddenAudio.signal_connect("clicked"){@minLengthHiddenTrackSpin.sensitive = @ripHiddenAudio.active?}
+    @frameToc1 = Gtk::Frame.new(_('Audio sectors before track 1'))
+    @frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frameToc1.border_width = 5
+    @frameToc1.add(@tableToc1)
+  end
 
-	def gapObjectsFrame2
-		@tableToc2 = Gtk::Table.new(3,2,false)
-		@tableToc2.column_spacings = 5
-		@tableToc2.row_spacings = 4
-		@tableToc2.border_width = 7
-		#create objects
-		@createCue = Gtk::CheckButton.new(_('Create cuesheet'))
-		@image = Gtk::CheckButton.new(_('Rip CD to single file'))
+  def buildFrameAdvancedTocAnalysis
+    @tableToc2 = Gtk::Table.new(3,2,false)
+    @tableToc2.column_spacings = 5
+    @tableToc2.row_spacings = 4
+    @tableToc2.border_width = 7
+    #create objects
+    @createCue = Gtk::CheckButton.new(_('Create cuesheet'))
+    @image = Gtk::CheckButton.new(_('Rip CD to single file'))
 #pack objects
-		@tableToc2.attach(@createCue, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc2.attach(@image, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
+    @tableToc2.attach(@createCue, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc2.attach(@image, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
 #create frame
-		@frameToc2 = Gtk::Frame.new(_('Advanced Toc analysis'))
-		@frameToc2.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frameToc2.border_width = 5
-		@vboxToc = Gtk::VBox.new()
-		@vboxToc.pack_start(@tableToc2,false,false)
-		@frameToc2.add(@vboxToc)
+    @frameToc2 = Gtk::Frame.new(_('Advanced Toc analysis'))
+    @frameToc2.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frameToc2.border_width = 5
+    @vboxToc = Gtk::VBox.new()
+    @vboxToc.pack_start(@tableToc2,false,false)
+    @frameToc2.add(@vboxToc)
 # build hbox for cdrdao
-		@cdrdaoHbox = Gtk::HBox.new(false, 5)
-		@cdrdao = Gtk::Label.new(_('Cdrdao installed?'))
-		@cdrdaoImage = Gtk::Image.new(Gtk::Stock::CANCEL, Gtk::IconSize::BUTTON)
-		@cdrdaoHbox.pack_start(@cdrdao, false, false, 5)
-		@cdrdaoHbox.pack_start(@cdrdaoImage, false, false)
-	end
+    @cdrdaoHbox = Gtk::HBox.new(false, 5)
+    @cdrdao = Gtk::Label.new(_('Cdrdao installed?'))
+    @cdrdaoImage = Gtk::Image.new(Gtk::Stock::CANCEL, Gtk::IconSize::BUTTON)
+    @cdrdaoHbox.pack_start(@cdrdao, false, false, 5)
+    @cdrdaoHbox.pack_start(@cdrdaoImage, false, false)
+  end
 
-	def gapObjectsFrame3
-		@tableToc3 = Gtk::Table.new(3,3,false)
-		@tableToc3.column_spacings = 5
-		@tableToc3.row_spacings = 4
-		@tableToc3.border_width = 7
+  def buildFrameHandlingPregapsOtherThanTrackOne
+    @tableToc3 = Gtk::Table.new(3,3,false)
+    @tableToc3.column_spacings = 5
+    @tableToc3.row_spacings = 4
+    @tableToc3.border_width = 7
 #create objects
-		@appendPregaps = Gtk::RadioButton.new(_('Append pregap to the previous track'))
-		@prependPregaps = Gtk::RadioButton.new(@appendPregaps, _('Prepend pregaps to the track'))
+    @appendPregaps = Gtk::RadioButton.new(_('Append pregap to the previous track'))
+    @prependPregaps = Gtk::RadioButton.new(@appendPregaps, _('Prepend pregaps to the track'))
 #pack objects
-		@tableToc3.attach(@appendPregaps, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc3.attach(@prependPregaps, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc3.attach(@appendPregaps, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc3.attach(@prependPregaps, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #create frame
-		@frameToc3 = Gtk::Frame.new(_('Handling pregaps other than track 1'))
-		@frameToc3.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frameToc3.border_width = 5
-		@frameToc3.add(@tableToc3)
-		@vboxToc.pack_start(@frameToc3,false,false)
-	end
+    @frameToc3 = Gtk::Frame.new(_('Handling pregaps other than track 1'))
+    @frameToc3.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frameToc3.border_width = 5
+    @frameToc3.add(@tableToc3)
+    @vboxToc.pack_start(@frameToc3,false,false)
+  end
 
-	def gapObjectsFrame4
-		@tableToc4 = Gtk::Table.new(3,3,false)
-		@tableToc4.column_spacings = 5
-		@tableToc4.row_spacings = 4
-		@tableToc4.border_width = 7
+  def buildFrameHandlingTracksWithPreEmphasis
+    @tableToc4 = Gtk::Table.new(3,3,false)
+    @tableToc4.column_spacings = 5
+    @tableToc4.row_spacings = 4
+    @tableToc4.border_width = 7
 #create objects
-		@correctPreEmphasis = Gtk::RadioButton.new(_('Correct pre-emphasis tracks with sox'))
-		@doNotCorrectPreEmphasis = Gtk::RadioButton.new(@correctPreEmphasis, _("Save the pre-emphasis tag in the cuesheet."))
+    @correctPreEmphasis = Gtk::RadioButton.new(_('Correct pre-emphasis tracks with sox'))
+    @doNotCorrectPreEmphasis = Gtk::RadioButton.new(@correctPreEmphasis, _("Save the pre-emphasis tag in the cuesheet."))
 #pack objects
-		@tableToc4.attach(@correctPreEmphasis, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
-		@tableToc4.attach(@doNotCorrectPreEmphasis, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc4.attach(@correctPreEmphasis, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @tableToc4.attach(@doNotCorrectPreEmphasis, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #create frame
-		@frameToc4 = Gtk::Frame.new(_('Handling tracks with pre-emphasis'))
-		@frameToc4.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-		@frameToc4.border_width = 5
-		@frameToc4.add(@tableToc4)
-		@vboxToc.pack_start(@frameToc4,false,false)
+    @frameToc4 = Gtk::Frame.new(_('Handling tracks with pre-emphasis'))
+    @frameToc4.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    @frameToc4.border_width = 5
+    @frameToc4.add(@tableToc4)
+    @vboxToc.pack_start(@frameToc4,false,false)
 #pack all frames into a single page
-		setSignalsToc()
-		@pageToc = Gtk::VBox.new #One VBox to rule them all
-		[@frameToc1, @cdrdaoHbox, @frameToc2].each{|frame| @pageToc.pack_start(frame,false,false)}
-		@pageTocLabel = Gtk::Label.new(_("TOC analysis"))
-		@display.append_page(@pageToc, @pageTocLabel)
-	end
+    setSignalsToc()
+    @pageToc = Gtk::VBox.new #One VBox to rule them all
+    [@frameToc1, @cdrdaoHbox, @frameToc2].each{|frame| @pageToc.pack_start(frame,false,false)}
+    @pageTocLabel = Gtk::Label.new(_("TOC analysis"))
+    @display.append_page(@pageToc, @pageTocLabel)
+  end
 
-	#check if cdrdao is installed
-	def cdrdaoInstalled
-		if @deps.installed?('cdrdao')
-			@cdrdaoImage.stock = Gtk::Stock::APPLY
-			@frameToc2.each{|child| child.sensitive = true}
-		else
-			@cdrdaoImage.stock = Gtk::Stock::CANCEL
-			@createCue.active = false
-			@frameToc2.each{|child| child.sensitive = false}
-		end
-	end
+  #check if cdrdao is installed
+  def cdrdaoInstalled
+    if @deps.installed?('cdrdao')
+      @cdrdaoImage.stock = Gtk::Stock::APPLY
+      @frameToc2.each{|child| child.sensitive = true}
+    else
+      @cdrdaoImage.stock = Gtk::Stock::CANCEL
+      @createCue.active = false
+      @frameToc2.each{|child| child.sensitive = false}
+    end
+  end
 
-	# signal for createCue
-	def createCue
-		@image.sensitive = @createCue.active?
-		@image.active = false if !@createCue.active?
-		@tableToc3.each{|child| child.sensitive = @createCue.active?}
-		@tableToc4.each{|child| child.sensitive = @createCue.active?}
-	end
+  # signal for createCue
+  def createCue
+    @image.sensitive = @createCue.active?
+    @image.active = false if !@createCue.active?
+    @tableToc3.each{|child| child.sensitive = @createCue.active?}
+    @tableToc4.each{|child| child.sensitive = @createCue.active?}
+  end
 
-	# signal for create single file
-	def createSingle
-		@tableToc3.each{|child| child.sensitive = !@image.active?}
-		@correctPreEmphasis.active = true
-		@doNotCorrectPreEmphasis.sensitive = !@image.active?
-	end
+  # signal for create single file
+  def createSingle
+    @tableToc3.each{|child| child.sensitive = !@image.active?}
+    @correctPreEmphasis.active = true
+    @doNotCorrectPreEmphasis.sensitive = !@image.active?
+  end
 
-	#set signals for the toc
-	def setSignalsToc
-		cdrdaoInstalled()
-		createSingle()
-		createCue()
-		@createCue.signal_connect("clicked"){createCue()}
-		@createCue.signal_connect("clicked"){`killall cdrdao 2>1` if !@createCue.active?}
-		@image.signal_connect("clicked"){createSingle()}
-	end
+  #set signals for the toc
+  def setSignalsToc
+    cdrdaoInstalled()
+    createSingle()
+    createCue()
+    @createCue.signal_connect("clicked"){createCue()}
+    @createCue.signal_connect("clicked"){`killall cdrdao 2>1` if !@createCue.active?}
+    @image.signal_connect("clicked"){createSingle()}
+  end
 
 	def codecobjects_frame1 # Select audio codecs frame
 		@table70 = Gtk::Table.new(6,2,false)
