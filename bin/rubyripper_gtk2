@@ -254,6 +254,7 @@ attr_reader :instances
     Gtk.main_quit
   end
   
+  # make sure the gtk preferences is loaded
   def startupPreferences
     if not @gtkPrefs
       require 'rubyripper/gtk2/gtkPreferences'
@@ -264,6 +265,8 @@ attr_reader :instances
     changeDisplay(@gtkPrefs) 
   end
 
+  # Switch context between disc info and preferences
+  # The button should change to the opposite value
   def showDiscOrPreferences
     @buttons.each{|button| button.sensitive = false}
     Thread.new do
@@ -274,7 +277,7 @@ attr_reader :instances
         @buttons[0..2].each{|button| button.sensitive = true}
         @buttons[3].sensitive = true if @gtkDisc && @gtkDisc.error.nil?
         @buttons[4].sensitive = true
-      elsif @gtkDisc
+      elsif @gtkDisc && @gtkDisc.error.nil?
         changeDisplay(@gtkDisc)
         @buttons.each{|button| button.sensitive = true}
       else

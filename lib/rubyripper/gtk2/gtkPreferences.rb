@@ -560,16 +560,16 @@ attr_reader :display
 		@namingNormalEntry = Gtk::Entry.new
 		@namingVariousEntry = Gtk::Entry.new
 		@namingImageEntry = Gtk::Entry.new
-		@basedirEntry.signal_connect("key_release_event"){@example_label.text = getExampleFilenameNormal(@basedirEntry.text, @namingNormalEntry.text) ; false}
-		@basedirEntry.signal_connect("button_release_event"){@example_label.text = getExampleFilenameNormal(@basedirEntry.text, @namingNormalEntry.text) ; false}
-		@namingNormalEntry.signal_connect("key_release_event"){@example_label.text = getExampleFilenameNormal(@basedirEntry.text, @namingNormalEntry.text) ; false}
-		@namingNormalEntry.signal_connect("button_release_event"){@example_label.text = getExampleFilenameNormal(@basedirEntry.text, @namingNormalEntry.text) ; false}
+		@basedirEntry.signal_connect("key_release_event"){showFileNormal() ; false}
+		@basedirEntry.signal_connect("button_release_event"){showFileNormal() ; false}
+		@namingNormalEntry.signal_connect("key_release_event"){showFileNormal() ; false}
+		@namingNormalEntry.signal_connect("button_release_event"){showFileNormal() ; false}
 		@namingNormalEntry.signal_connect("focus-out-event"){if not File.dirname(@namingNormalEntry.text) =~ /%a|%b/ ; @namingNormalEntry.text = "%a (%y) %b/" + @namingNormalEntry.text; preventStupidness() end; false}
-		@namingVariousEntry.signal_connect("key_release_event"){@example_label.text = getExampleFilenameVarious(@basedirEntry.text, @namingVariousEntry.text) ; false}
-		@namingVariousEntry.signal_connect("button_release_event"){@example_label.text = getExampleFilenameVarious(@basedirEntry.text, @namingVariousEntry.text) ; false}
+		@namingVariousEntry.signal_connect("key_release_event"){showFileVarious() ; false}
+		@namingVariousEntry.signal_connect("button_release_event"){showFileVarious() ; false}
 		@namingVariousEntry.signal_connect("focus-out-event"){if not File.dirname(@namingVariousEntry.text) =~ /%a|%b/ ; @namingVariousEntry.text = "%a (%y) %b/" + @namingVariousEntry.text; preventStupidness() end; false}
-		@namingImageEntry.signal_connect("key_release_event"){@example_label.text = getExampleFilenameVarious(@basedirEntry.text, @namingImageEntry.text) ; false}
-		@namingImageEntry.signal_connect("button_release_event"){@example_label.text = getExampleFilenameVarious(@basedirEntry.text, @namingImageEntry.text) ; false}
+		@namingImageEntry.signal_connect("key_release_event"){showFileImage() ; false}
+		@namingImageEntry.signal_connect("button_release_event"){showFileImage() ; false}
 		@namingImageEntry.signal_connect("focus-out-event"){if not File.dirname(@namingImageEntry.text) =~ /%a|%b/ ; @namingImageEntry.text = "%a (%y) %b/" + @namingImageEntry.text; preventStupidness() end; false}
 #packing 2nd column
 		@table100.attach(@basedirEntry, 1, 2, 0, 1, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
@@ -582,6 +582,20 @@ attr_reader :display
 		@frame100.border_width = 5
 		@frame100.add(@table100)
 	end
+  
+  def showFileNormal
+    @example_label.text = Preferences.showFilenameNormal( @basedirEntry.text, @namingNormalEntry.text)
+  end
+  
+  def showFileVarious
+    @example_label.text = Preferences.showFilenameVarious(
+    @basedirEntry.text, @namingVariousEntry.text)
+  end
+  
+  def showFileImage
+    @example_label.text = Preferences.showFilenameVarious(
+    @basedirEntry.text, @namingImageEntry.text)
+  end
 
 	# Would you believe this actually prevents bug reports?
 	def preventStupidness()
@@ -642,7 +656,7 @@ attr_reader :display
 			if page == 1
 				cdrdaoInstalled()
 			elsif page == 4
-				@example_label.text = getExampleFilenameNormal(@basedirEntry.text, @namingNormalEntry.text)
+				showFileNormal()
 			end
 		end
 		@display.append_page(@page4, @page4_label)
