@@ -26,6 +26,9 @@ module Preferences
     # The offset for the drive
     attr_accessor :offset
 
+    # If true, pad missing samples (due to the offset) with zeroes.
+    attr_accessor :padMissingSamples
+
     # Extra parameters passed to cdparanoia
     attr_accessor :rippersettings
 
