@@ -48,6 +48,8 @@ private
   def readPreferences()
     @prefs.load(@options['file'].to_s)
     @prefs.testdisc = @options['testdisc']
+    # Force CD-ROM device when given a --testdisc (for Cucumber tests)
+    @prefs.cdrom = '/dev/cdrom' if @prefs.testdisc
 
     if theFileFromUserDoesNotExist()
       @out.puts "WARNING: the provided configfile is not found."
