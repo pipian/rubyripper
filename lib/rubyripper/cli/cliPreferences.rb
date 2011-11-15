@@ -135,13 +135,14 @@ private
     @out.puts ' 2) ' + _("Drive offset") + ": %s" % [@prefs.offset]
     @out.puts _("    **Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
     @out.puts _("    **Your drive model is shown in the logfile.")
-    @out.puts ' 3) ' + _("Passing extra cdparanoia parameters") + ": %s" % [@prefs.rippersettings]
-    @out.puts ' 4) ' + _("Match all chunks") + ": %s" % [@prefs.reqMatchesAll]
-    @out.puts ' 5) ' + _("Match erroneous chunks") + ": %s" % [@prefs.reqMatchesErrors]
-    @out.puts ' 6) ' + _("Maximum trials") + ": %s" % [@prefs.maxTries == 0 ? "no\
+    @out.puts ' 3) ' + _("Pad missing lead-in/lead-out samples with zeroes %s") % [showBool(@prefs.padMissingSamples)]
+    @out.puts ' 4) ' + _("Passing extra cdparanoia parameters") + ": %s" % [@prefs.rippersettings]
+    @out.puts ' 5) ' + _("Match all chunks") + ": %s" % [@prefs.reqMatchesAll]
+    @out.puts ' 6) ' + _("Match erroneous chunks") + ": %s" % [@prefs.reqMatchesErrors]
+    @out.puts ' 7) ' + _("Maximum trials") + ": %s" % [@prefs.maxTries == 0 ? "no\
  maximum" : @prefs.maxTries]
-    @out.puts ' 7) ' + _("Eject disc after ripping %s") % [showBool(@prefs.eject)]
-    @out.puts ' 8) ' + _("Only keep log when errors %s") % [showBool(@prefs.noLog)]
+    @out.puts ' 8) ' + _("Eject disc after ripping %s") % [showBool(@prefs.eject)]
+    @out.puts ' 9) ' + _("Only keep log when errors %s") % [showBool(@prefs.noLog)]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -154,13 +155,14 @@ private
       when 1 then @prefs.cdrom = @string.get(_("Ripping drive"),
         @prefs.cdrom)
       when 2 then @prefs.offset = @int.get(_("Drive offset"), 0)
-      when 3 then @prefs.rippersettings = \
+      when 3 then switchBool('padMissingSamples')
+      when 4 then @prefs.rippersettings = \
         @string.get(_("Passing extra cdparanoia parameters"), "")
-      when 4 then @prefs.reqMatchesAll = @int.get(_("Match all chunks"), 2)
-      when 5 then @prefs.reqMatchesErrors = @int.get(_("Match erronous chunks"), 3)
-      when 6 then @prefs.maxTries = @int.get(_("Maximum trials"), 5)
-      when 7 then switchBool('eject')
-      when 8 then switchBool('noLog')
+      when 5 then @prefs.reqMatchesAll = @int.get(_("Match all chunks"), 2)
+      when 6 then @prefs.reqMatchesErrors = @int.get(_("Match erronous chunks"), 3)
+      when 7 then @prefs.maxTries = @int.get(_("Maximum trials"), 5)
+      when 8 then switchBool('eject')
+      when 9 then switchBool('noLog')
     else noValidChoiceMessage(choice)
     end
     loopSubMenuRipping() unless choice == 99

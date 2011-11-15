@@ -19,6 +19,7 @@ require 'rubyripper/disc/scanDiscCdparanoia'
 require 'rubyripper/disc/calcFreedbID'
 require 'rubyripper/disc/calcMusicbrainzID'
 require 'rubyripper/system/dependency'
+require 'rubyripper/preferences/main'
 
 # A helper class to hide lower level details
 class Disc
@@ -29,6 +30,7 @@ attr_reader :metadata
     @calcFreedbID = freedb ? freedb : CalcFreedbID.new(self)
     @calcMusicbrainzID = musicbrainz ? musicbrainz : CalcMusicbrainzID.new(self)
     @deps = deps ? deps : Dependency.instance
+    @prefs = prefs ? prefs : Preferences::Main.instance
   end
   
   # scan the disc for a drive
@@ -59,6 +61,25 @@ attr_reader :metadata
   # helper functions for @musicbrainz
   def musicbrainzLookupPath ; @calcMusicbrainzID.musicbrainzLookupPath ; end
   def musicbrainzDiscid ; @calcMusicbrainzID.discid ; end
+
+  def getLengthSector(track)
+    scanner = advancedTocScanner
+    if scanner != @cdparanoia
+      # TODO: This can be called multiple times.  Can we cache the
+      #       scan results?
+      scanner.scan
+      if @prefs.image and scanner.dataTracks.include?(scanner.audiotracks + 1)
+        return getStartSector(scanner.audiotracks) + scanner.getLengthSector(scanner.audiotracks) - 11400 - getStartSector(track)
+      elsif !@prefs.image and scanner.dataTracks.include?(track + 1)
+        return scanner.getLengthSector(track) - 11400
+      end
+    end
+    @cdparanoia.getLengthSector(track)
+  end
+
+  def getFileSize(track)
+    44 + getLengthSector(track) * 2352
+  end
 
   private
   

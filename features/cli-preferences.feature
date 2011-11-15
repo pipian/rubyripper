@@ -34,12 +34,13 @@ Feature: Manage rubyripper preferences
      2) Drive offset: 0
         **Find your offset at http://www.accuraterip.com/driveoffsets.htm.
         **Your drive model is shown in the logfile.
-     3) Passing extra cdparanoia parameters: -Z
-     4) Match all chunks: 2
-     5) Match erroneous chunks: 3
-     6) Maximum trials: 7
-     7) Eject disc after ripping [*]
-     8) Only keep log when errors [ ]
+     3) Pad missing lead-in/lead-out samples with zeroes [*]
+     4) Passing extra cdparanoia parameters: -Z
+     5) Match all chunks: 2
+     6) Match erroneous chunks: 3
+     7) Maximum trials: 7
+     8) Eject disc after ripping [*]
+     9) Only keep log when errors [ ]
     99) Back to settings main menu
 
     Please type the number of the setting you wish to change [99] : 
@@ -51,12 +52,13 @@ Feature: Manage rubyripper preferences
       And I change each preferences item in the menu
         | 1 | /dev/dvdrom |
         | 2 | 100         |
-        | 3 | -Z -Y       |
-        | 4 | 3           |
-        | 5 | 4           |
-        | 6 | 8           |
-        | 7 |             |
+        | 3 |             |
+        | 4 | -Z -Y       |
+        | 5 | 3           |
+        | 6 | 4           |
+        | 7 | 8           |
         | 8 |             |
+        | 9 |             |
       And I press ENTER "3" times to close the application
       Then the output should contain:
       """
@@ -66,12 +68,13 @@ Feature: Manage rubyripper preferences
        2) Drive offset: 100
           **Find your offset at http://www.accuraterip.com/driveoffsets.htm.
           **Your drive model is shown in the logfile.
-       3) Passing extra cdparanoia parameters: -Z -Y
-       4) Match all chunks: 3
-       5) Match erroneous chunks: 4
-       6) Maximum trials: 8
-       7) Eject disc after ripping [ ]
-       8) Only keep log when errors [*]
+       3) Pad missing lead-in/lead-out samples with zeroes [ ]
+       4) Passing extra cdparanoia parameters: -Z -Y
+       5) Match all chunks: 3
+       6) Match erroneous chunks: 4
+       7) Maximum trials: 8
+       8) Eject disc after ripping [ ]
+       9) Only keep log when errors [*]
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
