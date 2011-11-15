@@ -63,8 +63,10 @@ attr_reader :metadata
   def musicbrainzDiscid ; @calcMusicbrainzID.discid ; end
 
   def getLengthSector(track)
-    scanner = tocScannerForFreedbString
+    scanner = advancedTocScanner
     if scanner != @cdparanoia
+      # TODO: This can be called multiple times.  Can we cache the
+      #       scan results?
       scanner.scan
       if @prefs.image and scanner.dataTracks.include?(scanner.audiotracks + 1)
         return getStartSector(scanner.audiotracks) + scanner.getLengthSector(scanner.audiotracks) - 11400 - getStartSector(track)
