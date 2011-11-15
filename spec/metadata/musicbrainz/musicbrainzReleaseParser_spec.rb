@@ -18,10 +18,15 @@
 require 'rubyripper/metadata/musicbrainz/musicbrainzReleaseParser'
 require 'rexml/document'
 
+RELEASE_CACHE = {}
+
 describe MusicBrainzReleaseParser do
 
   def readRelease(doc)
-    return REXML::XPath::first(REXML::Document.new(File.read(doc)), '//metadata/release', {''=>'http://musicbrainz.org/ns/mmd-2.0#'})
+    if !RELEASE_CACHE.has_key?(doc)
+      RELEASE_CACHE[doc] = REXML::XPath::first(REXML::Document.new(File.read(doc)), '//metadata/release', {''=>'http://musicbrainz.org/ns/mmd-2.0#'})
+    end
+    RELEASE_CACHE[doc]
   end
 
   let(:prefs) {double('Preferences').as_null_object}
