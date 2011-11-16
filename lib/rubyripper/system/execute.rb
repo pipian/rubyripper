@@ -28,18 +28,6 @@ attr_reader :status
     @deps = deps ? deps : Dependency.instance
   end
 
-  def eject(cdrom)
-    Thread.new do
-      if @deps.installed?('eject')
-        launch("eject #{cdrom}")
-      elsif @deps.installed?('diskutil')
-        launch("diskutil eject #{cdrom}") #Mac users have diskutil instead of eject
-      else
-        puts _("No eject utility found!")
-      end
-    end
-  end
-
   # return a temporary filename
   def getTempFile(name)
     require 'tmpdir'

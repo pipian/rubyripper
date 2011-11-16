@@ -26,27 +26,36 @@ attr_reader :display
     @display = Gtk::Label.new('')
   end
   
+  def scan
+    _("...Scanning drive %s for an audio disc") % [@prefs.cdrom]
+  end
+  
   def welcome
-    @display.text = _("Welcome to rubyripper %s.\nScanning drive %s for an audio disc...") % [$rr_version, @prefs.cdrom]
+    @display.text = _("Welcome to rubyripper %s.") % [$rr_version] + 
+        "\n\n" + scan()
+  end
+  
+  def refreshDisc
+    @display.text = scan()
   end
 
   def noDiscFound
     @display.text = _("No disc found in %s!\nPlease insert a disc and push 'Scan drive'.\n\nThe cdrom drive can be set in 'Preferences'.") % [@prefs.cdrom]
   end
 
-  def open_tray
-    @display.text = _("Opening tray of drive %s") % [@prefs.cdrom]
+  def openTray
+    @display.text = _("Opening tray of drive %s.") % [@prefs.cdrom]
   end
 
-  def close_tray()
-    @display.text = _("Closing tray of drive %s. \n\nThe drive will be scanned for an audio disc...") % [@prefs.cdrom]
+  def closeTray()
+    @display.text = _("Closing tray of the drive.") + "\n\n" + scan()
   end
 
-  def ask_for_disc
+  def askForDisc
     @display.text = _("Insert an audio-disc and press 'Close tray'.\nThe drive will automatically be scanned for a disc.\n\nIf the tray is already closed, press 'Scan drive'")
   end
 
-  def no_eject_found
+  def noEjectFound
     @display.text = _("The eject utility is not found on your system!")
   end
   
@@ -55,7 +64,7 @@ attr_reader :display
     @display.text = Errors.send(error[0], error[1])
   end
 
-  def show_message(message)
+  def showMessage(message)
     @display.text = message
   end
 end

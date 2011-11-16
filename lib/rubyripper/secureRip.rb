@@ -62,7 +62,7 @@ class SecureRip
       end
     end
 
-    @exec.eject(@prefs.cdrom) if @prefs.eject
+    @deps.eject(@prefs.cdrom) if @prefs.eject
   end
 
 

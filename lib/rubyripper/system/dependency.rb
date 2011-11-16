@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'singleton'
+require 'rubyripper/system/execute'
 
 # The Dependency class is responsible for all dependency checking
 class Dependency
@@ -31,6 +32,27 @@ class Dependency
   # should be triggered by any user interface
   def startupCheck
     checkForcedDeps()
+  end
+  
+  def eject(cdrom)
+    Thread.new do
+      @exec = Execute.new
+      if installed?('eject')
+        @exec.launch("eject #{cdrom}")
+      #Mac users have diskutil instead of eject
+      elsif installed?('diskutil')
+        @exec.launch("diskutil eject #{cdrom}") 
+      else
+        puts _("WARNING: No eject utility found!")
+      end
+    end
+  end
+  
+  # opposite of eject
+  def closeTray(cdrom)
+    if installed?('eject')
+      @exec.launch("eject --trayclose #{cdrom}")
+    end
   end
 
   # verify all dependencies are met

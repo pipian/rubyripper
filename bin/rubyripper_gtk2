@@ -26,6 +26,7 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 begin
   require 'rubyripper/base'
   require 'rubyripper/preferences/main'
+  require 'rubyripper/system/dependency'
   require 'rubyripper/gtk2/shortMessage'
 rescue LoadError
   puts 'The rubyripper lib files can\'t be found!'
@@ -47,9 +48,10 @@ end
 class GraphicalUserInterface
 attr_reader :instances
 
-  def initialize(prefs=nil, short=nil)
+  def initialize(prefs=nil, short=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @shortMessage = short ? short : ShortMessage.new()
+    @deps = deps ? deps : Dependency.instance
   end
   
   def start
@@ -58,7 +60,7 @@ attr_reader :instances
     setupMainContainer()
     showWelcomeMessage()
     @gtkWindow.show_all()
-    Thread.new{scanDisc()}
+    scanDisc()
     Gtk.main
   end
   
@@ -118,15 +120,17 @@ attr_reader :instances
   end
    
   def scanDisc
-    @buttons.each{|button| button.sensitive = false}
-    if @gtkDisc ; @gtkDisc.refresh
-    else
-      require 'rubyripper/gtk2/gtkDisc'
-      @gtkDisc = GtkDisc.new()
-      @gtkDisc.start()
-    end
+    Thread.new do
+      @buttons.each{|button| button.sensitive = false}
+      if @gtkDisc ; @gtkDisc.refresh
+      else
+        require 'rubyripper/gtk2/gtkDisc'
+        @gtkDisc = GtkDisc.new()
+        @gtkDisc.start()
+      end
     
-    scanDiscResults()
+      scanDiscResults()
+    end
   end
   
   # TODO cancel tocscan
@@ -208,8 +212,8 @@ attr_reader :instances
     @gtkWindow.signal_connect("delete_event") {savePreferences(); exit()}
     @buttons[0].signal_connect("activate") {@buttons[0].signal_emit("released")}
     @buttons[0].signal_connect("released") {savePreferences(); showDiscOrPreferences()}
-    @buttons[1].signal_connect("clicked") {savePreferences(); scanDisc()}
-    @buttons[2].signal_connect("clicked") {savePreferences(); handle_tray()}
+    @buttons[1].signal_connect("clicked") {savePreferences(); refreshDisc()}
+    @buttons[2].signal_connect("clicked") {savePreferences(); handleTray()}
     @buttons[3].signal_connect("clicked") {savePreferences(); startRip()}
     @buttons[4].signal_connect("clicked") {exitButton()}
   end
@@ -264,6 +268,12 @@ attr_reader :instances
     @gtkPrefs.display.page = 0
     changeDisplay(@gtkPrefs) 
   end
+  
+  def refreshDisc
+    @shortMessage.refreshDisc()
+    changeDisplay(@shortMessage)
+    scanDisc()
+  end
 
   # Switch context between disc info and preferences
   # The button should change to the opposite value
@@ -281,7 +291,7 @@ attr_reader :instances
         changeDisplay(@gtkDisc)
         @buttons.each{|button| button.sensitive = true}
       else
-        scanDisc()
+        refreshDisc()
       end
     end
   end
@@ -312,35 +322,44 @@ attr_reader :instances
       puts "Unknown error with Metadata class."
     end
   end
-
-  def handle_tray
+  
+  # TODO cancelTocScan()
+  def handleTray
     @buttons.each{|button| button.sensitive = false}
     Thread.new do
-      if installed('eject')
-        if @buttontext[2].text == _("Open tray")
-          @instances['GtkMetadata'] = false
-          @instances['ShortMessage'].open_tray(@settings['cdrom'])
-          changeDisplay(@instances['ShortMessage'])
-          cancelTocScan()
-          `eject #{@settings['cdrom']}` # spit the cd out
-          @buttontext[2].set_text('_'+_("Close tray"),true)
-          @buttonicons[2].stock = Gtk::Stock::GOTO_TOP
-          @instances['ShortMessage'].ask_for_disc
-          @buttons[0..2].each{|button| button.sensitive = true} ; @buttons[4].sensitive = true
-        else
-          @instances['ShortMessage'].close_tray(@settings['cdrom'])
-          changeDisplay(@instances['ShortMessage'])
-          `eject --trayclose #{@settings['cdrom']}` # close the tray
-          @buttontext[2].set_text('_'+_("Open tray"),true)
-          @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
-          scanDrive()
-        end
+      if @buttontext[2].text == _("Open tray")
+        openDrive()
+        askForDisc()
       else
-        @instances['ShortMessage'].no_eject_found
-        changeDisplay(@instances['ShortMessage'])
-        @buttons[0..2].each{|button| button.sensitive = true} ; if @instances['GtkMetadata'] ; @buttons[3].sensitive = true end ; @buttons[4].sensitive = true
+        closeDrive()
+        scanDisc()
       end
     end
+  end
+  
+  # open the drive, so reset the gtk disc object
+  def openDrive
+    @gtkDisc = nil
+    @shortMessage.openTray()
+    changeDisplay(@shortMessage)
+    @deps.eject(@prefs.cdrom)
+  end
+  
+  def askForDisc
+    @buttontext[2].set_text('_'+_("Close tray"), true)
+    @buttonicons[2].stock = Gtk::Stock::GOTO_TOP
+    @shortMessage.askForDisc()
+    @buttons[0..2].each{|button| button.sensitive = true}
+    @buttons[4].sensitive = true
+  end
+  
+  # close the drive again
+  def closeDrive
+    @shortMessage.closeTray()
+    changeDisplay(@shortMessage)
+    @deps.closeTray(@prefs.cdrom)
+    @buttontext[2].set_text('_'+_("Open tray"),true)
+    @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
   end
 
   def startRip
