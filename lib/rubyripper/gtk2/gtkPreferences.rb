@@ -71,7 +71,10 @@ attr_reader :display
   
   # build fourth tab
   def buildMetadataTab
-    freedbobjects_frame()
+    buildFrameChooseMetadataProvider()
+    buildFrameFreedbOptions()
+    buildFrameMusicbrainzOptions()
+    packMetadataFrames()
   end
   
   # build fifth tab
@@ -120,7 +123,7 @@ attr_reader :display
     @normalize.active = loadNormalizer()
     @modus.active = @prefs.gain == 'album' ? 0 : 1
 #freedb
-    @enableFreedb.active = @prefs.metadataProvider == 'freedb'
+    @metadataChoice.active = loadMetadataProvider()
     @firstHit.active = @prefs.firstHit
     @freedbServerEntry.text = @prefs.site
     @freedbUsernameEntry.text = @prefs.username
@@ -138,9 +141,17 @@ attr_reader :display
   
   def loadNormalizer
     case @prefs.normalizer
-      when _('none') then 0
-      when _('replaygain') then 1
-      when _('normalize') then 2
+      when 'none' then 0
+      when 'replaygain' then 1
+      when 'normalize' then 2
+    end
+  end
+  
+  def loadMetadataProvider
+    case @prefs.metadataProvider
+      when 'freedb' then 0
+      when 'musicbrainz' then 1
+      when 'none' then 2
     end
   end
 
@@ -181,7 +192,7 @@ attr_reader :display
     @prefs.normalizer = saveNormalizer()
     @prefs.gain = @modus.active == 0 ? "album" : "track"
 #freedb
-    @prefs.metadataProvider = @enableFreedb.active? ? 'freedb' : 'none' 
+    @prefs.metadataProvider = saveMetadataProvider()
     @prefs.firstHit = @firstHit.active?
     @prefs.site = @freedbServerEntry.text
     @prefs.username = @freedbUsernameEntry.text
@@ -205,7 +216,15 @@ attr_reader :display
       when 2 then 'normalize'
     end
   end
-
+  
+  def saveMetadataProvider
+    case @metadataChoice
+      when 0 then 'freedb'
+      when 1 then 'musicbrainz'
+      when 2 then 'none'
+    end
+  end
+  
   # The interface can't handle threads nicely on old versions        
   def preventThreadProblemsOnOlderBindings
     if Gtk::BINDING_VERSION[0] < 1 && 
@@ -507,11 +526,22 @@ It is recommended to enable this option.")
     @page2_label = Gtk::Label.new(_("Codecs"))
     @display.append_page(@page2, @page2_label)
   end
-
-  def freedbobjects_frame #Freedb client configuration frame
-    @table90 = newTable(rows=5, columns=2)
+  
+  def buildFrameChooseMetadataProvider
+    @table90 = newTable(rows=1, columns=2)
+    @metadataLabel = Gtk::Label.new(_("Primary metadata provider:"))
+    @metadataChoice = Gtk::ComboBox.new()
+    @metadataChoice.append_text(_("Freedb"))
+    @metadataChoice.append_text(_("Musicbrainz"))
+    @metadataChoice.append_text(_("Don't use a metadata provider."))
+    @table90.attach(@metadataLabel,0,1,0,1,Gtk::FILL, Gtk::SHRINK,0,0)
+    @table90.attach(@metadataChoice,1,2,0,1,Gtk::FILL, Gtk::SHRINK,0,0)
+    @frame90 = newFrame(_('Choose your metadata provider'), child=@table90)
+  end
+  
+  def buildFrameFreedbOptions
+    @table91 = newTable(rows=4, columns=2)
 #creating objects
-    @enableFreedb= Gtk::CheckButton.new(_("Enable freedb metadata fetching"))
     @firstHit= Gtk::CheckButton.new(_("Always use first freedb hit"))
     @freedb_server_label= Gtk::Label.new(_("Freedb server:")) ; @freedb_server_label.set_alignment(0.0, 0.5)
     @freedb_username_label= Gtk::Label.new(_("Username:")) ; @freedb_username_label.set_alignment(0.0, 0.5)
@@ -520,19 +550,24 @@ It is recommended to enable this option.")
     @freedbUsernameEntry = Gtk::Entry.new
     @freedbHostnameEntry = Gtk::Entry.new
 #packing objects
-    @table90.attach(@enableFreedb, 0, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 1st row
-    @table90.attach(@firstHit, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 2nd row
-    @table90.attach(@freedb_server_label, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 3rd row
-    @table90.attach(@freedb_username_label, 0, 1, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 4th row
-    @table90.attach(@freedb_hostname_label, 0, 1, 4, 5, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 5th row
-    @table90.attach(@freedbServerEntry, 1, 2 , 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 3rd row
-    @table90.attach(@freedbUsernameEntry, 1, 2, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 4th row
-    @table90.attach(@freedbHostnameEntry, 1, 2, 4, 5, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 5th row
-    @frame90 = @frame80 = newFrame(_('Freedb options'), child=@table90)
+    @table91.attach(@firstHit, 0, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 2nd row
+    @table91.attach(@freedb_server_label, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 3rd row
+    @table91.attach(@freedb_username_label, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 4th row
+    @table91.attach(@freedb_hostname_label, 0, 1, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 5th row
+    @table91.attach(@freedbServerEntry, 1, 2 , 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 3rd row
+    @table91.attach(@freedbUsernameEntry, 1, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 4th row
+    @table91.attach(@freedbHostnameEntry, 1, 2, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 5th row
+    @frame91 = newFrame(_('Freedb options'), child=@table91)
 #pack frame
+  end
+  
+  def buildFrameMusicbrainzOptions
+  end
+  
+  def packMetadataFrames    
     @page3 = Gtk::VBox.new #One VBox to rule them all
-    [@frame90].each{|frame| @page3.pack_start(frame,false,false)}
-    @page3_label = Gtk::Label.new(_("Freedb"))
+    [@frame90, @frame91].each{|frame| @page3.pack_start(frame,false,false)}
+    @page3_label = Gtk::Label.new(_("Metadata"))
     @display.append_page(@page3, @page3_label)
   end
 

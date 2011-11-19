@@ -44,7 +44,7 @@ private
     def readPreferencesFromFile
       @file.read(@prefs.filename).each_line do |line|
         key, value = getNextPreference(line)
-        updatePreference(key,value)
+        updatePreference(key,value) unless value.nil?
       end
     end
     
@@ -64,6 +64,7 @@ private
       if value == "false" ; value = false
       elsif value == "true" ; value = true
       # replace two quotes with an empty string
+      elsif value.empty? ; value = nil
       elsif value == "''" ; value = ''
       # replace an integer string with an integer
       elsif value.to_i > 0 || value == '0' ; value = value.to_i
