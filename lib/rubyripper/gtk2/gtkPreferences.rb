@@ -21,6 +21,10 @@
 class GtkPreferences
 attr_reader :display
 
+  DEFAULT_COLUMN_SPACINGS = 5
+  DEFAULT_ROW_SPACINGS = 4
+  DEFAULT_BORDER_WIDTH = 7
+
   def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance
@@ -210,13 +214,28 @@ attr_reader :display
       puts "Please upgrade your bindings if you want threads."
     end
   end
+  
+  # helpfunction to create a table
+  def newTable(rows, columns, homogeneous=false)
+    table = Gtk::Table.new(rows, columns, homogeneous)
+    table.column_spacings = DEFAULT_COLUMN_SPACINGS
+    table.row_spacings = DEFAULT_ROW_SPACINGS
+    table.border_width = DEFAULT_BORDER_WIDTH
+    table
+  end
+  
+  # helpfunction to create a frame
+  def newFrame(label, child)
+    frame = Gtk::Frame.new(label)
+    frame.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
+    frame.border_width = DEFAULT_BORDER_WIDTH # was 5
+    frame.add(child)
+    frame
+  end
 
   # 1st frame on secure ripping tab
   def buildFrameCdromDevice
-    @table40 = Gtk::Table.new(3,2,false)
-    @table40.column_spacings = 5
-    @table40.row_spacings = 4
-    @table40.border_width = 7
+    @table40 = newTable(rows=3, columns=2)
 #creating objects
     @cdrom_label = Gtk::Label.new(_("Cdrom device:"))
     @cdrom_label.set_alignment(0.0, 0.5) # Align to the left
@@ -236,19 +255,12 @@ attr_reader :display
     @table40.attach(@offset_button, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect signal
     @offset_button.signal_connect("clicked") {Thread.new{`#{@settings['browser']} #{@offset_button.uri}`}}
-#create frame
-    @frame40 = Gtk::Frame.new(_('Cdrom device'))
-    @frame40.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame40.border_width = 5
-    @frame40.add(@table40)
+    @frame40 = newFrame(_('Cdrom device'), child=@table40)
   end
 
   # 2nd frame on secure ripping tab
   def buildFrameRippingOptions
-    @table50 = Gtk::Table.new(3,3,false)
-    @table50.column_spacings = 5
-    @table50.row_spacings = 4
-    @table50.border_width = 7
+    @table50 = newTable(rows=3, columns=3)
 #create objects
     @all_chunks = Gtk::Label.new(_("Match all chunks:")) ; @all_chunks.set_alignment(0.0, 0.5)
     @err_chunks = Gtk::Label.new(_("Match erroneous chunks:")) ; @err_chunks.set_alignment(0.0, 0.5)
@@ -271,18 +283,11 @@ attr_reader :display
     @table50.attach(@time3, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect a signal to @all_chunks to make sure @err_chunks get always at least the same amount of rips as @all_chunks
     @allChunksSpin.signal_connect("value_changed") {if @errChunksSpin.value < @allChunksSpin.value ; @errChunksSpin.value = @allChunksSpin.value end ; @errChunksSpin.set_range(@allChunksSpin.value,100.0)} #ensure all_chunks cannot be smaller that err_chunks.
-#create frame
-    @frame50= Gtk::Frame.new(_('Ripping options'))
-    @frame50.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame50.border_width = 5
-    @frame50.add(@table50)
+    @frame50= newFrame(_('Ripping options'), child=@table50)
   end
 
   def buildFrameRippingRelated
-    @table60 = Gtk::Table.new(2,3,false)
-    @table60.column_spacings = 5
-    @table60.row_spacings = 4
-    @table60.border_width = 7
+    @table60 = newTable(rows=2, columns=3)
 #create objects
     @rip_label = Gtk::Label.new(_("Pass cdparanoia options:")) ; @rip_label.set_alignment(0.0, 0.5)
     @eject= Gtk::CheckButton.new(_('Eject cd when finished'))
@@ -293,11 +298,7 @@ attr_reader :display
     @table60.attach(@ripEntry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
     @table60.attach(@eject, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table60.attach(@noLog, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-#create frame
-    @frame60 = Gtk::Frame.new(_('Ripping related'))
-    @frame60.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame60.border_width = 5
-    @frame60.add(@table60)
+    @frame60 = newFrame(_('Ripping related'), child=@table60)
 #pack all frames into a single page
     @page1 = Gtk::VBox.new #One VBox to rule them all
     [@frame40, @frame50, @frame60].each{|frame| @page1.pack_start(frame,false,false)}
@@ -306,10 +307,7 @@ attr_reader :display
   end
 
   def buildFrameAudioSectorsBeforeTrackOne
-    @tableToc1 = Gtk::Table.new(3,3,false)
-    @tableToc1.column_spacings = 5
-    @tableToc1.row_spacings = 4
-    @tableToc1.border_width = 7
+    @tableToc1 = newTable(rows=3, columns=3)
 #create objects
     @ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors'))
     @markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when bigger than'))
@@ -326,32 +324,21 @@ attr_reader :display
     @tableToc1.attach(@markHiddenTrackLabel1, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @tableToc1.attach(@minLengthHiddenTrackSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @tableToc1.attach(@markHiddenTrackLabel2, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-#create frame
     @ripHiddenAudio.signal_connect("clicked"){@minLengthHiddenTrackSpin.sensitive = @ripHiddenAudio.active?}
-    @frameToc1 = Gtk::Frame.new(_('Audio sectors before track 1'))
-    @frameToc1.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frameToc1.border_width = 5
-    @frameToc1.add(@tableToc1)
+    @frameToc1 = newFrame(_('Audio sectors before track 1'), child=@tableToc1)
   end
 
   def buildFrameAdvancedTocAnalysis
-    @tableToc2 = Gtk::Table.new(3,2,false)
-    @tableToc2.column_spacings = 5
-    @tableToc2.row_spacings = 4
-    @tableToc2.border_width = 7
+    @tableToc2 = newTable(rows=3, columns=2)
     #create objects
     @createCue = Gtk::CheckButton.new(_('Create cuesheet'))
     @image = Gtk::CheckButton.new(_('Rip CD to single file'))
 #pack objects
     @tableToc2.attach(@createCue, 0, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @tableToc2.attach(@image, 0, 2, 2, 3, Gtk::FILL|Gtk::SHRINK, Gtk::SHRINK, 0, 0)
-#create frame
-    @frameToc2 = Gtk::Frame.new(_('Advanced Toc analysis'))
-    @frameToc2.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frameToc2.border_width = 5
     @vboxToc = Gtk::VBox.new()
     @vboxToc.pack_start(@tableToc2,false,false)
-    @frameToc2.add(@vboxToc)
+    @frameToc2 = newFrame(_('Advanced Toc analysis'), child=@vboxToc)
 # build hbox for cdrdao
     @cdrdaoHbox = Gtk::HBox.new(false, 5)
     @cdrdao = Gtk::Label.new(_('Cdrdao installed?'))
@@ -361,40 +348,26 @@ attr_reader :display
   end
 
   def buildFrameHandlingPregapsOtherThanTrackOne
-    @tableToc3 = Gtk::Table.new(3,3,false)
-    @tableToc3.column_spacings = 5
-    @tableToc3.row_spacings = 4
-    @tableToc3.border_width = 7
+    @tableToc3 = newTable(rows=3, columns=3)
 #create objects
     @appendPregaps = Gtk::RadioButton.new(_('Append pregap to the previous track'))
     @prependPregaps = Gtk::RadioButton.new(@appendPregaps, _('Prepend pregaps to the track'))
 #pack objects
     @tableToc3.attach(@appendPregaps, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @tableToc3.attach(@prependPregaps, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-#create frame
-    @frameToc3 = Gtk::Frame.new(_('Handling pregaps other than track 1'))
-    @frameToc3.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frameToc3.border_width = 5
-    @frameToc3.add(@tableToc3)
+    @frameToc3 = newFrame(_('Handling pregaps other than track 1'), child=@tableToc3)
     @vboxToc.pack_start(@frameToc3,false,false)
   end
 
   def buildFrameHandlingTracksWithPreEmphasis
-    @tableToc4 = Gtk::Table.new(3,3,false)
-    @tableToc4.column_spacings = 5
-    @tableToc4.row_spacings = 4
-    @tableToc4.border_width = 7
+    @tableToc4 = newTable(rows=3, columns=3)
 #create objects
     @correctPreEmphasis = Gtk::RadioButton.new(_('Correct pre-emphasis tracks with sox'))
     @doNotCorrectPreEmphasis = Gtk::RadioButton.new(@correctPreEmphasis, _("Save the pre-emphasis tag in the cuesheet."))
 #pack objects
     @tableToc4.attach(@correctPreEmphasis, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @tableToc4.attach(@doNotCorrectPreEmphasis, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-#create frame
-    @frameToc4 = Gtk::Frame.new(_('Handling tracks with pre-emphasis'))
-    @frameToc4.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frameToc4.border_width = 5
-    @frameToc4.add(@tableToc4)
+    @frameToc4 = newFrame(_('Handling tracks with pre-emphasis'), child=@tableToc4)
     @vboxToc.pack_start(@frameToc4,false,false)
 #pack all frames into a single page
     setSignalsToc()
@@ -442,10 +415,7 @@ attr_reader :display
   end
 
   def buildFrameSelectAudioCodecs # Select audio codecs frame
-    @table70 = Gtk::Table.new(6,2,false)
-    @table70.column_spacings = 5
-    @table70.row_spacings = 4
-    @table70.border_width = 7
+    @table70 = newTable(rows=6, columns=2)
 #objects 1st column
     @flac = Gtk::CheckButton.new(_('Flac'))
     @vorbis = Gtk::CheckButton.new(_('Vorbis'))
@@ -472,18 +442,11 @@ attr_reader :display
     @table70.attach(@vorbisEntry, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd column, 2nd row
     @table70.attach(@mp3Entry, 1, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 3rd row
     @table70.attach(@otherEntry, 1, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 5th row
-#create frame
-    @frame70 = Gtk::Frame.new(_("Select audio codecs"))
-    @frame70.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame70.border_width = 5
-    @frame70.add(@table70) # add the hbox in the frame
+    @frame70 = newFrame(_('Select audio codecs'), child=@table70)
   end
 
   def buildFrameCodecRelated #Encoding related frame
-    @table80 = Gtk::Table.new(4,2,false)
-    @table80.column_spacings = 5
-    @table80.row_spacings = 4
-    @table80.border_width = 7
+    @table80 = newTable(rows=4, columns=2)
 #creating objects
     @playlist = Gtk::CheckButton.new(_("Create m3u playlist"))
     @noSpaces = Gtk::CheckButton.new(_("Replace spaces with underscores in filenames"))
@@ -496,19 +459,11 @@ attr_reader :display
     @table80.attach(@playlist, 0, 2, 1, 2, Gtk::FILL, Gtk::FILL, 0, 0)
     @table80.attach(@noSpaces, 0, 2, 2, 3, Gtk::FILL, Gtk::FILL, 0, 0)
     @table80.attach(@noCapitals, 0, 2, 3, 4, Gtk::FILL, Gtk::FILL, 0, 0)
-
-#create frame
-    @frame80 = Gtk::Frame.new(_("Codec related"))
-    @frame80.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame80.border_width = 5
-    @frame80.add(@table80)
+    @frame80 = newFrame(_('Codec related'), child=@table80)
   end
 
   def buildFrameNormalizeToStandardVolume #Normalize audio
-    @table85 = Gtk::Table.new(2,1,false)
-    @table85.column_spacings = 5
-    @table85.row_spacings = 4
-    @table85.border_width = 7
+    @table85 = newTable(rows=2, columns=1)
 #creating objects
     @normalize = Gtk::ComboBox.new()
     @normalize.append_text(_("Don't standardize volume"))
@@ -524,11 +479,7 @@ attr_reader :display
 #packing objects
     @table85.attach(@normalize, 0, 1, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
     @table85.attach(@modus, 1, 2, 0, 1, Gtk::FILL, Gtk::FILL, 0, 0)
-#create frame
-    @frame85 = Gtk::Frame.new(_("Normalize to standard volume"))
-    @frame85.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame85.border_width = 5
-    @frame85.add(@table85)
+    @frame85 = newFrame(_('Normalize to standard volume'), child=@table85)
 #pack all frames into a single page
     @page2 = Gtk::VBox.new #One VBox to rule them all
     [@frame70, @frame80, @frame85].each{|frame| @page2.pack_start(frame,false,false)}
@@ -537,10 +488,7 @@ attr_reader :display
   end
 
   def freedbobjects_frame #Freedb client configuration frame
-    @table90 = Gtk::Table.new(5,2,false)
-    @table90.column_spacings = 5
-    @table90.row_spacings = 4
-    @table90.border_width = 7
+    @table90 = newTable(rows=5, columns=2)
 #creating objects
     @enableFreedb= Gtk::CheckButton.new(_("Enable freedb metadata fetching"))
     @firstHit= Gtk::CheckButton.new(_("Always use first freedb hit"))
@@ -559,11 +507,7 @@ attr_reader :display
     @table90.attach(@freedbServerEntry, 1, 2 , 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 3rd row
     @table90.attach(@freedbUsernameEntry, 1, 2, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 4th row
     @table90.attach(@freedbHostnameEntry, 1, 2, 4, 5, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 5th row
-#create frame
-    @frame90 = Gtk::Frame.new(_("Freedb options")) # will contain the above
-    @frame90.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame90.border_width = 5
-    @frame90.add(@table90)
+    @frame90 = @frame80 = newFrame(_('Freedb options'), child=@table90)
 #pack frame
     @page3 = Gtk::VBox.new #One VBox to rule them all
     [@frame90].each{|frame| @page3.pack_start(frame,false,false)}
@@ -572,10 +516,7 @@ attr_reader :display
   end
 
   def buildFrameFilenamingScheme # Naming scheme frame
-    @table100 = Gtk::Table.new(6,2,false)
-    @table100.column_spacings = 5
-    @table100.row_spacings = 4
-    @table100.border_width = 7
+    @table100 = newTable(rows=6, columns=2)
 #creating objects 1st column
     @basedir_label = Gtk::Label.new(_('Base directory:')) ; @basedir_label.set_alignment(0.0, 0.5) #set_alignment(xalign=0.0, yalign=0.5)
     @naming_normal_label = Gtk::Label.new(_('Standard:')) ; @naming_normal_label.set_alignment(0.0, 0.5)
@@ -615,11 +556,7 @@ attr_reader :display
     @table100.attach(@namingNormalEntry, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table100.attach(@namingVariousEntry, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table100.attach(@namingImageEntry, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
-#create frame
-    @frame100 = Gtk::Frame.new(_("Filenaming scheme")) #will contain the above
-    @frame100.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame100.border_width = 5
-    @frame100.add(@table100)
+    @frame100 = newFrame(_('Filenaming scheme'), child=@table100)
   end
   
   def showFileNormal
@@ -647,10 +584,7 @@ attr_reader :display
 #log file viewer 	| entry
 #file manager 	| entry
   def buildFrameProgramsOfChoice
-    @table110 = Gtk::Table.new(2,2,false)
-    @table110.column_spacings = 5
-    @table110.row_spacings = 4
-    @table110.border_width = 7
+    @table110 = newTable(rows=2, columns=2)
 #creating objects
     @editor_label = Gtk::Label.new(_("Log file viewer: ")) ; @editor_label.set_alignment(0.0, 0.5)
     @filemanager_label = Gtk::Label.new(_("File manager: ")) ; @filemanager_label.set_alignment(0.0,0.5)
@@ -661,30 +595,19 @@ attr_reader :display
     @table110.attach(@filemanager_label, 0,1,1,2,Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table110.attach(@editorEntry, 1,2,0,1, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table110.attach(@filemanagerEntry, 1,2,1,2, Gtk::FILL, Gtk::SHRINK, 0, 0)
-#create frame
-    @frame110 = Gtk::Frame.new(_("Programs of choice"))
-    @frame110.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame110.border_width = 5
-    @frame110.add(@table110)
+    @frame110 = newFrame(_('Programs of choice'), child=@table110)
   end
 
 #Small table for debugging
 #Verbose mode	| debug mode
   def buildFrameDebugOptions # Debug options frame
-    @table120 = Gtk::Table.new(1,2,false)
-    @table120.column_spacings = 5
-    @table120.row_spacings = 4
-    @table120.border_width = 7
+    @table120 = newTable(rows=1, columns=2)
 #creating objects and packing them
     @verbose = Gtk::CheckButton.new(_('Verbose mode'))
     @debug = Gtk::CheckButton.new(_('Debug mode'))
     @table120.attach(@verbose, 0,1,0,1,Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK)
     @table120.attach(@debug, 1,2,0,1,Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK)
-#create frame
-    @frame120 = Gtk::Frame.new(_("Debug options")) #will contain the above
-    @frame120.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
-    @frame120.border_width = 5
-    @frame120.add(@table120)
+    @frame120 = newFrame(_('Debug options'), child=@table120)
   end
 
   def pack_other_frames #pack all frames into a single page

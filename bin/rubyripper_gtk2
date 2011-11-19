@@ -101,7 +101,7 @@ attr_reader :instances
   def prepareMainWindow
     @gtkWindow = Gtk::Window.new('Rubyripper')
     setIconForWindow()
-    @gtkWindow.set_default_size(530, 440) #width, height
+    @gtkWindow.set_default_size(570, 470) #width, height
   end
   
   # setup the central container
