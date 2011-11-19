@@ -122,12 +122,17 @@ attr_reader :display
     @maxThreads.value = @prefs.maxThreads.to_f
     @normalize.active = loadNormalizer()
     @modus.active = @prefs.gain == 'album' ? 0 : 1
-#freedb
+#metadata
     @metadataChoice.active = loadMetadataProvider()
     @firstHit.active = @prefs.firstHit
     @freedbServerEntry.text = @prefs.site
     @freedbUsernameEntry.text = @prefs.username
     @freedbHostnameEntry.text = @prefs.hostname
+    @entryPreferredCountry.text = @prefs.preferMusicBrainzCountries
+    @chooseOriginalRelease.active = @prefs.preferMusicBrainzDate == 'earlier'
+    @chooseLatestRelease.active = @prefs.preferMusicBrainzDate == 'later'
+    @chooseOriginalYear.active = @prefs.useEarliestDate
+    @chooseReleaseYear.active = !@prefs.useEarliestDate
 #other
     @basedirEntry.text = @prefs.basedir
     @namingNormalEntry.text = @prefs.namingNormal
@@ -562,11 +567,33 @@ It is recommended to enable this option.")
   end
   
   def buildFrameMusicbrainzOptions
+    @table92 = newTable(rows=3, columns=3)
+    @labelPreferredCountry = Gtk::Label.new(_('Preferred countries:'))
+    @labelPreferredCountry.set_alignment(0.0, 0.5)
+    @labelPreferredRelease = Gtk::Label.new(_('Preferred release date:'))
+    @labelPreferredRelease.set_alignment(0.0, 0.5)
+    @labelPreferredYear = Gtk::Label.new(_('Preferred year (metadata):'))
+    @labelPreferredYear.set_alignment(0.0, 0.5)
+    @entryPreferredCountry = Gtk::Entry.new()
+    @chooseOriginalRelease = Gtk::RadioButton.new('Original')
+    @chooseLatestRelease = Gtk::RadioButton.new(@chooseOriginalRelease, 'Latest available')
+    @chooseOriginalYear = Gtk::RadioButton.new('Original')
+    @chooseReleaseYear = Gtk::RadioButton.new(@chooseOriginalYear, 'From release')
+#packing objects
+    @table92.attach(@labelPreferredCountry, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@entryPreferredCountry, 1, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@labelPreferredRelease, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@chooseOriginalRelease, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@chooseLatestRelease, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@labelPreferredYear, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@chooseOriginalYear, 1, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @table92.attach(@chooseReleaseYear, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @frame92 = newFrame(_('Musicbrainz options'), @table92)
   end
   
   def packMetadataFrames    
     @page3 = Gtk::VBox.new #One VBox to rule them all
-    [@frame90, @frame91].each{|frame| @page3.pack_start(frame,false,false)}
+    [@frame90, @frame91, @frame92].each{|frame| @page3.pack_start(frame,false,false)}
     @page3_label = Gtk::Label.new(_("Metadata"))
     @display.append_page(@page3, @page3_label)
   end
