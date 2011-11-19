@@ -27,7 +27,7 @@ attr_reader :display
   end
   
   def scan
-    _("...Scanning drive %s for an audio disc") % [@prefs.cdrom]
+    _("...Scanning drive %s for an audio disc.") % [@prefs.cdrom]
   end
   
   def welcome
