@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2011 Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -87,6 +87,7 @@ attr_reader :display
 #ripping settings
     @cdromEntry.text = @prefs.cdrom
     @cdromOffsetSpin.value = @prefs.offset.to_f
+    @padMissingSamples.active = @prefs.padMissingSamples
     @allChunksSpin.value = @prefs.reqMatchesAll.to_f
     @errChunksSpin.value = @prefs.reqMatchesErrors.to_f
     @maxSpin.value = @prefs.maxTries.to_f
@@ -148,6 +149,7 @@ attr_reader :display
 #ripping settings
     @prefs.cdrom = @cdromEntry.text
     @prefs.offset = @cdromOffsetSpin.value.to_i
+    @prefs.padMissingSamples = @padMissingSamples.active?
     @prefs.reqMatchesAll = @allChunksSpin.value.to_i
     @prefs.reqMatchesErrors = @errChunksSpin.value.to_i
     @prefs.maxTries = @maxSpin.value.to_i
@@ -235,7 +237,7 @@ attr_reader :display
 
   # 1st frame on secure ripping tab
   def buildFrameCdromDevice
-    @table40 = newTable(rows=3, columns=2)
+    @table40 = newTable(rows=3, columns=3)
 #creating objects
     @cdrom_label = Gtk::Label.new(_("Cdrom device:"))
     @cdrom_label.set_alignment(0.0, 0.5) # Align to the left
@@ -248,14 +250,33 @@ attr_reader :display
     @offset_button.uri = "http://www.accuraterip.com/driveoffsets.htm"
     @offset_button.tooltip_text = _("A website which lists the offset for most drives.\nYour drivename can be found in each logfile.")
 #pack objects
+    @padMissingSamples = Gtk::CheckButton.new(_('Pad missing samples with zero\'s'))
+    @padMissingSamples.tooltip_text = _("Cdparanoia can\'t handle offsets \
+larger than 580 for \nfirst (negative offset) and last (positive offset) \
+track.\nThis option fills the rest with empty samples.\n\
+If disabled, the file will not have the correct size.\n\
+It is recommended to enable this option.")
+    @padMissingSamples.sensitive = false
     @table40.attach(@cdrom_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table40.attach(@cdrom_offset_label, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table40.attach(@cdromEntry, 1, 2, 0, 1, Gtk::SHRINK, Gtk::SHRINK, 0, 0)
     @table40.attach(@cdromOffsetSpin, 1, 2, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table40.attach(@offset_button, 2, 3, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
 #connect signal
-    @offset_button.signal_connect("clicked") {Thread.new{`#{@settings['browser']} #{@offset_button.uri}`}}
+    @table40.attach(@padMissingSamples, 0, 2, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @offset_button.signal_connect("clicked") {Thread.new{`#{@prefs.browser} #{@offset_button.uri}`}}
+    @cdromOffsetSpin.signal_connect("value-changed"){enablePaddingOption?}
     @frame40 = newFrame(_('Cdrom device'), child=@table40)
+  end
+  
+  # enable the padding option if the offset is >580 || <-580
+  def enablePaddingOption?
+    value = @cdromOffsetSpin.value.to_i
+    if value > 580 || value <-580
+      @padMissingSamples.sensitive = true
+    else
+      @padMissingSamples.sensitive = false
+    end
   end
 
   # 2nd frame on secure ripping tab
