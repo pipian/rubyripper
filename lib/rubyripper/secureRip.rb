@@ -46,6 +46,10 @@ class SecureRip
     @reqMatchesErrors = @prefs.reqMatchesErrors # Matches needed for chunks that didn't match immediately
     @sizeExpected = 0
     @timeStarted = Time.now # needed for a time break after 30 minutes
+    @crcs = []
+    @correctedcrc = nil
+    @peakLevel = 0
+    @digest = nil
   end
 
   def ripTracks
@@ -120,7 +124,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       freeDiskSpace = output[1].split()[3].to_i
       puts "Free disk space is #{freeDiskSpace} MB" if @prefs.debug
       if @disc.getFileSize(track) > freeDiskSpace*1000
-        @log.add(_("Not enough disk space left! Rip aborted"))
+        @log.error(_("Not enough disk space left! Rip aborted"))
         return false
       end
     end
@@ -130,12 +134,16 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   def main(track)
     @reqMatchesAll.times{if not doNewTrial(track) ; return false end} # The amount of matches all sectors should match
     analyzeFiles(track) #If there are differences, save them in the @errors hash
+    status = _("Copy OK")
 
     while @errors.size > 0
       if @trial > @prefs.maxTries && @prefs.maxTries != 0
-        @log.add(_("Maximum tries reached. %s chunk(s) didn't match the required %s times\n") % [@errors.length, @reqMatchesErrors])
-        @log.add(_("Will continue with the file we've got so far\n"))
+        # TODO: Attack these log entries
+        #       "Irrecoverable sectors at the following times:"
+        @log.listBadSectors(_("Irrecoverable sectors at the following times:"),
+                            @errors)
         @log.mismatch(track, 0, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # zero means it is never solved.
+        status = _("Copy finished")
         break # break out loop and continue using trial1
       end
 
@@ -148,10 +156,11 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       # if enough trials are done to possibly allow corrections
       # for example is trial = 3 and only 2 matches are required a match can happen
       correctErrorPos(track) if @trial > @reqMatchesErrors
-
+      @correctedcrc = getCRC(track, 1)
     end
 
-    getDigest(track) # Get a MD5-digest for the logfile
+    @log.finishTrack(@peakLevel, @crcs, status, @correctedcrc)
+    @log.copyMD5(@digest.hexdigest) # Get a MD5-digest for the logfile
     @log.updateRippingProgress(track)
     return true
   end
@@ -188,9 +197,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     elsif sizeDiff < 0
       puts "More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_SECTOR} sector(s)" if @prefs.debug
     elsif @prefs.offset != 0 && (@prefs.image || track == @disc.audiotracks)
-      @log.add(_("The ripped file misses %s sectors.\n") % [sizeDiff / BYTES_AUDIO_SECTOR.to_f])
-      @log.add(_("This is known behaviour for some drives when using an offset.\n"))
-      @log.add(_("Notice that each sector is 1/75 second.\n"))
+      # This should no longer happen.
+      puts _("The ripped file misses %s sectors.") % [sizeDiff / BYTES_AUDIO_SECTOR.to_f] if @prefs.debug
     elsif @cancelled == false
       if @prefs.debug
         puts "Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
@@ -202,7 +210,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
       File.delete(@out.getTempFile(track, @trial)) # Delete file with wrong filesize
       @trial -= 1 # reset the counter because the filesize is not right
-      @log.add(_("Filesize is not correct! Trying another time\n"))
+      # TODO: Atack this log entry
+      puts _("Filesize is not correct! Trying another time")
       return false
     end
     return true
@@ -211,18 +220,19 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   # Start and close the first file comparisons
   def analyzeFiles(track)
     start = Time.now()
-    @log.add(_("Analyzing files for mismatching chunks"))
+    @crcs = []
+    @reqMatchesAll.times{|time| @crcs << getCRC(track, time + 1)}
     compareSectors(track) unless filesEqual?(track)
-    @log.add(_(" (%s second(s))\n") %[(Time.now - start).to_i])
 
     # Remove the files now we analyzed them. Differences are saved in memory.
     (@reqMatchesAll - 1).times{|time| File.delete(@out.getTempFile(track, time + 2))}
 
     if @errors.size == 0
-      @log.add(_("Every chunk matched %s times :)\n") % [@reqMatchesAll])
+      @log.allSectorsMatched()
     else
       @log.mismatch(track, @trial, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # report for later position analysis
-      @log.add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesAll])
+      @log.listBadSectors(_("Sector mismatches at the following times, requiring extra trials:"),
+                          @errors)
     end
   end
 
@@ -325,10 +335,9 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     #give an update of the amount of errors and trials
     if @errors.size == 0
-      @log.add(_("Error(s) succesfully corrected, %s matches found for each chunk :)\n") % [@reqMatchesErrors])
+      @log.correctedMismatches(@reqMatchesErrors)
     else
       @log.mismatch(track, @trial, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # report for later position analysis
-      @log.add(_("%s chunk(s) didn't match %s times.\n") % [@errors.length, @reqMatchesErrors])
     end
   end
 
@@ -337,8 +346,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     puts "Minutes ripping is #{(Time.now - @timeStarted) / 60}." if @prefs.debug
 
     if (((Time.now - @timeStarted) / 60) > 30 && @prefs.maxThreads != 0)
-      @log.add(_("The drive is spinning for more than 30 minutes.\n"))
-      @log.add(_("Taking a timeout of 2 minutes to protect the hardware.\n"))
+      puts _("The drive is spinning for more than 30 minutes.")
+      puts _("Taking a timeout of 2 minutes to protect the hardware.")
       sleep(120)
       @timeStarted = Time.now # reset time
     end
@@ -349,10 +358,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     timeStarted = Time.now
 
-    if @prefs.image
-      @log.add(_("Starting to rip CD image, trial \#%s") % [@trial])
-    else
-      @log.add(_("Starting to rip track %s, trial \#%s") % [track, @trial])
+    if @trial == 1
+      @log.newTrack(@prefs.image ? 'image' : track)
     end
 
     command = "cdparanoia"
@@ -385,7 +392,9 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     command += " \"#{@out.getTempFile(track, @trial)}\""
     puts command if @prefs.debug
     @exec.launch(command) if @cancelled == false #Launch the cdparanoia command
-    @log.add(" (#{(Time.now - timeStarted).to_i} #{_("seconds")})\n")
+    # TODO: Missing Filename
+    timeElapsed = Time.now - timeStarted
+    @log.finishTrial(@trial, timeElapsed, @disc.getLengthSector(track))
     
     if noOffset
       # Range includes either the start of a negative offset or the
@@ -398,16 +407,35 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     end
   end
 
-  def getDigest(track)
-    digest = Digest::MD5.new()
-    file = File.open(@out.getTempFile(track, 1), 'r')
+  def getCRC(track, trial)
+    file = File.open(@out.getTempFile(track, trial), 'r')
+    if trial == 1
+      # Calculate the MD5 and peak level while we're at it.
+      @digest = Digest::MD5.new()
+      @digest << file.sysread(BYTES_WAV_CONTAINER)
+      @peakLevel = 0
+    else
+      file.pos += BYTES_WAV_CONTAINER
+    end
     chunksize = 100000
-    index = 0
+    index = BYTES_WAV_CONTAINER
+    crc = Zlib.crc32()
     while (index < @disc.getFileSize(track))
-      digest << file.sysread(chunksize)
+      data = file.sysread(chunksize)
+      if trial == 1
+        @digest << data
+        samples = data.unpack("v#{data.length / 2}")
+        samples.each do |sample|
+          @peakLevel = [@peakLevel, sample.abs].max
+        end
+      end
+      crc = Zlib.crc32(data, crc)
       index += chunksize
     end
     file.close()
-    @log.add(_("MD5 sum: %s\n\n") % [digest.hexdigest])
+    if trial == 1
+      @peakLevel = @peakLevel.to_f / 0xFFFF * 100
+    end
+    "%08X" % [crc]
   end
 end

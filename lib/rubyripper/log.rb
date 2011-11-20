@@ -81,6 +81,11 @@ attr_writer :encodingErrors
     @ui.update(type, message)
   end
 
+  # Print out a rip-level error (e.g. an abort)
+  def error(message)
+    add("#{message}\n")
+  end
+
   def finished
     summary()
     deleteLogfiles if @prefs.noLog
@@ -98,10 +103,42 @@ attr_writer :encodingErrors
     @ui.update("log_change", message)
   end
 
-  # Add a message to the logging file
-  def addLog(message, summary = false)
-    @logfiles.each{|logfile| logfile.print(message); logfile.flush()} # Append the messages to the logfiles
-    if summary ; @short_summary += message end
+  # Format a list of bad sectors in a rip.
+  def listBadSectors(message, errors)
+    add("       #{message}\n")
+    
+    sequential = false
+    lastSector = false
+    errors.each_pair do |k,v|
+      # TODO: Is this right?  Calculate min/sec/frm  Spin into own function.
+      if lastSector != k / BYTES_AUDIO_SECTOR - 1
+        if sequential
+          # Print the last sector in the last sequence of bad sectors
+          min = lastSector / 75 / 60
+          sec = lastSector / 75 % 60
+          frm = lastSector % 75
+          add("%02d:%02d.%02d" % [min, sec, frm])
+        end
+        
+        # New sequence starts.
+        if lastSector != false
+          add("\n")
+        end
+        
+        min = k / BYTES_AUDIO_SECTOR / 75 / 60
+        sec = k / BYTES_AUDIO_SECTOR / 75 % 60
+        frm = k / BYTES_AUDIO_SECTOR % 75
+        add("       %02d:%02d.%02d" % [min, sec, frm])
+        
+        sequential = false
+      elsif lastSector == k / BYTES_AUDIO_SECTOR - 1 and !sequential
+        # In an actual sequence, rather than a one-off
+        add("-")
+        sequential = true
+      end
+      lastSector = k / BYTES_AUDIO_SECTOR
+    end
+    add("\n")
   end
 
   def mismatch(track, trial, indexes_with_errors, size, length)
@@ -124,51 +161,90 @@ attr_writer :encodingErrors
     if trial == 0; @not_corrected_tracks << track end #Reached maxtries and still got errors
   end
 
-  def summary() #Give an overview of errors
-    if @encodingErrors ; addLog(_("\nWARNING: ENCODING ERRORS WERE DETECTED\n"), true) end
-    addLog(_("\nRIPPING SUMMARY\n\n"), true)
+  # All sectors matched message
+  def allSectorsMatched()
+    add("     #{_("All chunks matched!")}\n")
+  end
 
-    addLog(_("All chunks were tried to match at least %s times.\n") % [@prefs.reqMatchesAll], true)
+  def correctedMismatches(reqMatchesErrors)
+    add("     #{_("Corrected all sector mismatches! (%s matches found for each chunk)") % [reqMatchesErrors]}\n")
+  end
+
+  def newTrack(track)
+    if @prefs.image
+      add(_("Disc Image\n\n"))
+    else
+      add(_("Track %2d\n\n") % [track])
+    end
+    
+    # Print the filename
+    # NOTE: These two should probably be called before Log is created.
+    @out.setFreedb()
+    @out.setFileNames()
+    add(_("     Filename %s\n") % [@out.getFile(track, 'flac')]) if @prefs.flac
+    add(_("     Filename %s\n") % [@out.getFile(track, 'vorbis')]) if @prefs.vorbis
+    add(_("     Filename %s\n") % [@out.getFile(track, 'mp3')]) if @prefs.mp3
+    add(_("     Filename %s\n") % [@out.getFile(track, 'wav')]) if @prefs.wav
+    add(_("     Filename %s\n") % [@out.getFile(track, 'other')]) if @prefs.other
+    add("\n")
+  end
+
+  def finishTrial(trial, timeElapsed, trackLength)
+    add(_("     Trial %s: %s seconds (%sx)\n") % [trial, timeElapsed.to_i, sprintf("%.2f", trackLength.to_f / (timeElapsed.to_f * 75))])
+  end
+
+  def finishTrack(level, crcs, status, correctedcrc=nil)
+    add("\n")
+    add("     #{_("Peak level %.1f %%") % [level]}\n")
+    crcs.each_index do |i|
+      if i == 0
+        add("     #{_("Trial %s (Copy) CRC %s") % [i + 1, crcs[i]]}\n")
+      else
+        add("     #{_("Trial %s (Test) CRC %s") % [i + 1, crcs[i]]}\n")
+      end
+    end
+    if !correctedcrc.nil?
+      add("     #{_("Corrected CRC %s") % [correctedcrc]}\n")
+    end
+    add("     #{status}\n\n")
+  end
+
+  def copyMD5(md5sum)
+    add(_("     Copy MD5: %s\n\n") % [md5sum])
+  end
+
+  def summary() #Give an overview of errors
+    if @encodingErrors ; @short_summary += _("\nWARNING: ENCODING ERRORS WERE DETECTED\n") ; end
+    @short_summary += _("\nRIPPING SUMMARY\n\n")
+
+    @short_summary += _("All chunks were tried to match at least %s times.\n") % [@prefs.reqMatchesAll]
     if @prefs.reqMatchesAll != @prefs.reqMatchesErrors
-      addLog(_("Chunks that differed after %s trials,") % [@prefs.reqMatchesAll], true)
-      addLog(_("\nwere tried to match %s times.\n") % [@prefs.reqMatchesErrors], true)
+      @short_summary += _("Chunks that differed after %s trials,") % [@prefs.reqMatchesAll]
+      @short_summary += _("\nwere tried to match %s times.\n") % [@prefs.reqMatchesErrors]
     end
 
     if @problem_tracks.empty?
-      addLog(_("None of the tracks gave any problems\n"), true)
+      add(_("No errors occurred"))
+      @short_summary += _("None of the tracks gave any problems\n")
     elsif @not_corrected_tracks.size != 0
-      addLog(_("Some track(s) could NOT be corrected within the maximum amount of trials\n"), true)
+      add(_("There were errors which could not be corrected"))
+      @short_summary += _("Some track(s) could NOT be corrected within the maximum amount of trials\n")
       @not_corrected_tracks.each do |track|
         @rippingErrors = true
-        addLog(_("Track %s could NOT be corrected completely\n") % [track], true)
+        @short_summary += _("Track %s could NOT be corrected completely\n") % [track]
       end
     else
-      addLog(_("Some track(s) needed correction,but could\nbe corrected within the maximum amount of trials\n"), true)
+      # Is this correct for a track where errors were corrected in EAC?
+      add(_("There were errors which required correction"))
+      @short_summary += _("Some track(s) needed correction,but could\nbe corrected within the maximum amount of trials\n")
     end
+    add("\n")
+    if @encodingerrors ; add(_("There were errors during encoding\n")) ; end
 
     if !@problem_tracks.empty? # At least some correction was necessary
-      position_analyse()
       @short_summary += _("The exact positions of the suspicious chunks\ncan be found in the ripping log\n")
     end
     @logfiles.each{|logfile| logfile.close} #close all the files
-  end
-
-  def position_analyse() # Give an overview of suspicion position in the logfile
-    addLog(_("\nSUSPICIOUS POSITION ANALYSIS\n\n"))
-    addLog(_("Since there are 75 chunks per second, after making the notion of the\n"))
-    addLog(_("suspicious position, the amount of initially mismatched chunks for\nthat position is shown.\n\n"))
-    @problem_tracks.keys.sort.each do |track| # For each track show the position of the files, how many chunks of that position and amount of trials needed to solve
-      addLog(_("TRACK %s\n") % [track])
-      @problem_tracks[track].keys.sort.each do |length| #length = total seconds of suspicious position
-        minutes = length / 60 # ruby math -> 70 / 60 = 1 (how many times does 60 fit in 70)
-        seconds = length % 60 # ruby math -> 70 % 60 = 10 (leftover)
-        if @problem_tracks[track][length][1] != 0
-          addLog(_("\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n") % [sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0], @problem_tracks[track][length][1] + 1])
-        else # Position could not be corrected
-          addLog(_("\tSuspicious position : %s:%s (%sx) (COULD NOT BE CORRECTED)\n") % [ sprintf("%02d", minutes), sprintf("%02d", seconds), @problem_tracks[track][length][0]])
-        end
-      end
-    end
   end
 
   # delete the logfiles if no errors occured

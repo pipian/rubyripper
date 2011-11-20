@@ -16,18 +16,21 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/main'
+require 'rubyripper/system/execute.rb'
 
 class RippingInfoAtStart
-  def initialize(disc, log, trackSelection, prefs=nil)
+  def initialize(disc, log, trackSelection, prefs=nil, execute=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @disc = disc
     @log = log
     @tracks = trackSelection.length
     @md = disc.metadata
+    @execute = execute ? execute : Execute.new()
   end
 
   def show
     showVersion()
+    showBasicRipInfo()
     showRippingPrefs()
     showEncodingPrefs()
     showDiscInfo()
@@ -37,45 +40,80 @@ class RippingInfoAtStart
 private
 
   def showVersion
-    @log << _("This log is created by Rubyripper, version %s\n") % [$rr_version]
+    @log << _("Rubyripper v%s\n") % [$rr_version]
     @log << _("Website: http://code.google.com/p/rubyripper\n\n")
   end
 
+  def showBasicRipInfo
+    @log << _("Rubyripper extraction logfile from %s\n\n") % [Time.now.strftime("%a %b %d %H:%M:%S %Z %Y")]
+    @log << "%s / %s\n\n" % [@md.artist, @md.album]
+  end
+
   def showRippingPrefs
-    @log << _("Cdrom player used to rip:\n%s\n") % [@disc.devicename]
-    @log << _("Cdrom offset used: %s\n\n") % [@prefs.offset]
-    @log << _("Ripper used: cdparanoia %s\n") % [@prefs.rippersettings]
-    @log << _("Matches required for all chunks: %s\n") % [@prefs.reqMatchesAll]
-    @log << _("Matches required for erroneous chunks: %s\n\n") % [@prefs.reqMatchesErrors]
+    @log << _("Used drive     : %s   Device: %s\n\n") % [@disc.devicename, @prefs.cdrom]
+    
+    @log << _("Used ripper    : %s\n") % [version('cdparanoia')]
+    @log << _("Selected flags : %s\n\n") % [@prefs.rippersettings]
+    
+    @log << _("Matches required for all chunks       : %s\n") % [@prefs.reqMatchesAll]
+    @log << _("Matches required for erroneous chunks : %s\n\n") % [@prefs.reqMatchesErrors]
+
+    @log << _("Read offset correction                      : %s\n") % [@prefs.offset]
+    @log << _("Overread into Lead-In and Lead-Out          : No\n")
+    @log << _("Fill up missing offset samples with silence : %s\n") % [@prefs.padMissingSamples ? _("Yes") : _("No")]
+    @log << _("Null samples used in CRC calculations       : Yes\n\n")
   end
 
   def showEncodingPrefs
-    @log << _("Codec(s) used:\n")
-    @log << _("-flac \t-> %s (%s)\n") % [@prefs.settingsFlac, version('flac')] if @prefs.flac
-    @log << _("-vorbis\t-> %s (%s)\n") % [@prefs.settingsVorbis, version('oggenc')] if @prefs.vorbis
-    @log << _("-mp3\t-> %s\n(%s\n") % [@prefs.settingsMp3, version('lame')] if @prefs.mp3
-    @log << _("-wav\n") if @prefs.wav
-    @log << _("-other\t-> %s\n") % [@prefs.settingsOther] if @prefs.other
-  end
-
-  def version(name)
-    `#{name} --version`.split("\n")[0].strip()
-  end
-
-  def showDiscInfo
-    @log << _("\nDISC INFO\n")
-    @log << "\n" + _('Artist') + "\t= %s" % [@md.artist]
-    @log << "\n" + _('Album') + "\t= %s" % [@md.album]
-    @log << "\n" + _("Year") + "\t= %s" % [@md.year]
-    @log << "\n" + _("Genre") + "\t= %s" % [@md.genre]
-    @log << "\n" + _("Tracks") + "\t= %s (%s selected)\n\n" % [@disc.audiotracks, @tracks]
-
-    (1..@disc.audiotracks).each do |track|
-      @log << "#{sprintf("%02d", track)} - #{@md.trackname(track)}\n"
+    if @prefs.flac
+      @log << _("Used output encoder : %s\n") % [version('flac')]
+      @log << _("Selected flags      : %s\n\n") % [@prefs.settingsFlac]
+    end
+    if @prefs.vorbis
+      @log << _("Used output encoder : %s\n") % [version('oggenc')]
+      @log << _("Selected flags      : %s\n\n") % [@prefs.settingsVorbis]
+    end
+    if @prefs.mp3
+      @log << _("Used output encoder : %s\n") % [version('lame')]
+      @log << _("Selected flags      : %s\n\n") % [@prefs.settingsMp3]
+    end
+    if @prefs.wav
+      @log << _("Used output encoder : %s\n") % [_("Internal WAV Routines")]
+      @log << _("Sample format       : 44,100 Hz; 16 Bit; Stereo\n\n")
+    end
+    if @prefs.other
+      @log << _("Used output encoder : %s\n") % [_("User Defined Encoder")]
+      @log << _("Command line        : %s\n\n") % [@prefs.settingsOther]
     end
   end
 
+  def version(name)
+    @execute.launch("#{name} --version")[0].strip()
+  end
+
+  def showDiscInfo
+    @log << _("TOC of the extracted CD\n\n")
+    
+    @log << _("     Track |   Start  |  Length  | Start sector | End sector \n")
+    @log << _("    ---------------------------------------------------------\n")
+    (1..@disc.audiotracks).each do |track|
+      # TODO: Needs start sector of data tracks too.
+      start = @disc.getStartSector(track)
+      start_min = start / 75 / 60
+      start_sec = start / 75 % 60
+      start_frm = start % 60
+      
+      length = @disc.getLengthSector(track)
+      length_min = length / 75 / 60
+      length_sec = length / 75 % 60
+      length_frm = length % 60
+      
+      @log << _("       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n") % [track, start_min, start_sec, start_frm, length_min, length_sec, length_frm, start, start + length - 1]
+    end
+    @log << "\n"
+  end
+
   def showLaunch
-    @log << "\n" + _("STATUS") + "\n\n"
+    @log << "\n"
   end
 end

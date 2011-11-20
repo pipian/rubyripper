@@ -354,7 +354,7 @@ class Encode
     exec.readlines() #get all the output
 
     if Process.waitpid2(exec.pid)[1].exitstatus != 0
-      @log.add(_("WARNING: Encoding to %s exited with an error with track %s!\n") % [codec, track])
+      puts _("WARNING: Encoding to %s exited with an error with track %s!") % [codec, track]
       @log.encodingErrors = true
     end
   end
