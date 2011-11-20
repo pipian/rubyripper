@@ -147,10 +147,10 @@ attr_reader :status, :artist, :album, :year, :genre
 
   # (re)attempt creation of the dirs, when succesfull create the filenames
   def attemptDirCreation
+    createTempDir()
     if not checkDirRights ; return false end
     if not checkDirExistence() ; return false end
     createDir()
-    createTempDir()
     setFreedb()
     findExtensionOther()
     setFileNames()
