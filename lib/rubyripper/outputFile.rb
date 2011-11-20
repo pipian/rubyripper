@@ -134,7 +134,11 @@ attr_reader :status, :artist, :album, :year, :genre
     # do not allow multiple directories for various artists
     {'%a' => @artistFile, '%b' => @albumFile, '%f' => codec, '%g' => @md.genre,
     '%y' => @md.year, '%va' => @artistFile}.each do |key, value|
-      dirName.gsub!(key, value)
+      if value.nil?
+        dirName.gsub!(key, '')
+      else
+        dirName.gsub!(key, value)
+      end
     end
 
     if @md.discNumber
@@ -244,7 +248,11 @@ attr_reader :status, :artist, :album, :year, :genre
     {'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
     '%y' => @md.year, '%n' => sprintf("%02d", track), '%va' => varArtist,
     '%t' => getTrackname(track)}.each do |key, value|
-      file.gsub!(key, value)
+      if value.nil?
+        file.gsub!(key, '')
+      else
+        file.gsub!(key, value)
+      end
     end
 
     # other codec has the extension already in the command
