@@ -74,7 +74,11 @@ attr_reader :metadata
         return scanner.getLengthSector(track) - 11400
       end
     end
-    @cdparanoia.getLengthSector(track)
+    if @prefs.image
+      getStartSector(scanner.audiotracks) + @cdparanoia.getLengthSector(scanner.audiotracks) - getStartSector(track)
+    else
+      @cdparanoia.getLengthSector(track)
+    end
   end
 
   def getFileSize(track)

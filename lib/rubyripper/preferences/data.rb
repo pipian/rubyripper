@@ -133,10 +133,11 @@ module Preferences
     # MUSICBRAINZ PREFERENCES
     # Order of countries from which releases are preferred (from best
     # to worst; anything not in the list is preferred equally less than
-    # anything in the list)
+    # anything in the list) Use the two-letter country format.
+    # for example: US,UK,XW,XE,JP
     attr_accessor :preferMusicBrainzCountries
 
-    # Prefer dates which are earlier/later (or don't prefer by dates at all)
+    # Preferred release dates: 'earlier' || 'later' || 'no' (don't prefer by dates at all)
     attr_accessor :preferMusicBrainzDate
 
     # Use the earliest release date in the release-group to set the

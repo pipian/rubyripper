@@ -180,11 +180,11 @@ attr_reader :display, :tracks_to_rip, :error
   end
 
   # pack with or without support for various artists
-  def packTrackObjects(varArtist = false)
+  def packTrackObjects
     @trackInfoTable.attach(@allTracksButton, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 1st row
     @trackInfoTable.attach(@lengthLabel, 3, 4, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #4th column, 1st row
 
-    if varArtist == true
+    if @md.various?
       @trackInfoTable.attach(@varArtistLabel, 1, 2, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #2nd column, 1st row
       @trackInfoTable.attach(@tracknameLabel, 2, 3, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #3rd column, 1st row
     else
@@ -195,7 +195,7 @@ attr_reader :display, :tracks_to_rip, :error
       @trackInfoTable.attach(@checkTrackArray[index], 0, 1, 1 + index, 2 + index, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 2nd row till end
       @trackInfoTable.attach(@lengthLabelArray[index],3, 4, 1 + index, 2 + index, Gtk::FILL, Gtk::SHRINK, 0, 0) #4th column, 2nd row till end
 
-      if varArtist == true
+      if @md.various?
         @trackInfoTable.attach(@varArtistEntryArray[index], 1, 2, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
         @trackInfoTable.attach(@trackEntryArray[index], 2, 3, index + 1, index + 2, Gtk::FILL, Gtk::SHRINK, 0, 0)
       else
@@ -262,32 +262,28 @@ attr_reader :display, :tracks_to_rip, :error
     @trackInfoTable.show_all()
   end
   
+  # update the view for various artists
   def setVarArtist()
-    # restore the old info when available
-    @md.redoVarArtist()
-    # make sure each track has an artist name
-    @disc.audiotracks.times{|time| if @md.varArtists[time] == nil;  @md.varArtists[time] = _('Unknown') end}
-    # now fill the array
-    @disc.audiotracks.times{|index| @varArtistEntryArray[index].text = @md.varArtists[index]}
-    #reset the tracknames (no artist will be included)
-    @disc.audiotracks.times{|index| @trackEntryArray[index].text = @md.tracklist[index]}
-    # remove all current objects from array, as we're repacking them
-    @trackInfoTable.each{|child| @trackInfoTable.remove(child)}
-    # repack into table20
-    packTrackObjects(varArtist = true)
-    # show all updates
+    return true if @md.various?
+    @md.markVarArtist()
+    @disc.audiotracks.times{|index| @varArtistEntryArray[index].text = @md.getVarArtist(index + 1)}
+    @disc.audiotracks.times{|index| @trackEntryArray[index].text = @md.trackname(index + 1)}
+    updateTracksView()
   end
 
+  # update the view for normal artists
   def unsetVarArtist()
-    # giving the backend the signal to revert last actions
-    @md.undoVarArtist() if !@md.varArtists.empty?
-    # reset the Trackname fields (give full trackname, including detected artists)
-    @disc.audiotracks.times{|index| @trackEntryArray[index].text = @md.tracklist[index]}
-    # remove all current objects from array, as we're repacking them
+    return true unless @md.various?
+    @md.unmarkVarArtist()
+    @disc.audiotracks.times{|index| @trackEntryArray[index].text = @md.trackname(index + 1)}
+    updateTracksView()
+  end
+  
+  # remove current objects and repackage the view
+  def updateTracksView
     @trackInfoTable.each{|child| @trackInfoTable.remove(child)}
-    # repack into table20
-    packTrackObjects(varArtist = false)
-    #show all updates
+    packTrackObjects()
+    @trackInfoTable.show_all()
   end
 
   def save_updates(image=false) # save all updated info from the user
@@ -308,7 +304,7 @@ attr_reader :display, :tracks_to_rip, :error
       end
     end
 
-    unless @md.varArtists.empty?
+    if @md.various?
       @disc.audiotracks.times{|index| @md.varArtists[index] = @varArtistEntryArray[index].text}
     end
   end

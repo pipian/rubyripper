@@ -196,12 +196,15 @@ attr_reader :display
     preventThreadProblemsOnOlderBindings()
     @prefs.normalizer = saveNormalizer()
     @prefs.gain = @modus.active == 0 ? "album" : "track"
-#freedb
+#metadata
     @prefs.metadataProvider = saveMetadataProvider()
     @prefs.firstHit = @firstHit.active?
     @prefs.site = @freedbServerEntry.text
     @prefs.username = @freedbUsernameEntry.text
     @prefs.hostname = @freedbHostnameEntry.text
+    @prefs.preferMusicBrainzCountries = @entryPreferredCountry.text
+    @prefs.preferMusicBrainzDate = @chooseOriginalRelease.active? ? 'earlier' : 'later'
+    @prefs.useEarliestDate = @chooseOriginalYear.active?
 #other
     @prefs.basedir = @basedirEntry.text
     @prefs.namingNormal = @namingNormalEntry.text
@@ -223,7 +226,7 @@ attr_reader :display
   end
   
   def saveMetadataProvider
-    case @metadataChoice
+    case @metadataChoice.active
       when 0 then 'freedb'
       when 1 then 'musicbrainz'
       when 2 then 'none'
@@ -538,7 +541,7 @@ It is recommended to enable this option.")
     @metadataChoice = Gtk::ComboBox.new()
     @metadataChoice.append_text(_("Freedb"))
     @metadataChoice.append_text(_("Musicbrainz"))
-    @metadataChoice.append_text(_("Don't use a metadata provider."))
+    @metadataChoice.append_text(_("Don't use a metadata provider"))
     @table90.attach(@metadataLabel,0,1,0,1,Gtk::FILL, Gtk::SHRINK,0,0)
     @table90.attach(@metadataChoice,1,2,0,1,Gtk::FILL, Gtk::SHRINK,0,0)
     @frame90 = newFrame(_('Choose your metadata provider'), child=@table90)
@@ -590,8 +593,15 @@ It is recommended to enable this option.")
     @table92.attach(@chooseReleaseYear, 2, 3, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0)
     @frame92 = newFrame(_('Musicbrainz options'), @table92)
   end
+
+  # grey out the two frames if no metadata provider is chosen
+  def updateMetadataProviderView
+    @frame91.children.each{|child| child.sensitive = @metadataChoice.active != 2}
+    @frame92.children.each{|child| child.sensitive = @metadataChoice.active != 2}
+  end
   
-  def packMetadataFrames    
+  def packMetadataFrames
+    @metadataChoice.signal_connect("changed"){updateMetadataProviderView()}
     @page3 = Gtk::VBox.new #One VBox to rule them all
     [@frame90, @frame91, @frame92].each{|frame| @page3.pack_start(frame,false,false)}
     @page3_label = Gtk::Label.new(_("Metadata"))

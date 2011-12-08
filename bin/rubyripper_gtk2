@@ -220,11 +220,8 @@ attr_reader :instances
   
   # TODO
   def something        
-    @settingsClass = Settings.new()
-    @settings = @settingsClass.settings
     @lock = Monitor.new()
     @updateThread = nil
-    scanDrive()
   end
   
   def exitButton
