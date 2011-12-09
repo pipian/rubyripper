@@ -26,7 +26,12 @@ class CliGetAnswer
   # get the input from the user
   def get(question, default)
     @out.print(question + " [#{default}] : ")
-    input = @in.gets.strip
+    input = @in.gets
+    if input.nil?
+      input = ''
+    else
+      input = input.strip
+    end
     return input.empty? ? default : input
   end
 end
