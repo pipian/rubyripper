@@ -29,7 +29,7 @@ class CliArguments
   # Make sure the commandline options are interpreted
   def parse
     @options = {'file' => false, 'version' => false, 'verbose' => false,
-'configure' => false, 'defaults' => false, 'help' => false, 'testdisc' => false}
+'configure' => false, 'defaults' => false, 'help' => false, 'testdisc' => false, 'batch' => false}
     setParseOptions()
     getParseOptions()
   end
@@ -62,6 +62,10 @@ private
 
       opts.on("--testdisc <CD>", _("Provide a directory to stub disc queries.")) do |t|
         @options['testdisc'] = t
+      end
+
+      opts.on("-B", "--batch", _("Exit after the disc is done ripping.")) do |t|
+        @options['batch'] = t
       end
 
       opts.on_tail("-h", "--help", _("Show this usage statement.")) do |h|

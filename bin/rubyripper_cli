@@ -52,7 +52,7 @@ class CommandLineInterface
   def start
     prepare()
     startRip if @arguments.options['defaults']
-    loopMainMenu()
+    loopMainMenu() if !@arguments.options['defaults'] || !@arguments.options['batch']
   end
 
   # The only function where the lib files are reporting to
@@ -121,7 +121,7 @@ private
     else @out.puts _("Number #{choice} is not a valid choice, try again")
     end
 
-    loopMainMenu() unless choice == 99
+    loopMainMenu() unless choice == 99 or (choice == 5 and @arguments['batch'])
   end
 
   # launch the ripping process

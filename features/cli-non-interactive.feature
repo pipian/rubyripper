@@ -12,6 +12,7 @@ Feature: Command Line Interface non interactive commands
     -c, --configure      Change configuration settings.
     -d, --defaults       Skip questions and rip the disc.
         --testdisc <CD>  Provide a directory to stub disc queries.
+    -B, --batch          Exit after the disc is done ripping.
     -h, --help           Show this usage statement.
 
   """
@@ -27,6 +28,7 @@ Feature: Command Line Interface non interactive commands
     -c, --configure      Change configuration settings.
     -d, --defaults       Skip questions and rip the disc.
         --testdisc <CD>  Provide a directory to stub disc queries.
+    -B, --batch          Exit after the disc is done ripping.
     -h, --help           Show this usage statement.
 
   """
