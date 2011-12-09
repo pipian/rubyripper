@@ -88,7 +88,7 @@ class Encode
     end
 
     #give the signal we're finished
-    if track == @trackSelection[-1] && @cancelled == false
+    if (@prefs.image || track == @trackSelection[-1]) && @cancelled == false
       @threads.each{|thread| thread.join()}
       @log.finished()
     end
