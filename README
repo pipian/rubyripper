@@ -104,6 +104,12 @@ but it may not work on audio-cd's with a data track.
 
 
 4. CHANGELOG
+---------0.6.2 RELEASE------
+* fix a crash when error on end of disc
+* repair for Ruby-1.9 Net::HTTP updates
+* fix outdated assumptions for gtk binding version
+* backport a fix for separating various artists
+
 ---------0.6.1 RELEASE------
 * fix for usage of sox to de-emphasize
 * fix for slow ripping for old ruby (1.8) version
