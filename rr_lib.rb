@@ -25,8 +25,9 @@ begin
 	require 'gettext'
 	include GetText
 	bindtextdomain("rubyripper")
-rescue LoadError
-	puts "ruby-gettext is not found. Translations are disabled!"
+rescue LoadError, NoMethodError
+	puts "ruby-gettext is either not found or it is crashing."
+  puts "Translations are disabled!"
 	def _(txt)
 		txt
 	end
