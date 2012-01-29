@@ -25,9 +25,11 @@ $:.insert(0, File.expand_path('../../lib', __FILE__))
 # Try to find the rubyripper lib files
 begin
   require 'rubyripper/base'
+  require 'rubyripper/errors'
   require 'rubyripper/preferences/main'
   require 'rubyripper/system/dependency'
   require 'rubyripper/gtk2/shortMessage'
+  require 'thread'
 rescue LoadError
   puts 'The rubyripper lib files can\'t be found!'
   puts 'Perhaps you need to add the directory to the RUBYLIB variable?'
@@ -64,35 +66,33 @@ attr_reader :instances
     Gtk.main
   end
   
+  # send updates to the interface, 1 at a time
   def update(modus, value=false)
-    @updateThread.join if @updateThread != nil # one gui update at a time please
-    @updateThread = Thread.new do
+    @updateQueue ||= SizedQueue.new(1)
+    @updateQueue << Thread.new do
       if modus == "error"
         @shortMessage.show_message(value)
         changeDisplay(@shortMessage)
         sleep(5)
-        changeDisplay(@instances['GtkMetadata'])
+        changeDisplay(@gtkDisc)
         @buttons.each{|button| button.sensitive = true}
       elsif modus == "ripping_progress"
-        @instances['RipStatus'].updateProgress('ripping', value)
+        @ripStatus.updateProgress('ripping', value)
       elsif modus == "encoding_progress"
-        @instances['RipStatus'].updateProgress('encoding', value)
+        @ripStatus.updateProgress('encoding', value)
       elsif modus == "log_change"
-        @instances['RipStatus'].logChange(value)
+        @ripStatus.logChange(value)
       elsif modus == "dir_exists"
-        @instances['DirExists'] = DirExists.new(self, @rubyripper, value)
-        changeDisplay(@instances['DirExists'])
+        @dirExists = DirExists.new(self, @rubyripper, value)
+        changeDisplay(@dirExists)
       elsif modus == "finished"
         showSummary(value)
-        if @settings['eject'] == true
-          @buttontext[2].text =_("Close tray")
-          @buttonicons[2].stock = Gtk::Stock::GOTO_TOP
-        end
       else
         puts _("Ehh.. There shouldn't be anything else. WTF?")
         puts _("Secret modus = %s") % [modus]
       end
     end
+    @updateQueue.pop()
   end
   
   private
@@ -102,6 +102,17 @@ attr_reader :instances
     @gtkWindow = Gtk::Window.new('Rubyripper')
     setIconForWindow()
     @gtkWindow.set_default_size(570, 470) #width, height
+  end
+  
+  # find the icon
+  def setIconForWindow
+    iconPaths = [File.expand_path('../..', __FILE__), "/usr/local/share/icons/hicolor/128x128/apps"]
+    iconPaths.each do |path|
+      if File.exist?(file = File.join(path, 'rubyripper.png'))
+        @gtkWindow.icon = Gdk::Pixbuf.new(file)
+        break
+      end
+    end
   end
   
   # setup the central container
@@ -137,7 +148,7 @@ attr_reader :instances
   # TODO freedb multiple choice
   def scanDiscResults   
     if @gtkDisc.error.nil?
-      showAbleToEjectDisc()
+      showOpenTray if @buttontext[2].text != _("Open tray")
       @buttons.each{|button| button.sensitive = true}
       changeDisplay(@gtkDisc)
     else
@@ -147,45 +158,28 @@ attr_reader :instances
     end
   end
   
-  # change the icon and text of the button
-  def showAbleToEjectDisc
-    if @buttontext[2].text != _("Open tray")
-      @buttontext[2].set_text('_'+_("Open tray"),true)
-      @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
-    end
+  # The abort button transforms into exit when the rip is finished or aborted
+  def updateAbortButtonToExit
+    @buttontext[4].set_text('_' + _("Exit"), true)
+    @buttonicons[4].stock = Gtk::Stock::QUIT
+  end
+  
+  # The exit button transforms into abort when the rip is started
+  def updateExitButtonToAbort
+    @buttontext[4].set_text('_' + _("Abort"), true)
+    @buttonicons[4].stock = Gtk::Stock::CANCEL
   end
   
   # The central function that manages the display on the right side
   def changeDisplay(object)
-    # reset exit button
-    if @currentInstance == "RipStatus"
-      @buttontext[4].set_text('_' + _("Exit"), true)
-      @buttonicons[4].stock = Gtk::Stock::QUIT
-    end
+    updateAbortButtonToExit() if @currentInstance == "RipStatus"
 
     @mainHbox.remove(@mainHbox.children[-1]) if @currentInstance
-
-    @currentInstance = object.class.to_s #the name of the instance type
+    @currentInstance = object.class.to_s # save the name of the class as a string
     @mainHbox.add(object.display)
-
-    # update the Exit button to Abort button
-    if @currentInstance == "RipStatus"
-      @buttontext[4].set_text('_' + _("Abort"), true)
-      @buttonicons[4].stock = Gtk::Stock::CANCEL
-    end
-
+    
+    updateExitButtonToAbort if @currentInstance == "RipStatus"
     object.display.show_all()
-  end
-   
-  # find the icon
-  def setIconForWindow
-    iconPaths = [File.expand_path('../..', __FILE__), "/usr/local/share/icons/hicolor/128x128/apps"]
-    iconPaths.each do |path|
-      if File.exist?(file = File.join(path, 'rubyripper.png'))
-        @gtkWindow.icon = Gdk::Pixbuf.new(file)
-        break
-      end
-    end
   end
   
   # the leftside menu that is always visible
@@ -218,12 +212,6 @@ attr_reader :instances
     @buttons[4].signal_connect("clicked") {exitButton()}
   end
   
-  # TODO
-  def something        
-    @lock = Monitor.new()
-    @updateThread = nil
-  end
-  
   def exitButton
     if @buttontext[4].text == _("Exit")
       savePreferences(); exit()
@@ -233,7 +221,7 @@ attr_reader :instances
         @rubyripper = nil # kill the instance
         @rubyripperThread.exit() # kill the thread
         @buttons.each{|button| button.sensitive = true}
-        changeDisplay(@instances['GtkMetadata'])
+        changeDisplay(@gtkDisc)
       end
     end
   end
@@ -306,9 +294,9 @@ attr_reader :instances
     status = @settings['cd'].md.status
 
     if status == true #success
-      @instances['GtkMetadata'].updateMetadata()
-      if @currentInstance != 'GtkMetadata'
-        changeDisplay(@instances['GtkMetadata'])
+      @gtkDisc.updateMetadata()
+      if @currentInstance != 'GtkDisc'
+        changeDisplay(@gtkDisc)
       end
     elsif status[0] == "choices"
       @instances['MultipleFreedbHits'] = MultipleFreedbHits.new(status[1], self)
@@ -342,9 +330,18 @@ attr_reader :instances
     @deps.eject(@prefs.cdrom)
   end
   
-  def askForDisc
+  def showClosedTray
     @buttontext[2].set_text('_'+_("Close tray"), true)
     @buttonicons[2].stock = Gtk::Stock::GOTO_TOP
+  end
+  
+  def showOpenTray
+    @buttontext[2].set_text('_'+_("Open tray"),true)
+    @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
+  end
+  
+  def askForDisc
+    showClosedTray()
     @shortMessage.askForDisc()
     @buttons[0..2].each{|button| button.sensitive = true}
     @buttons[4].sensitive = true
@@ -355,50 +352,52 @@ attr_reader :instances
     @shortMessage.closeTray()
     changeDisplay(@shortMessage)
     @deps.closeTray(@prefs.cdrom)
-    @buttontext[2].set_text('_'+_("Open tray"),true)
-    @buttonicons[2].stock = Gtk::Stock::GOTO_BOTTOM
+    showOpenTray()
   end
 
   def startRip
     @buttons[0..3].each{|button| button.sensitive = false}
-    @instances['GtkMetadata'].save_updates(@settings['image'])
-    @settings['tracksToRip'] = @instances['GtkMetadata'].tracks_to_rip
+    @gtkDisc.save()
+    
+    require 'rubyripper/rubyripper'
+    @rubyripper = Rubyripper.new(self, @gtkDisc.disc, @gtkDisc.selection)
 
-    @rubyripper = Rubyripper.new(@settings, self) # start a new instance, keep it out the Thread for later callbacks (yet_to_implement)
-
-    status = @rubyripper.settingsOk
-    puts "status = #{status}" if @settings['debug']
-    if status == true
-      doRip()
+    errors = @rubyripper.checkConfiguration()  
+    if errors.empty?
+      updateInterfaceAndStartRip()
     else
       @buttons[0..3].each{|button| button.sensitive = true}
-      update(status[0], status[1])
+      showErrors(errors)
     end
   end
-
-  def doRip
+  
+  def updateInterfaceAndStartRip
+    require 'rubyripper/gtk2/ripStatus'
     @rubyripperThread = Thread.new do
       @buttons[0..3].each{|button| button.sensitive = false}
-      if @instances['RipStatus'] == false
-        @instances['RipStatus'] = RipStatus.new()
-      else
-        @instances['RipStatus'].reset
-      end
-
-      changeDisplay(@instances['RipStatus'])
-      @rubyripper.startRip # fire away the start shot
+      @ripStatus = RipStatus.new()
+      changeDisplay(@ripStatus)
+      @rubyripper.startRip
     end
   end
 
+  # build the text then show the errors
+  def showErrors(errors)
+    text = ''
+    text << _("Please solve the following configuration errors first:") + "\n"
+    errors.each do |error|
+      text << '  > ' + Errors.send(error[0], error[1]) + "\n"
+    end
+    update("error", text)
+  end
+  
   def showSummary(succes)
     @buttons[0..3].each{|button| button.sensitive = true}
-    @instances['Summary'] = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary, succes)
-    changeDisplay(@instances['Summary'])
-    @instances['RipStatus'].reset()
+    @gtkSummary = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary, succes)
+    changeDisplay(@gtkSummary)
+    showClosedTray if @prefs.eject == true
     @rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing
   end
-
-
 end
 
 if __FILE__ == $0

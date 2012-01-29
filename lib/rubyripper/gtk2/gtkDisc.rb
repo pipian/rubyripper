@@ -22,10 +22,11 @@ require 'rubyripper/disc/disc'
 # This is placed in the frame of the main window
 # Beside the vertical buttonbox
 class GtkDisc
-attr_reader :display, :tracks_to_rip, :error
+attr_reader :display, :tracks_to_rip, :error, :selection, :disc
 
   def initialize(disc=nil)
     @disc = disc ? disc : Disc.new()
+    @selection = []
   end
   
   def start
@@ -46,6 +47,25 @@ attr_reader :display, :tracks_to_rip, :error
       updateTracks()
     else
       @error = @disc.error
+    end
+  end
+  
+  # store any updates the user has made and save the selected tracks
+  def save
+    @md.artist = @artistEntry.text
+    @md.album = @albumEntry.text
+    @md.genre = @genreEntry.text
+    @md.year = @yearEntry.text if @yearEntry.text.to_i != 0
+    @md.discNumber = @discNumberSpin.value.to_i if @freezeCheckbox.active?
+
+    @selection = Array.new #reset the array
+    @disc.audiotracks.times do |index|
+      @md.tracklist[index] = @trackEntryArray[index].text
+      @selection << index + 1 if @checkTrackArray[index].active?
+    end
+
+    if @md.various?
+      @disc.audiotracks.times{|index| @md.varArtists[index] = @varArtistEntryArray[index].text}
     end
   end
   
@@ -284,28 +304,5 @@ attr_reader :display, :tracks_to_rip, :error
     @trackInfoTable.each{|child| @trackInfoTable.remove(child)}
     packTrackObjects()
     @trackInfoTable.show_all()
-  end
-
-  def save_updates(image=false) # save all updated info from the user
-    @md.artist = @artistEntry.text
-    @md.album = @albumEntry.text
-    @md.genre = @genreEntry.text
-    @md.year = @yearEntry.text if @yearEntry.text.to_i != 0
-    @md.discNumber = @discNumberSpin.value.to_i if @freezeCheckbox.active?
-
-    @tracks_to_rip = Array.new #reset the array
-
-    if image
-      @tracks_to_rip = ["image"]
-    else
-      @disc.audiotracks.times do |index|
-        @md.tracklist[index] = @trackEntryArray[index].text
-        if @checkTrackArray[index].active? ; @tracks_to_rip << index + 1 end
-      end
-    end
-
-    if @md.various?
-      @disc.audiotracks.times{|index| @md.varArtists[index] = @varArtistEntryArray[index].text}
-    end
   end
 end
