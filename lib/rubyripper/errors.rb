@@ -24,7 +24,8 @@ class Errors
     :noTrackSelection => _("Please select at least one track."),
     :noCodecSelected => _("Please select at least one codec."),
     :noValidUserInterface => _("No update function found in the user interface"),
-    :binaryNotFound => _("%s is needed, but not detected on your system!"),    
+    :binaryNotFound => _("%s is needed, but not detected on your system!"),
+    :dirNotWritable => _("Can't create output directory!\nYou have no writing access for dir %s"),
   }
 
 private

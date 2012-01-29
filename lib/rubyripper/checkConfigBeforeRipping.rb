@@ -23,11 +23,13 @@ class CheckConfigBeforeRipping
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-  def initialize(userInterface, disc, trackSelection, prefs=nil, deps=nil)
+  def initialize(userInterface, disc, trackSelection, fileScheme, file=nil, prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @ui = userInterface
     @disc = disc
     @trackSelection = trackSelection
+    @fileScheme = fileScheme
+    @file = file ? file : FileAndDir.instance()
     @deps = deps ? deps : Dependency.instance()
     @errors = Array.new
   end
@@ -39,6 +41,7 @@ class CheckConfigBeforeRipping
     checkDisc()
     checkTrackSelection()
     checkBinaries()
+    checkOutputLocationWritable()
     return @errors
   end
 
@@ -90,6 +93,14 @@ private
   def isFound?(binary)
     if !@deps.installed?(binary)
       addError(:binaryNotFound, binary.capitalize)
+    end
+  end
+  
+  def checkOutputLocationWritable
+    @fileScheme.dir.values.each do |location|
+      unless @file.writable?(location)
+        addError(:dirNotWritable, location)
+      end
     end
   end
 end

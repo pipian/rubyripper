@@ -66,12 +66,15 @@ attr_reader :instances
     Gtk.main
   end
   
+  def showDisc ; scanDiscResults(); end
+  def continueRip ; updateInterfaceAndStartRip ; end
+  
   # send updates to the interface, 1 at a time
   def update(modus, value=false)
     @updateQueue ||= SizedQueue.new(1)
     @updateQueue << Thread.new do
       if modus == "error"
-        @shortMessage.show_message(value)
+        @shortMessage.showMessage(value)
         changeDisplay(@shortMessage)
         sleep(5)
         changeDisplay(@gtkDisc)
@@ -83,7 +86,8 @@ attr_reader :instances
       elsif modus == "log_change"
         @ripStatus.logChange(value)
       elsif modus == "dir_exists"
-        @dirExists = DirExists.new(self, @rubyripper, value)
+        require 'rubyripper/gtk2/gtkDirExists'
+        @dirExists = GtkDirExists.new(self, @rubyripper, value)
         changeDisplay(@dirExists)
       elsif modus == "finished"
         showSummary(value)

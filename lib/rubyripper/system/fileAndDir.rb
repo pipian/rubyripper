@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'singleton'
+require 'fileutils'
 
 # This class will help with the file and directory operations of Ruby
 class FileAndDir
@@ -74,7 +75,14 @@ class FileAndDir
       Dir.mkdir(dirs.pop())
     end
   end
-
+  
+  # check if the existing root dir is writable, so subdirs can be created
+  def writable?(dir)
+    until(File.exist?(dir) && File.directory?(dir))
+      dir = File.dirname(dir)
+    end
+    File.writable?(dir)
+  end
 
   # * filename = Name of the existing file
   def read(filename, encoding='r')
