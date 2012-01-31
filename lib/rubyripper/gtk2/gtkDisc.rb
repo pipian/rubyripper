@@ -59,13 +59,10 @@ attr_reader :display, :tracks_to_rip, :error, :selection, :disc
     @md.discNumber = @discNumberSpin.value.to_i if @freezeCheckbox.active?
 
     @selection = Array.new #reset the array
-    @disc.audiotracks.times do |index|
-      @md.tracklist[index] = @trackEntryArray[index].text
-      @selection << index + 1 if @checkTrackArray[index].active?
-    end
-
-    if @md.various?
-      @disc.audiotracks.times{|index| @md.varArtists[index] = @varArtistEntryArray[index].text}
+    (1..@disc.audiotracks).each do |track|
+      @md.setTrackname(track, @trackEntryArray[track-1].text)
+      @md.setVarArtist(track, @varArtistEntryArray[track-1].text) if @md.various?
+      @selection << track if @checkTrackArray[track-1].active?
     end
   end
   
