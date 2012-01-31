@@ -209,8 +209,8 @@ attr_reader :status, :artist, :album, :year, :genre, :dir
     file = @fileName.dup
 
     # the artist should always refer to the artist that is valid for the track
-    if getVarArtist(track + 1) == '' ; artist = @md.artist ; varArtist = ''
-    else artist = getVarArtist(track + 1) ; varArtist = @md.artist end
+    if getVarArtist(track) == '' ; artist = @md.artist ; varArtist = ''
+    else artist = getVarArtist(track) ; varArtist = @md.artist end
 
     {'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
     '%y' => @md.year, '%n' => sprintf("%02d", track), '%va' => varArtist,
