@@ -246,7 +246,7 @@ attr_reader :status, :artist, :album, :year, :genre, :dir
     end
     if @md.various?
       (1..@disc.audiotracks).each do |track|
-        @varArtists[track] = tagFilter(@md.varArtists[track])
+        @varArtists[track] = tagFilter(@md.getVarArtist(track))
       end
     end
   end
