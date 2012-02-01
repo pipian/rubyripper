@@ -30,13 +30,21 @@ describe Metadata::FilterFiles do
   
   context "When determining the filename it has to be valid" do
     it "should replace the slash sign /" do
-      data.artist = 'AC/DC'
-      filter.artist.should == 'ACDC'
+      filter.filter('01 AC/DC - Jailbreak.mp3').should == '01 ACDC - Jailbreak.mp3'
+    end
+    
+    it "should remove starting dots from filenames ." do
+      filter.filter('.Who knows - Someone.flac').should == 'Who knows - Someone.flac'
+      filter.filter('...Who knows - Someone.flac').should == 'Who knows - Someone.flac'
+    end
+    
+    it "should keep other dots however ." do
+      filter.filter('.Who. knows - Someone.flac').should == 'Who. knows - Someone.flac'
+      filter.filter('Who. knows - Someone.flac').should == 'Who. knows - Someone.flac'
     end
     
     it "should be able to combine all logic for filterFiles + filterDirs + filterAll" do
-      data.tracklist = {1=>" AC/DC \"\\Don`t_won\342\200\230t_know ??_** >< | "}
-      filter.trackname(1).should == "ACDC Don't won't know"
+      filter.filter(" AC/DC \"\\Don`t_won\342\200\230t_know ??_** >< | ").should == "ACDC Don't won't know"
     end
   end
 end
