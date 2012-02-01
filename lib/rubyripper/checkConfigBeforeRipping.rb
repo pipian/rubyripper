@@ -55,9 +55,7 @@ private
   end
 
   def checkMinOneCodec()
-    unless @prefs.flac || @prefs.vorbis || @prefs.mp3 || @prefs.wav || @prefs.other
-      addError(:noCodecSelected)
-    end
+    addError(:noCodecSelected) if @prefs.codecs.empty?
   end
 
   def checkUserInterface
