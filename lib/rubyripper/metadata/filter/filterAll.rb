@@ -18,8 +18,7 @@
 require 'rubyripper/preferences/main'
 
 module Metadata
-  class FilterAll
-    
+  class FilterAll   
     def initialize(data, prefs=nil)
       @md = data
       @prefs = prefs ? prefs : Preferences::Main.instance

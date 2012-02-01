@@ -29,7 +29,7 @@ describe Metadata::FilterDirs do
     prefs.stub!(:noCapitals).and_return false
   end
   
-  context "Plus it should filter out any conflicting characters for the FAT filesystem" do
+  context "When determining the dirname it should be valid in a FAT filesystem" do
     it "should replace the dollar sign $" do
       data.artist = 'I like CA$H'
       filter.artist.should == 'I like CASH'

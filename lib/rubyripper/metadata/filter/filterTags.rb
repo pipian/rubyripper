@@ -21,7 +21,7 @@ require 'rubyripper/metadata/filter/filterAll'
 module Metadata
   class FilterTags < FilterAll   
     def initialize(data, prefs=nil)
-      super(data, prefs=nil)
+      super(data, prefs)
     end
     
     def filter(item)
