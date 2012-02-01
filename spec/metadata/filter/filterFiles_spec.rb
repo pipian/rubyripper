@@ -20,9 +20,8 @@ require 'rubyripper/metadata/filter/filterFiles'
 
 describe Metadata::FilterFiles do
   
-  let(:data) {Metadata::Data.new()}
   let(:prefs) {double('Preferences').as_null_object}
-  let(:filter) {Metadata::FilterFiles.new(data, prefs)}
+  let(:filter) {Metadata::FilterFiles.new(nil, prefs)}
   
   before(:each) do
     prefs.stub!(:noSpaces).and_return false

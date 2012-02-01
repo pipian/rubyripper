@@ -20,12 +20,13 @@ require 'rubyripper/metadata/filter/filterDirs'
 # Store all metadata
 module Metadata
   class FilterFiles < FilterDirs
-    def initialize(data, prefs=nil)
+    def initialize(data=nil, prefs=nil)
       super(data, prefs)
     end
     
     def filter(item)
       item.gsub!('/', '') #no slashes allowed in filenames
+      while(item[0] == '.'); item = item[1..-1] ; end
       item = super(item)
     end
   end
