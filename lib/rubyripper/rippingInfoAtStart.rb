@@ -26,6 +26,7 @@ class RippingInfoAtStart
     @tracks = trackSelection.length
     @md = disc.metadata
     @execute = execute ? execute : Execute.new()
+    @logString = String.new
   end
 
   def show
@@ -35,55 +36,56 @@ class RippingInfoAtStart
     showEncodingPrefs()
     showDiscInfo()
     showLaunch()
+    updateInterface()
   end
 
 private
 
   def showVersion
-    @log << _("Rubyripper v%s\n") % [$rr_version]
-    @log << _("Website: http://code.google.com/p/rubyripper\n\n")
+    @logString << _("Rubyripper v%s\n") % [$rr_version]
+    @logString << _("Website: http://code.google.com/p/rubyripper\n\n")
   end
 
   def showBasicRipInfo
-    @log << _("Rubyripper extraction logfile from %s\n\n") % [Time.now.strftime("%a %b %d %H:%M:%S %Z %Y")]
-    @log << "%s / %s\n\n" % [@md.artist, @md.album]
+    @logString << _("Rubyripper extraction logfile from %s\n\n") % [Time.now.strftime("%a %b %d %H:%M:%S %Z %Y")]
+    @logString << "%s / %s\n\n" % [@md.artist, @md.album]
   end
 
   def showRippingPrefs
-    @log << _("Used drive     : %s   Device: %s\n\n") % [@disc.devicename, @prefs.cdrom]
+    @logString << _("Used drive     : %s   Device: %s\n\n") % [@disc.devicename, @prefs.cdrom]
     
-    @log << _("Used ripper    : %s\n") % [version('cdparanoia')]
-    @log << _("Selected flags : %s\n\n") % [@prefs.rippersettings]
+    @logString << _("Used ripper    : %s\n") % [version('cdparanoia')]
+    @logString << _("Selected flags : %s\n\n") % [@prefs.rippersettings]
     
-    @log << _("Matches required for all chunks       : %s\n") % [@prefs.reqMatchesAll]
-    @log << _("Matches required for erroneous chunks : %s\n\n") % [@prefs.reqMatchesErrors]
+    @logString << _("Matches required for all chunks       : %s\n") % [@prefs.reqMatchesAll]
+    @logString << _("Matches required for erroneous chunks : %s\n\n") % [@prefs.reqMatchesErrors]
 
-    @log << _("Read offset correction                      : %s\n") % [@prefs.offset]
-    @log << _("Overread into Lead-In and Lead-Out          : No\n")
-    @log << _("Fill up missing offset samples with silence : %s\n") % [@prefs.padMissingSamples ? _("Yes") : _("No")]
-    @log << _("Null samples used in CRC calculations       : Yes\n\n")
+    @logString << _("Read offset correction                      : %s\n") % [@prefs.offset]
+    @logString << _("Overread into Lead-In and Lead-Out          : No\n")
+    @logString << _("Fill up missing offset samples with silence : %s\n") % [@prefs.padMissingSamples ? _("Yes") : _("No")]
+    @logString << _("Null samples used in CRC calculations       : Yes\n\n")
   end
 
   def showEncodingPrefs
     if @prefs.flac
-      @log << _("Used output encoder : %s\n") % [version('flac')]
-      @log << _("Selected flags      : %s\n\n") % [@prefs.settingsFlac]
+      @logString << _("Used output encoder : %s\n") % [version('flac')]
+      @logString << _("Selected flags      : %s\n\n") % [@prefs.settingsFlac]
     end
     if @prefs.vorbis
-      @log << _("Used output encoder : %s\n") % [version('oggenc')]
-      @log << _("Selected flags      : %s\n\n") % [@prefs.settingsVorbis]
+      @logString << _("Used output encoder : %s\n") % [version('oggenc')]
+      @logString << _("Selected flags      : %s\n\n") % [@prefs.settingsVorbis]
     end
     if @prefs.mp3
-      @log << _("Used output encoder : %s\n") % [version('lame')]
-      @log << _("Selected flags      : %s\n\n") % [@prefs.settingsMp3]
+      @logString << _("Used output encoder : %s\n") % [version('lame')]
+      @logString << _("Selected flags      : %s\n\n") % [@prefs.settingsMp3]
     end
     if @prefs.wav
-      @log << _("Used output encoder : %s\n") % [_("Internal WAV Routines")]
-      @log << _("Sample format       : 44,100 Hz; 16 Bit; Stereo\n\n")
+      @logString << _("Used output encoder : %s\n") % [_("Internal WAV Routines")]
+      @logString << _("Sample format       : 44,100 Hz; 16 Bit; Stereo\n\n")
     end
     if @prefs.other
-      @log << _("Used output encoder : %s\n") % [_("User Defined Encoder")]
-      @log << _("Command line        : %s\n\n") % [@prefs.settingsOther]
+      @logString << _("Used output encoder : %s\n") % [_("User Defined Encoder")]
+      @logString << _("Command line        : %s\n\n") % [@prefs.settingsOther]
     end
   end
 
@@ -92,10 +94,10 @@ private
   end
 
   def showDiscInfo
-    @log << _("TOC of the extracted CD\n\n")
+    @logString << _("TOC of the extracted CD\n\n")
     
-    @log << _("     Track |   Start  |  Length  | Start sector | End sector \n")
-    @log << _("    ---------------------------------------------------------\n")
+    @logString << _("     Track |   Start  |  Length  | Start sector | End sector \n")
+    @logString << _("    ---------------------------------------------------------\n")
     # KLUDGE: Temporarily toggle @prefs.image off to get the right sectors
     old_image = @prefs.image
     @prefs.image = false
@@ -111,13 +113,18 @@ private
       length_sec = length / 75 % 60
       length_frm = length % 60
       
-      @log << _("       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n") % [track, start_min, start_sec, start_frm, length_min, length_sec, length_frm, start, start + length - 1]
+      @logString << _("       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n") % [track, start_min, start_sec, start_frm, length_min, length_sec, length_frm, start, start + length - 1]
     end
     @prefs.image = old_image
-    @log << "\n"
+    @logString << "\n"
   end
 
   def showLaunch
-    @log << "\n"
+    @logString << "\n"
+  end
+  
+  def updateInterface
+    @log << @logString
+    @logString = nil
   end
 end

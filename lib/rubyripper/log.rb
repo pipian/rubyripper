@@ -25,11 +25,11 @@ class Log
 attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
-  def initialize(disc, outputFile, userInterface, updatePercForEachTrack, prefs=nil, fileAndDir=nil)
+  def initialize(disc, fileScheme, userInterface, updatePercForEachTrack, prefs=nil, fileAndDir=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @file = fileAndDir ? fileAndDir : FileAndDir.instance
     @md = disc.metadata
-    @out = outputFile
+    @out = fileScheme
     @ui = userInterface
     @updatePercForEachTrack = updatePercForEachTrack
   end

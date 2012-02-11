@@ -18,6 +18,18 @@
 #The Data class stores all preferences
 module Preferences
   class Data
+    
+    # return all active codecs in an array
+    def codecs
+      codecs = Array.new
+      codecs << 'flac' if flac
+      codecs << 'mp3' if mp3
+      codecs << 'vorbis' if vorbis
+      codecs << 'wav' if wav
+      codecs << 'other' if other
+      codecs
+    end
+    
     # RIPPING PREFERENCES
     # The location of the drive that does the ripping
     attr_accessor :cdrom

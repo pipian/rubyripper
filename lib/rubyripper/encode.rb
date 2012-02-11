@@ -31,9 +31,9 @@ require 'rubyripper/preferences/main'
 class Encode
   attr_writer :cancelled
 
-  def initialize(outputFile, log, trackSelection, disc, deps=nil, exec=nil, prefs=nil)
+  def initialize(fileScheme, log, trackSelection, disc, deps=nil, exec=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @out = outputFile
+    @out = fileScheme
     @log = log
     @trackSelection = trackSelection
     @disc = disc

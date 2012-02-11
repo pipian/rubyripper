@@ -15,7 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# OutputFile is a helpclass that defines all the names of the directories,
+# FileScheme is a helpclass that defines all the names of the directories,
 # filenames and tags. It filters out special characters that are not
 # well supported in the different platforms. It also offers some help
 # functions to create the output dirs and to get a preview of the output.
@@ -26,8 +26,8 @@
 require 'rubyripper/preferences/main'
 require 'fileutils'
 
-class OutputFile
-attr_reader :status, :artist, :album, :year, :genre
+class FileScheme
+attr_reader :status, :artist, :album, :year, :genre, :dir
 
   # prefs = prefs object
   # disc = disc object
@@ -39,8 +39,6 @@ attr_reader :status, :artist, :album, :year, :genre
     @trackSelection = trackSelection
 
     @codecs = ['flac', 'vorbis', 'mp3', 'wav', 'other']
-    # Status of the class is false until proven otherwise
-    @status = false
 
     # the output of the dirs for each codec, and files for each tracknumber + codec.
     @dir = Hash.new
@@ -56,12 +54,21 @@ attr_reader :status, :artist, :album, :year, :genre
     @varArtists = Hash.new
     @otherExtension = String.new
   end
-
-  def start()
+  
+  def prepare
     splitDirFile()
     checkNames()
     setDirectory()
-    attemptDirCreation()
+  end
+  
+  # (re)attempt creation of the dirs, when succesfull create the filenames
+  def createDirs
+    createDir()
+    createTempDir()
+    setFreedb()
+    findExtensionOther()
+    setFileNames()
+    createFiles()
   end
 
   # split the filescheme into a dir and a file
@@ -149,19 +156,6 @@ attr_reader :status, :artist, :album, :year, :genre
     return File.expand_path(File.join(@prefs.basedir, dirName))
   end
 
-  # (re)attempt creation of the dirs, when succesfull create the filenames
-  def attemptDirCreation
-    if not checkDirRights ; return false end
-    if not checkDirExistence() ; return false end
-    createDir()
-    createTempDir()
-    setFreedb()
-    findExtensionOther()
-    setFileNames()
-    createFiles()
-    @status = true
-  end
-
   def findExtensionOther
     if @prefs.other
       @prefs.settingsOther =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
@@ -177,33 +171,6 @@ attr_reader :status, :artist, :album, :year, :genre
         createPlaylist(codec)
       end
     end
-  end
-
-  # check write access of the output dirs
-  def checkDirRights
-    @dir.values.each do |directory|
-      dir = directory
-      # search for the first existing directory
-      while not File.directory?(dir) ; dir = File.dirname(dir) end
-
-      if not File.writable?(dir)
-        @status = ["error", _("Can't create output directory!\nYou have no writing acces in dir %s") % [dir]]
-        return false
-      end
-    end
-    return true
-  end
-
-  # check the existence of the output dir
-  def checkDirExistence
-    @dir.values.each do |dir|
-      puts dir if @prefs.debug
-      if File.directory?(dir)
-        @status = ["dir_exists", dir]
-        return false
-      end
-    end
-    return true
   end
 
   # create the output dirs
@@ -242,8 +209,8 @@ attr_reader :status, :artist, :album, :year, :genre
     file = @fileName.dup
 
     # the artist should always refer to the artist that is valid for the track
-    if getVarArtist(track + 1) == '' ; artist = @md.artist ; varArtist = ''
-    else artist = getVarArtist(track + 1) ; varArtist = @md.artist end
+    if getVarArtist(track) == '' ; artist = @md.artist ; varArtist = ''
+    else artist = getVarArtist(track) ; varArtist = @md.artist end
 
     {'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
     '%y' => @md.year, '%n' => sprintf("%02d", track), '%va' => varArtist,
@@ -279,7 +246,7 @@ attr_reader :status, :artist, :album, :year, :genre
     end
     if @md.various?
       (1..@disc.audiotracks).each do |track|
-        @varArtists[track] = tagFilter(@md.varArtists[track])
+        @varArtists[track] = tagFilter(@md.getVarArtist(track))
       end
     end
   end
@@ -358,13 +325,11 @@ attr_reader :status, :artist, :album, :year, :genre
       end
     end
     @dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
-    attemptDirCreation()
   end
 
   # remove the existing dir, starting with the files in it
   def overwriteDir
     @dir.values.each{|dir| cleanDir(dir) if File.directory?(dir)}
-    attemptDirCreation()
   end
 
     # clean a directory, starting with the files in it

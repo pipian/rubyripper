@@ -17,50 +17,57 @@
 
 # The main program is launched from the class Rubyripper
 class Rubyripper
-attr_reader :outputDir, :outputFile, :log
+attr_reader :outputDir, :fileScheme, :log
 
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object
   # * trackSelection = an array with selected tracks
-  def initialize(userInterface, disc, trackSelection, prefs=nil)
+  def initialize(userInterface, disc, trackSelection, file=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @ui = userInterface
     @disc = disc
     @trackSelection = trackSelection
+    @file = file ? file : FileAndDir.instance()
     puts "trackselection = #{@trackSelection}"
   end
 
   # check if all is ready to go
   def checkConfiguration
+    require 'rubyripper/fileScheme'
+    @fileScheme = FileScheme.new(@disc, @trackSelection)
+    @fileScheme.prepare()
+    
     require 'rubyripper/checkConfigBeforeRipping'
-    return CheckConfigBeforeRipping.new(@ui, @disc, @trackSelection).result
+    return CheckConfigBeforeRipping.new(@ui, @disc, @trackSelection, @fileScheme).result
+  end
+  
+  # check the existence of the output dir
+  def dirStillAvailable
+    @fileScheme.dir.values.each{|dir| return false if @file.exists?(dir) }
+    return true
   end
 
   # do some neccesary preparation and start the ripping
   def startRip
-    autofixCommonMistakes()
-    calculatePercentageUpdateForProgressbar()
-    createHelpObjects()
-
-    @outputFile.start() # TODO find a better name for the class and function
-    @log.start() # TODO find a better name for the class and function
-    @rippingInfoAtStart.show()
-
+    if dirStillAvailable
+      @fileScheme.createDirs()
+      autofixCommonMistakes()
+      calculatePercentageUpdateForProgressbar()
+      createHelpObjects()
+      @log.start() # TODO find a better name for the class and function
+      @rippingInfoAtStart.show()
+      @ripper.ripTracks()
+    else
+      @ui.update("dir_exists", @fileScheme.dir.values[0])
+    end
     # @disc.md.saveChanges() # TODO update the local freedb file
-    # @outputDir = @prefs['Out'].getDir() # TODO ask if directory is available
     #waitForToc() # TODO ??
-
-    @ripper.ripTracks()
   end
 
   def createHelpObjects
-    # determine file locations
-    require 'rubyripper/outputFile'
-    @outputFile = OutputFile.new(@disc, @trackSelection)
-
     # create the logfile + handle user interface updates + summary of errors
     require 'rubyripper/log'
-    @log = Log.new(@disc, @outputFile, @ui, @updatePercForEachTrack)
+    @log = Log.new(@disc, @fileScheme, @ui, @updatePercForEachTrack)
 
     # show basic info for current rip and settings
     require 'rubyripper/rippingInfoAtStart'
@@ -68,11 +75,11 @@ attr_reader :outputDir, :outputFile, :log
 
     # to execute the encoding
     require 'rubyripper/encode'
-    @encoding = Encode.new(@outputFile, @log, @trackSelection, @disc)
+    @encoding = Encode.new(@fileScheme, @log, @trackSelection, @disc)
 
     # to execute the ripping
     require 'rubyripper/secureRip'
-    @ripper = SecureRip.new(@trackSelection, @disc, @outputFile, @log, @encoding)
+    @ripper = SecureRip.new(@trackSelection, @disc, @fileScheme, @log, @encoding)
   end
 
   def calculatePercentageUpdateForProgressbar()
@@ -165,12 +172,10 @@ attr_reader :outputDir, :outputFile, :log
   end
 
   def postfixDir
-    @outputFile.postfixDir()
+    @fileScheme.postfixDir()
   end
 
   def overwriteDir
-    @outputFile.overwriteDir()
+    @fileScheme.overwriteDir()
   end
-
-
 end
