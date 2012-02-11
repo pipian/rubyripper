@@ -421,7 +421,12 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     index = BYTES_WAV_CONTAINER
     crc = Zlib.crc32()
     while (index < @disc.getFileSize(track))
-      data = file.sysread(chunksize)
+      begin
+        data = file.sysread(chunksize)
+      rescue EOFError
+        # Unexpected end-of-file.  End the CRC/digest calculation here.
+        break
+      end
       if trial == 1
         @digest << data
         samples = data.unpack("v#{data.length / 2}")
