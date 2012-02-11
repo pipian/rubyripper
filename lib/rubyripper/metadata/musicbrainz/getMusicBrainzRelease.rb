@@ -100,7 +100,7 @@ private
   # analyze the reponse code and assign neccesary action
   def analyzeQueryResult(reply)
     # What's in an XML response?
-    if reply.root.name == 'error'
+    if reply.root.nil? || reply.root.name == 'error'
       noReleasesFound()
     else
       releases = REXML::XPath::match(reply, '//metadata/disc/release-list/release', {''=>MMD_NAMESPACE})
