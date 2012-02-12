@@ -242,7 +242,7 @@ attr_reader :status, :artist, :album, :year, :genre, :dir
     @genre = tagFilter(@md.genre)
     @year = tagFilter(@md.year)
     (1..@disc.audiotracks).each do |track|
-      @tracklist[track] = tagFilter(@md.tracklist[track])
+      @tracklist[track] = tagFilter(@md.trackname(track))
     end
     if @md.various?
       (1..@disc.audiotracks).each do |track|
