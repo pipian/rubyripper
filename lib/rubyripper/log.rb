@@ -25,6 +25,8 @@ class Log
 attr_reader :rippingErrors, :encodingErrors, :short_summary
 attr_writer :encodingErrors
 
+  BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
+
   def initialize(disc, fileScheme, userInterface, updatePercForEachTrack, prefs=nil, fileAndDir=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @file = fileAndDir ? fileAndDir : FileAndDir.instance
