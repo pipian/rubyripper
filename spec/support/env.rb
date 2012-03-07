@@ -15,9 +15,14 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# Help function for translations
-def _(txt)
-  return txt
+$run_specs = true
+
+# define a lightweight alternative for translations
+module GetText
+  def _(txt) ; txt ; end
+  def GetText.bindtextdomain(domain) ; ; end
+  def GetText._(txt) ; txt ; end
 end
 
-$run_specs = true
+def _(txt) ; txt ; end
+def bindtextdomain(domain) ; ; end

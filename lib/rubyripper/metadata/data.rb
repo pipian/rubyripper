@@ -18,6 +18,10 @@
 # Store all metadata
 module Metadata
   class Data
+    include GetText
+    GetText.bindtextdomain("rubyripper")
+    def self._(txt) ; GetText._(txt) ; end 
+    
     attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtist,
       :extraDiscInfo, :discid, :discNumber
 

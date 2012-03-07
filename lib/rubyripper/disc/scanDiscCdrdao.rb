@@ -31,7 +31,10 @@
 require 'rubyripper/preferences/main'
 
 class ScanDiscCdrdao
-attr_reader :log, :status, :dataTracks, :discType, :tracks,
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :log, :status, :dataTracks, :discType, :tracks,
     :artist, :album
 
   def initialize(execute, prefs=nil)

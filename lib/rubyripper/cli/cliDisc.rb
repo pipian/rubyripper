@@ -22,7 +22,10 @@ require 'rubyripper/preferences/main'
 
 # Metadata class is responsible for showing and editing the metadata
 class CliDisc
-attr_reader :cd, :error
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+  
+  attr_reader :cd, :error
 
   # setup the different objects
   def initialize(out=nil, int=nil, bool=nil, string=nil, prefs=nil)

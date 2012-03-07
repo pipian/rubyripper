@@ -24,14 +24,29 @@ Thread.abort_on_exception = true
 # Make sure the locale files work before installing
 ENV['GETTEXT_PATH'] = File.join($localdir, '/data/locale')
 
-# Set translation functions, $" contains all loaded libs in an array
-if $".join().include?('gettext.rb')
-	include GetText
-	bindtextdomain("rubyripper")
-else
-	def _(txt)
-		return txt
-	end
-end
+begin
+  raise() if ENV.key?('cucumber')
+  require 'gettext'
+  class TestIfGetTextDoesNotCrash
+    include GetText
+    bindtextdomain("rubyripper")
+    _("test")
+  end
+rescue Exception => error
+  unless ENV.key?('cucumber')
+    if error.class == LoadError
+      puts "ruby-gettext is not found. Translations are disabled!" 
+    elsif error.class == NoMethodError
+      puts error.exception()
+      puts error.backtrace()
+      puts "ruby-gettext is crashing. Translations are disabled!"
+    end
+  end
 
+  module GetText
+    def _(txt) ; txt ; end
+    def GetText._(txt) ; txt ; end
+    def GetText.bindtextdomain(domain) ; end
+  end
+end
 

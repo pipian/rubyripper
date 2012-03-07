@@ -22,7 +22,10 @@ require 'rubyripper/disc/disc'
 # This is placed in the frame of the main window
 # Beside the vertical buttonbox
 class GtkDisc
-attr_reader :display, :tracks_to_rip, :error, :selection, :disc
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :display, :tracks_to_rip, :error, :selection, :disc
 
   def initialize(disc=nil)
     @disc = disc ? disc : Disc.new()

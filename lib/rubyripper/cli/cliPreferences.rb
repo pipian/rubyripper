@@ -23,6 +23,8 @@ require 'rubyripper/cli/cliGetAnswer'
 # CliPreferences is responsible for showing and editing the preferences
 # It also interpretes the parameters when loaded
 class CliPreferences
+  include GetText
+  GetText.bindtextdomain("rubyripper")
 
   def initialize(arguments, out=nil, int=nil, bool=nil, string=nil, prefs=nil)
     @options = arguments.options
@@ -393,6 +395,7 @@ private
   end
 
   def showExampleForFilescheme(sort, filescheme)
+    print _("Example filename: ")
     if sort == 'normal'
       @out.puts Preferences.showFilenameNormal(@prefs.basedir, filescheme)
     else

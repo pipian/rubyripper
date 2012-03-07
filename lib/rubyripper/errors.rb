@@ -17,7 +17,12 @@
 
 # This helper class gives the proper phrase for an error code
 class Errors
+  include GetText
+  GetText.bindtextdomain("rubyripper")  
+  def self._(txt) ; GetText._(txt) ; end
+  
   @@list = {
+    :noDiscYet => _("No disc found at trial %s!"),
     :noDiscInDrive => _("There is no audio disc ready in drive %s."),
     :wrongParameters => _("%s does not recognize the parameters used."),
     :unknownDrive => _("The device %s doesn't exist on your system!"),

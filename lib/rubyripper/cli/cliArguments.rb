@@ -20,6 +20,9 @@ require 'optparse'
 
 # Interpretes the parameters when loaded
 class CliArguments
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+  
   attr_reader :options
 
   def initialize(out=nil)

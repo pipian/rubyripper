@@ -21,6 +21,8 @@ require 'rubyripper/preferences/main'
 
 # Tracklist class is responsible for showing and editing the metadata
 class CliTracklist
+  include GetText
+  GetText.bindtextdomain("rubyripper")
 
   def initialize(disc, out=nil, int=nil, prefs=nil)
     @out = out ? out : $stdout

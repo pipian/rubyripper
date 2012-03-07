@@ -22,6 +22,8 @@ require 'rubyripper/system/execute'
 
 # class that gets the freedb string
 class CalcFreedbID
+  include GetText
+  GetText.bindtextdomain("rubyripper")
 
   # setup some references to needed objects
   def initialize(disc, prefs=nil, deps=nil,exec=nil)    
@@ -51,7 +53,7 @@ private
 
     if @freedbString.nil?
       if @prefs.debug
-        puts _("warning: discid or cd-discid isn't found on your system!)")
+        puts _("Warning: discid or cd-discid isn't found on your system!)")
         puts _("Using fallback...")
       end
       manualCalcFreedb()

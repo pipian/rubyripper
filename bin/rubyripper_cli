@@ -38,6 +38,8 @@ end
 
 # The class that initiates the commandline interface
 class CommandLineInterface
+  include GetText
+  GetText.bindtextdomain("rubyripper")
 
   # start up the interface
   def initialize(arguments=nil, out=nil, prefs=nil, disc=nil, int=nil, tracks=nil)

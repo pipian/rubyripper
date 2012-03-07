@@ -50,6 +50,9 @@ end
 class GraphicalUserInterface
 attr_reader :instances
 
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
   def initialize(prefs=nil, short=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @shortMessage = short ? short : ShortMessage.new()

@@ -17,6 +17,8 @@
 
 # return an answer from the user, typed into the screen
 class CliGetAnswer
+  include GetText
+  GetText.bindtextdomain("rubyripper")
 
   def initialize(out=nil)
     @in = $TST_INPUT ? $TST_INPUT : $stdin
@@ -50,7 +52,7 @@ class CliGetBool < CliGetAnswer
     input = super
 
     if !@valid.key?(input)
-      @out.print("Please answer #{_('yes')} or #{_('no')}. Try again.\n")
+      @out.print_("Please answer %s or %s. Try again.\n") % [_('yes'), _('no')]
       get(question, default)
     else
       return @valid[input]
@@ -74,7 +76,7 @@ class CliGetInt < CliGetAnswer
     elsif input.to_i > 0 || input == "0"
       return input.to_i
     else
-      @out.print("Please enter an integer value. Try again.\n")
+      @out.print_("Please enter an integer value. Try again.\n")
       get(question, default)
     end
   end

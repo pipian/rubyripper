@@ -20,7 +20,10 @@
 # Notice that the left part of the gui with the icons is not in this class
 
 class GtkDirExists
-attr_reader :display
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :display
 
   def initialize(gui, rubyripper, dirname)
     @label = Gtk::Label.new(_("The directory %s already exists.\n\nWhat do you want rubyripper to do?") % [dirname])

@@ -19,7 +19,10 @@
 # This class is responsible for building the frame on the right side
 
 class GtkPreferences
-attr_reader :display
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :display
 
   DEFAULT_COLUMN_SPACINGS = 5
   DEFAULT_ROW_SPACINGS = 4
@@ -653,16 +656,16 @@ It is recommended to enable this option.")
   end
   
   def showFileNormal
-    @example_label.text = Preferences.showFilenameNormal( @basedirEntry.text, @namingNormalEntry.text)
+    @example_label.text = _("Example filename: ") + Preferences.showFilenameNormal( @basedirEntry.text, @namingNormalEntry.text)
   end
   
   def showFileVarious
-    @example_label.text = Preferences.showFilenameVarious(
+    @example_label.text = _("Example filename: ") + Preferences.showFilenameVarious(
     @basedirEntry.text, @namingVariousEntry.text)
   end
   
   def showFileImage
-    @example_label.text = Preferences.showFilenameVarious(
+    @example_label.text = _("Example filename: ") + Preferences.showFilenameVarious(
     @basedirEntry.text, @namingImageEntry.text)
   end
 

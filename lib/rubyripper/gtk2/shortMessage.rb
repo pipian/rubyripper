@@ -19,7 +19,10 @@
 # Notice that the left part of the gui with the icons is not in this class
 
 class ShortMessage
-attr_reader :display
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :display
 
   def initialize(prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance

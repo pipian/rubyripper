@@ -17,7 +17,8 @@
 
 require 'rubyripper/preferences/main'
 require 'rubyripper/disc/permissionDrive'
-require 'rubyripper/system/execute.rb'
+require 'rubyripper/system/execute'
+require 'rubyripper/errors'
 
 # A class that interprets the toc with the info of cdparanoia
 # It's purpose is pure for ripping the correct audio, not for
@@ -126,7 +127,7 @@ class ScanDiscCdparanoia
       unsetError()
       readDisc()
       break if @error.nil? || @prefs.testdisc || $run_specs
-      @out.puts _("No disc found at trial %s!") % [trial]
+      @out.puts Errors.noDiscYet(trial)
       sleep(1)
     end
   end
