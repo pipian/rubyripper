@@ -27,6 +27,11 @@ ENV['GETTEXT_PATH'] = File.join($localdir, '/data/locale')
 begin
   raise() if ENV.key?('cucumber')
   require 'gettext'
+  
+  # workaround to prevent crash for gettext
+  # source: https://github.com/rubygems/rubygems/issues/171
+  module Gem;def self.all_load_paths;[];end;end
+  
   class TestIfGetTextDoesNotCrash
     include GetText
     bindtextdomain("rubyripper")
