@@ -78,7 +78,7 @@ private
   end
 
   def noValidChoiceMessage(choice)
-    @out.puts _("Number #{choice} is not a valid choice, try again.")
+    @out.puts _("Number %s is not a valid choice, try again.") % [choice]
   end
 
   # add missing track, remove existing track

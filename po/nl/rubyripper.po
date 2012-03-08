@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.7.0a1\n"
 "POT-Creation-Date: 2012-03-08 21:42+0100\n"
-"PO-Revision-Date: 2010-05-24 22:58+0100\n"
+"PO-Revision-Date: 2012-03-08 22:49+0100\n"
 "Last-Translator: Bouke Woudstra <rubyripperdev@gmail.com>\n"
 "Language-Team: Dutch\n"
 "Language: \n"
@@ -17,14 +17,12 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: lib/rubyripper/system/dependency.rb:46
-#, fuzzy
 msgid "WARNING: No eject utility found!"
-msgstr "Geen lade-uitwerp programma gevonden!"
+msgstr "Let op: Geen lade-uitwerp programma gevonden!"
 
 #: lib/rubyripper/system/dependency.rb:101
-#, fuzzy
 msgid "Rubyripper can't be used without cdparanoia!"
-msgstr "Gebruikte ripper: cdparanoia %s\n"
+msgstr "Rubyripper is niet bruikbaar zonder het programma cdparanoia!"
 
 #: lib/rubyripper/system/dependency.rb:102
 msgid "You won't be able to use the gtk2 interface."
@@ -36,8 +34,7 @@ msgstr ""
 
 #: lib/rubyripper/system/dependency.rb:104
 #: lib/rubyripper/system/dependency.rb:106
-msgid ""
-"You won't have accurate freedb string calculation unless %s is installed."
+msgid "You won't have accurate freedb string calculation unless %s is installed."
 msgstr ""
 
 #: lib/rubyripper/system/dependency.rb:108
@@ -104,9 +101,8 @@ msgid "No pregaps, silences or pre-emphasis detected\n"
 msgstr "Geen pregaps, stiltes of pre-emphasis gevonden\n"
 
 #: lib/rubyripper/disc/scanDiscCdrdao.rb:177
-#, fuzzy
 msgid "Silence detected for disc : %s sectors\n"
-msgstr "Stilte gevonden voor track %s: %s sectoren\n"
+msgstr "Stilte gedetecteerd voor disk: %s sectoren\n"
 
 #: lib/rubyripper/disc/scanDiscCdrdao.rb:180
 msgid "Pregap detected for track %s : %s sectors\n"
@@ -130,16 +126,14 @@ msgid "Using fallback..."
 msgstr ""
 
 #: lib/rubyripper/disc/permissionDrive.rb:81
-#, fuzzy
 msgid ""
 "ERROR: Cdrom drive %s does not exist on your system!\n"
 "Please configure your cdrom drive first."
 msgstr ""
-"Cdrom apparaat %s bestaat niet op uw systeem!\n"
+"FOUT: Cdrom apparaat %s bestaat niet op uw systeem!\n"
 "Configureert u aub eerst het juiste apparaat."
 
 #: lib/rubyripper/disc/permissionDrive.rb:89
-#, fuzzy
 msgid ""
 "You don't have read permissions for device\n"
 "\n"
@@ -153,8 +147,8 @@ msgstr ""
 "voor apparaat %s op uw systeem! Deze rechten zijn\n"
 "benodigd voor cdparanoia om een audio-cd te detecteren.\n"
 "\n"
-"%s\n"
-"Misschien dat u nog moet worden toegevoegd aan de groep in /etc/group"
+"Misschien dat u nog moet worden toegevoegd aan de juiste groep\n"
+"met het programma gpasswd."
 
 #: lib/rubyripper/disc/permissionDrive.rb:95
 #: lib/rubyripper/disc/permissionDrive.rb:109
@@ -231,7 +225,8 @@ msgstr ""
 msgid "Open log file"
 msgstr "Open logbestand"
 
-#: lib/rubyripper/gtk2/summary.rb:54 lib/rubyripper/gtk2/summary.rb:62
+#: lib/rubyripper/gtk2/summary.rb:54
+#: lib/rubyripper/gtk2/summary.rb:62
 msgid "%s is not found on your system!"
 msgstr ""
 "Het programma %s is niet op\n"
@@ -247,7 +242,7 @@ msgstr "Het rippen en encoderen is voltooid"
 
 #: lib/rubyripper/gtk2/ripStatus.rb:37
 msgid "Encoding progress %s %"
-msgstr "Voortgang encoden %s %"
+msgstr "Voortgang encoderen %s %"
 
 #: lib/rubyripper/gtk2/ripStatus.rb:40
 msgid "Ripping progress %s %"
@@ -257,37 +252,43 @@ msgstr "Voortgang rippen %s %"
 msgid "<b>Ripping status</b>"
 msgstr "<b>Rip status</b>"
 
-#: lib/rubyripper/gtk2/ripStatus.rb:88 lib/rubyripper/gtk2/ripStatus.rb:89
+#: lib/rubyripper/gtk2/ripStatus.rb:88
+#: lib/rubyripper/gtk2/ripStatus.rb:89
 msgid "Not yet started (0%)"
 msgstr "Nog niet begonnen (0%)"
 
-#: lib/rubyripper/gtk2/gtkDisc.rb:101 lib/rubyripper/cli/cliDisc.rb:93
-#: lib/rubyripper/cli/cliDisc.rb:158 lib/rubyripper/cli/cliDisc.rb:190
+#: lib/rubyripper/gtk2/gtkDisc.rb:101
+#: lib/rubyripper/cli/cliDisc.rb:93
+#: lib/rubyripper/cli/cliDisc.rb:158
+#: lib/rubyripper/cli/cliDisc.rb:190
 msgid "Artist:"
 msgstr "Artiest:"
 
-#: lib/rubyripper/gtk2/gtkDisc.rb:102 lib/rubyripper/cli/cliDisc.rb:94
+#: lib/rubyripper/gtk2/gtkDisc.rb:102
+#: lib/rubyripper/cli/cliDisc.rb:94
 #: lib/rubyripper/cli/cliDisc.rb:159
 msgid "Album:"
 msgstr "Album:"
 
-#: lib/rubyripper/gtk2/gtkDisc.rb:103 lib/rubyripper/cli/cliDisc.rb:95
+#: lib/rubyripper/gtk2/gtkDisc.rb:103
+#: lib/rubyripper/cli/cliDisc.rb:95
 #: lib/rubyripper/cli/cliDisc.rb:160
 msgid "Genre:"
 msgstr "Genre:"
 
-#: lib/rubyripper/gtk2/gtkDisc.rb:104 lib/rubyripper/cli/cliDisc.rb:96
+#: lib/rubyripper/gtk2/gtkDisc.rb:104
+#: lib/rubyripper/cli/cliDisc.rb:96
 #: lib/rubyripper/cli/cliDisc.rb:161
 msgid "Year:"
 msgstr "Jaar:"
 
 #: lib/rubyripper/gtk2/gtkDisc.rb:105
 msgid "Mark disc as various artist"
-msgstr "Markeer disk als verscheide artiesten"
+msgstr "Markeer disk als verscheidene artiesten"
 
 #: lib/rubyripper/gtk2/gtkDisc.rb:107
 msgid "Freeze disc info"
-msgstr "Bevries disk info"
+msgstr "Bewaar disk info (meerdere schijven)"
 
 #: lib/rubyripper/gtk2/gtkDisc.rb:108
 msgid "Disc:"
@@ -453,8 +454,7 @@ msgstr "seconden"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:368
 msgid "Uncheck this if cdparanoia crashes with your ripping drive."
-msgstr ""
-"Schakel deze optie uit als cdparanoia problemen geeft met uw cdrom drive"
+msgstr "Schakel deze optie uit als cdparanoia problemen geeft met uw cdrom drive"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:369
 msgid ""
@@ -642,9 +642,8 @@ msgid "Freedb options"
 msgstr "Freedb opties"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:577
-#, fuzzy
 msgid "Preferred countries:"
-msgstr "Voorkeuren"
+msgstr "Voorkeur voor landen:"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:579
 msgid "Preferred release date:"
@@ -655,9 +654,8 @@ msgid "Preferred year (metadata):"
 msgstr ""
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:597
-#, fuzzy
 msgid "Musicbrainz options"
-msgstr "Rip opties"
+msgstr "Musicbrainz opties"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:610
 #: lib/rubyripper/cli/cliPreferences.rb:107
@@ -700,9 +698,8 @@ msgstr "Bestandsnaam schema"
 #: lib/rubyripper/gtk2/gtkPreferences.rb:663
 #: lib/rubyripper/gtk2/gtkPreferences.rb:668
 #: lib/rubyripper/cli/cliPreferences.rb:398
-#, fuzzy
 msgid "Example filename: "
-msgstr "Een voorbeeld bestandsnaam is nu: %s.ext"
+msgstr "Voorbeeld bestandsnaam:"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:685
 msgid "Log file viewer: "
@@ -729,12 +726,10 @@ msgid "Debug options"
 msgstr "Debug opties"
 
 #: lib/rubyripper/gtk2/shortMessage.rb:33
-#, fuzzy
 msgid "...Scanning drive %s for an audio disc."
 msgstr ""
-"Welkom bij rubyripper %s.\n"
-"Uw cdrom drive %s wordt gescand\n"
-"op de aanwezigheid van een audiodisk..."
+"...cdrom drive %s wordt gescand\n"
+"op de aanwezigheid van een audiodisk."
 
 #: lib/rubyripper/gtk2/shortMessage.rb:37
 msgid "Welcome to rubyripper %s."
@@ -753,14 +748,12 @@ msgstr ""
 "De cdrom drive kan worden ingesteld bij 'Voorkeuren'."
 
 #: lib/rubyripper/gtk2/shortMessage.rb:50
-#, fuzzy
 msgid "Opening tray of drive %s."
-msgstr "De lade van %s wordt geopend"
+msgstr "De lade van %s wordt geopend."
 
 #: lib/rubyripper/gtk2/shortMessage.rb:54
-#, fuzzy
 msgid "Closing tray of the drive."
-msgstr "De lade van %s wordt geopend"
+msgstr "De lade van het apparaat wordt gesloten."
 
 #: lib/rubyripper/gtk2/shortMessage.rb:58
 msgid ""
@@ -833,15 +826,13 @@ msgid "Sector mismatches at the following times, requiring extra trials:"
 msgstr ""
 
 #: lib/rubyripper/secureRip.rb:349
-#, fuzzy
 msgid "The drive is spinning for more than 30 minutes."
-msgstr "De drive is al meer dan 30 minuten actief.\n"
+msgstr "De drive is al meer dan 30 minuten actief."
 
 #: lib/rubyripper/secureRip.rb:350
 #, fuzzy
 msgid "Taking a timeout of 2 minutes to protect the hardware."
-msgstr ""
-"De drive krijgt een timeout van 2 minuten om de hardware te beschermen.\n"
+msgstr "De drive krijgt een timeout van 2 minuten om de hardware te beschermen.\n"
 
 #: lib/rubyripper/metadata/data.rb:28
 msgid "Unknown"
@@ -852,14 +843,12 @@ msgid "Track %s"
 msgstr "Track %s"
 
 #: lib/rubyripper/errors.rb:25
-#, fuzzy
 msgid "No disc found at trial %s!"
-msgstr "Geen audio disk gevonden in %s"
+msgstr "Geen audio disk gevonden met poging %s"
 
 #: lib/rubyripper/errors.rb:26
-#, fuzzy
 msgid "There is no audio disc ready in drive %s."
-msgstr "Geen audio disk gevonden in %s"
+msgstr "Geen audio disk gevonden in drive %s."
 
 #: lib/rubyripper/errors.rb:27
 msgid "%s does not recognize the parameters used."
@@ -1059,8 +1048,10 @@ msgid ""
 "\n"
 msgstr "Track %s"
 
-#: lib/rubyripper/log.rb:186 lib/rubyripper/log.rb:187
-#: lib/rubyripper/log.rb:188 lib/rubyripper/log.rb:189
+#: lib/rubyripper/log.rb:186
+#: lib/rubyripper/log.rb:187
+#: lib/rubyripper/log.rb:188
+#: lib/rubyripper/log.rb:189
 #: lib/rubyripper/log.rb:190
 msgid "     Filename %s\n"
 msgstr ""
@@ -1124,11 +1115,8 @@ msgid "There were errors which could not be corrected"
 msgstr ""
 
 #: lib/rubyripper/log.rb:233
-msgid ""
-"Some track(s) could NOT be corrected within the maximum amount of trials\n"
-msgstr ""
-"Sommige track(s) konden NIET worden gerepareerd binnen het maximum aantal "
-"pogingen\n"
+msgid "Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr "Sommige track(s) konden NIET worden gerepareerd binnen het maximum aantal pogingen\n"
 
 #: lib/rubyripper/log.rb:236
 msgid "Track %s could NOT be corrected completely\n"
@@ -1190,7 +1178,8 @@ msgstr "Laat uitgebreide uitvoer zien."
 msgid "Change configuration settings."
 msgstr "Verander configuratie instellingen."
 
-#: lib/rubyripper/cli/cliArguments.rb:62 lib/rubyripper/cli/cliArguments.rb:94
+#: lib/rubyripper/cli/cliArguments.rb:62
+#: lib/rubyripper/cli/cliArguments.rb:94
 msgid "Skip questions and rip the disc."
 msgstr "Sla de vragen over en rip de disk."
 
@@ -1245,7 +1234,8 @@ msgstr "TOC analyse"
 msgid "Don't change any setting"
 msgstr "99) Verander geen instellingen"
 
-#: lib/rubyripper/cli/cliPreferences.rb:130 bin/rubyripper_cli:120
+#: lib/rubyripper/cli/cliPreferences.rb:130
+#: bin/rubyripper_cli:120
 #, fuzzy
 msgid "\"Number #{choice} is not a valid choice, try again\""
 msgstr "Dit is niet een toegestaan getal. Probeer het nog een keer"
@@ -1639,15 +1629,18 @@ msgstr ""
 msgid "New naming scheme (q to quit)"
 msgstr "Nieuw %s naamschema (a om te annuleren) : "
 
-#: lib/rubyripper/cli/cliGetAnswer.rb:47 lib/rubyripper/cli/cliGetAnswer.rb:55
+#: lib/rubyripper/cli/cliGetAnswer.rb:47
+#: lib/rubyripper/cli/cliGetAnswer.rb:55
 msgid "yes"
 msgstr "ja"
 
-#: lib/rubyripper/cli/cliGetAnswer.rb:47 bin/rubyripper_cli:70
+#: lib/rubyripper/cli/cliGetAnswer.rb:47
+#: bin/rubyripper_cli:70
 msgid "y"
 msgstr "j"
 
-#: lib/rubyripper/cli/cliGetAnswer.rb:47 lib/rubyripper/cli/cliGetAnswer.rb:55
+#: lib/rubyripper/cli/cliGetAnswer.rb:47
+#: lib/rubyripper/cli/cliGetAnswer.rb:55
 msgid "no"
 msgstr "nee"
 
@@ -1675,7 +1668,8 @@ msgstr ""
 msgid "Back to main menu"
 msgstr ""
 
-#: lib/rubyripper/cli/cliTracklist.rb:81 lib/rubyripper/cli/cliDisc.rb:143
+#: lib/rubyripper/cli/cliTracklist.rb:81
+#: lib/rubyripper/cli/cliDisc.rb:143
 #: lib/rubyripper/cli/cliDisc.rb:172
 #, fuzzy
 msgid "\"Number #{choice} is not a valid choice, try again.\""
@@ -1688,37 +1682,33 @@ msgid "AUDIO DISC FOUND"
 msgstr ""
 
 #: lib/rubyripper/cli/cliDisc.rb:69
-#, fuzzy
 msgid "Number of tracks: %s"
-msgstr "Huidige selectie van tracks: %s"
+msgstr "Aantal tracks: %s"
 
 #: lib/rubyripper/cli/cliDisc.rb:70
 msgid "Total playtime: %s"
 msgstr ""
 
-#: lib/rubyripper/cli/cliDisc.rb:97 lib/rubyripper/cli/cliDisc.rb:162
-#, fuzzy
+#: lib/rubyripper/cli/cliDisc.rb:97
+#: lib/rubyripper/cli/cliDisc.rb:162
 msgid "Extra disc info:"
-msgstr "Bevries disk info"
+msgstr "Extra disk info:"
 
 #: lib/rubyripper/cli/cliDisc.rb:98
-#, fuzzy
 msgid "Marked as various disc? [%s]"
-msgstr "Markeer disk als verscheide artiesten"
+msgstr "Markeer disk als verscheide artiesten [%s]"
 
 #: lib/rubyripper/cli/cliDisc.rb:122
 msgid "** EDIT METADATA **"
 msgstr ""
 
 #: lib/rubyripper/cli/cliDisc.rb:124
-#, fuzzy
 msgid "Edit the disc info"
-msgstr "2) Bewerk de disk info"
+msgstr "Bewerk de disk info"
 
 #: lib/rubyripper/cli/cliDisc.rb:125
-#, fuzzy
 msgid "Edit the track info"
-msgstr "3) Bewerk de track info"
+msgstr "Bewerk de track info"
 
 #: lib/rubyripper/cli/cliDisc.rb:126
 msgid "Return to main menu"
@@ -1728,19 +1718,18 @@ msgstr ""
 msgid "*** EDIT DISC INFO ***"
 msgstr ""
 
-#: lib/rubyripper/cli/cliDisc.rb:151 lib/rubyripper/cli/cliDisc.rb:180
+#: lib/rubyripper/cli/cliDisc.rb:151
+#: lib/rubyripper/cli/cliDisc.rb:180
 msgid "Back to metadata menu"
 msgstr ""
 
 #: lib/rubyripper/cli/cliDisc.rb:177
-#, fuzzy
 msgid "*** EDIT TRACK INFO ***"
-msgstr "TRACK INFO"
+msgstr "*** BEWERK TRACK INFO ***"
 
 #: lib/rubyripper/cli/cliDisc.rb:192
-#, fuzzy
 msgid "Trackname:"
-msgstr "Gebruikersnaam:"
+msgstr "Tracknaam:"
 
 #: bin/rubyripper_gtk2:95
 msgid "Ehh.. There shouldn't be anything else. WTF?"
@@ -1750,12 +1739,16 @@ msgstr "Ehh.. Hier zou niets meer moeten zijn. WTF?"
 msgid "Secret modus = %s"
 msgstr "Geheime modus =  %s"
 
-#: bin/rubyripper_gtk2:155 bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:319
+#: bin/rubyripper_gtk2:155
+#: bin/rubyripper_gtk2:194
+#: bin/rubyripper_gtk2:319
 #: bin/rubyripper_gtk2:343
 msgid "Open tray"
 msgstr "Open lade"
 
-#: bin/rubyripper_gtk2:167 bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:220
+#: bin/rubyripper_gtk2:167
+#: bin/rubyripper_gtk2:194
+#: bin/rubyripper_gtk2:220
 msgid "Exit"
 msgstr "Afsluiten"
 
@@ -1763,7 +1756,8 @@ msgstr "Afsluiten"
 msgid "Abort"
 msgstr "Afbreken"
 
-#: bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:239
+#: bin/rubyripper_gtk2:194
+#: bin/rubyripper_gtk2:239
 msgid "Preferences"
 msgstr "Voorkeuren"
 
@@ -1783,7 +1777,8 @@ msgstr "Disk info"
 msgid "Close tray"
 msgstr "Sluit lade"
 
-#: bin/rubyripper_gtk2:391 bin/rubyripper_cli:139
+#: bin/rubyripper_gtk2:391
+#: bin/rubyripper_cli:139
 msgid "Please solve the following configuration errors first:"
 msgstr ""
 
@@ -1792,19 +1787,16 @@ msgid "Do you want to change your settings? (y/n) : "
 msgstr "Wilt u de instellingen veranderen? (j/n) : "
 
 #: bin/rubyripper_cli:82
-#, fuzzy
 msgid "Rubyripper version %s"
-msgstr "Dit logbestand is aangemaakt door Rubyripper, versie %s\n"
+msgstr "Rubyripper versie %s"
 
 #: bin/rubyripper_cli:97
-#, fuzzy
 msgid "* RUBYRIPPER MAIN MENU *"
-msgstr "*** RUBYRIPPER INSTELLINGEN ***"
+msgstr "*** RUBYRIPPER HOOFDMENU ***"
 
 #: bin/rubyripper_cli:99
-#, fuzzy
 msgid "Change preferences"
-msgstr "Voorkeuren"
+msgstr "Verander uw voorkeuren"
 
 #: bin/rubyripper_cli:100
 msgid "Scan drive for audio disc"
@@ -1815,9 +1807,8 @@ msgid "Change metadata"
 msgstr ""
 
 #: bin/rubyripper_cli:102
-#, fuzzy
 msgid "Select the tracks to rip (default = all)"
-msgstr "1) Geef aan welke tracks u wilt rippen"
+msgstr "Geef aan welke tracks u wilt rippen (standaard = alles)"
 
 #: bin/rubyripper_cli:103
 msgid "Rip the disc!"
@@ -1828,13 +1819,12 @@ msgid "Exit rubyripper..."
 msgstr ""
 
 #: bin/rubyripper_cli:113
-#, fuzzy
 msgid "Thanks for using rubyripper."
-msgstr "Laad huidige versie van rubyripper zien."
+msgstr "Bedankt voor het gebruiken van rubyripper."
 
 #: bin/rubyripper_cli:114
 msgid "Have a nice day!"
-msgstr ""
+msgstr "Nog een prettige dag!"
 
 #: bin/rubyripper_cli:146
 msgid "Rip is canceled, exiting..."

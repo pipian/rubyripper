@@ -139,10 +139,6 @@ private
     end
   end
 
-  def noValidChoiceMessage
-    @out.puts _("Number #{choice} is not a valid choice, try again.")
-  end
-
   def showSubMenuDisc()
     @out.puts ""
     @out.puts _('*** EDIT DISC INFO ***')
@@ -169,7 +165,7 @@ private
   end
 
   def noValidChoiceMessage(choice)
-    @out.puts _("Number #{choice} is not a valid choice, try again.")
+    @out.puts _("Number %s is not a valid choice, try again.") % [choice]
   end
 
   def showSubMenuTracks
