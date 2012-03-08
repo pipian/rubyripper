@@ -101,6 +101,7 @@ if ARGV.include?('--help') || ARGV.include?('-h') || ARGV.length == 0
   puts "--enable-lang=<xx>  (install specific locale file, separate with a comma)"
   puts ""
   puts "--update-lang  (updates the locale files)"
+  puts "--update-mo (just update the binary translations)"
   puts "--update-lib (resets file locations in ruby files)"
   puts ""
   exit()
@@ -127,9 +128,13 @@ def update_lang #will be called by the self-created Makefile :)
       puts "For official releases the po files are already updated."
       puts "\n", '*' * 80, "\n"
     end
-    GetText.create_mofiles()
+    update_mo()
   end
   exit()
+end
+
+def update_mo
+  GetText.create_mofiles()
 end
 
 def check_deps
@@ -213,6 +218,8 @@ ARGV.each do |argument|
     argument[14..-1].split(',').each{|lang| if $LANG_SUPPORT.include?(lang) ; $LANG << lang end}
   elsif argument == "--update-lang"
     update_lang()
+  elsif argument == "--update-mo"
+    update_mo()
   elsif argument == "--update-lib"
 # TODO    update_lib()
     exit()

@@ -40,7 +40,7 @@ private
     if @@list.key?(name)
       return _("Error:") + ' ' + @@list[name] % args.to_ary
     else
-      puts "WARNING: #{name} {args} not found in error list"
+      puts "Warning: #{name} {args} not found in error list"
     end  
   end
 end
