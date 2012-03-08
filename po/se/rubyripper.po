@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: Rubyripper 0.6.0\n"
-"POT-Creation-Date: 2010-06-18 21:20+0200\n"
+"Project-Id-Version: Rubyripper 0.7.0a1\n"
+"POT-Creation-Date: 2012-03-08 21:42+0100\n"
 "PO-Revision-Date: 2010-08-25 14:28+0100\n"
 "Last-Translator: Joachim Nyqvist <Joachim@JNyqvist.se>\n"
 "Language-Team: sv <Joachim@JNyqvist.se>\n"
@@ -12,644 +12,731 @@ msgstr ""
 "X-Poedit-Language: Swedish\n"
 "X-Poedit-Country: SWEDEN\n"
 
-#: rubyripper_cli.rb:62
-msgid "Show current version of rubyripper."
-msgstr "Visa nuvarande version av rubyripper"
+#: lib/rubyripper/system/dependency.rb:46
+#, fuzzy
+msgid "WARNING: No eject utility found!"
+msgstr "Inget utmatningsverktyg hittat!"
 
-#: rubyripper_cli.rb:66
-msgid "Load configuration settings from file <FILE>."
-msgstr "Ladda konfigurationsfil från fil <FILE>."
+#: lib/rubyripper/system/dependency.rb:101
+#, fuzzy
+msgid "Rubyripper can't be used without cdparanoia!"
+msgstr "Extraherare använde: cdparanoia %s\n"
 
-#: rubyripper_cli.rb:69
-msgid "Display verbose output."
-msgstr "Visa utförlig utdata."
-
-#: rubyripper_cli.rb:72
-msgid "Change configuration settings."
-msgstr "Ändra konfigurationsinställningar."
-
-#: rubyripper_cli.rb:75
-#: rubyripper_cli.rb:95
-msgid "Skip questions and rip the disc."
-msgstr "Hoppa över frågorna och extrahera skivan."
-
-#: rubyripper_cli.rb:78
-msgid "Show this usage statement."
-msgstr "Visa detta användningskommando"
-
-#: rubyripper_cli.rb:93
-msgid "Verbose output specified."
-msgstr "Utförlig utdata angiven."
-
-#: rubyripper_cli.rb:94
-msgid "Configure option specified."
-msgstr "Konfigurera alternativ som anges."
-
-#: rubyripper_cli.rb:96
-msgid "Use config file "
-msgstr "Använd konfigurationsfil"
-
-#: rubyripper_cli.rb:100
-msgid "*** RUBYRIPPER SETTINGS ***"
-msgstr "*** RUBYRIPPER INSTÄLLNINGAR ***"
-
-#: rubyripper_cli.rb:102
-msgid "** ENCODING **"
-msgstr "** OMKODNING **"
-
-#: rubyripper_cli.rb:103
-msgid "1)  flac [%s] , settings: %s"
-msgstr "1)  flac [%s] , inställningar: %s"
-
-#: rubyripper_cli.rb:104
-msgid "2)  vorbis [%s] , settings: %s"
-msgstr "2)  vorbis [%s] , inställningar: %s"
-
-#: rubyripper_cli.rb:105
-msgid "3)  mp3 [%s] , settings: %s"
-msgstr "3)  mp3 [%s] , inställningar: %s"
-
-#: rubyripper_cli.rb:106
-msgid "4)  wav [%s]"
-msgstr "4)  wav [%s]"
-
-#: rubyripper_cli.rb:107
-msgid "5)  other [%s], settings: %s"
-msgstr "5)  andra [%s], inställningar: %s"
-
-#: rubyripper_cli.rb:108
-msgid "6)  playlist support [%s]"
-msgstr "6)  stöd för spellista [%s]"
-
-#: rubyripper_cli.rb:109
-msgid "7)  encode while ripping [%s]"
-msgstr "7)  omkoda under extrahering [%s]"
-
-#: rubyripper_cli.rb:111
-msgid "** RIPPING **"
-msgstr "** EXTRAHERAR **"
-
-#: rubyripper_cli.rb:112
-msgid "8)  cdrom : %s with offset %s"
-msgstr "8)  cdrom : %s med korrigering %s"
-
-#: rubyripper_cli.rb:113
-msgid ""
-"   **Find your offset at http://www.accuraterip.com/driveoffsets.htm.\n"
-"   **Your drive model is shown in the logfile."
+#: lib/rubyripper/system/dependency.rb:102
+msgid "You won't be able to use the gtk2 interface."
 msgstr ""
-"   **Hitta din korrigering på http://www.accuraterip.com/driveoffsets.htm.\n"
-"   **Din läsarenhet visas i loggen."
 
-#: rubyripper_cli.rb:114
-msgid "9)  passing extra cdparanoia parameters : %s"
-msgstr "9)  passera extra cdparanoia parametrar : %s"
-
-#: rubyripper_cli.rb:115
-msgid "10) match all chunks : %s"
-msgstr "10) matcha alla bitar : %s"
-
-#: rubyripper_cli.rb:116
-msgid "11) match erroneous chunks : %s"
-msgstr "11) matcha felaktiga bitar : %s"
-
-#: rubyripper_cli.rb:117
-msgid "12) maximum trials : %s"
-msgstr "12) max antal försök : %s"
-
-#: rubyripper_cli.rb:118
-msgid "13) eject disc after ripping [%s]"
-msgstr "13) mata ut skiva efter extrahering [%s]"
-
-#: rubyripper_cli.rb:120
-msgid "** NAMING SCHEME **"
-msgstr "** NAMN SCHEMA **"
-
-#: rubyripper_cli.rb:121
-msgid "14) base directory : %s"
-msgstr "14) huvudkatalog : %s"
-
-#: rubyripper_cli.rb:122
-msgid "15) standard scheme: %s"
-msgstr "15) standard schema : %s"
-
-#: rubyripper_cli.rb:123
-msgid "16) various artist scheme: %s"
-msgstr "16) schema vid olika artister : %s"
-
-#: rubyripper_cli.rb:125
-msgid "** FREEDB  **"
-msgstr "** FREEDB  **"
-
-#: rubyripper_cli.rb:126
-msgid "17) fetch cd info with freedb [%s]"
-msgstr "17) hämta information om CD med freedb [%s]"
-
-#: rubyripper_cli.rb:127
-msgid "18) always use first hit [%s]"
-msgstr "18) använd alltid första träffen [%s]"
-
-#: rubyripper_cli.rb:128
-msgid "19) site = %s"
-msgstr "19) sida = %s"
-
-#: rubyripper_cli.rb:129
-msgid "20) username = %s"
-msgstr "20) användarnamn = %s"
-
-#: rubyripper_cli.rb:130
-msgid "21) hostname = %s"
-msgstr "21) värdnamn = %s"
-
-#: rubyripper_cli.rb:132
-msgid "88) config file = %s"
-msgstr "88) konfigurationsfil = %s"
-
-#: rubyripper_cli.rb:133
-msgid "99) Don't change any setting"
-msgstr "99) Ändra inte någon inställning"
-
-#: rubyripper_cli.rb:139
-msgid "Please type the number of the setting you wish to change : "
-msgstr "Vänligen ange numret på den inställning du vill ändra:"
-
-#: rubyripper_cli.rb:143
-msgid "wav disabled"
-msgstr "wav inaktiverat"
-
-#: rubyripper_cli.rb:143
-msgid "wav enabled"
-msgstr "wav aktiverat"
-
-#: rubyripper_cli.rb:145
-msgid "playlist disabled"
-msgstr "spellista inaktiverad"
-
-#: rubyripper_cli.rb:145
-msgid "playlist enabled"
-msgstr "spellista aktiverad"
-
-#: rubyripper_cli.rb:146
-msgid "How many encoding threads would you like? : "
-msgstr "Hur många omkodningstrådar vill du använda? : "
-
-#: rubyripper_cli.rb:148
-msgid "Which options to pass to cdparanoia? : "
-msgstr "Vilket val för att komma till cdparanoia? : "
-
-#: rubyripper_cli.rb:149
-msgid "How many times must all chunks be matched? : "
-msgstr "Hur många gånger måste alla bitar matchas? : "
-
-#: rubyripper_cli.rb:150
-msgid "How many times must erroneous chunks be matched? : "
-msgstr "Hur många gånger måste felaktiga bitar matchas? : "
-
-#: rubyripper_cli.rb:151
-msgid "What should be the maximum number of tries? : "
-msgstr "Vilket skall vara maximalt antal försök? : "
-
-#: rubyripper_cli.rb:152
-msgid "eject disabled"
-msgstr "utmatning inaktiverad"
-
-#: rubyripper_cli.rb:152
-msgid "eject enabled"
-msgstr "utmatning aktiverad"
-
-#: rubyripper_cli.rb:153
-msgid "Please enter your directory for your encodings: "
-msgstr "Vänligen ange katalogen för dina omkodningar:"
-
-#: rubyripper_cli.rb:156
-msgid "freedb disabled"
-msgstr "freedb inaktiverad"
-
-#: rubyripper_cli.rb:156
-msgid "freedb enabled"
-msgstr "freedb aktiverad"
-
-#: rubyripper_cli.rb:157
-msgid "first hit disabled"
-msgstr "första träff inaktiverad"
-
-#: rubyripper_cli.rb:157
-msgid "first hit enabled"
-msgstr "första träff aktiverad"
-
-#: rubyripper_cli.rb:158
-msgid "Freedb mirror: "
-msgstr "Freedb spegel: "
-
-#: rubyripper_cli.rb:159
-msgid "Username : "
-msgstr "Användarnamn : "
-
-#: rubyripper_cli.rb:160
-msgid "Hostname : "
-msgstr "Värdnamn : "
-
-#: rubyripper_cli.rb:161
-msgid "Config file : "
-msgstr "Konfigurationsfil : "
-
-#: rubyripper_cli.rb:162
-msgid ""
-"Number %s is not an option!\n"
-"Please try again."
+#: lib/rubyripper/system/dependency.rb:103
+msgid "You won't be able to use translations."
 msgstr ""
-"Nummret %s är inte ett alternativ!\n"
-"Vänligen försök igen."
 
-#: rubyripper_cli.rb:168
-msgid "Do you want to continue with the program now? (y/n) : "
-msgstr "Vill du fortsätta med programmet nu? (j/n) : "
+#: lib/rubyripper/system/dependency.rb:104
+#: lib/rubyripper/system/dependency.rb:106
+msgid ""
+"You won't have accurate freedb string calculation unless %s is installed."
+msgstr ""
 
-#: rubyripper_cli.rb:168
-#: rubyripper_cli.rb:176
-#: rubyripper_cli.rb:216
-#: rubyripper_cli.rb:221
-#: rubyripper_cli.rb:445
-#: rubyripper_cli.rb:456
-msgid "y"
-msgstr "j"
+#: lib/rubyripper/system/dependency.rb:108
+msgid "Your disc tray can not be opened after ripping"
+msgstr ""
 
-#: rubyripper_cli.rb:178
-msgid "Do you want to change the encoding parameters for %s? (y/n) : "
-msgstr "Vill du ändra omkodningsparametrarna för %s? (j/n) : "
+#: lib/rubyripper/system/dependency.rb:109
+msgid "You won't be able to encode in flac."
+msgstr ""
 
-#: rubyripper_cli.rb:178
-#: rubyripper_cli.rb:216
-#: rubyripper_cli.rb:479
-msgid "n"
-msgstr "n"
+#: lib/rubyripper/system/dependency.rb:110
+msgid "You won't be able to encode in vorbis."
+msgstr ""
 
-#: rubyripper_cli.rb:179
-msgid "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
-msgstr "%a = artist, %b = album, %g = genre, %y = år, %t = låtnamn, %n = låtnummer, %i = indata-fil, %o = utdata-fil (glöm inte filändelse)"
+#: lib/rubyripper/system/dependency.rb:111
+msgid "You won't be able to encode in lame MP3."
+msgstr ""
 
-#: rubyripper_cli.rb:180
-msgid "Encoding paramaters for %s : "
-msgstr "Omkodningsparametrar för %s : "
+#: lib/rubyripper/system/dependency.rb:112
+msgid "You won't be able to replaygain wav files."
+msgstr ""
 
-#: rubyripper_cli.rb:186
-msgid "Cdrom device : "
-msgstr "Cdrom-enhet : "
+#: lib/rubyripper/system/dependency.rb:113
+msgid "You won't be able to replaygain vorbis files."
+msgstr ""
 
-#: rubyripper_cli.rb:187
-msgid "Offset for drive : "
-msgstr "Korrigering för läsare : "
+#: lib/rubyripper/system/dependency.rb:114
+msgid "You won't be able to replaygain Lame mp3 files."
+msgstr ""
 
-#: rubyripper_cli.rb:192
-#: rubyripper_cli.rb:195
+#: lib/rubyripper/system/dependency.rb:115
+msgid "You won't be able to normalize audio files."
+msgstr ""
+
+#: lib/rubyripper/system/dependency.rb:116
+msgid "You won't be able to make cuesheets"
+msgstr ""
+
+#: lib/rubyripper/system/dependency.rb:117
+msgid "Cd-info helps to detect data tracks."
+msgstr ""
+
+#: lib/rubyripper/system/dependency.rb:118
+msgid "Show rights in case of problems"
+msgstr ""
+
+#: lib/rubyripper/system/dependency.rb:184
 msgid ""
 "\n"
-"Current naming scheme: %s"
-msgstr ""
 "\n"
-"Nuvarande namnschema: %s"
+"CHECKING FORCED DEPENDENCIES\n"
+"\n"
+msgstr ""
 
-#: rubyripper_cli.rb:199
+#: lib/rubyripper/system/dependency.rb:186
 msgid ""
 "\n"
-"%a = Artist\t\n"
-"%b = Album\n"
-"%g = Genre\n"
-"%y = Year\n"
-"%f = Codec\n"
-"%n = Tracknumber\n"
-"%t = Trackname\n"
-"%va = Various Artist\n"
-msgstr ""
+"CHECKING OPTIONAL DEPENDENCIES\n"
 "\n"
-"%a = Artist\t\n"
-"%b = Album\n"
-"%g = Genre\n"
-"%y = År\n"
-"%f = Kodare\n"
-"%n = Låtnummer\n"
-"%t = Låtnamn\n"
-"%va = Olika artister\n"
+msgstr ""
 
-#: rubyripper_cli.rb:200
-msgid "New %s naming scheme (q to quit) : "
-msgstr "Nytt %s namnschema (q för att avsluta) : "
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:173
+msgid "No pregaps, silences or pre-emphasis detected\n"
+msgstr "Inga luckor, tystnader eller betoning upptäckt\n"
 
-#: rubyripper_cli.rb:201
-msgid "q"
-msgstr "q"
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:177
+#, fuzzy
+msgid "Silence detected for disc : %s sectors\n"
+msgstr "Tystnad upptäckt hos spår %s : %s sektorer\n"
 
-#: rubyripper_cli.rb:203
-#: rubyripper_cli.rb:206
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:180
+msgid "Pregap detected for track %s : %s sectors\n"
+msgstr "Lucka upptäckt före spår %s : %s sektorer\n"
+
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:188
+msgid "Track %s is marked as a DATA track\n"
+msgstr "Spår %s är markerat som ett dataspår\n"
+
+#: lib/rubyripper/disc/scanDiscCdparanoia.rb:217
+msgid "ERROR: No audio tracks found!"
+msgstr ""
+
+#: lib/rubyripper/disc/calcFreedbID.rb:56
+#, fuzzy
+msgid "Warning: discid or cd-discid isn't found on your system!)"
+msgstr ""
+"varning: discid eller cd-discid kunde inte hittas på ditt system! Använder "
+"reservrutin..."
+
+#: lib/rubyripper/disc/calcFreedbID.rb:57
+msgid "Using fallback..."
+msgstr ""
+
+#: lib/rubyripper/disc/permissionDrive.rb:81
+#, fuzzy
 msgid ""
-"An example filename is now:\n"
-"\n"
-"\t%s"
+"ERROR: Cdrom drive %s does not exist on your system!\n"
+"Please configure your cdrom drive first."
 msgstr ""
-"Ett exempel på filnamn är nu:\n"
-"\n"
-"\t%s"
+"Cdrom-enheten %s finns inte på ditt system!\n"
+"Vänligen konfigurera din cdrom-enhet först."
 
-#: rubyripper_cli.rb:216
-#: rubyripper_cli.rb:221
-msgid "yes"
-msgstr "ja"
-
-#: rubyripper_cli.rb:216
-msgid "no"
-msgstr "nej"
-
-#: rubyripper_cli.rb:222
-msgid "Please answer yes or no"
-msgstr "Vänligen svara ja eller nej"
-
-#: rubyripper_cli.rb:233
-msgid "We should never get here"
-msgstr "Vi borde aldrig komma hit"
-
-#: rubyripper_cli.rb:233
-msgid "answer = %s, question = %s (error)"
-msgstr "svar = %s, fråga = %s (fel)"
-
-#: rubyripper_cli.rb:241
-msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
-msgstr "Ljudskiva hittad, antal låtar : %s, total spellängd : %s"
-
-#: rubyripper_cli.rb:243
-msgid "Fetching freedb info..."
-msgstr "Hämtar freedb information..."
-
-#: rubyripper_cli.rb:279
-msgid "Freedb reported multiple possibilities."
-msgstr "Freedb rapporterade flera möjligheter"
-
-#: rubyripper_cli.rb:281
-msgid "The first freedb option is automatically selected (no questions allowed)"
-msgstr "Det första valet från freedb väljs automatiskt (inga frågor tillåtna)"
-
-#: rubyripper_cli.rb:285
-msgid "Please type the number of the one you prefer? : "
-msgstr "Vänligen ange numret på den du föredrar : "
-
-#: rubyripper_cli.rb:292
+#: lib/rubyripper/disc/permissionDrive.rb:89
+#, fuzzy
 msgid ""
-"FREEDB INFO\n"
+"You don't have read permissions for device\n"
 "\n"
+"%s on your system! These permissions are necessary for\n"
+"\n"
+"cdparanoia to scan your drive. You might want to add yourself\n"
+"\n"
+"to the necessary group with gpasswd."
 msgstr ""
-"FREEDB INFORMATION\n"
+"Du har inte läs- och skrivrättigheter\n"
+"för enheten %s på ditt system! Dessa rättigheter är\n"
+"nödvändiga för att cdparanoia skall kunna söka i enheten.\n"
 "\n"
+"%s\n"
+"Du kan lägga till dig själv till den nödvändiga gruppen i /etc/group"
 
-#: rubyripper_cli.rb:293
-msgid "DISC INFO"
-msgstr "SKIVINFORMATION"
-
-#: rubyripper_cli.rb:294
-#: rubyripper_cli.rb:339
-#: rubyripper_gtk2.rb:437
-msgid "Artist:"
-msgstr "Artist:"
-
-#: rubyripper_cli.rb:295
-#: rubyripper_cli.rb:340
-#: rubyripper_gtk2.rb:438
-msgid "Album:"
-msgstr "Album:"
-
-#: rubyripper_cli.rb:296
-#: rubyripper_cli.rb:341
-#: rubyripper_gtk2.rb:439
-msgid "Genre:"
-msgstr "Genre:"
-
-#: rubyripper_cli.rb:297
-#: rubyripper_cli.rb:342
-#: rubyripper_gtk2.rb:440
-msgid "Year:"
-msgstr "År:"
-
-#: rubyripper_cli.rb:299
-msgid "TRACK INFO"
-msgstr "SPÅRINFORMATION"
-
-#: rubyripper_cli.rb:322
-msgid "What would you like to do?"
-msgstr "Vad skulle du vilja göra?"
-
-#: rubyripper_cli.rb:324
-msgid "1) Select the tracks to rip"
-msgstr "1) Välj spår att extrahera"
-
-#: rubyripper_cli.rb:325
-msgid "2) Edit the disc info"
-msgstr "2) Redigera skivinformationen"
-
-#: rubyripper_cli.rb:326
-msgid "3) Edit the track info"
-msgstr "3) Redigera spårinformationen"
-
-#: rubyripper_cli.rb:327
-msgid "4) Cancel the rip and eject the disc"
-msgstr "4) Avbryt extraheringen och mata ut skivan"
-
-#: rubyripper_cli.rb:330
-#: rubyripper_cli.rb:426
-msgid "Please enter the number of your choice: "
-msgstr "Vänligen ange numret på ditt val : "
-
-#: rubyripper_cli.rb:345
-#: rubyripper_gtk2.rb:441
-msgid "Mark disc as various artist"
-msgstr "Markera skiva som olika artister"
-
-#: rubyripper_cli.rb:347
-msgid "Mark disc as single artist"
-msgstr "Markera skiva som olika artister"
-
-#: rubyripper_cli.rb:350
-msgid ""
-"Finished editing disc info\n"
-"\n"
-msgstr ""
-"Färdig med redigering av skivinformationen\n"
-"\n"
-
-#: rubyripper_cli.rb:353
-#: rubyripper_cli.rb:384
-msgid "Please enter the number you'd like to edit: "
-msgstr "Vänligen ange numret på ditt val : "
-
-#: rubyripper_cli.rb:354
-msgid "Artist : "
-msgstr "Artist : "
-
-#: rubyripper_cli.rb:355
-msgid "Album : "
-msgstr "Album : "
-
-#: rubyripper_cli.rb:356
-msgid "Genre : "
-msgstr "Genre : "
-
-#: rubyripper_cli.rb:357
-msgid "Year : "
-msgstr "År : "
-
-#: rubyripper_cli.rb:369
-#: rubyripper_gtk2.rb:634
-#: rr_lib.rb:1093
-#: rr_lib.rb:1094
-#: rr_lib.rb:1095
-#: rr_lib.rb:1276
-#: rr_lib.rb:1278
-#: rr_lib.rb:1279
-#: rr_lib.rb:1286
-msgid "Unknown"
-msgstr "Okänd"
-
-#: rubyripper_cli.rb:381
-msgid ""
-"Finished editing track info\n"
-"\n"
-msgstr ""
-"Färdig med redigering av spårinformationen\n"
-"\n"
-
-#: rubyripper_cli.rb:393
-msgid "This is not a valid number. Try again"
-msgstr "Detta är inte ett giltligt nummer. Försök igen"
-
-#: rubyripper_cli.rb:401
-msgid "Rip is canceled, exiting..."
-msgstr "Extraheringen avbruten, avslutar..."
-
-#: rubyripper_cli.rb:419
-msgid "The output directory already exists. What would you like to do?"
-msgstr "Utdata-katalogen existerar redan. Vad vill du göra?"
-
-#: rubyripper_cli.rb:421
-msgid "1) Auto rename the output directory"
-msgstr "1) Ändra automatiskt namnet på utdata-katalogen"
-
-#: rubyripper_cli.rb:422
-msgid "2) Overwrite the existing directory"
-msgstr "2) Skriv över existerande katalog"
-
-#: rubyripper_cli.rb:423
-msgid "3) Cancel the rip and eject the disc"
-msgstr "3) Avbryt extraheringen och mata ut skivan"
-
-#: rubyripper_cli.rb:445
-msgid "Do you want to change your settings? (y/n) : "
-msgstr "Vill du ändra dina inställningar? (j/n) : "
-
-#: rubyripper_cli.rb:456
+#: lib/rubyripper/disc/permissionDrive.rb:95
+#: lib/rubyripper/disc/permissionDrive.rb:109
 msgid ""
 "\n"
-"Should all tracks be ripped ? (y/n) "
-msgstr ""
 "\n"
-"Skall alla låtar extraheras ? (j/n) "
-
-#: rubyripper_cli.rb:457
-msgid "Tracks to rip are %s"
-msgstr "Låtar som skall extraheras är %s"
-
-#: rubyripper_cli.rb:461
-#: rubyripper_cli.rb:478
-msgid "Current selection of tracks : %s"
-msgstr "Nuvarande valda låtar : %s"
-
-#: rubyripper_cli.rb:462
-msgid ""
-"Enter 1 for entering the tracknumbers you want to remove.\n"
-"Enter 2 for entering the tracks you want to keep.\n"
-"Your choice: "
+"ls -l shows %s"
 msgstr ""
-"Tryck 1 för att ange vilka låtnummer du vill ta bort.\n"
-"Tryck 2 för att ange vilka låtnummer du vill behålla.\n"
-"Ditt val : "
 
-#: rubyripper_cli.rb:464
-msgid "Type the numbers of the tracks you want to remove and separate them with a space: "
-msgstr "Ange numret på de låtar du vill ta bort och separera dem med mellanslag : "
+#: lib/rubyripper/disc/permissionDrive.rb:103
+#, fuzzy
+msgid ""
+"You don't have write permissions for device\n"
+"\n"
+"%s on your system! These permissions are necessary for\n"
+"\n"
+"cdparanoia to scan your drive. You might want to add yourself\n"
+"\n"
+"to the necessary group with gpasswd."
+msgstr ""
+"Du har inte läs- och skrivrättigheter\n"
+"för enheten %s på ditt system! Dessa rättigheter är\n"
+"nödvändiga för att cdparanoia skall kunna söka i enheten.\n"
+"\n"
+"%s\n"
+"Du kan lägga till dig själv till den nödvändiga gruppen i /etc/group"
 
-#: rubyripper_cli.rb:469
-msgid "Type the numbers of the tracks you want to keep and separate them with a space: "
-msgstr "Ange numret på de låtar du vill behålla och separera dem med mellanslag : "
+#: lib/rubyripper/disc/permissionDrive.rb:133
+#, fuzzy
+msgid ""
+"You don't have read and write permission\n"
+"for device %s on your system! These permissions are\n"
+"necessary for cdparanoia to scan your drive.\n"
+"\n"
+"%s\n"
+"You might want to add yourself to the necessary group with gpasswd"
+msgstr ""
+"Du har inte läs- och skrivrättigheter\n"
+"för enheten %s på ditt system! Dessa rättigheter är\n"
+"nödvändiga för att cdparanoia skall kunna söka i enheten.\n"
+"\n"
+"%s\n"
+"Du kan lägga till dig själv till den nödvändiga gruppen i /etc/group"
 
-#: rubyripper_cli.rb:475
-msgid "%s is not a valid number! Please enter 1 or 2!\n"
-msgstr "%s är inte ett giltligt nummer! Vänligen ange 1 eller 2!\n"
+#: lib/rubyripper/fileScheme.rb:256
+msgid "Hidden Track"
+msgstr "Dolt spår"
 
-#: rubyripper_cli.rb:479
-msgid "Do you want to make any changes? (y/n) : "
-msgstr "Vill du göra några ändringar? (j/n) : "
+#: lib/rubyripper/fileScheme.rb:257
+msgid "Unknown Artist"
+msgstr "Okänd artist"
 
-#: rubyripper_gtk2.rb:67
-#: rubyripper_gtk2.rb:114
-msgid "Preferences"
-msgstr "Inställningar"
+#: lib/rubyripper/base.rb:38
+msgid "test"
+msgstr ""
 
-#: rubyripper_gtk2.rb:67
-msgid "Scan drive"
-msgstr "Sök igenom enhet"
+#: lib/rubyripper/gtk2/summary.rb:29
+msgid ""
+"The rip has succesfully finished.\n"
+"A short summary is shown below."
+msgstr ""
+"Extraheringen har framgångsrikt slutförts.\n"
+"En kort sammanfattning visas nedan."
 
-#: rubyripper_gtk2.rb:67
-#: rubyripper_gtk2.rb:199
-#: rubyripper_gtk2.rb:200
-#: rubyripper_gtk2.rb:252
-#: rubyripper_gtk2.rb:266
-msgid "Open tray"
-msgstr "Öppna lucka"
+#: lib/rubyripper/gtk2/summary.rb:32
+msgid ""
+"The rip had some problems.\n"
+"A short summary is shown below."
+msgstr ""
+"Extraheringen stötte på problem.\n"
+"En kort sammanfattning visas nedan."
 
-#: rubyripper_gtk2.rb:67
-msgid "Rip cd now!"
-msgstr "Extrahera CD nu!"
+#: lib/rubyripper/gtk2/summary.rb:49
+msgid "Open log file"
+msgstr "Öppna loggfilen"
 
-#: rubyripper_gtk2.rb:67
-#: rubyripper_gtk2.rb:95
-#: rubyripper_gtk2.rb:128
-msgid "Exit"
-msgstr "Avsluta"
+#: lib/rubyripper/gtk2/summary.rb:54 lib/rubyripper/gtk2/summary.rb:62
+msgid "%s is not found on your system!"
+msgstr "%s kan inte hittas på ditt system!"
 
-#: rubyripper_gtk2.rb:141
-msgid "Abort"
-msgstr "Avbryt"
+#: lib/rubyripper/gtk2/summary.rb:57
+msgid "Open directory"
+msgstr "Öppna katalog"
 
-#: rubyripper_gtk2.rb:157
-msgid "Disc info"
-msgstr "Skivinformation"
+#: lib/rubyripper/gtk2/summary.rb:73
+msgid "Ripping and encoding is finished"
+msgstr "Extrahering och omkodning är klar"
 
-#: rubyripper_gtk2.rb:258
-#: rubyripper_gtk2.rb:339
-msgid "Close tray"
-msgstr "Stäng lucka"
-
-#: rubyripper_gtk2.rb:343
-msgid "Ehh.. There shouldn't be anything else. WTF?"
-msgstr "Öhm.. Det borde inte vara något annat. Vad fan?"
-
-#: rubyripper_gtk2.rb:344
-msgid "Secret modus = %s"
-msgstr "Hemlig modus = %s"
-
-#: rubyripper_gtk2.rb:353
+#: lib/rubyripper/gtk2/ripStatus.rb:37
 msgid "Encoding progress %s %"
 msgstr "Omkodning färdigt %s %"
 
-#: rubyripper_gtk2.rb:356
+#: lib/rubyripper/gtk2/ripStatus.rb:40
 msgid "Ripping progress %s %"
 msgstr "Extrahering färdigt %s %"
 
-#: rubyripper_gtk2.rb:367
+#: lib/rubyripper/gtk2/ripStatus.rb:71
+msgid "<b>Ripping status</b>"
+msgstr "<b>Extraherings status</b>"
+
+#: lib/rubyripper/gtk2/ripStatus.rb:88 lib/rubyripper/gtk2/ripStatus.rb:89
+msgid "Not yet started (0%)"
+msgstr "Ej startad (0%)"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:101 lib/rubyripper/cli/cliDisc.rb:93
+#: lib/rubyripper/cli/cliDisc.rb:158 lib/rubyripper/cli/cliDisc.rb:190
+msgid "Artist:"
+msgstr "Artist:"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:102 lib/rubyripper/cli/cliDisc.rb:94
+#: lib/rubyripper/cli/cliDisc.rb:159
+msgid "Album:"
+msgstr "Album:"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:103 lib/rubyripper/cli/cliDisc.rb:95
+#: lib/rubyripper/cli/cliDisc.rb:160
+msgid "Genre:"
+msgstr "Genre:"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:104 lib/rubyripper/cli/cliDisc.rb:96
+#: lib/rubyripper/cli/cliDisc.rb:161
+msgid "Year:"
+msgstr "År:"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:105
+msgid "Mark disc as various artist"
+msgstr "Markera skiva som olika artister"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:107
+msgid "Freeze disc info"
+msgstr "Skivinformation"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:108
+msgid "Disc:"
+msgstr "Skiva:"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:130
 msgid ""
-"Welcome to rubyripper %s.\n"
-"Scanning drive %s for an audio disc..."
+"Use this option to keep the disc info\n"
+"for albums that span multiple discs"
+msgstr ""
+"Använd detta val för att behålla skivinformationen\n"
+"för album som består av flera skivor"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:173
+msgid "All"
+msgstr "Alla"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:174
+msgid "Artist"
+msgstr "Artist"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:175
+msgid "Tracknames (%s tracks)"
+msgstr "Låtnamn (%s låtar)"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:176
+msgid "Length (%s)"
+msgstr "Längd (%s)"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:240
+msgid "<b>Disc info</b>"
+msgstr "<b>Skivinformation</b>"
+
+#: lib/rubyripper/gtk2/gtkDisc.rb:248
+msgid "<b>Track selection</b>"
+msgstr "<b>Låtval</b>"
+
+#: lib/rubyripper/gtk2/gtkDirExists.rb:29
+msgid ""
+"The directory %s already exists.\n"
+"\n"
+"What do you want rubyripper to do?"
+msgstr ""
+"Katalogen %s finns redan.\n"
+"\n"
+"Vad vill du att rubyripper skall göra?"
+
+#: lib/rubyripper/gtk2/gtkDirExists.rb:38
+msgid "Cancel rip"
+msgstr "Avbryta extrahering"
+
+#: lib/rubyripper/gtk2/gtkDirExists.rb:38
+msgid ""
+"Delete existing\n"
+"directory"
+msgstr ""
+"Radera befintlig\n"
+"katalog"
+
+#: lib/rubyripper/gtk2/gtkDirExists.rb:38
+msgid ""
+"Auto rename\n"
+"directory"
+msgstr ""
+"Ändra automatiskt\n"
+"namn på katalogen"
+
+#: lib/rubyripper/gtk2/gtkDirExists.rb:58
+msgid "Dir already exists..."
+msgstr "Katalog finns redan..."
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:272
+msgid "Cdrom device:"
+msgstr "Cdrom-enhet:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:274
+msgid "Cdrom offset:"
+msgstr "Cdrom-korrigering:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:279
+msgid "List with offsets"
+msgstr "Lista med korrigeringar"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:281
+msgid ""
+"A website which lists the offset for most drives.\n"
+"Your drivename can be found in each logfile."
+msgstr ""
+"En hemsida som listar korrigeringar för de flesta läsare.\n"
+"Namnet på din läsare kan hittas i varje loggfil."
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:283
+msgid "Pad missing samples with zero's"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:284
+msgid ""
+"Cdparanoia can't handle offsets larger than 580 for \n"
+"first (negative offset) and last (positive offset) track.\n"
+"This option fills the rest with empty samples.\n"
+"If disabled, the file will not have the correct size.\n"
+"It is recommended to enable this option."
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:299
+msgid "Cdrom device"
+msgstr "Cdrom-enhet"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:316
+msgid "Match all chunks:"
+msgstr "Matcha alla bitar:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:317
+msgid "Match erroneous chunks:"
+msgstr "Matcha felaktiga bitar:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:318
+msgid "Maximum trials (0 = unlimited):"
+msgstr "Maximalt antal försök (0 = obegränsade):"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:322
+#: lib/rubyripper/gtk2/gtkPreferences.rb:323
+#: lib/rubyripper/gtk2/gtkPreferences.rb:324
+msgid "times"
+msgstr "gånger"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:337
+msgid "Ripping options"
+msgstr "Extraheringsalternativ"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:343
+msgid "Pass cdparanoia options:"
+msgstr "Passera cdparanoia alternativ:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:344
+msgid "Eject cd when finished"
+msgstr "Mata ut CD när det är färdigt"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:345
+msgid "Only keep logfile if correction is needed"
+msgstr "Behåll endast loggfil när korrektion krävs"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:352
+msgid "Ripping related"
+msgstr "Extraheringsrelaterat"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:356
+msgid "Secure Ripping"
+msgstr "Säker Extrahering"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:363
+msgid "Rip hidden audio sectors"
+msgstr "Extrahera dolda ljudsektorer"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:364
+msgid "Mark as a hidden track when bigger than"
+msgstr "Markera som ett dolt spår när det är större än"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:365
+msgid "seconds"
+msgstr "sekunder"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:368
+msgid "Uncheck this if cdparanoia crashes with your ripping drive."
+msgstr "Avmarkera detta om cdparanoia kraschar under extraheringen av enheten."
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:369
+#, fuzzy
+msgid ""
+"A hidden track will rip to a seperate file if used in track modus.\n"
+"If it's smaller the sectors will be prepended to the first track."
+msgstr ""
+"Ett dolt spår kommer att extraheras till en separat fil om man är i "
+"spårläge.\n"
+"Om det är mindre kommer sektorerna att läggas till före första spåret."
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:379
+msgid "Audio sectors before track 1"
+msgstr "Ljudsektorer före spår 1"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:385
+msgid "Create cuesheet"
+msgstr "Skapa cue-fil"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:386
+msgid "Rip CD to single file"
+msgstr "Extrahera CD till en enskild fil"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:392
+msgid "Advanced Toc analysis"
+msgstr "Avancerad Toc-analys"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:395
+msgid "Cdrdao installed?"
+msgstr "Är Cdrdao installerat?"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:404
+msgid "Append pregap to the previous track"
+msgstr "Bifoga lucka före föregående spår"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:405
+msgid "Prepend pregaps to the track"
+msgstr "Bifoga lucka före spåret"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:409
+msgid "Handling pregaps other than track 1"
+msgstr "Hantera luckor som inte är före spår 1"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:416
+#, fuzzy
+msgid "Correct pre-emphasis tracks with sox"
+msgstr "Korrigera betoningsspår med sox"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:417
+msgid "Save the pre-emphasis tag in the cuesheet."
+msgstr "Spara betoningstaggen i cue-filen."
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:421
+msgid "Handling tracks with pre-emphasis"
+msgstr "Hantera spår med betoning"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:427
+msgid "TOC analysis"
+msgstr "TOC analys"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:471
+msgid "Flac"
+msgstr "Flac"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:472
+msgid "Vorbis"
+msgstr "Vorbis"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:473
+msgid "Lame Mp3"
+msgstr "Lame Mp3"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:474
+msgid "Wav"
+msgstr "Wav"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:475
+#: lib/rubyripper/gtk2/gtkPreferences.rb:712
+#: lib/rubyripper/cli/cliPreferences.rb:108
+msgid "Other"
+msgstr "Annan"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:476
+msgid "Show options for \"Other\""
+msgstr "Visa alternativ för \"Annan\""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:483
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist\n"
+"%o = outputfile   %i = inputfile"
+msgstr ""
+"%a=artist   %g=genre   %t=låtnamn   %f=kodning\n"
+"%b=album   %y=år   %n=låt   %va=olika artister\n"
+"%o = utdata-fil   %i = indata-fil"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:496
+msgid "Select audio codecs"
+msgstr "Välj ljudkodningar"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:502
+msgid "Create m3u playlist"
+msgstr "Skapa m3u spellista"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:503
+msgid "Replace spaces with underscores in filenames"
+msgstr "Ersätt alla mellanslag i filnamnen med understreck"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:504
+msgid "Downsize all capital letters in filenames"
+msgstr "Omvandla alla versaler i filnamn"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:506
+msgid "Number of extra encoding threads"
+msgstr "Antalet extra omkodningstrådar"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:513
+msgid "Codec related"
+msgstr "Kodningsrelaterat"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:520
+msgid "Don't standardize volume"
+msgstr "Standardisera inte volymen"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:521
+msgid "Use replaygain on audio files"
+msgstr "Använd replaygain på ljudfiler"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:522
+msgid "Use normalize on wav files"
+msgstr "Använd normalisering på wav-filer"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:525
+msgid "Album / Audiophile modus"
+msgstr "Album / Audiofil modus"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:526
+msgid "Track modus"
+msgstr "Låt modus"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:533
+msgid "Normalize to standard volume"
+msgstr "Normalisera till standard volym"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:537
+#: lib/rubyripper/cli/cliPreferences.rb:106
+msgid "Codecs"
+msgstr "Kodningar"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:543
+msgid "Primary metadata provider:"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:545
+msgid "Freedb"
+msgstr "Freedb"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:546
+msgid "Musicbrainz"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:547
+msgid "Don't use a metadata provider"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:550
+msgid "Choose your metadata provider"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:556
+msgid "Always use first freedb hit"
+msgstr "Använd alltid första träffen från freedb"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:557
+msgid "Freedb server:"
+msgstr "Freedb server:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:558
+msgid "Username:"
+msgstr "Användarnamn:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:559
+msgid "Hostname:"
+msgstr "Värdnamn:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:571
+msgid "Freedb options"
+msgstr "Freedb inställningar"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:577
+#, fuzzy
+msgid "Preferred countries:"
+msgstr "Inställningar"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:579
+msgid "Preferred release date:"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:581
+msgid "Preferred year (metadata):"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:597
+#, fuzzy
+msgid "Musicbrainz options"
+msgstr "Extraheringsalternativ"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:610
+#: lib/rubyripper/cli/cliPreferences.rb:107
+msgid "Metadata"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:617
+msgid "Base directory:"
+msgstr "Standard katalog:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:618
+msgid "Standard:"
+msgstr "Standard:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:619
+msgid "Various artists:"
+msgstr "Olika artister:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:620
+msgid "Single file image:"
+msgstr "Avbild för enstaka fil:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:622
+msgid "Show options for \"Filenaming scheme\""
+msgstr "Visa inställningar för \"Namnschema\""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:625
+msgid ""
+"%a=artist   %g=genre   %t=trackname   %f=codec\n"
+"%b=album   %y=year   %n=track   %va=various artist"
+msgstr ""
+"%a=artist   %g=genre   %t=låtnamn   %f=kodning\n"
+"%b=album   %y=år   %n=låt   %va=olika artister"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:655
+msgid "Filenaming scheme"
+msgstr "Namnschema"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:659
+#: lib/rubyripper/gtk2/gtkPreferences.rb:663
+#: lib/rubyripper/gtk2/gtkPreferences.rb:668
+#: lib/rubyripper/cli/cliPreferences.rb:398
+#, fuzzy
+msgid "Example filename: "
+msgstr "Ett exempel på filnamn är nu: %s.ext"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:685
+msgid "Log file viewer: "
+msgstr "Visare för Loggfiler: "
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:686
+msgid "File manager: "
+msgstr "Filhanterare: "
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:694
+msgid "Programs of choice"
+msgstr "Valbara program"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:702
+msgid "Verbose mode"
+msgstr "Utförligt läge"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:703
+msgid "Debug mode"
+msgstr "Avsöknings läge"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:706
+msgid "Debug options"
+msgstr "Avsöknings inställningar"
+
+#: lib/rubyripper/gtk2/shortMessage.rb:33
+#, fuzzy
+msgid "...Scanning drive %s for an audio disc."
 msgstr ""
 "Välkommen till rubyripper %s.\n"
 "Söker enhet %s för en ljudskiva..."
 
-#: rubyripper_gtk2.rb:371
+#: lib/rubyripper/gtk2/shortMessage.rb:37
+msgid "Welcome to rubyripper %s."
+msgstr ""
+
+#: lib/rubyripper/gtk2/shortMessage.rb:46
 msgid ""
 "No disc found in %s!\n"
 "Please insert a disc and push 'Scan drive'.\n"
@@ -661,21 +748,17 @@ msgstr ""
 "\n"
 "Cdrom-enheten kan ställas in i 'Inställningar'."
 
-#: rubyripper_gtk2.rb:375
-msgid "Opening tray of drive %s"
+#: lib/rubyripper/gtk2/shortMessage.rb:50
+#, fuzzy
+msgid "Opening tray of drive %s."
 msgstr "Öppnar lucka hos enhet %s"
 
-#: rubyripper_gtk2.rb:379
-msgid ""
-"Closing tray of drive %s. \n"
-"\n"
-"The drive will be scanned for an audio disc..."
-msgstr ""
-"Stänger lucka hos enhet %s. \n"
-"\n"
-"Enheten kommer att genomsökas efter en ljudskiva..."
+#: lib/rubyripper/gtk2/shortMessage.rb:54
+#, fuzzy
+msgid "Closing tray of the drive."
+msgstr "Öppnar lucka hos enhet %s"
 
-#: rubyripper_gtk2.rb:383
+#: lib/rubyripper/gtk2/shortMessage.rb:58
 msgid ""
 "Insert an audio-disc and press 'Close tray'.\n"
 "The drive will automatically be scanned for a disc.\n"
@@ -687,405 +770,11 @@ msgstr ""
 "\n"
 "Om luckan redan är stängd, tryck 'Sök igenom enhet'"
 
-#: rubyripper_gtk2.rb:387
+#: lib/rubyripper/gtk2/shortMessage.rb:62
 msgid "The eject utility is not found on your system!"
 msgstr "Utmatningsverktyg ej hittat på ditt system!"
 
-#: rubyripper_gtk2.rb:443
-msgid "Freeze disc info"
-msgstr "Skivinformation"
-
-#: rubyripper_gtk2.rb:444
-msgid "Disc:"
-msgstr "Skiva:"
-
-#: rubyripper_gtk2.rb:466
-msgid ""
-"Use this option to keep the disc info\n"
-"for albums that span multiple discs"
-msgstr ""
-"Använd detta val för att behålla skivinformationen\n"
-"för album som består av flera skivor"
-
-#: rubyripper_gtk2.rb:502
-msgid "All"
-msgstr "Alla"
-
-#: rubyripper_gtk2.rb:503
-msgid "Artist"
-msgstr "Artist"
-
-#: rubyripper_gtk2.rb:504
-msgid "Tracknames (%s tracks)"
-msgstr "Låtnamn (%s låtar)"
-
-#: rubyripper_gtk2.rb:505
-msgid "Length (%s)"
-msgstr "Längd (%s)"
-
-#: rubyripper_gtk2.rb:572
-msgid "<b>Disc info</b>"
-msgstr "<b>Skivinformation</b>"
-
-#: rubyripper_gtk2.rb:580
-msgid "<b>Track selection</b>"
-msgstr "<b>Låtval</b>"
-
-#: rubyripper_gtk2.rb:828
-msgid "Cdrom device:"
-msgstr "Cdrom-enhet:"
-
-#: rubyripper_gtk2.rb:829
-msgid "Cdrom offset:"
-msgstr "Cdrom-korrigering:"
-
-#: rubyripper_gtk2.rb:832
-msgid "List with offsets"
-msgstr "Lista med korrigeringar"
-
-#: rubyripper_gtk2.rb:833
-msgid ""
-"A website which lists the offset for most drives.\n"
-"Your drivename can be found in each logfile."
-msgstr ""
-"En hemsida som listar korrigeringar för de flesta läsare.\n"
-"Namnet på din läsare kan hittas i varje loggfil."
-
-#: rubyripper_gtk2.rb:843
-msgid "Cdrom device"
-msgstr "Cdrom-enhet"
-
-#: rubyripper_gtk2.rb:855
-msgid "Match all chunks:"
-msgstr "Matcha alla bitar:"
-
-#: rubyripper_gtk2.rb:856
-msgid "Match erroneous chunks:"
-msgstr "Matcha felaktiga bitar:"
-
-#: rubyripper_gtk2.rb:857
-msgid "Maximum trials (0 = unlimited):"
-msgstr "Maximalt antal försök (0 = obegränsade):"
-
-#: rubyripper_gtk2.rb:861
-#: rubyripper_gtk2.rb:862
-#: rubyripper_gtk2.rb:863
-msgid "times"
-msgstr "gånger"
-
-#: rubyripper_gtk2.rb:877
-msgid "Ripping options"
-msgstr "Extraheringsalternativ"
-
-#: rubyripper_gtk2.rb:889
-msgid "Pass cdparanoia options:"
-msgstr "Passera cdparanoia alternativ:"
-
-#: rubyripper_gtk2.rb:890
-msgid "Eject cd when finished"
-msgstr "Mata ut CD när det är färdigt"
-
-#: rubyripper_gtk2.rb:891
-msgid "Only keep logfile if correction is needed"
-msgstr "Behåll endast loggfil när korrektion krävs"
-
-#: rubyripper_gtk2.rb:899
-msgid "Ripping related"
-msgstr "Extraheringsrelaterat"
-
-#: rubyripper_gtk2.rb:906
-msgid "Secure Ripping"
-msgstr "Säker Extrahering"
-
-#: rubyripper_gtk2.rb:916
-msgid "Rip hidden audio sectors"
-msgstr "Extrahera dolda ljudsektorer"
-
-#: rubyripper_gtk2.rb:917
-msgid "Mark as a hidden track when bigger than"
-msgstr "Markera som ett dolt spår när det är större än"
-
-#: rubyripper_gtk2.rb:918
-msgid "seconds"
-msgstr "sekunder"
-
-#: rubyripper_gtk2.rb:921
-msgid "Uncheck this if cdparanoia crashes with your ripping drive."
-msgstr "Avmarkera detta om cdparanoia kraschar under extraheringen av enheten."
-
-#: rubyripper_gtk2.rb:922
-#, fuzzy
-msgid ""
-"A hidden track will rip to a seperate file if used in track modus.\n"
-"If it's smaller the sectors will be prepended to the first track."
-msgstr ""
-"Ett dolt spår kommer att extraheras till en separat fil om man är i spårläge.\n"
-"Om det är mindre kommer sektorerna att läggas till före första spåret."
-
-#: rubyripper_gtk2.rb:933
-msgid "Audio sectors before track 1"
-msgstr "Ljudsektorer före spår 1"
-
-#: rubyripper_gtk2.rb:945
-msgid "Create cuesheet"
-msgstr "Skapa cue-fil"
-
-#: rubyripper_gtk2.rb:946
-msgid "Rip CD to single file"
-msgstr "Extrahera CD till en enskild fil"
-
-#: rubyripper_gtk2.rb:951
-msgid "Advanced Toc analysis"
-msgstr "Avancerad Toc-analys"
-
-#: rubyripper_gtk2.rb:959
-msgid "Cdrdao installed?"
-msgstr "Är Cdrdao installerat?"
-
-#: rubyripper_gtk2.rb:971
-msgid "Append pregap to the previous track"
-msgstr "Bifoga lucka före föregående spår"
-
-#: rubyripper_gtk2.rb:972
-msgid "Prepend pregaps to the track"
-msgstr "Bifoga lucka före spåret"
-
-#: rubyripper_gtk2.rb:977
-msgid "Handling pregaps other than track 1"
-msgstr "Hantera luckor som inte är före spår 1"
-
-#: rubyripper_gtk2.rb:990
-#, fuzzy
-msgid "Correct pre-emphasis tracks with sox"
-msgstr "Korrigera betoningsspår med sox"
-
-#: rubyripper_gtk2.rb:991
-msgid "Save the pre-emphasis tag in the cuesheet."
-msgstr "Spara betoningstaggen i cue-filen."
-
-#: rubyripper_gtk2.rb:996
-msgid "Handling tracks with pre-emphasis"
-msgstr "Hantera spår med betoning"
-
-#: rubyripper_gtk2.rb:1005
-msgid "TOC analysis"
-msgstr "TOC analys"
-
-#: rubyripper_gtk2.rb:1052
-msgid "Flac"
-msgstr "Flac"
-
-#: rubyripper_gtk2.rb:1053
-msgid "Vorbis"
-msgstr "Vorbis"
-
-#: rubyripper_gtk2.rb:1054
-msgid "Lame Mp3"
-msgstr "Lame Mp3"
-
-#: rubyripper_gtk2.rb:1055
-msgid "Wav"
-msgstr "Wav"
-
-#: rubyripper_gtk2.rb:1056
-#: rubyripper_gtk2.rb:1281
-msgid "Other"
-msgstr "Annan"
-
-#: rubyripper_gtk2.rb:1057
-msgid "Show options for \"Other\""
-msgstr "Visa alternativ för \"Annan\""
-
-#: rubyripper_gtk2.rb:1064
-msgid ""
-"%a=artist   %g=genre   %t=trackname   %f=codec\n"
-"%b=album   %y=year   %n=track   %va=various artist\n"
-"%o = outputfile   %i = inputfile"
-msgstr ""
-"%a=artist   %g=genre   %t=låtnamn   %f=kodning\n"
-"%b=album   %y=år   %n=låt   %va=olika artister\n"
-"%o = utdata-fil   %i = indata-fil"
-
-#: rubyripper_gtk2.rb:1078
-msgid "Select audio codecs"
-msgstr "Välj ljudkodningar"
-
-#: rubyripper_gtk2.rb:1090
-msgid "Create m3u playlist"
-msgstr "Skapa m3u spellista"
-
-#: rubyripper_gtk2.rb:1091
-msgid "Replace spaces with underscores in filenames"
-msgstr "Ersätt alla mellanslag i filnamnen med understreck"
-
-#: rubyripper_gtk2.rb:1092
-msgid "Downsize all capital letters in filenames"
-msgstr "Omvandla alla versaler i filnamn"
-
-#: rubyripper_gtk2.rb:1094
-msgid "Number of extra encoding threads"
-msgstr "Antalet extra omkodningstrådar"
-
-#: rubyripper_gtk2.rb:1103
-msgid "Codec related"
-msgstr "Kodningsrelaterat"
-
-#: rubyripper_gtk2.rb:1116
-msgid "Don't standardize volume"
-msgstr "Standardisera inte volymen"
-
-#: rubyripper_gtk2.rb:1117
-msgid "Use replaygain on audio files"
-msgstr "Använd replaygain på ljudfiler"
-
-#: rubyripper_gtk2.rb:1118
-msgid "Use normalize on wav files"
-msgstr "Använd normalisering på wav-filer"
-
-#: rubyripper_gtk2.rb:1121
-msgid "Album / Audiophile modus"
-msgstr "Album / Audiofil modus"
-
-#: rubyripper_gtk2.rb:1122
-msgid "Track modus"
-msgstr "Låt modus"
-
-#: rubyripper_gtk2.rb:1130
-msgid "Normalize to standard volume"
-msgstr "Normalisera till standard volym"
-
-#: rubyripper_gtk2.rb:1137
-msgid "Codecs"
-msgstr "Kodningar"
-
-#: rubyripper_gtk2.rb:1147
-msgid "Enable freedb metadata fetching"
-msgstr "Aktivera hämtning av freedb metadata"
-
-#: rubyripper_gtk2.rb:1148
-msgid "Always use first freedb hit"
-msgstr "Använd alltid första träffen från freedb"
-
-#: rubyripper_gtk2.rb:1149
-msgid "Freedb server:"
-msgstr "Freedb server:"
-
-#: rubyripper_gtk2.rb:1150
-msgid "Username:"
-msgstr "Användarnamn:"
-
-#: rubyripper_gtk2.rb:1151
-msgid "Hostname:"
-msgstr "Värdnamn:"
-
-#: rubyripper_gtk2.rb:1165
-msgid "Freedb options"
-msgstr "Freedb inställningar"
-
-#: rubyripper_gtk2.rb:1172
-msgid "Freedb"
-msgstr "Freedb"
-
-#: rubyripper_gtk2.rb:1182
-msgid "Base directory:"
-msgstr "Standard katalog:"
-
-#: rubyripper_gtk2.rb:1183
-msgid "Standard:"
-msgstr "Standard:"
-
-#: rubyripper_gtk2.rb:1184
-msgid "Various artists:"
-msgstr "Olika artister:"
-
-#: rubyripper_gtk2.rb:1185
-msgid "Single file image:"
-msgstr "Avbild för enstaka fil:"
-
-#: rubyripper_gtk2.rb:1187
-msgid "Show options for \"Filenaming scheme\""
-msgstr "Visa inställningar för \"Namnschema\""
-
-#: rubyripper_gtk2.rb:1190
-msgid ""
-"%a=artist   %g=genre   %t=trackname   %f=codec\n"
-"%b=album   %y=year   %n=track   %va=various artist"
-msgstr ""
-"%a=artist   %g=genre   %t=låtnamn   %f=kodning\n"
-"%b=album   %y=år   %n=låt   %va=olika artister"
-
-#: rubyripper_gtk2.rb:1221
-msgid "Filenaming scheme"
-msgstr "Namnschema"
-
-#: rubyripper_gtk2.rb:1243
-msgid "Log file viewer: "
-msgstr "Visare för Loggfiler: "
-
-#: rubyripper_gtk2.rb:1244
-msgid "File manager: "
-msgstr "Filhanterare: "
-
-#: rubyripper_gtk2.rb:1253
-msgid "Programs of choice"
-msgstr "Valbara program"
-
-#: rubyripper_gtk2.rb:1267
-msgid "Verbose mode"
-msgstr "Utförligt läge"
-
-#: rubyripper_gtk2.rb:1268
-msgid "Debug mode"
-msgstr "Avsöknings läge"
-
-#: rubyripper_gtk2.rb:1272
-msgid "Debug options"
-msgstr "Avsöknings inställningar"
-
-#: rubyripper_gtk2.rb:1321
-msgid "<b>Ripping status</b>"
-msgstr "<b>Extraherings status</b>"
-
-#: rubyripper_gtk2.rb:1337
-#: rubyripper_gtk2.rb:1338
-msgid "Not yet started (0%)"
-msgstr "Ej startad (0%)"
-
-#: rubyripper_gtk2.rb:1349
-msgid ""
-"The directory %s already exists.\n"
-"\n"
-"What do you want rubyripper to do?"
-msgstr ""
-"Katalogen %s finns redan.\n"
-"\n"
-"Vad vill du att rubyripper skall göra?"
-
-#: rubyripper_gtk2.rb:1358
-msgid "Cancel rip"
-msgstr "Avbryta extrahering"
-
-#: rubyripper_gtk2.rb:1358
-msgid ""
-"Delete existing\n"
-"directory"
-msgstr ""
-"Radera befintlig\n"
-"katalog"
-
-#: rubyripper_gtk2.rb:1358
-msgid ""
-"Auto rename\n"
-"directory"
-msgstr ""
-"Ändra automatiskt\n"
-"namn på katalogen"
-
-#: rubyripper_gtk2.rb:1378
-msgid "Dir already exists..."
-msgstr "Katalog finns redan..."
-
-#: rubyripper_gtk2.rb:1389
+#: lib/rubyripper/gtk2/multipleFreedbHits.rb:29
 msgid ""
 "The freedb server reports multiple hits.\n"
 "Which one would you prefer?"
@@ -1093,69 +782,129 @@ msgstr ""
 "Freedb servern får flera träffar.\n"
 "Vilken föredrar du?"
 
-#: rubyripper_gtk2.rb:1401
+#: lib/rubyripper/gtk2/multipleFreedbHits.rb:41
 msgid "Ok"
 msgstr "Ok"
 
-#: rubyripper_gtk2.rb:1413
+#: lib/rubyripper/gtk2/multipleFreedbHits.rb:53
 msgid "Multiple hits found..."
 msgstr "Flera träffar hittade..."
 
-#: rubyripper_gtk2.rb:1431
-msgid ""
-"The rip has succesfully finished.\n"
-"A short summary is shown below."
+#: lib/rubyripper/secureRip.rb:127
+msgid "Not enough disk space left! Rip aborted"
+msgstr "Inte tillräckligt med diskutrymme kvar! Avbryter extrahering"
+
+#: lib/rubyripper/secureRip.rb:137
+msgid "Copy OK"
 msgstr ""
-"Extraheringen har framgångsrikt slutförts.\n"
-"En kort sammanfattning visas nedan."
 
-#: rubyripper_gtk2.rb:1434
-msgid ""
-"The rip had some problems.\n"
-"A short summary is shown below."
+#: lib/rubyripper/secureRip.rb:143
+msgid "Irrecoverable sectors at the following times:"
 msgstr ""
-"Extraheringen stötte på problem.\n"
-"En kort sammanfattning visas nedan."
 
-#: rubyripper_gtk2.rb:1451
-msgid "Open log file"
-msgstr "Öppna loggfilen"
+#: lib/rubyripper/secureRip.rb:146
+msgid "Copy finished"
+msgstr ""
 
-#: rubyripper_gtk2.rb:1456
-#: rubyripper_gtk2.rb:1464
-msgid "%s is not found on your system!"
+#: lib/rubyripper/secureRip.rb:185
+msgid ""
+"Cdparanoia doesn't output wav files.\n"
+"Check your settings please."
+msgstr ""
+"Cdparanoia skapar inte wav-filer.\n"
+"Vänligen kolla dina inställningar."
+
+#: lib/rubyripper/secureRip.rb:201
+#, fuzzy
+msgid "The ripped file misses %s sectors."
+msgstr "Den extraherade filen saknar %s sektorer.\n"
+
+#: lib/rubyripper/secureRip.rb:214
+#, fuzzy
+msgid "Filesize is not correct! Trying another time"
+msgstr "Filstorlek är inte korrekt! Försök igen\n"
+
+#: lib/rubyripper/secureRip.rb:234
+msgid "Sector mismatches at the following times, requiring extra trials:"
+msgstr ""
+
+#: lib/rubyripper/secureRip.rb:349
+#, fuzzy
+msgid "The drive is spinning for more than 30 minutes."
+msgstr "Enheten snurrar i mer än 30 minuter.\n"
+
+#: lib/rubyripper/secureRip.rb:350
+#, fuzzy
+msgid "Taking a timeout of 2 minutes to protect the hardware."
+msgstr "Tar en paus på 2 minuter för att skydda hårdvaran.\n"
+
+#: lib/rubyripper/metadata/data.rb:28
+msgid "Unknown"
+msgstr "Okänd"
+
+#: lib/rubyripper/metadata/data.rb:29
+msgid "Track %s"
+msgstr "Låt %s"
+
+#: lib/rubyripper/errors.rb:25
+#, fuzzy
+msgid "No disc found at trial %s!"
+msgstr "Ingen ljudskiva hittad i %s"
+
+#: lib/rubyripper/errors.rb:26
+#, fuzzy
+msgid "There is no audio disc ready in drive %s."
+msgstr "Ingen ljudskiva hittad i %s"
+
+#: lib/rubyripper/errors.rb:27
+msgid "%s does not recognize the parameters used."
+msgstr ""
+
+#: lib/rubyripper/errors.rb:28
+msgid "The device %s doesn't exist on your system!"
+msgstr "Enheten %s finns inte på ditt system!"
+
+#: lib/rubyripper/errors.rb:29
+msgid "Please select at least one track."
+msgstr "Vänligen ange åtminstone en låt."
+
+#: lib/rubyripper/errors.rb:30
+#, fuzzy
+msgid "Please select at least one codec."
+msgstr "Vänligen ange åtminstone en låt."
+
+#: lib/rubyripper/errors.rb:31
+msgid "No update function found in the user interface"
+msgstr ""
+
+#: lib/rubyripper/errors.rb:32
+#, fuzzy
+msgid "%s is needed, but not detected on your system!"
 msgstr "%s kan inte hittas på ditt system!"
 
-#: rubyripper_gtk2.rb:1459
-msgid "Open directory"
-msgstr "Öppna katalog"
-
-#: rubyripper_gtk2.rb:1475
-msgid "Ripping and encoding is finished"
-msgstr "Extrahering och omkodning är klar"
-
-#: rr_lib.rb:56
-#: rr_lib.rb:64
-msgid "Example filename: %s.ext"
-msgstr "Ett exempel på filnamn är nu: %s.ext"
-
-#: rr_lib.rb:73
-msgid "No eject utility found!"
-msgstr "Inget utmatningsverktyg hittat!"
-
-#: rr_lib.rb:316
+#: lib/rubyripper/errors.rb:33
+#, fuzzy
 msgid ""
-"Artist : %s\n"
-"Album: %s\n"
+"Can't create output directory!\n"
+"You have no writing access for dir %s"
 msgstr ""
-"Artist : %s\n"
-"Album: %s\n"
+"Kan inte skapa utdata katalog!\n"
+"Du har ingen skrivrättighet till katalogen %s"
 
-#: rr_lib.rb:317
-msgid "This log is created by Rubyripper, version %s\n"
-msgstr "Denna logg skapades med Rubyripper, version %s\n"
+#: lib/rubyripper/errors.rb:41
+msgid "Error:"
+msgstr ""
 
-#: rr_lib.rb:318
+#: lib/rubyripper/encode.rb:357
+#, fuzzy
+msgid "WARNING: Encoding to %s exited with an error with track %s!"
+msgstr "VARNING: Omkodning till %s avslutades med ett fel på låt %s!\n"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:45
+msgid "Rubyripper v%s\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:46
 msgid ""
 "Website: http://code.google.com/p/rubyripper\n"
 "\n"
@@ -1163,7 +912,161 @@ msgstr ""
 "Hemsida: http://code.google.com/p/rubyripper\n"
 "\n"
 
-#: rr_lib.rb:375
+#: lib/rubyripper/rippingInfoAtStart.rb:50
+msgid ""
+"Rubyripper extraction logfile from %s\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:55
+msgid ""
+"Used drive     : %s   Device: %s\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:57
+msgid "Used ripper    : %s\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:58
+msgid ""
+"Selected flags : %s\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:60
+#, fuzzy
+msgid "Matches required for all chunks       : %s\n"
+msgstr "Antal matchningar som krävs för varje bit: %s\n"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:61
+#, fuzzy
+msgid ""
+"Matches required for erroneous chunks : %s\n"
+"\n"
+msgstr ""
+"Antal matchningar som krävs för felaktiga bitar: %s\n"
+"\n"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:63
+msgid "Read offset correction                      : %s\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:64
+msgid "Overread into Lead-In and Lead-Out          : No\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:65
+msgid "Fill up missing offset samples with silence : %s\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:65
+#, fuzzy
+msgid "Yes"
+msgstr "ja"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:65
+msgid "No"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:66
+msgid ""
+"Null samples used in CRC calculations       : Yes\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:71
+#: lib/rubyripper/rippingInfoAtStart.rb:75
+#: lib/rubyripper/rippingInfoAtStart.rb:79
+#: lib/rubyripper/rippingInfoAtStart.rb:83
+#: lib/rubyripper/rippingInfoAtStart.rb:87
+msgid "Used output encoder : %s\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:72
+#: lib/rubyripper/rippingInfoAtStart.rb:76
+#: lib/rubyripper/rippingInfoAtStart.rb:80
+msgid ""
+"Selected flags      : %s\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:83
+msgid "Internal WAV Routines"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:84
+msgid ""
+"Sample format       : 44,100 Hz; 16 Bit; Stereo\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:87
+msgid "User Defined Encoder"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:88
+msgid ""
+"Command line        : %s\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:97
+msgid ""
+"TOC of the extracted CD\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:99
+msgid "     Track |   Start  |  Length  | Start sector | End sector \n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:100
+msgid "    ---------------------------------------------------------\n"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:116
+msgid "       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n"
+msgstr ""
+
+#: lib/rubyripper/log.rb:46
+msgid ""
+"Artist : %s\n"
+"Album: %s\n"
+msgstr ""
+"Artist : %s\n"
+"Album: %s\n"
+
+#: lib/rubyripper/log.rb:177
+msgid ""
+"Disc Image\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/log.rb:179
+#, fuzzy
+msgid ""
+"Track %2d\n"
+"\n"
+msgstr "Låt %s"
+
+#: lib/rubyripper/log.rb:186 lib/rubyripper/log.rb:187
+#: lib/rubyripper/log.rb:188 lib/rubyripper/log.rb:189
+#: lib/rubyripper/log.rb:190
+msgid "     Filename %s\n"
+msgstr ""
+
+#: lib/rubyripper/log.rb:195
+msgid "     Trial %s: %s seconds (%sx)\n"
+msgstr ""
+
+#: lib/rubyripper/log.rb:215
+msgid ""
+"     Copy MD5: %s\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/log.rb:219
 msgid ""
 "\n"
 "WARNING: ENCODING ERRORS WERE DETECTED\n"
@@ -1171,7 +1074,7 @@ msgstr ""
 "\n"
 "VARNING: FEL UPPTÄCKTES VID OMKODNING\n"
 
-#: rr_lib.rb:376
+#: lib/rubyripper/log.rb:220
 msgid ""
 "\n"
 "RIPPING SUMMARY\n"
@@ -1181,31 +1084,51 @@ msgstr ""
 "EXTRAHERINGS SAMMANFATTNING\n"
 "\n"
 
-#: rr_lib.rb:378
+#: lib/rubyripper/log.rb:222
 msgid "All chunks were tried to match at least %s times.\n"
 msgstr "Alla bitar försöktes matcha åtminstone %s gånger.\n"
 
-#: rr_lib.rb:379
-msgid ""
-"Chunks that differed after %s trials,\n"
-"were tried to match %s times.\n"
+#: lib/rubyripper/log.rb:224
+#, fuzzy
+msgid "Chunks that differed after %s trials,"
 msgstr ""
 "Bitar som skiljde sig efter %s försök,\n"
 "försökte matchas %s gånger.\n"
 
-#: rr_lib.rb:382
+#: lib/rubyripper/log.rb:225
+#, fuzzy
+msgid ""
+"\n"
+"were tried to match %s times.\n"
+msgstr "Alla bitar försöktes matcha åtminstone %s gånger.\n"
+
+#: lib/rubyripper/log.rb:229
+msgid "No errors occurred"
+msgstr ""
+
+#: lib/rubyripper/log.rb:230
 msgid "None of the tracks gave any problems\n"
 msgstr "Inga av låtarna gav några problem\n"
 
-#: rr_lib.rb:384
-msgid "Some track(s) could NOT be corrected within the maximum amount of trials\n"
-msgstr "Vissa låtar kunde INTE korrigeras inom ramen för maximalt antal försök\n"
+#: lib/rubyripper/log.rb:232
+msgid "There were errors which could not be corrected"
+msgstr ""
 
-#: rr_lib.rb:387
+#: lib/rubyripper/log.rb:233
+msgid ""
+"Some track(s) could NOT be corrected within the maximum amount of trials\n"
+msgstr ""
+"Vissa låtar kunde INTE korrigeras inom ramen för maximalt antal försök\n"
+
+#: lib/rubyripper/log.rb:236
 msgid "Track %s could NOT be corrected completely\n"
 msgstr "Låt %s kunde INTE bli helt korrigerad\n"
 
-#: rr_lib.rb:390
+#: lib/rubyripper/log.rb:240
+msgid "There were errors which required correction"
+msgstr ""
+
+#: lib/rubyripper/log.rb:241
 msgid ""
 "Some track(s) needed correction,but could\n"
 "be corrected within the maximum amount of trials\n"
@@ -1213,7 +1136,11 @@ msgstr ""
 "Några låtar behövde korrigeras, men kunde\n"
 "bli korrigerade inom ramen för maximalt antal försök\n"
 
-#: rr_lib.rb:395
+#: lib/rubyripper/log.rb:244
+msgid "There were errors during encoding\n"
+msgstr ""
+
+#: lib/rubyripper/log.rb:247
 msgid ""
 "The exact positions of the suspicious chunks\n"
 "can be found in the ripping log\n"
@@ -1221,255 +1148,7 @@ msgstr ""
 "De exakta positionerna av de misstänkta bitarna\n"
 "kan hittas i extraheringsloggen\n"
 
-#: rr_lib.rb:401
-msgid ""
-"\n"
-"SUSPICIOUS POSITION ANALYSIS\n"
-"\n"
-msgstr ""
-"\n"
-"MISSTÄNKT POSITIONSANALYS\n"
-"\n"
-
-#: rr_lib.rb:402
-msgid "Since there are 75 chunks per second, after making the notion of the\n"
-msgstr "Eftersom det är 75 bitar per sekund, efter att tagit ställning till om\n"
-
-#: rr_lib.rb:403
-msgid ""
-"suspicious position, the amount of initially mismatched chunks for\n"
-"that position is shown.\n"
-"\n"
-msgstr ""
-"misstänkt position, positionen för den ursprungliga misspassade\n"
-"biten visas.\n"
-"\n"
-
-#: rr_lib.rb:405
-msgid "TRACK %s\n"
-msgstr "LÅT %s\n"
-
-#: rr_lib.rb:410
-msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n"
-msgstr "\tMisstänkt position : %s:%s (%s x) (KORRIGERAD vid försök %s)\n"
-
-#: rr_lib.rb:412
-msgid "\tSuspicious position : %s:%s (%s x) (COULD NOT BE CORRECTED)\n"
-msgstr "\tMisstänkt position : %s:%s (%s x) (KUNDE INTE KORRIGERAS)\n"
-
-#: rr_lib.rb:455
-msgid "Unknown drive"
-msgstr "Okänd enhet"
-
-#: rr_lib.rb:547
-msgid ""
-"No disc found in drive %s.\n"
-"\n"
-"Please put an audio disc in first..."
-msgstr ""
-"Ingen skiva hittad i enheten %s.\n"
-"\n"
-"Vänligen sätt in en ljudskiva först..."
-
-#: rr_lib.rb:554
-msgid ""
-"Perhaps cdparanoia doesn't support the drive parameter.\n"
-" Will retry with default drive"
-msgstr ""
-"Cdparanoia kanske inte stödjer enhetsparametrarna.\n"
-" Kommer försöka igen med standardenheten"
-
-#: rr_lib.rb:577
-msgid ""
-"Cdrom drive %s does not exist on your system!\n"
-"Please configure your cdrom drive first."
-msgstr ""
-"Cdrom-enheten %s finns inte på ditt system!\n"
-"Vänligen konfigurera din cdrom-enhet först."
-
-#: rr_lib.rb:584
-#: rr_lib.rb:614
-msgid ""
-"You don't have read and write permission\n"
-"for device %s on your system! These permissions are\n"
-"necessary for cdparanoia to scan your drive.\n"
-"\n"
-"%s\n"
-"You might want to add yourself to the necessary group in /etc/group"
-msgstr ""
-"Du har inte läs- och skrivrättigheter\n"
-"för enheten %s på ditt system! Dessa rättigheter är\n"
-"nödvändiga för att cdparanoia skall kunna söka i enheten.\n"
-"\n"
-"%s\n"
-"Du kan lägga till dig själv till den nödvändiga gruppen i /etc/group"
-
-#: rr_lib.rb:654
-msgid "warning: discid or cd-discid isn't found on your system! Using fallback..."
-msgstr "varning: discid eller cd-discid kunde inte hittas på ditt system! Använder reservrutin..."
-
-#: rr_lib.rb:657
-msgid "freedb string = %s"
-msgstr "freedb sträng = %s"
-
-#: rr_lib.rb:853
-msgid "No pregaps, silences or pre-emphasis detected\n"
-msgstr "Inga luckor, tystnader eller betoning upptäckt\n"
-
-#: rr_lib.rb:891
-msgid "Track %s is marked as a DATA track\n"
-msgstr "Spår %s är markerat som ett dataspår\n"
-
-#: rr_lib.rb:894
-msgid "Pre_emphasis detected on track %s\n"
-msgstr "Betoning upptäckt på spår %s\n"
-
-#: rr_lib.rb:899
-msgid "Pregap detected for track %s : %s sectors\n"
-msgstr "Lucka upptäckt före spår %s : %s sektorer\n"
-
-#: rr_lib.rb:904
-msgid "Silence detected for track %s : %s sectors\n"
-msgstr "Tystnad upptäckt hos spår %s : %s sektorer\n"
-
-#: rr_lib.rb:1099
-msgid "Track %s"
-msgstr "Låt %s"
-
-#: rr_lib.rb:1115
-msgid "No audio disc found in %s"
-msgstr "Ingen ljudskiva hittad i %s"
-
-#: rr_lib.rb:1185
-msgid ""
-"Couldn't connect to freedb server. Network down?\n"
-"\n"
-"Default values will be shown..."
-msgstr ""
-"Kunde inte ansluta till freedb servern. Är nätverket nere?\n"
-"\n"
-"Standardvärden kommer att visas..."
-
-#: rr_lib.rb:1201
-msgid "No match in Freedb database. Default values are used."
-msgstr "Ingen träff i Freedb databasen. Standardvärden kommer användas."
-
-#: rr_lib.rb:1203
-msgid "cddb_query return code = %s. Return code not supported."
-msgstr "cddb_query svarskod = %s. Svarskod stöds inte."
-
-#: rr_lib.rb:1210
-msgid "Keep defaults / don't use freedb"
-msgstr "Behåll standard / använd inte freedb"
-
-#: rr_lib.rb:1509
-msgid ""
-"Can't create output directory!\n"
-"You have no writing acces in dir %s"
-msgstr ""
-"Kan inte skapa utdata katalog!\n"
-"Du har ingen skrivrättighet till katalogen %s"
-
-#: rr_lib.rb:1606
-msgid "Hidden Track"
-msgstr "Dolt spår"
-
-#: rr_lib.rb:1607
-msgid "Unknown Artist"
-msgstr "Okänd artist"
-
-#: rr_lib.rb:1856
-msgid "Not enough disk space left! Rip aborted"
-msgstr "Inte tillräckligt med diskutrymme kvar! Avbryter extrahering"
-
-#: rr_lib.rb:1869
-msgid "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
-msgstr "Maximalt antal försök nått. %s bit(ar) matchade inte %s gånger\n"
-
-#: rr_lib.rb:1870
-msgid "Will continue with the file we've got so far\n"
-msgstr "Kommer att fortsätta med filen som vi fått hittills\n"
-
-#: rr_lib.rb:1908
-msgid ""
-"Cdparanoia doesn't output wav files.\n"
-"Check your settings please."
-msgstr ""
-"Cdparanoia skapar inte wav-filer.\n"
-"Vänligen kolla dina inställningar."
-
-#: rr_lib.rb:1923
-msgid "The ripped file misses %s sectors.\n"
-msgstr "Den extraherade filen saknar %s sektorer.\n"
-
-#: rr_lib.rb:1924
-msgid "This is known behaviour for some drives when using an offset.\n"
-msgstr "Detta är ett känt beteende för vissa enheter när man använder korrigering.\n"
-
-#: rr_lib.rb:1925
-msgid "Notice that each sector is 1/75 second.\n"
-msgstr "Observera att varje sektor är 1/75 sekund.\n"
-
-#: rr_lib.rb:1937
-msgid "Filesize is not correct! Trying another time\n"
-msgstr "Filstorlek är inte korrekt! Försök igen\n"
-
-#: rr_lib.rb:1944
-msgid "Analyzing files for mismatching chunks\n"
-msgstr "Analyserar filer för missanpassade bitar\n"
-
-#: rr_lib.rb:1968
-msgid "Every chunk matched %s times :)\n"
-msgstr "Varje bit matchas %s gånger :)\n"
-
-#: rr_lib.rb:1971
-#: rr_lib.rb:2031
-msgid "%s chunk(s) didn't match %s times.\n"
-msgstr "%s bit(ar) matchade inte %s gånger.\n"
-
-#: rr_lib.rb:2028
-msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
-msgstr "Fel framgångsrikt korrigerade, %s matchningar hittade för varje bit :)\n"
-
-#: rr_lib.rb:2040
-msgid "The drive is spinning for more than 30 minutes.\n"
-msgstr "Enheten snurrar i mer än 30 minuter.\n"
-
-#: rr_lib.rb:2041
-msgid "Taking a timeout of 2 minutes to protect the hardware.\n"
-msgstr "Tar en paus på 2 minuter för att skydda hårdvaran.\n"
-
-#: rr_lib.rb:2053
-msgid "Starting to rip CD image, trial #%s"
-msgstr "Börjar extrahera CD-avbild, försök #%s"
-
-#: rr_lib.rb:2055
-msgid "Starting to rip track %s, trial #%s"
-msgstr "Börjar att extrahera spår %s, försök #%s"
-
-#: rr_lib.rb:2091
-msgid ""
-"MD5 sum: %s\n"
-"\n"
-msgstr ""
-"MD5 summma: %s\n"
-"\n"
-
-#: rr_lib.rb:2450
-msgid "WARNING: Encoding to %s exited with an error with track %s!\n"
-msgstr "VARNING: Omkodning till %s avslutades med ett fel på låt %s!\n"
-
-#: rr_lib.rb:2484
-msgid ""
-"\n"
-"STATUS\n"
-"\n"
-msgstr ""
-"\n"
-"STATUS\n"
-"\n"
-
-#: rr_lib.rb:2507
+#: lib/rubyripper/rubyripper.rb:159
 msgid ""
 "\n"
 "ADVANCED TOC ANALYSIS (with cdrdao)\n"
@@ -1477,7 +1156,7 @@ msgstr ""
 "\n"
 "AVANCERAD TOC-ANALYS (med cdrdao)\n"
 
-#: rr_lib.rb:2508
+#: lib/rubyripper/rubyripper.rb:160
 msgid ""
 "...please be patient, this may take a while\n"
 "\n"
@@ -1485,150 +1164,1198 @@ msgstr ""
 "...var god vänta, detta kan ta en stund\n"
 "\n"
 
-#: rr_lib.rb:2528
-msgid "The device %s doesn't exist on your system!"
-msgstr "Enheten %s finns inte på ditt system!"
+#: lib/rubyripper/cli/cliArguments.rb:45
+msgid "Show current version of rubyripper."
+msgstr "Visa nuvarande version av rubyripper"
 
-#: rr_lib.rb:2533
-msgid "Please select at least one track."
-msgstr "Vänligen ange åtminstone en låt."
+#: lib/rubyripper/cli/cliArguments.rb:50
+msgid "Load configuration settings from file <FILE>."
+msgstr "Ladda konfigurationsfil från fil <FILE>."
 
-#: rr_lib.rb:2540
-msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
-msgstr "Gränssnittet matchar inte inmatad CD. Vänligen tryck Sök igenom enhet först."
+#: lib/rubyripper/cli/cliArguments.rb:54
+msgid "Display verbose output."
+msgstr "Visa utförlig utdata."
 
-#: rr_lib.rb:2546
-msgid "No codecs are selected!"
-msgstr "Inga kodningar valda!"
+#: lib/rubyripper/cli/cliArguments.rb:58
+msgid "Change configuration settings."
+msgstr "Ändra konfigurationsinställningar."
 
-#: rr_lib.rb:2591
-msgid "%s not found on your system!"
-msgstr "%s hittas inte på ditt system!"
+#: lib/rubyripper/cli/cliArguments.rb:62 lib/rubyripper/cli/cliArguments.rb:94
+msgid "Skip questions and rip the disc."
+msgstr "Hoppa över frågorna och extrahera skivan."
 
-#: rr_lib.rb:2611
-msgid ""
-"Cdrom player used to rip:\n"
-"%s\n"
+#: lib/rubyripper/cli/cliArguments.rb:66
+msgid "Provide a directory to stub disc queries."
 msgstr ""
-"Cdrom-spelare som används för att extrahera:\n"
-"%s\n"
 
-#: rr_lib.rb:2612
+#: lib/rubyripper/cli/cliArguments.rb:70
+msgid "Exit after the disc is done ripping."
+msgstr ""
+
+#: lib/rubyripper/cli/cliArguments.rb:74
+msgid "Show this usage statement."
+msgstr "Visa detta användningskommando"
+
+#: lib/rubyripper/cli/cliArguments.rb:92
+msgid "Verbose output specified."
+msgstr "Utförlig utdata angiven."
+
+#: lib/rubyripper/cli/cliArguments.rb:93
+msgid "Configure option specified."
+msgstr "Konfigurera alternativ som anges."
+
+#: lib/rubyripper/cli/cliArguments.rb:95
+msgid "Use config file "
+msgstr "Använd konfigurationsfil"
+
+#: lib/rubyripper/cli/cliPreferences.rb:84
 msgid ""
-"Cdrom offset used: %s\n"
+"\"\n"
+"There are #{choices.size} choices:\n"
+"\""
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:102
+#, fuzzy
+msgid "** RUBYRIPPER PREFERENCES **"
+msgstr "*** RUBYRIPPER INSTÄLLNINGAR ***"
+
+#: lib/rubyripper/cli/cliPreferences.rb:104
+#, fuzzy
+msgid "Secure ripping"
+msgstr "Säker Extrahering"
+
+#: lib/rubyripper/cli/cliPreferences.rb:105
+#, fuzzy
+msgid "Toc analysis"
+msgstr "TOC analys"
+
+#: lib/rubyripper/cli/cliPreferences.rb:109
+#, fuzzy
+msgid "Don't change any setting"
+msgstr "99) Ändra inte någon inställning"
+
+#: lib/rubyripper/cli/cliPreferences.rb:130 bin/rubyripper_cli:120
+#, fuzzy
+msgid "\"Number #{choice} is not a valid choice, try again\""
+msgstr "Detta är inte ett giltligt nummer. Försök igen"
+
+#: lib/rubyripper/cli/cliPreferences.rb:136
+msgid "*** SECURE RIPPING PREFERENCES ***"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:138
+#: lib/rubyripper/cli/cliPreferences.rb:159
+#, fuzzy
+msgid "Ripping drive"
+msgstr "Extraheringsrelaterat"
+
+#: lib/rubyripper/cli/cliPreferences.rb:139
+#: lib/rubyripper/cli/cliPreferences.rb:161
+#, fuzzy
+msgid "Drive offset"
+msgstr "Cdrom-korrigering:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:140
+#, fuzzy
+msgid "    **Find your offset at http://www.accuraterip.com/driveoffsets.htm."
+msgstr ""
+"   **Hitta din korrigering på http://www.accuraterip.com/driveoffsets.htm.\n"
+"   **Din läsarenhet visas i loggen."
+
+#: lib/rubyripper/cli/cliPreferences.rb:141
+msgid "    **Your drive model is shown in the logfile."
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:142
+msgid "Pad missing lead-in/lead-out samples with zeroes %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:143
+#: lib/rubyripper/cli/cliPreferences.rb:164
+#, fuzzy
+msgid "Passing extra cdparanoia parameters"
+msgstr "9)  passera extra cdparanoia parametrar : %s"
+
+#: lib/rubyripper/cli/cliPreferences.rb:144
+#: lib/rubyripper/cli/cliPreferences.rb:165
+#, fuzzy
+msgid "Match all chunks"
+msgstr "Matcha alla bitar:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:145
+#, fuzzy
+msgid "Match erroneous chunks"
+msgstr "Matcha felaktiga bitar:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:146
+#: lib/rubyripper/cli/cliPreferences.rb:167
+#, fuzzy
+msgid "Maximum trials"
+msgstr "12) max antal försök : %s"
+
+#: lib/rubyripper/cli/cliPreferences.rb:148
+#, fuzzy
+msgid "Eject disc after ripping %s"
+msgstr "13) mata ut skiva efter extrahering [%s]"
+
+#: lib/rubyripper/cli/cliPreferences.rb:149
+msgid "Only keep log when errors %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:150
+#: lib/rubyripper/cli/cliPreferences.rb:186
+#: lib/rubyripper/cli/cliPreferences.rb:239
+#: lib/rubyripper/cli/cliPreferences.rb:306
+#: lib/rubyripper/cli/cliPreferences.rb:359
+msgid "Back to settings main menu"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:166
+#, fuzzy
+msgid "Match erronous chunks"
+msgstr "Matcha felaktiga bitar:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:178
+msgid "*** TOC ANALYSIS PREFERENCES ***"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:180
+#, fuzzy
+msgid "Create a cuesheet %s"
+msgstr "Skapa cue-fil"
+
+#: lib/rubyripper/cli/cliPreferences.rb:181
+#, fuzzy
+msgid "Rip to single file %s"
+msgstr "Extrahera CD till en enskild fil"
+
+#: lib/rubyripper/cli/cliPreferences.rb:182
+#, fuzzy
+msgid "Rip hidden audio sectors %s"
+msgstr "Extrahera dolda ljudsektorer"
+
+#: lib/rubyripper/cli/cliPreferences.rb:183
+#: lib/rubyripper/cli/cliPreferences.rb:199
+msgid "Minimum seconds hidden track"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:184
+msgid "Append or prepend audio"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:185
+#, fuzzy
+msgid "Way to handle pre-emphasis"
+msgstr "Hantera spår med betoning"
+
+#: lib/rubyripper/cli/cliPreferences.rb:208
+#, fuzzy
+msgid "Prepend pregaps to next track"
+msgstr "Bifoga lucka före spåret"
+
+#: lib/rubyripper/cli/cliPreferences.rb:209
+#, fuzzy
+msgid "Append pregaps to previous track"
+msgstr "Bifoga lucka före föregående spår"
+
+#: lib/rubyripper/cli/cliPreferences.rb:214
+#, fuzzy
+msgid "Write pre-emphasis tag to the cuesheet"
+msgstr "Spara betoningstaggen i cue-filen."
+
+#: lib/rubyripper/cli/cliPreferences.rb:222
+msgid "*** CODEC PREFERENCES ***"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:224
+#, fuzzy
+msgid "Flac %s"
+msgstr "Flac"
+
+#: lib/rubyripper/cli/cliPreferences.rb:225
+#: lib/rubyripper/cli/cliPreferences.rb:250
+msgid "Flac options passed"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:226
+#, fuzzy
+msgid "Vorbis %s"
+msgstr "Vorbis"
+
+#: lib/rubyripper/cli/cliPreferences.rb:227
+#: lib/rubyripper/cli/cliPreferences.rb:253
+msgid "Oggenc options passed"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:228
+msgid "Mp3 %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:229
+#: lib/rubyripper/cli/cliPreferences.rb:256
+msgid "Lame options passed"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:230
+msgid "Wav %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:231
+msgid "Other codec %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:232
+#: lib/rubyripper/cli/cliPreferences.rb:276
+msgid "Commandline passed"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:233
+#, fuzzy
+msgid "Playlist support %s"
+msgstr "6)  stöd för spellista [%s]"
+
+#: lib/rubyripper/cli/cliPreferences.rb:234
+#: lib/rubyripper/cli/cliPreferences.rb:262
+#, fuzzy
+msgid "Maximum extra encoding threads"
+msgstr "Antalet extra omkodningstrådar"
+
+#: lib/rubyripper/cli/cliPreferences.rb:235
+#, fuzzy
+msgid "Replace spaces with underscores %s"
+msgstr "Ersätt alla mellanslag i filnamnen med understreck"
+
+#: lib/rubyripper/cli/cliPreferences.rb:236
+#, fuzzy
+msgid "Downsize all capital letters in filenames %s"
+msgstr "Omvandla alla versaler i filnamn"
+
+#: lib/rubyripper/cli/cliPreferences.rb:237
+msgid "Normalize program"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:238
+#, fuzzy
+msgid "Normalize modus"
+msgstr "Låt modus"
+
+#: lib/rubyripper/cli/cliPreferences.rb:273
+msgid "%a = artist, %b = album, %g = genre, %y = year"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:274
+msgid "%t = trackname, %n = tracknumber, %i = inputfile"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:275
+msgid "%o = outputfile (don't forget the extension)"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:281
+msgid "Don't normalize the audio"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:282
+#, fuzzy
+msgid "Use replaygain"
+msgstr "Använd replaygain på ljudfiler"
+
+#: lib/rubyripper/cli/cliPreferences.rb:283
+#, fuzzy
+msgid "Use normalize"
+msgstr "Använd normalisering på wav-filer"
+
+#: lib/rubyripper/cli/cliPreferences.rb:288
+msgid "Use album based gain"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:289
+msgid "Use track based gain"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:296
+msgid "*** METADATA PREFERENCES ***"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:298
+msgid "Metadata provider"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:299
+#, fuzzy
+msgid "Freedb use first hit %s"
+msgstr "18) använd alltid första träffen [%s]"
+
+#: lib/rubyripper/cli/cliPreferences.rb:300
+#: lib/rubyripper/cli/cliPreferences.rb:317
+#, fuzzy
+msgid "Freedb server"
+msgstr "Freedb server:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:301
+#: lib/rubyripper/cli/cliPreferences.rb:319
+#, fuzzy
+msgid "Freedb username"
+msgstr "Freedb server:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:302
+#: lib/rubyripper/cli/cliPreferences.rb:321
+#, fuzzy
+msgid "Freedb hostname"
+msgstr "Freedb inställningar"
+
+#: lib/rubyripper/cli/cliPreferences.rb:303
+msgid "Musicbrainz preferred countries (1st, 2nd,...)"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:304
+msgid "Musicbrainz preferred date"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:305
+msgid "Musicbrainz use first known year (including LPs) %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:323
+msgid "Prefer releases from countries (better,worse,...)"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:333
+msgid "Don't fetch metadata from the internet"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:334
+msgid "Use the freedb protocol as primary resource"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:335
+msgid "Use the musicbrainz protocol as primary resource"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:340
+msgid "Prefer releases with earlier dates"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:341
+msgid "Prefer releases with later dates"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:342
+msgid "Ignore dates when selecting releases"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:349
+msgid "*** OTHER PREFERENCES ***"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:351
+#: lib/rubyripper/cli/cliPreferences.rb:368
+#, fuzzy
+msgid "Base directory"
+msgstr "Standard katalog:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:352
+#, fuzzy
+msgid "Standard filescheme"
+msgstr "15) standard schema : %s"
+
+#: lib/rubyripper/cli/cliPreferences.rb:353
+#, fuzzy
+msgid "Various artist filescheme"
+msgstr "16) schema vid olika artister : %s"
+
+#: lib/rubyripper/cli/cliPreferences.rb:354
+#, fuzzy
+msgid "Single file rip filescheme"
+msgstr "Avbild för enstaka fil:"
+
+#: lib/rubyripper/cli/cliPreferences.rb:355
+#: lib/rubyripper/cli/cliPreferences.rb:373
+#, fuzzy
+msgid "Log file viewer"
+msgstr "Visare för Loggfiler: "
+
+#: lib/rubyripper/cli/cliPreferences.rb:356
+#: lib/rubyripper/cli/cliPreferences.rb:375
+#, fuzzy
+msgid "File manager"
+msgstr "Filhanterare: "
+
+#: lib/rubyripper/cli/cliPreferences.rb:357
+#, fuzzy
+msgid "Verbose mode %s"
+msgstr "Utförligt läge"
+
+#: lib/rubyripper/cli/cliPreferences.rb:358
+#, fuzzy
+msgid "Debug mode %s"
+msgstr "Avsöknings läge"
+
+#: lib/rubyripper/cli/cliPreferences.rb:386
+msgid ""
+"\n"
+"Current naming scheme: %s"
+msgstr ""
+"\n"
+"Nuvarande namnschema: %s"
+
+#: lib/rubyripper/cli/cliPreferences.rb:389
+#, fuzzy
+msgid ""
+"\n"
+"%a = Artist\n"
+"%b = Album\n"
+"%g = Genre\n"
+"%y = Year\n"
+"%f = Codec      \n"
+"%n = Tracknumber\n"
+"%t = Trackname\n"
+"%va = Various Artist\n"
 "\n"
 msgstr ""
-"Cdrom-korrigering som används: %s\n"
 "\n"
+"%a = Artist\t\n"
+"%b = Album\n"
+"%g = Genre\n"
+"%y = År\n"
+"%f = Kodare\n"
+"%n = Låtnummer\n"
+"%t = Låtnamn\n"
+"%va = Olika artister\n"
 
-#: rr_lib.rb:2613
-msgid "Ripper used: cdparanoia %s\n"
-msgstr "Extraherare använde: cdparanoia %s\n"
+#: lib/rubyripper/cli/cliPreferences.rb:392
+#, fuzzy
+msgid "New naming scheme (q to quit)"
+msgstr "Nytt %s namnschema (q för att avsluta) : "
 
-#: rr_lib.rb:2613
-msgid "default settings"
-msgstr "standard inställningar"
+#: lib/rubyripper/cli/cliGetAnswer.rb:47 lib/rubyripper/cli/cliGetAnswer.rb:55
+msgid "yes"
+msgstr "ja"
 
-#: rr_lib.rb:2614
-msgid "Matches required for all chunks: %s\n"
-msgstr "Antal matchningar som krävs för varje bit: %s\n"
+#: lib/rubyripper/cli/cliGetAnswer.rb:47 bin/rubyripper_cli:70
+msgid "y"
+msgstr "j"
 
-#: rr_lib.rb:2615
-msgid ""
-"Matches required for erroneous chunks: %s\n"
-"\n"
+#: lib/rubyripper/cli/cliGetAnswer.rb:47 lib/rubyripper/cli/cliGetAnswer.rb:55
+msgid "no"
+msgstr "nej"
+
+#: lib/rubyripper/cli/cliGetAnswer.rb:47
+msgid "n"
+msgstr "n"
+
+#: lib/rubyripper/cli/cliTracklist.rb:42
+msgid "It's not possible to select tracks for image rips"
 msgstr ""
-"Antal matchningar som krävs för felaktiga bitar: %s\n"
-"\n"
 
-#: rr_lib.rb:2617
-msgid "Codec(s) used:\n"
-msgstr "Kodning(ar) som används:\n"
-
-#: rr_lib.rb:2618
-msgid "-flac \t-> %s (%s)\n"
-msgstr "-flac \t-> %s (%s)\n"
-
-#: rr_lib.rb:2619
-msgid "-vorbis\t-> %s (%s)\n"
-msgstr "-vorbis\t-> %s (%s)\n"
-
-#: rr_lib.rb:2620
-msgid ""
-"-mp3\t-> %s\n"
-"(%s\n"
+#: lib/rubyripper/cli/cliTracklist.rb:43
+msgid "Please change your rip preferences first"
 msgstr ""
-"-mp3\t-> %s\n"
-"(%s\n"
 
-#: rr_lib.rb:2621
-msgid "-wav\n"
-msgstr "-wav\n"
-
-#: rr_lib.rb:2622
-msgid "-other\t-> %s\n"
-msgstr "-annan\t-> %s\n"
-
-#: rr_lib.rb:2623
-msgid ""
-"\n"
-"CDDB INFO\n"
+#: lib/rubyripper/cli/cliTracklist.rb:54
+msgid "** TRACK SELECTION **"
 msgstr ""
-"\n"
-"CDDB INFORMATION\n"
 
-#: rr_lib.rb:2624
-msgid ""
-"\n"
-"Artist\t= "
+#: lib/rubyripper/cli/cliTracklist.rb:60
+msgid "To toggle all tracks on/off"
 msgstr ""
-"\n"
-"Artist\t= "
 
-#: rr_lib.rb:2626
-msgid ""
-"\n"
-"Album\t= "
+#: lib/rubyripper/cli/cliTracklist.rb:61
+msgid "Back to main menu"
 msgstr ""
-"\n"
-"Album\t= "
 
-#: rr_lib.rb:2628
-msgid ""
-"\n"
-"Year\t= "
+#: lib/rubyripper/cli/cliTracklist.rb:81 lib/rubyripper/cli/cliDisc.rb:143
+#: lib/rubyripper/cli/cliDisc.rb:172
+#, fuzzy
+msgid "\"Number #{choice} is not a valid choice, try again.\""
 msgstr ""
-"\n"
-"År\t= "
+"Nummret %s är inte ett alternativ!\n"
+"Vänligen försök igen."
 
-#: rr_lib.rb:2629
-msgid ""
-"\n"
-"Genre\t= "
+#: lib/rubyripper/cli/cliDisc.rb:68
+msgid "AUDIO DISC FOUND"
 msgstr ""
-"\n"
-"Genre\t= "
 
-#: rr_lib.rb:2630
-msgid ""
-"\n"
-"Tracks\t= "
+#: lib/rubyripper/cli/cliDisc.rb:69
+#, fuzzy
+msgid "Number of tracks: %s"
+msgstr "Nuvarande valda låtar : %s"
+
+#: lib/rubyripper/cli/cliDisc.rb:70
+msgid "Total playtime: %s"
 msgstr ""
-"\n"
-"Låtar\t= "
 
-#: rr_lib.rb:2631
-msgid "selected"
-msgstr "vald"
+#: lib/rubyripper/cli/cliDisc.rb:97 lib/rubyripper/cli/cliDisc.rb:162
+#, fuzzy
+msgid "Extra disc info:"
+msgstr "Skivinformation"
+
+#: lib/rubyripper/cli/cliDisc.rb:98
+#, fuzzy
+msgid "Marked as various disc? [%s]"
+msgstr "Markera skiva som olika artister"
+
+#: lib/rubyripper/cli/cliDisc.rb:122
+msgid "** EDIT METADATA **"
+msgstr ""
+
+#: lib/rubyripper/cli/cliDisc.rb:124
+#, fuzzy
+msgid "Edit the disc info"
+msgstr "2) Redigera skivinformationen"
+
+#: lib/rubyripper/cli/cliDisc.rb:125
+#, fuzzy
+msgid "Edit the track info"
+msgstr "3) Redigera spårinformationen"
+
+#: lib/rubyripper/cli/cliDisc.rb:126
+msgid "Return to main menu"
+msgstr ""
+
+#: lib/rubyripper/cli/cliDisc.rb:148
+msgid "*** EDIT DISC INFO ***"
+msgstr ""
+
+#: lib/rubyripper/cli/cliDisc.rb:151 lib/rubyripper/cli/cliDisc.rb:180
+msgid "Back to metadata menu"
+msgstr ""
+
+#: lib/rubyripper/cli/cliDisc.rb:177
+#, fuzzy
+msgid "*** EDIT TRACK INFO ***"
+msgstr "SPÅRINFORMATION"
+
+#: lib/rubyripper/cli/cliDisc.rb:192
+#, fuzzy
+msgid "Trackname:"
+msgstr "Användarnamn:"
+
+#: bin/rubyripper_gtk2:95
+msgid "Ehh.. There shouldn't be anything else. WTF?"
+msgstr "Öhm.. Det borde inte vara något annat. Vad fan?"
+
+#: bin/rubyripper_gtk2:96
+msgid "Secret modus = %s"
+msgstr "Hemlig modus = %s"
+
+#: bin/rubyripper_gtk2:155 bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:319
+#: bin/rubyripper_gtk2:343
+msgid "Open tray"
+msgstr "Öppna lucka"
+
+#: bin/rubyripper_gtk2:167 bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:220
+msgid "Exit"
+msgstr "Avsluta"
+
+#: bin/rubyripper_gtk2:173
+msgid "Abort"
+msgstr "Avbryt"
+
+#: bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:239
+msgid "Preferences"
+msgstr "Inställningar"
+
+#: bin/rubyripper_gtk2:194
+msgid "Scan drive"
+msgstr "Sök igenom enhet"
+
+#: bin/rubyripper_gtk2:194
+msgid "Rip cd now!"
+msgstr "Extrahera CD nu!"
+
+#: bin/rubyripper_gtk2:273
+msgid "Disc info"
+msgstr "Skivinformation"
+
+#: bin/rubyripper_gtk2:338
+msgid "Close tray"
+msgstr "Stäng lucka"
+
+#: bin/rubyripper_gtk2:391 bin/rubyripper_cli:139
+msgid "Please solve the following configuration errors first:"
+msgstr ""
+
+#: bin/rubyripper_cli:70
+msgid "Do you want to change your settings? (y/n) : "
+msgstr "Vill du ändra dina inställningar? (j/n) : "
+
+#: bin/rubyripper_cli:82
+#, fuzzy
+msgid "Rubyripper version %s"
+msgstr "Denna logg skapades med Rubyripper, version %s\n"
+
+#: bin/rubyripper_cli:97
+#, fuzzy
+msgid "* RUBYRIPPER MAIN MENU *"
+msgstr "*** RUBYRIPPER INSTÄLLNINGAR ***"
+
+#: bin/rubyripper_cli:99
+#, fuzzy
+msgid "Change preferences"
+msgstr "Inställningar"
+
+#: bin/rubyripper_cli:100
+msgid "Scan drive for audio disc"
+msgstr ""
+
+#: bin/rubyripper_cli:101
+msgid "Change metadata"
+msgstr ""
+
+#: bin/rubyripper_cli:102
+#, fuzzy
+msgid "Select the tracks to rip (default = all)"
+msgstr "1) Välj spår att extrahera"
+
+#: bin/rubyripper_cli:103
+msgid "Rip the disc!"
+msgstr ""
+
+#: bin/rubyripper_cli:104
+msgid "Exit rubyripper..."
+msgstr ""
+
+#: bin/rubyripper_cli:113
+#, fuzzy
+msgid "Thanks for using rubyripper."
+msgstr "Visa nuvarande version av rubyripper"
+
+#: bin/rubyripper_cli:114
+msgid "Have a nice day!"
+msgstr ""
+
+#: bin/rubyripper_cli:146
+msgid "Rip is canceled, exiting..."
+msgstr "Extraheringen avbruten, avslutar..."
+
+#: bin/rubyripper_cli:167
+msgid "The output directory already exists. What would you like to do?"
+msgstr "Utdata-katalogen existerar redan. Vad vill du göra?"
+
+#: bin/rubyripper_cli:169
+msgid "1) Auto rename the output directory"
+msgstr "1) Ändra automatiskt namnet på utdata-katalogen"
+
+#: bin/rubyripper_cli:170
+msgid "2) Overwrite the existing directory"
+msgstr "2) Skriv över existerande katalog"
+
+#: bin/rubyripper_cli:171
+msgid "3) Cancel the rip and eject the disc"
+msgstr "3) Avbryt extraheringen och mata ut skivan"
+
+#: bin/rubyripper_cli:174
+msgid "Please enter the number of your choice: "
+msgstr "Vänligen ange numret på ditt val : "
+
+#~ msgid "** ENCODING **"
+#~ msgstr "** OMKODNING **"
+
+#~ msgid "1)  flac [%s] , settings: %s"
+#~ msgstr "1)  flac [%s] , inställningar: %s"
+
+#~ msgid "2)  vorbis [%s] , settings: %s"
+#~ msgstr "2)  vorbis [%s] , inställningar: %s"
+
+#~ msgid "3)  mp3 [%s] , settings: %s"
+#~ msgstr "3)  mp3 [%s] , inställningar: %s"
+
+#~ msgid "4)  wav [%s]"
+#~ msgstr "4)  wav [%s]"
+
+#~ msgid "5)  other [%s], settings: %s"
+#~ msgstr "5)  andra [%s], inställningar: %s"
+
+#~ msgid "7)  encode while ripping [%s]"
+#~ msgstr "7)  omkoda under extrahering [%s]"
+
+#~ msgid "** RIPPING **"
+#~ msgstr "** EXTRAHERAR **"
+
+#~ msgid "8)  cdrom : %s with offset %s"
+#~ msgstr "8)  cdrom : %s med korrigering %s"
+
+#~ msgid "10) match all chunks : %s"
+#~ msgstr "10) matcha alla bitar : %s"
+
+#~ msgid "11) match erroneous chunks : %s"
+#~ msgstr "11) matcha felaktiga bitar : %s"
+
+#~ msgid "** NAMING SCHEME **"
+#~ msgstr "** NAMN SCHEMA **"
+
+#~ msgid "14) base directory : %s"
+#~ msgstr "14) huvudkatalog : %s"
+
+#~ msgid "** FREEDB  **"
+#~ msgstr "** FREEDB  **"
+
+#~ msgid "17) fetch cd info with freedb [%s]"
+#~ msgstr "17) hämta information om CD med freedb [%s]"
+
+#~ msgid "19) site = %s"
+#~ msgstr "19) sida = %s"
+
+#~ msgid "20) username = %s"
+#~ msgstr "20) användarnamn = %s"
+
+#~ msgid "21) hostname = %s"
+#~ msgstr "21) värdnamn = %s"
+
+#~ msgid "88) config file = %s"
+#~ msgstr "88) konfigurationsfil = %s"
+
+#~ msgid "Please type the number of the setting you wish to change : "
+#~ msgstr "Vänligen ange numret på den inställning du vill ändra:"
+
+#~ msgid "wav disabled"
+#~ msgstr "wav inaktiverat"
+
+#~ msgid "wav enabled"
+#~ msgstr "wav aktiverat"
+
+#~ msgid "playlist disabled"
+#~ msgstr "spellista inaktiverad"
+
+#~ msgid "playlist enabled"
+#~ msgstr "spellista aktiverad"
+
+#~ msgid "How many encoding threads would you like? : "
+#~ msgstr "Hur många omkodningstrådar vill du använda? : "
+
+#~ msgid "Which options to pass to cdparanoia? : "
+#~ msgstr "Vilket val för att komma till cdparanoia? : "
+
+#~ msgid "How many times must all chunks be matched? : "
+#~ msgstr "Hur många gånger måste alla bitar matchas? : "
+
+#~ msgid "How many times must erroneous chunks be matched? : "
+#~ msgstr "Hur många gånger måste felaktiga bitar matchas? : "
+
+#~ msgid "What should be the maximum number of tries? : "
+#~ msgstr "Vilket skall vara maximalt antal försök? : "
+
+#~ msgid "eject disabled"
+#~ msgstr "utmatning inaktiverad"
+
+#~ msgid "eject enabled"
+#~ msgstr "utmatning aktiverad"
+
+#~ msgid "Please enter your directory for your encodings: "
+#~ msgstr "Vänligen ange katalogen för dina omkodningar:"
+
+#~ msgid "freedb disabled"
+#~ msgstr "freedb inaktiverad"
+
+#~ msgid "freedb enabled"
+#~ msgstr "freedb aktiverad"
+
+#~ msgid "first hit disabled"
+#~ msgstr "första träff inaktiverad"
+
+#~ msgid "first hit enabled"
+#~ msgstr "första träff aktiverad"
+
+#~ msgid "Freedb mirror: "
+#~ msgstr "Freedb spegel: "
+
+#~ msgid "Username : "
+#~ msgstr "Användarnamn : "
+
+#~ msgid "Hostname : "
+#~ msgstr "Värdnamn : "
+
+#~ msgid "Config file : "
+#~ msgstr "Konfigurationsfil : "
+
+#~ msgid "Do you want to continue with the program now? (y/n) : "
+#~ msgstr "Vill du fortsätta med programmet nu? (j/n) : "
+
+#~ msgid "Do you want to change the encoding parameters for %s? (y/n) : "
+#~ msgstr "Vill du ändra omkodningsparametrarna för %s? (j/n) : "
+
+#~ msgid ""
+#~ "%a = artist, %b = album, %g = genre, %y = year, %t = trackname, %n = "
+#~ "tracknumber, %i = inputfile, %o = outputfile (don't forget extension)"
+#~ msgstr ""
+#~ "%a = artist, %b = album, %g = genre, %y = år, %t = låtnamn, %n = "
+#~ "låtnummer, %i = indata-fil, %o = utdata-fil (glöm inte filändelse)"
+
+#~ msgid "Encoding paramaters for %s : "
+#~ msgstr "Omkodningsparametrar för %s : "
+
+#~ msgid "Cdrom device : "
+#~ msgstr "Cdrom-enhet : "
+
+#~ msgid "Offset for drive : "
+#~ msgstr "Korrigering för läsare : "
+
+#~ msgid "q"
+#~ msgstr "q"
+
+#~ msgid ""
+#~ "An example filename is now:\n"
+#~ "\n"
+#~ "\t%s"
+#~ msgstr ""
+#~ "Ett exempel på filnamn är nu:\n"
+#~ "\n"
+#~ "\t%s"
+
+#~ msgid "Please answer yes or no"
+#~ msgstr "Vänligen svara ja eller nej"
+
+#~ msgid "We should never get here"
+#~ msgstr "Vi borde aldrig komma hit"
+
+#~ msgid "answer = %s, question = %s (error)"
+#~ msgstr "svar = %s, fråga = %s (fel)"
+
+#~ msgid "Audio-disc found, number of tracks : %s, total playlength : %s"
+#~ msgstr "Ljudskiva hittad, antal låtar : %s, total spellängd : %s"
+
+#~ msgid "Fetching freedb info..."
+#~ msgstr "Hämtar freedb information..."
+
+#~ msgid "Freedb reported multiple possibilities."
+#~ msgstr "Freedb rapporterade flera möjligheter"
+
+#~ msgid ""
+#~ "The first freedb option is automatically selected (no questions allowed)"
+#~ msgstr ""
+#~ "Det första valet från freedb väljs automatiskt (inga frågor tillåtna)"
+
+#~ msgid "Please type the number of the one you prefer? : "
+#~ msgstr "Vänligen ange numret på den du föredrar : "
+
+#~ msgid ""
+#~ "FREEDB INFO\n"
+#~ "\n"
+#~ msgstr ""
+#~ "FREEDB INFORMATION\n"
+#~ "\n"
+
+#~ msgid "DISC INFO"
+#~ msgstr "SKIVINFORMATION"
+
+#~ msgid "What would you like to do?"
+#~ msgstr "Vad skulle du vilja göra?"
+
+#~ msgid "4) Cancel the rip and eject the disc"
+#~ msgstr "4) Avbryt extraheringen och mata ut skivan"
+
+#~ msgid "Mark disc as single artist"
+#~ msgstr "Markera skiva som olika artister"
+
+#~ msgid ""
+#~ "Finished editing disc info\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Färdig med redigering av skivinformationen\n"
+#~ "\n"
+
+#~ msgid "Please enter the number you'd like to edit: "
+#~ msgstr "Vänligen ange numret på ditt val : "
+
+#~ msgid "Artist : "
+#~ msgstr "Artist : "
+
+#~ msgid "Album : "
+#~ msgstr "Album : "
+
+#~ msgid "Genre : "
+#~ msgstr "Genre : "
+
+#~ msgid "Year : "
+#~ msgstr "År : "
+
+#~ msgid ""
+#~ "Finished editing track info\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Färdig med redigering av spårinformationen\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Should all tracks be ripped ? (y/n) "
+#~ msgstr ""
+#~ "\n"
+#~ "Skall alla låtar extraheras ? (j/n) "
+
+#~ msgid "Tracks to rip are %s"
+#~ msgstr "Låtar som skall extraheras är %s"
+
+#~ msgid ""
+#~ "Enter 1 for entering the tracknumbers you want to remove.\n"
+#~ "Enter 2 for entering the tracks you want to keep.\n"
+#~ "Your choice: "
+#~ msgstr ""
+#~ "Tryck 1 för att ange vilka låtnummer du vill ta bort.\n"
+#~ "Tryck 2 för att ange vilka låtnummer du vill behålla.\n"
+#~ "Ditt val : "
+
+#~ msgid ""
+#~ "Type the numbers of the tracks you want to remove and separate them with "
+#~ "a space: "
+#~ msgstr ""
+#~ "Ange numret på de låtar du vill ta bort och separera dem med mellanslag : "
+
+#~ msgid ""
+#~ "Type the numbers of the tracks you want to keep and separate them with a "
+#~ "space: "
+#~ msgstr ""
+#~ "Ange numret på de låtar du vill behålla och separera dem med mellanslag : "
+
+#~ msgid "%s is not a valid number! Please enter 1 or 2!\n"
+#~ msgstr "%s är inte ett giltligt nummer! Vänligen ange 1 eller 2!\n"
+
+#~ msgid "Do you want to make any changes? (y/n) : "
+#~ msgstr "Vill du göra några ändringar? (j/n) : "
+
+#~ msgid ""
+#~ "Closing tray of drive %s. \n"
+#~ "\n"
+#~ "The drive will be scanned for an audio disc..."
+#~ msgstr ""
+#~ "Stänger lucka hos enhet %s. \n"
+#~ "\n"
+#~ "Enheten kommer att genomsökas efter en ljudskiva..."
+
+#~ msgid "Enable freedb metadata fetching"
+#~ msgstr "Aktivera hämtning av freedb metadata"
+
+#~ msgid ""
+#~ "\n"
+#~ "SUSPICIOUS POSITION ANALYSIS\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "MISSTÄNKT POSITIONSANALYS\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "Since there are 75 chunks per second, after making the notion of the\n"
+#~ msgstr ""
+#~ "Eftersom det är 75 bitar per sekund, efter att tagit ställning till om\n"
+
+#~ msgid ""
+#~ "suspicious position, the amount of initially mismatched chunks for\n"
+#~ "that position is shown.\n"
+#~ "\n"
+#~ msgstr ""
+#~ "misstänkt position, positionen för den ursprungliga misspassade\n"
+#~ "biten visas.\n"
+#~ "\n"
+
+#~ msgid "TRACK %s\n"
+#~ msgstr "LÅT %s\n"
+
+#~ msgid "\tSuspicious position : %s:%s (%s x) (CORRECTED at trial %s)\n"
+#~ msgstr "\tMisstänkt position : %s:%s (%s x) (KORRIGERAD vid försök %s)\n"
+
+#~ msgid "\tSuspicious position : %s:%s (%s x) (COULD NOT BE CORRECTED)\n"
+#~ msgstr "\tMisstänkt position : %s:%s (%s x) (KUNDE INTE KORRIGERAS)\n"
+
+#~ msgid "Unknown drive"
+#~ msgstr "Okänd enhet"
+
+#~ msgid ""
+#~ "No disc found in drive %s.\n"
+#~ "\n"
+#~ "Please put an audio disc in first..."
+#~ msgstr ""
+#~ "Ingen skiva hittad i enheten %s.\n"
+#~ "\n"
+#~ "Vänligen sätt in en ljudskiva först..."
+
+#~ msgid ""
+#~ "Perhaps cdparanoia doesn't support the drive parameter.\n"
+#~ " Will retry with default drive"
+#~ msgstr ""
+#~ "Cdparanoia kanske inte stödjer enhetsparametrarna.\n"
+#~ " Kommer försöka igen med standardenheten"
+
+#~ msgid "freedb string = %s"
+#~ msgstr "freedb sträng = %s"
+
+#~ msgid "Pre_emphasis detected on track %s\n"
+#~ msgstr "Betoning upptäckt på spår %s\n"
+
+#~ msgid ""
+#~ "Couldn't connect to freedb server. Network down?\n"
+#~ "\n"
+#~ "Default values will be shown..."
+#~ msgstr ""
+#~ "Kunde inte ansluta till freedb servern. Är nätverket nere?\n"
+#~ "\n"
+#~ "Standardvärden kommer att visas..."
+
+#~ msgid "No match in Freedb database. Default values are used."
+#~ msgstr "Ingen träff i Freedb databasen. Standardvärden kommer användas."
+
+#~ msgid "cddb_query return code = %s. Return code not supported."
+#~ msgstr "cddb_query svarskod = %s. Svarskod stöds inte."
+
+#~ msgid "Keep defaults / don't use freedb"
+#~ msgstr "Behåll standard / använd inte freedb"
+
+#~ msgid ""
+#~ "Maximum tries reached. %s chunk(s) didn't match the required %s times\n"
+#~ msgstr "Maximalt antal försök nått. %s bit(ar) matchade inte %s gånger\n"
+
+#~ msgid "Will continue with the file we've got so far\n"
+#~ msgstr "Kommer att fortsätta med filen som vi fått hittills\n"
+
+#~ msgid "This is known behaviour for some drives when using an offset.\n"
+#~ msgstr ""
+#~ "Detta är ett känt beteende för vissa enheter när man använder "
+#~ "korrigering.\n"
+
+#~ msgid "Notice that each sector is 1/75 second.\n"
+#~ msgstr "Observera att varje sektor är 1/75 sekund.\n"
+
+#~ msgid "Analyzing files for mismatching chunks\n"
+#~ msgstr "Analyserar filer för missanpassade bitar\n"
+
+#~ msgid "Every chunk matched %s times :)\n"
+#~ msgstr "Varje bit matchas %s gånger :)\n"
+
+#~ msgid "%s chunk(s) didn't match %s times.\n"
+#~ msgstr "%s bit(ar) matchade inte %s gånger.\n"
+
+#~ msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
+#~ msgstr ""
+#~ "Fel framgångsrikt korrigerade, %s matchningar hittade för varje bit :)\n"
+
+#~ msgid "Starting to rip CD image, trial #%s"
+#~ msgstr "Börjar extrahera CD-avbild, försök #%s"
+
+#~ msgid "Starting to rip track %s, trial #%s"
+#~ msgstr "Börjar att extrahera spår %s, försök #%s"
+
+#~ msgid ""
+#~ "MD5 sum: %s\n"
+#~ "\n"
+#~ msgstr ""
+#~ "MD5 summma: %s\n"
+#~ "\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "STATUS\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "STATUS\n"
+#~ "\n"
+
+#~ msgid "The Gui doesn't match inserted cd. Please press Scan Drive first."
+#~ msgstr ""
+#~ "Gränssnittet matchar inte inmatad CD. Vänligen tryck Sök igenom enhet "
+#~ "först."
+
+#~ msgid "No codecs are selected!"
+#~ msgstr "Inga kodningar valda!"
+
+#~ msgid "%s not found on your system!"
+#~ msgstr "%s hittas inte på ditt system!"
+
+#~ msgid ""
+#~ "Cdrom player used to rip:\n"
+#~ "%s\n"
+#~ msgstr ""
+#~ "Cdrom-spelare som används för att extrahera:\n"
+#~ "%s\n"
+
+#~ msgid ""
+#~ "Cdrom offset used: %s\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Cdrom-korrigering som används: %s\n"
+#~ "\n"
+
+#~ msgid "default settings"
+#~ msgstr "standard inställningar"
+
+#~ msgid "Codec(s) used:\n"
+#~ msgstr "Kodning(ar) som används:\n"
+
+#~ msgid "-flac \t-> %s (%s)\n"
+#~ msgstr "-flac \t-> %s (%s)\n"
+
+#~ msgid "-vorbis\t-> %s (%s)\n"
+#~ msgstr "-vorbis\t-> %s (%s)\n"
+
+#~ msgid ""
+#~ "-mp3\t-> %s\n"
+#~ "(%s\n"
+#~ msgstr ""
+#~ "-mp3\t-> %s\n"
+#~ "(%s\n"
+
+#~ msgid "-wav\n"
+#~ msgstr "-wav\n"
+
+#~ msgid "-other\t-> %s\n"
+#~ msgstr "-annan\t-> %s\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "CDDB INFO\n"
+#~ msgstr ""
+#~ "\n"
+#~ "CDDB INFORMATION\n"
+
+#~ msgid ""
+#~ "\n"
+#~ "Artist\t= "
+#~ msgstr ""
+#~ "\n"
+#~ "Artist\t= "
+
+#~ msgid ""
+#~ "\n"
+#~ "Album\t= "
+#~ msgstr ""
+#~ "\n"
+#~ "Album\t= "
+
+#~ msgid ""
+#~ "\n"
+#~ "Year\t= "
+#~ msgstr ""
+#~ "\n"
+#~ "År\t= "
+
+#~ msgid ""
+#~ "\n"
+#~ "Genre\t= "
+#~ msgstr ""
+#~ "\n"
+#~ "Genre\t= "
+
+#~ msgid ""
+#~ "\n"
+#~ "Tracks\t= "
+#~ msgstr ""
+#~ "\n"
+#~ "Låtar\t= "
+
+#~ msgid "selected"
+#~ msgstr "vald"
 
 #~ msgid "Rip all tracks. Skip any questions about track selection."
 #~ msgstr "Extrahera alla låtar. Hoppa över frågor om låtval."
+
 #~ msgid "Rip all tracks specified."
 #~ msgstr "Extrahera alla valda låtar."
+
 #~ msgid ""
 #~ "Overwrite\n"
 #~ "directory"
 #~ msgstr ""
 #~ "Skriv över\n"
 #~ "katalogen"
-

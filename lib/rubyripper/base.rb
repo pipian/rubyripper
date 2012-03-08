@@ -22,7 +22,7 @@ $rr_version = '0.7.0a1'
 Thread.abort_on_exception = true
 
 # Make sure the locale files work before installing
-ENV['GETTEXT_PATH'] = File.join($localdir, '/data/locale')
+ENV['GETTEXT_PATH'] = File.expand_path('../../../data/locale',__FILE__)
 
 begin
   raise() if ENV.key?('cucumber')

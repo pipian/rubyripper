@@ -16,11 +16,13 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # TODO fix the config script, to not default to /usr/local/share
-
 puts "The configure script has to be updated for the 0.7.0 release."
 puts "Please use the stable branch if you want to install rubyripper: git checkout stable"
 puts "You can also run rubyripper directly without installing: ./bin/rubyripper_cli"
-raise "CONFIG SCRIPT NOT READY"
+
+###################################
+# CHECK CORRECT ENVIRONMENT FIRST #
+###################################
 
 if ENV['PWD'] == nil
   puts "Your current working directory cannot be determined."
@@ -29,6 +31,10 @@ if ENV['PWD'] == nil
   puts "2) Your shell needs to export the $PWD variable."
   exit()
 end
+
+###########################
+# SETUP INSTALL VARIABLES #
+###########################
 
 $PREFIX='/usr/local'
 $BINDIR='/bin'
@@ -59,12 +65,26 @@ $CLI = false
 $LANG = []
 $LANG_SUPPORT = ["nl", "de", "fr", "hu", "ru", "es", "se", "bg", "it"]
 
-require './rr_lib.rb'
+##################################
+# START SOME DEPENDENCY CHECKING #
+##################################
+# Put the local lib directory on top of the ruby default lib search path
+$:.insert(0, File.expand_path('../lib', __FILE__))
+
+require 'rubyripper/base'
+require 'rubyripper/system/dependency'
+
 begin
-  require 'gettext/utils'
+#  require 'gettext/utils'
+  require 'gettext/tools'
 rescue LoadError
+  puts "Could not import gettext; skip language support..."
   $LANG_SUPPORT = []
 end
+
+####################
+# SHOW THE OPTIONS #
+####################
 
 if ARGV.include?('--help') || ARGV.include?('-h') || ARGV.length == 0
   puts ""
@@ -86,12 +106,16 @@ if ARGV.include?('--help') || ARGV.include?('-h') || ARGV.length == 0
   exit()
 end
 
+##################################
+# Update the po-files (editable) #
+# Update the mo-files (binary)   #
+##################################
+
 def update_lang #will be called by the self-created Makefile :)
   if ($LANG_SUPPORT.size != 0)
     begin
-      GetText.update_pofiles("rubyripper", ["rubyripper_cli.rb",
-        "rubyripper_gtk2.rb", "rr_lib.rb"], "Rubyripper #{$rr_version}",
-        "./locale/po")
+      GetText.update_pofiles("rubyripper", Dir.glob("lib/**/*.rb") +
+        Dir.glob("bin/*"), "Rubyripper #{$rr_version}")
     rescue Exception => e
       puts "\n", '*' * 80, "\n"
       puts e.backtrace
@@ -103,7 +127,7 @@ def update_lang #will be called by the self-created Makefile :)
       puts "For official releases the po files are already updated."
       puts "\n", '*' * 80, "\n"
     end
-    GetText.create_mofiles(true, "./locale/po", "./locale")
+    GetText.create_mofiles()
   end
   exit()
 end
@@ -190,7 +214,7 @@ ARGV.each do |argument|
   elsif argument == "--update-lang"
     update_lang()
   elsif argument == "--update-lib"
-    update_lib()
+# TODO    update_lib()
     exit()
   end
 end
@@ -201,6 +225,7 @@ unless ($GTK2 || $CLI)
   exit()
 end
 
+raise "CONFIG SCRIPT NOT READY FOR INSTALL"
 check_deps()
 
 puts "Creating the Makefile..."
@@ -258,7 +283,7 @@ makefile.puts "distclean:"
 makefile.puts ""
 makefile.close
 
-update_lib() #set file locations in the ruby files
+# TODO update_lib() #set file locations in the ruby files
 
 puts "A summary of your settings:"
 puts ""
