@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.7.0a1\n"
-"POT-Creation-Date: 2012-03-11 19:43+0100\n"
+"POT-Creation-Date: 2012-03-11 21:46+0100\n"
 "PO-Revision-Date: 2009-06-14 19:40+0200\n"
 "Last-Translator: aleximilian & tolostoi <aleximilian@gmail.com> "
 "<tolostoi@gmail.com>\n"
@@ -301,6 +301,9 @@ msgid "All"
 msgstr "Всички"
 
 #: lib/rubyripper/gtk2/gtkDisc.rb:174
+#: lib/rubyripper/gtk2/gtkPreferences.rb:625
+#: lib/rubyripper/cli/cliPreferences.rb:273
+#: lib/rubyripper/cli/cliPreferences.rb:388
 msgid "Artist"
 msgstr "Изпълнител"
 
@@ -520,7 +523,7 @@ msgid "Wav"
 msgstr ""
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:475
-#: lib/rubyripper/gtk2/gtkPreferences.rb:712
+#: lib/rubyripper/gtk2/gtkPreferences.rb:714
 #: lib/rubyripper/cli/cliPreferences.rb:108
 msgid "Other"
 msgstr "Други"
@@ -678,48 +681,85 @@ msgid "Show options for \"Filenaming scheme\""
 msgstr "Показване на опции за схемата на имената"
 
 #: lib/rubyripper/gtk2/gtkPreferences.rb:625
-msgid ""
-"%a=artist   %g=genre   %t=trackname   %f=codec\n"
-"%b=album   %y=year   %n=track   %va=various artist"
-msgstr ""
-"%a=изпълнител  %g=жанр  %t=име на песен  %f=кодек\n"
-"%b=албум   %y=година    %n=номер на песен   %va=различни изпълнители (V.A.)"
+#: lib/rubyripper/cli/cliPreferences.rb:273
+#: lib/rubyripper/cli/cliPreferences.rb:389
+#, fuzzy
+msgid "Genre"
+msgstr "Жанр:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:655
+#: lib/rubyripper/gtk2/gtkPreferences.rb:625
+#: lib/rubyripper/cli/cliPreferences.rb:274
+#: lib/rubyripper/cli/cliPreferences.rb:391
+#, fuzzy
+msgid "Trackname"
+msgstr "Юзър:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:626
+#: lib/rubyripper/cli/cliPreferences.rb:390
+#, fuzzy
+msgid "Codec"
+msgstr "Кодеци"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:626
+#: lib/rubyripper/cli/cliPreferences.rb:273
+#: lib/rubyripper/cli/cliPreferences.rb:388
+#, fuzzy
+msgid "Album"
+msgstr "Албум:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:626
+#: lib/rubyripper/cli/cliPreferences.rb:273
+#: lib/rubyripper/cli/cliPreferences.rb:389
+#, fuzzy
+msgid "Year"
+msgstr "Година:"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:627
+#: lib/rubyripper/rippingInfoAtStart.rb:100
+#, fuzzy
+msgid "Track"
+msgstr "Песен %s"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:627
+#, fuzzy
+msgid "Various artist"
+msgstr "Схема за компилация (V.A.):"
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:657
 msgid "Filenaming scheme"
 msgstr "Схема имената на файловете"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:659
-#: lib/rubyripper/gtk2/gtkPreferences.rb:663
-#: lib/rubyripper/gtk2/gtkPreferences.rb:668
-#: lib/rubyripper/cli/cliPreferences.rb:398
+#: lib/rubyripper/gtk2/gtkPreferences.rb:661
+#: lib/rubyripper/gtk2/gtkPreferences.rb:665
+#: lib/rubyripper/gtk2/gtkPreferences.rb:670
+#: lib/rubyripper/cli/cliPreferences.rb:399
 #, fuzzy
 msgid "Example filename: "
 msgstr ""
 "Името на файла ще изглежда така:\n"
 "%s.ext"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:685
+#: lib/rubyripper/gtk2/gtkPreferences.rb:687
 msgid "Log file viewer: "
 msgstr "Програма за преглед на лога: "
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:686
+#: lib/rubyripper/gtk2/gtkPreferences.rb:688
 msgid "File manager: "
 msgstr "Файл-менажер: "
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:694
+#: lib/rubyripper/gtk2/gtkPreferences.rb:696
 msgid "Programs of choice"
 msgstr "Програми"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:702
+#: lib/rubyripper/gtk2/gtkPreferences.rb:704
 msgid "Verbose mode"
 msgstr "Подробен режим"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:703
+#: lib/rubyripper/gtk2/gtkPreferences.rb:705
 msgid "Debug mode"
 msgstr "Debug режим"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:706
+#: lib/rubyripper/gtk2/gtkPreferences.rb:708
 msgid "Debug options"
 msgstr "Настройки на Debug"
 
@@ -900,16 +940,16 @@ msgid "WARNING: Encoding to %s exited with an error with track %s!"
 msgstr "ВНИМАНИЕ: Кодек %s върна грешка при обработката на песента %s!\n"
 
 #: lib/rubyripper/rippingInfoAtStart.rb:48
-msgid "Rubyripper v%s\n"
-msgstr ""
+#: lib/rubyripper/cli/cliArguments.rb:47 bin/rubyripper_cli:82
+#, fuzzy
+msgid "Rubyripper version %s"
+msgstr "Този лог е генериран от RubyRipper версия %s\n"
 
 #: lib/rubyripper/rippingInfoAtStart.rb:49
 msgid ""
-"Website: http://code.google.com/p/rubyripper\n"
 "\n"
+"Website:"
 msgstr ""
-"Сайт: http://code.google.com/p/rubyripper\n"
-"\n"
 
 #: lib/rubyripper/rippingInfoAtStart.rb:53
 msgid ""
@@ -918,112 +958,104 @@ msgid ""
 msgstr ""
 
 #: lib/rubyripper/rippingInfoAtStart.rb:58
-msgid ""
-"Used drive     : %s   Device: %s\n"
-"\n"
-msgstr ""
+#, fuzzy
+msgid "Used drive"
+msgstr "Неизвестно у-во"
 
-#: lib/rubyripper/rippingInfoAtStart.rb:60
-msgid "Used ripper    : %s\n"
+#: lib/rubyripper/rippingInfoAtStart.rb:59
+msgid "Device"
 msgstr ""
 
 #: lib/rubyripper/rippingInfoAtStart.rb:61
-msgid ""
-"Selected flags : %s\n"
-"\n"
+msgid "Used ripper"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:63
+#: lib/rubyripper/rippingInfoAtStart.rb:62
+#: lib/rubyripper/rippingInfoAtStart.rb:90
 #, fuzzy
-msgid "Matches required for all chunks       : %s\n"
-msgstr "Число на опити за всички песни: %s\n"
+msgid "Selected flags"
+msgstr "Избрани"
 
 #: lib/rubyripper/rippingInfoAtStart.rb:64
 #, fuzzy
-msgid ""
-"Matches required for erroneous chunks : %s\n"
-"\n"
+msgid "Matches required for all chunks"
+msgstr "Число на опити за всички песни: %s\n"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:65
+#, fuzzy
+msgid "Matches required for erroneous chunks"
 msgstr "Число на опити за песни с грешки: %s\n"
 
-#: lib/rubyripper/rippingInfoAtStart.rb:66
-msgid "Read offset correction                      : %s\n"
-msgstr ""
-
 #: lib/rubyripper/rippingInfoAtStart.rb:67
-msgid "Overread into Lead-In and Lead-Out          : No\n"
+msgid "Read offset correction"
 msgstr ""
 
 #: lib/rubyripper/rippingInfoAtStart.rb:68
-msgid "Fill up missing offset samples with silence : %s\n"
+msgid "Overread into Lead-In and Lead-Out"
 msgstr ""
 
 #: lib/rubyripper/rippingInfoAtStart.rb:68
-#, fuzzy
-msgid "Yes"
-msgstr "да"
-
-#: lib/rubyripper/rippingInfoAtStart.rb:68
+#: lib/rubyripper/rippingInfoAtStart.rb:69
 msgid "No"
 msgstr ""
 
 #: lib/rubyripper/rippingInfoAtStart.rb:69
-msgid ""
-"Null samples used in CRC calculations       : Yes\n"
-"\n"
+msgid "Fill up missing offset samples with silence : %s\n"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:74
-#: lib/rubyripper/rippingInfoAtStart.rb:78
-#: lib/rubyripper/rippingInfoAtStart.rb:82
-#: lib/rubyripper/rippingInfoAtStart.rb:86
-#: lib/rubyripper/rippingInfoAtStart.rb:90
+#: lib/rubyripper/rippingInfoAtStart.rb:69
+#: lib/rubyripper/rippingInfoAtStart.rb:70
+#, fuzzy
+msgid "Yes"
+msgstr "да"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:70
+msgid "Null samples used in CRC calculations"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:79
+#: lib/rubyripper/rippingInfoAtStart.rb:83
+#: lib/rubyripper/rippingInfoAtStart.rb:89
 msgid "Used output encoder : %s\n"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:75
 #: lib/rubyripper/rippingInfoAtStart.rb:79
+msgid "Internal WAV routines"
+msgstr ""
+
+#: lib/rubyripper/rippingInfoAtStart.rb:80
+msgid "Sample format"
+msgstr ""
+
 #: lib/rubyripper/rippingInfoAtStart.rb:83
-msgid ""
-"Selected flags      : %s\n"
-"\n"
+msgid "User defined encoder"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:86
-msgid "Internal WAV Routines"
+#: lib/rubyripper/rippingInfoAtStart.rb:84
+msgid "Command line"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:87
-msgid ""
-"Sample format       : 44,100 Hz; 16 Bit; Stereo\n"
-"\n"
-msgstr ""
-
-#: lib/rubyripper/rippingInfoAtStart.rb:90
-msgid "User Defined Encoder"
-msgstr ""
-
-#: lib/rubyripper/rippingInfoAtStart.rb:91
-msgid ""
-"Command line        : %s\n"
-"\n"
-msgstr ""
-
-#: lib/rubyripper/rippingInfoAtStart.rb:100
+#: lib/rubyripper/rippingInfoAtStart.rb:98
 msgid ""
 "TOC of the extracted CD\n"
 "\n"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:102
-msgid "     Track |   Start  |  Length  | Start sector | End sector \n"
+#: lib/rubyripper/rippingInfoAtStart.rb:100
+msgid "Start"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:103
-msgid "    ---------------------------------------------------------\n"
+#: lib/rubyripper/rippingInfoAtStart.rb:101
+#, fuzzy
+msgid "Length"
+msgstr "Продължителност (%s)"
+
+#: lib/rubyripper/rippingInfoAtStart.rb:101
+msgid "Start sector"
 msgstr ""
 
-#: lib/rubyripper/rippingInfoAtStart.rb:119
-msgid "       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n"
+#: lib/rubyripper/rippingInfoAtStart.rb:101
+msgid "End sector"
 msgstr ""
 
 #: lib/rubyripper/log.rb:49
@@ -1050,18 +1082,22 @@ msgstr "Песен %s"
 #: lib/rubyripper/log.rb:189 lib/rubyripper/log.rb:190
 #: lib/rubyripper/log.rb:191 lib/rubyripper/log.rb:192
 #: lib/rubyripper/log.rb:193
-msgid "     Filename %s\n"
-msgstr ""
+#, fuzzy
+msgid "Filename %s\n"
+msgstr "Схема имената на файловете"
 
 #: lib/rubyripper/log.rb:198
-msgid "     Trial %s: %s seconds (%sx)\n"
+msgid "Trial %s: %s seconds (%sx)\n"
 msgstr ""
 
 #: lib/rubyripper/log.rb:218
+#, fuzzy
 msgid ""
-"     Copy MD5: %s\n"
+"Copy MD5: %s\n"
 "\n"
 msgstr ""
+"Хаш MD5: %s\n"
+"\n"
 
 #: lib/rubyripper/log.rb:222
 msgid ""
@@ -1202,14 +1238,19 @@ msgstr "Използване на конфигурационен файл "
 
 #: lib/rubyripper/cli/cliPreferences.rb:84
 msgid ""
-"\"\n"
-"There are #{choices.size} choices:\n"
-"\""
+"\n"
+"There are %s choices:\n"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:89
+msgid ""
+"\n"
+"Which one do you prefer?"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:102
 #, fuzzy
-msgid "** RUBYRIPPER PREFERENCES **"
+msgid "RUBYRIPPER PREFERENCES"
 msgstr "*** НАСТРОЙКИ НА ПРОГРАМАТА ***"
 
 #: lib/rubyripper/cli/cliPreferences.rb:104
@@ -1229,12 +1270,15 @@ msgstr "99) Не променяй настройките"
 
 #: lib/rubyripper/cli/cliPreferences.rb:130 bin/rubyripper_cli:120
 #, fuzzy
-msgid "\"Number #{choice} is not a valid choice, try again\""
-msgstr "Грешен номер. Опитайте отново."
+msgid "Number %s is not a valid choice, try again"
+msgstr ""
+"Число %s не е настройка!\n"
+"Опитайте отново."
 
 #: lib/rubyripper/cli/cliPreferences.rb:136
-msgid "*** SECURE RIPPING PREFERENCES ***"
-msgstr ""
+#, fuzzy
+msgid "SECURE RIPPING PREFERENCES"
+msgstr "*** НАСТРОЙКИ НА ПРОГРАМАТА ***"
 
 #: lib/rubyripper/cli/cliPreferences.rb:138
 #: lib/rubyripper/cli/cliPreferences.rb:159
@@ -1250,14 +1294,14 @@ msgstr "Офест на устройството:"
 
 #: lib/rubyripper/cli/cliPreferences.rb:140
 #, fuzzy
-msgid "    **Find your offset at http://www.accuraterip.com/driveoffsets.htm."
+msgid "Find your offset at http://www.accuraterip.com/driveoffsets.htm."
 msgstr ""
 "   **Намерете своето cd устройство в <http://www.accuraterip.com/"
 "driveoffsets.htm.\n"
 "   **Модела на вашето cd у-во се отразява в лога.\n"
 
 #: lib/rubyripper/cli/cliPreferences.rb:141
-msgid "    **Your drive model is shown in the logfile."
+msgid "Your drive model is shown in the logfile."
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:142
@@ -1299,8 +1343,8 @@ msgstr ""
 #: lib/rubyripper/cli/cliPreferences.rb:150
 #: lib/rubyripper/cli/cliPreferences.rb:186
 #: lib/rubyripper/cli/cliPreferences.rb:239
-#: lib/rubyripper/cli/cliPreferences.rb:306
-#: lib/rubyripper/cli/cliPreferences.rb:359
+#: lib/rubyripper/cli/cliPreferences.rb:305
+#: lib/rubyripper/cli/cliPreferences.rb:358
 msgid "Back to settings main menu"
 msgstr ""
 
@@ -1310,7 +1354,7 @@ msgid "Match erronous chunks"
 msgstr "Извличане на песни с грешки:"
 
 #: lib/rubyripper/cli/cliPreferences.rb:178
-msgid "*** TOC ANALYSIS PREFERENCES ***"
+msgid "TOC ANALYSIS PREFERENCES"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:180
@@ -1358,7 +1402,7 @@ msgid "Write pre-emphasis tag to the cuesheet"
 msgstr "Запази pre-emphasis тагове в *.cue"
 
 #: lib/rubyripper/cli/cliPreferences.rb:222
-msgid "*** CODEC PREFERENCES ***"
+msgid "CODEC PREFERENCES"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:224
@@ -1433,159 +1477,166 @@ msgstr ""
 msgid "Normalize modus"
 msgstr "По песни - модел"
 
-#: lib/rubyripper/cli/cliPreferences.rb:273
-msgid "%a = artist, %b = album, %g = genre, %y = year"
-msgstr ""
+#: lib/rubyripper/cli/cliPreferences.rb:274
+#: lib/rubyripper/cli/cliPreferences.rb:390
+#, fuzzy
+msgid "Tracknumber"
+msgstr "Юзър:"
 
 #: lib/rubyripper/cli/cliPreferences.rb:274
-msgid "%t = trackname, %n = tracknumber, %i = inputfile"
+msgid "Inputfile"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:275
-msgid "%o = outputfile (don't forget the extension)"
+msgid "Outputfile"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:281
+#: lib/rubyripper/cli/cliPreferences.rb:275
+msgid " (don't forget the extension)"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:280
 msgid "Don't normalize the audio"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:282
+#: lib/rubyripper/cli/cliPreferences.rb:281
 #, fuzzy
 msgid "Use replaygain"
 msgstr "Използване на replaygain (Знаеш ли за какво е...?)"
 
-#: lib/rubyripper/cli/cliPreferences.rb:283
+#: lib/rubyripper/cli/cliPreferences.rb:282
 #, fuzzy
 msgid "Use normalize"
 msgstr "Нормализиране wav-файлове (Не се препоръчва)"
 
-#: lib/rubyripper/cli/cliPreferences.rb:288
+#: lib/rubyripper/cli/cliPreferences.rb:287
 msgid "Use album based gain"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:289
+#: lib/rubyripper/cli/cliPreferences.rb:288
 msgid "Use track based gain"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:296
-msgid "*** METADATA PREFERENCES ***"
+#: lib/rubyripper/cli/cliPreferences.rb:295
+msgid "METADATA PREFERENCES"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:298
+#: lib/rubyripper/cli/cliPreferences.rb:297
 msgid "Metadata provider"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:299
+#: lib/rubyripper/cli/cliPreferences.rb:298
 #, fuzzy
 msgid "Freedb use first hit %s"
 msgstr "18) използване на първото съвпадение [%s]"
 
-#: lib/rubyripper/cli/cliPreferences.rb:300
-#: lib/rubyripper/cli/cliPreferences.rb:317
+#: lib/rubyripper/cli/cliPreferences.rb:299
+#: lib/rubyripper/cli/cliPreferences.rb:316
 #, fuzzy
 msgid "Freedb server"
 msgstr "Сървър freedb: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:301
-#: lib/rubyripper/cli/cliPreferences.rb:319
+#: lib/rubyripper/cli/cliPreferences.rb:300
+#: lib/rubyripper/cli/cliPreferences.rb:318
 #, fuzzy
 msgid "Freedb username"
 msgstr "Сървър freedb: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:302
-#: lib/rubyripper/cli/cliPreferences.rb:321
+#: lib/rubyripper/cli/cliPreferences.rb:301
+#: lib/rubyripper/cli/cliPreferences.rb:320
 #, fuzzy
 msgid "Freedb hostname"
 msgstr "Настройки freedb:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:303
+#: lib/rubyripper/cli/cliPreferences.rb:302
 msgid "Musicbrainz preferred countries (1st, 2nd,...)"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:304
+#: lib/rubyripper/cli/cliPreferences.rb:303
 msgid "Musicbrainz preferred date"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:305
+#: lib/rubyripper/cli/cliPreferences.rb:304
 msgid "Musicbrainz use first known year (including LPs) %s"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:323
+#: lib/rubyripper/cli/cliPreferences.rb:322
 msgid "Prefer releases from countries (better,worse,...)"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:333
+#: lib/rubyripper/cli/cliPreferences.rb:332
 msgid "Don't fetch metadata from the internet"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:334
+#: lib/rubyripper/cli/cliPreferences.rb:333
 msgid "Use the freedb protocol as primary resource"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:335
+#: lib/rubyripper/cli/cliPreferences.rb:334
 msgid "Use the musicbrainz protocol as primary resource"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:340
+#: lib/rubyripper/cli/cliPreferences.rb:339
 msgid "Prefer releases with earlier dates"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:341
+#: lib/rubyripper/cli/cliPreferences.rb:340
 msgid "Prefer releases with later dates"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:342
+#: lib/rubyripper/cli/cliPreferences.rb:341
 msgid "Ignore dates when selecting releases"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:349
-msgid "*** OTHER PREFERENCES ***"
-msgstr ""
+#: lib/rubyripper/cli/cliPreferences.rb:348
+#, fuzzy
+msgid "OTHER PREFERENCES"
+msgstr "*** НАСТРОЙКИ НА ПРОГРАМАТА ***"
 
-#: lib/rubyripper/cli/cliPreferences.rb:351
-#: lib/rubyripper/cli/cliPreferences.rb:368
+#: lib/rubyripper/cli/cliPreferences.rb:350
+#: lib/rubyripper/cli/cliPreferences.rb:367
 #, fuzzy
 msgid "Base directory"
 msgstr "Директория:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:352
+#: lib/rubyripper/cli/cliPreferences.rb:351
 #, fuzzy
 msgid "Standard filescheme"
 msgstr "15) стандартна схема: %s"
 
-#: lib/rubyripper/cli/cliPreferences.rb:353
+#: lib/rubyripper/cli/cliPreferences.rb:352
 #, fuzzy
 msgid "Various artist filescheme"
 msgstr "16) схема за компилации (различни изпълнители (V.A.)): %s"
 
-#: lib/rubyripper/cli/cliPreferences.rb:354
+#: lib/rubyripper/cli/cliPreferences.rb:353
 #, fuzzy
 msgid "Single file rip filescheme"
 msgstr "Имидж файл:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:355
-#: lib/rubyripper/cli/cliPreferences.rb:373
+#: lib/rubyripper/cli/cliPreferences.rb:354
+#: lib/rubyripper/cli/cliPreferences.rb:372
 #, fuzzy
 msgid "Log file viewer"
 msgstr "Програма за преглед на лога: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:356
-#: lib/rubyripper/cli/cliPreferences.rb:375
+#: lib/rubyripper/cli/cliPreferences.rb:355
+#: lib/rubyripper/cli/cliPreferences.rb:374
 #, fuzzy
 msgid "File manager"
 msgstr "Файл-менажер: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:357
+#: lib/rubyripper/cli/cliPreferences.rb:356
 #, fuzzy
 msgid "Verbose mode %s"
 msgstr "Подробен режим"
 
-#: lib/rubyripper/cli/cliPreferences.rb:358
+#: lib/rubyripper/cli/cliPreferences.rb:357
 #, fuzzy
 msgid "Debug mode %s"
 msgstr "Debug режим"
 
-#: lib/rubyripper/cli/cliPreferences.rb:386
+#: lib/rubyripper/cli/cliPreferences.rb:385
 msgid ""
 "\n"
 "Current naming scheme: %s"
@@ -1593,31 +1644,12 @@ msgstr ""
 "\n"
 "Текуща схема за имената: %s"
 
-#: lib/rubyripper/cli/cliPreferences.rb:389
+#: lib/rubyripper/cli/cliPreferences.rb:391
 #, fuzzy
-msgid ""
-"\n"
-"%a = Artist\n"
-"%b = Album\n"
-"%g = Genre\n"
-"%y = Year\n"
-"%f = Codec      \n"
-"%n = Tracknumber\n"
-"%t = Trackname\n"
-"%va = Various Artist\n"
-"\n"
-msgstr ""
-"\n"
-"%a = Изпълнител\n"
-"%b = Албум\n"
-"%g = Жанр\n"
-"%y = Година\n"
-"%f = Кодек\n"
-"%n = Номер на песен\n"
-"%t = Име на песен\n"
-"%va = Различни изпълнители (V.A.)\n"
+msgid "Various Artist"
+msgstr "Схема за компилация (V.A.):"
 
-#: lib/rubyripper/cli/cliPreferences.rb:392
+#: lib/rubyripper/cli/cliPreferences.rb:393
 #, fuzzy
 msgid "New naming scheme (q to quit)"
 msgstr "Нова %s схема (q за изход): "
@@ -1647,7 +1679,7 @@ msgid "Please change your rip preferences first"
 msgstr ""
 
 #: lib/rubyripper/cli/cliTracklist.rb:54
-msgid "** TRACK SELECTION **"
+msgid "TRACK SELECTION"
 msgstr ""
 
 #: lib/rubyripper/cli/cliTracklist.rb:60
@@ -1689,7 +1721,7 @@ msgid "Marked as various disc? [%s]"
 msgstr "Маркирай като различни изпълнители (V.A.)"
 
 #: lib/rubyripper/cli/cliDisc.rb:122
-msgid "** EDIT METADATA **"
+msgid "EDIT METADATA"
 msgstr ""
 
 #: lib/rubyripper/cli/cliDisc.rb:124
@@ -1707,8 +1739,9 @@ msgid "Return to main menu"
 msgstr ""
 
 #: lib/rubyripper/cli/cliDisc.rb:144
-msgid "*** EDIT DISC INFO ***"
-msgstr ""
+#, fuzzy
+msgid "EDIT DISC INFO"
+msgstr "ИНФОРМАЦИЯ ЗА ДИСКА"
 
 #: lib/rubyripper/cli/cliDisc.rb:147 lib/rubyripper/cli/cliDisc.rb:176
 msgid "Back to metadata menu"
@@ -1716,7 +1749,7 @@ msgstr ""
 
 #: lib/rubyripper/cli/cliDisc.rb:173
 #, fuzzy
-msgid "*** EDIT TRACK INFO ***"
+msgid "EDIT TRACK INFO"
 msgstr "ПЕСЕН ИНФО"
 
 #: lib/rubyripper/cli/cliDisc.rb:188
@@ -1774,11 +1807,6 @@ msgstr ""
 #: bin/rubyripper_cli:70
 msgid "Do you want to change your settings? (y/n) : "
 msgstr "Желаете ли да промените настройките? (y/n) "
-
-#: bin/rubyripper_cli:82
-#, fuzzy
-msgid "Rubyripper version %s"
-msgstr "Този лог е генериран от RubyRipper версия %s\n"
 
 #: bin/rubyripper_cli:97
 #, fuzzy
@@ -1843,6 +1871,48 @@ msgstr "3) Отмяна и изваждане на диска"
 #: bin/rubyripper_cli:174
 msgid "Please enter the number of your choice: "
 msgstr "Въведете избраният номер: "
+
+#~ msgid ""
+#~ "%a=artist   %g=genre   %t=trackname   %f=codec\n"
+#~ "%b=album   %y=year   %n=track   %va=various artist"
+#~ msgstr ""
+#~ "%a=изпълнител  %g=жанр  %t=име на песен  %f=кодек\n"
+#~ "%b=албум   %y=година    %n=номер на песен   %va=различни изпълнители (V."
+#~ "A.)"
+
+#, fuzzy
+#~ msgid "\"Number #{choice} is not a valid choice, try again\""
+#~ msgstr "Грешен номер. Опитайте отново."
+
+#, fuzzy
+#~ msgid ""
+#~ "\n"
+#~ "%a = Artist\n"
+#~ "%b = Album\n"
+#~ "%g = Genre\n"
+#~ "%y = Year\n"
+#~ "%f = Codec      \n"
+#~ "%n = Tracknumber\n"
+#~ "%t = Trackname\n"
+#~ "%va = Various Artist\n"
+#~ "\n"
+#~ msgstr ""
+#~ "\n"
+#~ "%a = Изпълнител\n"
+#~ "%b = Албум\n"
+#~ "%g = Жанр\n"
+#~ "%y = Година\n"
+#~ "%f = Кодек\n"
+#~ "%n = Номер на песен\n"
+#~ "%t = Име на песен\n"
+#~ "%va = Различни изпълнители (V.A.)\n"
+
+#~ msgid ""
+#~ "Website: http://code.google.com/p/rubyripper\n"
+#~ "\n"
+#~ msgstr ""
+#~ "Сайт: http://code.google.com/p/rubyripper\n"
+#~ "\n"
 
 #~ msgid "** ENCODING **"
 #~ msgstr "** КОМПРЕСИЯ **"
@@ -2033,9 +2103,6 @@ msgstr "Въведете избраният номер: "
 #~ "ИНФОРМАЦИЯ ОТ FREEDB\n"
 #~ "\n"
 
-#~ msgid "DISC INFO"
-#~ msgstr "ИНФОРМАЦИЯ ЗА ДИСКА"
-
 #~ msgid "What would you like to do?"
 #~ msgstr "Какво ще правим?"
 
@@ -2132,9 +2199,6 @@ msgstr "Въведете избраният номер: "
 #~ msgid "TRACK %s\n"
 #~ msgstr "Песен %s\n"
 
-#~ msgid "Unknown drive"
-#~ msgstr "Неизвестно у-во"
-
 #~ msgid ""
 #~ "No disc found in drive %s.\n"
 #~ "\n"
@@ -2202,13 +2266,6 @@ msgstr "Въведете избраният номер: "
 #~ msgid "Error(s) succesfully corrected, %s matches found for each chunk :)\n"
 #~ msgstr ""
 #~ "Грешките са оправени, всяка съвпадаща част е била извлечена %s Пъти :)\n"
-
-#~ msgid ""
-#~ "MD5 sum: %s\n"
-#~ "\n"
-#~ msgstr ""
-#~ "Хаш MD5: %s\n"
-#~ "\n"
 
 #~ msgid ""
 #~ "\n"
@@ -2293,9 +2350,6 @@ msgstr "Въведете избраният номер: "
 #~ msgstr ""
 #~ "\n"
 #~ "Песни\t= "
-
-#~ msgid "selected"
-#~ msgstr "Избрани"
 
 #~ msgid "Rip all tracks. Skip any questions about track selection."
 #~ msgstr ""
