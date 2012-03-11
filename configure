@@ -16,9 +16,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # TODO fix the config script, to not default to /usr/local/share
-puts "The configure script has to be updated for the 0.7.0 release."
-puts "Please use the stable branch if you want to install rubyripper: git checkout stable"
-puts "You can also run rubyripper directly without installing: ./bin/rubyripper_cli"
 
 ###################################
 # CHECK CORRECT ENVIRONMENT FIRST #
@@ -100,9 +97,10 @@ if ARGV.include?('--help') || ARGV.include?('-h') || ARGV.length == 0
   puts "--enable-lang-all  (install all locale files)"
   puts "--enable-lang=<xx>  (install specific locale file, separate with a comma)"
   puts ""
-  puts "--update-po (updates the po translation files, input = source code)"
-  puts "--update-mo (update the binary translation files, input = po files)"
-  puts "--update-lib (resets file locations in ruby files)"
+  puts "LANGUAGE SUPPORT"
+  puts "--update-po (updates all po translation files, input = source code)"
+  puts "--update-mo (update all binary translation files, input = po files)"
+#  puts "--update-lib (resets file locations in ruby files)"
   puts ""
   exit()
 end
@@ -232,6 +230,9 @@ unless ($GTK2 || $CLI)
   exit()
 end
 
+puts "The configure script has to be updated for the 0.7.0 release."
+puts "Please use the stable branch if you want to install rubyripper: git checkout stable"
+puts "You can also run rubyripper directly without installing: ./bin/rubyripper_cli"
 raise "CONFIG SCRIPT NOT READY FOR INSTALL"
 check_deps()
 
