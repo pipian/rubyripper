@@ -17,7 +17,10 @@
 
 # The main program is launched from the class Rubyripper
 class Rubyripper
-attr_reader :outputDir, :fileScheme, :log
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :outputDir, :fileScheme, :log
 
   # * userInterface = the user interface object (with the update function)
   # * disc = the disc object

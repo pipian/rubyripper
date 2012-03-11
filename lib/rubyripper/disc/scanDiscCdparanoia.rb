@@ -25,6 +25,9 @@ require 'rubyripper/errors'
 # creating the freedb string. Cd-info is better for that.
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+  
   attr_reader :status, :playtime, :audiotracks, :devicename, :firstAudioTrack,
       :totalSectors, :error, :multipleDriveSupport
 

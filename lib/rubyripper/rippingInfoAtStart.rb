@@ -19,6 +19,9 @@ require 'rubyripper/preferences/main'
 require 'rubyripper/system/execute.rb'
 
 class RippingInfoAtStart
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+  
   def initialize(disc, log, trackSelection, prefs=nil, execute=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @disc = disc

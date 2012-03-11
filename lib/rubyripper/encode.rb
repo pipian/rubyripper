@@ -29,6 +29,9 @@ require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
 
 class Encode
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
   attr_writer :cancelled
 
   def initialize(fileScheme, log, trackSelection, disc, deps=nil, exec=nil, prefs=nil)

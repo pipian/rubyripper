@@ -20,6 +20,9 @@ require 'rubyripper/system/dependency'
 # This class checks the permissions of the drive
 # Used by ScanDiscCdparanoia to check potential problems later on
 class PermissionDrive
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
   attr_reader :error
 
   # * dependency = instance of Dependency class

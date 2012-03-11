@@ -27,6 +27,9 @@ require 'rubyripper/preferences/main'
 # * Repairing the files if necessary
 
 class SecureRip
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
   attr_writer :cancelled
 
   BYTES_WAV_CONTAINER = 44 # to store the type of wav file

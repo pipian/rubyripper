@@ -21,6 +21,9 @@ require 'rubyripper/system/execute'
 # The Dependency class is responsible for all dependency checking
 class Dependency
   include Singleton unless $run_specs
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+  def self._(txt) ; GetText._(txt) ; end 
   
   attr_reader :platform
   

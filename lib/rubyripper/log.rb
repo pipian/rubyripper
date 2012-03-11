@@ -22,8 +22,11 @@ require 'rubyripper/preferences/main'
 # * passing update messages to the user interface
 
 class Log
-attr_reader :rippingErrors, :encodingErrors, :short_summary
-attr_writer :encodingErrors
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :rippingErrors, :encodingErrors, :short_summary
+  attr_writer :encodingErrors
 
   BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
 

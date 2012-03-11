@@ -27,7 +27,10 @@ require 'rubyripper/preferences/main'
 require 'fileutils'
 
 class FileScheme
-attr_reader :status, :artist, :album, :year, :genre, :dir
+  include GetText
+  GetText.bindtextdomain("rubyripper")
+
+  attr_reader :status, :artist, :album, :year, :genre, :dir
 
   # prefs = prefs object
   # disc = disc object
