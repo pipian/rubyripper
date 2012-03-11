@@ -99,7 +99,7 @@ private
   # show a menu for the different settings
   def showMainMenu
     @out.puts ""
-    @out.puts _("** RUBYRIPPER PREFERENCES **")
+    @out.puts "** " + _("RUBYRIPPER PREFERENCES") + " **"
     @out.puts ""
     @out.puts ' 1) ' + _('Secure ripping')
     @out.puts ' 2) ' + _('Toc analysis')
@@ -133,12 +133,12 @@ private
   # show the ripping submenu
   def showSubMenuRipping
     @out.puts ''
-    @out.puts _("*** SECURE RIPPING PREFERENCES ***")
+    @out.puts "*** " + _("SECURE RIPPING PREFERENCES") + " ***"
     @out.puts ''
     @out.puts ' 1) ' + _("Ripping drive") + ": %s" %[@prefs.cdrom]
     @out.puts ' 2) ' + _("Drive offset") + ": %s" % [@prefs.offset]
-    @out.puts _("    **Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
-    @out.puts _("    **Your drive model is shown in the logfile.")
+    @out.puts "    **" + _("Find your offset at http://www.accuraterip.com/driveoffsets.htm.")
+    @out.puts "    **" + _("Your drive model is shown in the logfile.")
     @out.puts ' 3) ' + _("Pad missing lead-in/lead-out samples with zeroes %s") % [showBool(@prefs.padMissingSamples)]
     @out.puts ' 4) ' + _("Passing extra cdparanoia parameters") + ": %s" % [@prefs.rippersettings]
     @out.puts ' 5) ' + _("Match all chunks") + ": %s" % [@prefs.reqMatchesAll]
@@ -175,7 +175,7 @@ private
   # show the toc (disc table of contents) submenu
   def showSubMenuToc
     @out.puts ''
-    @out.puts _("*** TOC ANALYSIS PREFERENCES ***")
+    @out.puts "*** " + _("TOC ANALYSIS PREFERENCES") + " ***"
     @out.puts ''
     @out.puts ' 1) ' + _("Create a cuesheet %s") % [showBool(@prefs.createCue)]
     @out.puts ' 2) ' + _("Rip to single file %s") % [showBool(@prefs.image)]
@@ -219,7 +219,7 @@ private
   # show the codec submenu
   def showSubMenuCodecs
     @out.puts ''
-    @out.puts _("*** CODEC PREFERENCES ***")
+    @out.puts "*** " + _("CODEC PREFERENCES") + " ***"
     @out.puts ''
     @out.puts ' 1) ' + _("Flac %s") % [showBool(@prefs.flac)]
     @out.puts ' 2) ' + _("Flac options passed") + ": %s" % [@prefs.settingsFlac]
@@ -293,7 +293,7 @@ private
   # show the freedb menu
   def showSubMenuMetadata
     @out.puts ''
-    @out.puts _("*** METADATA PREFERENCES ***")
+    @out.puts "*** " + _("METADATA PREFERENCES") + " ***"
     @out.puts ''
     @out.puts ' 1) ' + _("Metadata provider") + ": %s" % [@prefs.metadataProvider]
     @out.puts ' 2) ' + _("Freedb use first hit %s") % [showBool(@prefs.firstHit)]
@@ -346,7 +346,7 @@ private
   # show the other menu
   def showSubMenuOther
     @out.puts ''
-    @out.puts _("*** OTHER PREFERENCES ***")
+    @out.puts "*** " + _("OTHER PREFERENCES") + " ***"
     @out.puts ''
     @out.puts ' 1) ' + _("Base directory") + ": %s" % [@prefs.basedir]
     @out.puts ' 2) ' + _("Standard filescheme") + ": %s" % [@prefs.namingNormal]

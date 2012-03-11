@@ -51,7 +51,7 @@ private
   # show the tracks
   def showTrackMenu
     @out.puts ''
-    @out.puts _('** TRACK SELECTION **')
+    @out.puts '** ' + _("TRACK SELECTION") + ' **'
     @out.puts ''
     @cliDisc.tracks.each do |number, name|
       @out.puts "%2d) %s %s" % [number, short(name), showBool(number)]

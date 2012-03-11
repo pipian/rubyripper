@@ -119,7 +119,7 @@ private
   # choose which the user wants to change
   def showMainMenu()
     @out.puts ""
-    @out.puts _("** EDIT METADATA **")
+    @out.puts "** " + _("EDIT METADATA") + " **"
     @out.puts ""
     @out.puts ' 1) ' + _('Edit the disc info')
     @out.puts ' 2) ' + _('Edit the track info')
@@ -141,7 +141,7 @@ private
 
   def showSubMenuDisc()
     @out.puts ""
-    @out.puts _('*** EDIT DISC INFO ***')
+    @out.puts '*** ' + _("EDIT DISC INFO") + ' ***'
     @out.puts ""
     discInfo().each{|key, value| @out.puts "%2d) #{value}" % key}
     @out.puts "99) " + _("Back to metadata menu")
@@ -170,7 +170,7 @@ private
 
   def showSubMenuTracks
     @out.puts ""
-    @out.puts _('*** EDIT TRACK INFO ***')
+    @out.puts '*** ' + _('EDIT TRACK INFO') + ' ***'
     @out.puts ""
     trackInfo().each{|key, value| @out.puts "%2d) #{value}" % key}
     @out.puts "99) " + _("Back to metadata menu")
