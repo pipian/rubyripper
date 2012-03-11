@@ -117,7 +117,7 @@ private
       when 3 then @cliDisc.changeMetadata()
       when 4 then @cliTracklist.show()
       when 5 then startRip()
-    else @out.puts _("Number #{choice} is not a valid choice, try again")
+    else @out.puts _("Number %s is not a valid choice, try again") % [choice]
     end
 
     loopMainMenu() unless choice == 99 or (choice == 5 and @arguments['batch'])

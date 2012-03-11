@@ -81,12 +81,12 @@ private
   # choices is an array with possibilities
   # each choice is an array in its turn with ['preference', 'text shown to user']
   def multipleChoice(choices)
-    @out.puts _("\nThere are #{choices.size} choices:\n")
+    @out.puts _("\nThere are %s choices:\n") % [choices.size]
     choices.each_index do |index|
       @out.puts " #{index+1}) #{choices[index][1]}"
     end
 
-    choice = @int.get("\nWhich one do you prefer?", 1)
+    choice = @int.get(_("\nWhich one do you prefer?"), 1)
 
     if choice > choices.size
       noValidChoiceMessage(choice)
@@ -127,7 +127,7 @@ private
   end
 
   def noValidChoiceMessage(choice)
-    @out.puts _("Number #{choice} is not a valid choice, try again")
+    @out.puts _("Number %s is not a valid choice, try again") % [choice]
   end
 
   # show the ripping submenu
@@ -270,11 +270,10 @@ private
   end
 
   def setOtherCodec
-    @out.puts(_("%a = artist, %b = album, %g = genre, %y = year"))
-    @out.puts(_("%t = trackname, %n = tracknumber, %i = inputfile"))
-    @out.puts(_("%o = outputfile (don't forget the extension)"))
-    @prefs.settingsOther = @string.get(_("Commandline passed"),
-      'lame %i %o.mp3')
+    @out.puts("%a = " + _("Artist") + ", %b = " + _("Album") + ", %g = " + _("Genre") + ", %y = " + _("Year"))
+    @out.puts("%t = " + _("Trackname") + ", %n = " + _("Tracknumber") + ", %i = " + _("Inputfile"))
+    @out.puts("%o = " + _("Outputfile") + _(" (don't forget the extension)"))
+    @prefs.settingsOther = @string.get(_("Commandline passed"), 'lame %i %o.mp3')
   end
 
   def setNormalizer
@@ -386,8 +385,10 @@ private
     @out.puts _("\nCurrent naming scheme: %s") % [filescheme]
     showExampleForFilescheme(sort, filescheme)
 
-    @out.puts _("\n%a = Artist\n%b = Album\n%g = Genre\n%y = Year\n%f = Codec\
-      \n%n = Tracknumber\n%t = Trackname\n%va = Various Artist\n\n")
+    @out.puts ("\n%a = " + _("Artist") + "\n%b = " + _("Album") +
+        "\n%g = " + _("Genre")+ "\n%y = " + _("Year") + "\n%f = " +
+        _("Codec") + "\n%n = " + _("Tracknumber") + "\n%t = " +
+        _("Trackname") + "\n%va = " + _("Various Artist") + "\n\n")
 
     answer = @string.get(_("New naming scheme (q to quit)"),
       "%f/%a (%y) %b/%n - %t")

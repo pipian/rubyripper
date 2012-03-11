@@ -186,16 +186,16 @@ class Log
     # NOTE: These two should probably be called before Log is created.
     @out.setFreedb()
     @out.setFileNames()
-    add(_("     Filename %s\n") % [@out.getFile(track, 'flac')]) if @prefs.flac
-    add(_("     Filename %s\n") % [@out.getFile(track, 'vorbis')]) if @prefs.vorbis
-    add(_("     Filename %s\n") % [@out.getFile(track, 'mp3')]) if @prefs.mp3
-    add(_("     Filename %s\n") % [@out.getFile(track, 'wav')]) if @prefs.wav
-    add(_("     Filename %s\n") % [@out.getFile(track, 'other')]) if @prefs.other
+    add("     " + _("Filename %s\n") % [@out.getFile(track, 'flac')]) if @prefs.flac
+    add("     " + _("Filename %s\n") % [@out.getFile(track, 'vorbis')]) if @prefs.vorbis
+    add("     " + _("Filename %s\n") % [@out.getFile(track, 'mp3')]) if @prefs.mp3
+    add("     " + _("Filename %s\n") % [@out.getFile(track, 'wav')]) if @prefs.wav
+    add("     " + _("Filename %s\n") % [@out.getFile(track, 'other')]) if @prefs.other
     add("\n")
   end
 
   def finishTrial(trial, timeElapsed, trackLength)
-    add(_("     Trial %s: %s seconds (%sx)\n") % [trial, timeElapsed.to_i, sprintf("%.2f", trackLength.to_f / (timeElapsed.to_f * 75))])
+    add("     " + _("Trial %s: %s seconds (%sx)\n") % [trial, timeElapsed.to_i, sprintf("%.2f", trackLength.to_f / (timeElapsed.to_f * 75))])
   end
 
   def finishTrack(level, crcs, status, correctedcrc=nil)
@@ -215,7 +215,7 @@ class Log
   end
 
   def copyMD5(md5sum)
-    add(_("     Copy MD5: %s\n\n") % [md5sum])
+    add("     " + _("Copy MD5: %s\n\n") % [md5sum])
   end
 
   def summary() #Give an overview of errors

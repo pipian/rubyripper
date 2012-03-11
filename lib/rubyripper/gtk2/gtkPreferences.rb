@@ -622,7 +622,9 @@ It is recommended to enable this option.")
     @expander100 = Gtk::Expander.new(_('Show options for "Filenaming scheme"'))
 #configure expander
     #@artist_label = Gtk::Label.new("%a = artist   %b = album   %f = codec   %g = genre\n%va = various artists   %n = track   %t = trackname   %y = year")
-    @legend_label = Gtk::Label.new(_("%a=artist   %g=genre   %t=trackname   %f=codec\n%b=album   %y=year   %n=track   %va=various artist"))
+    @legend_label = Gtk::Label.new("%a=" _("Artist") + " %g=" + _("Genre") + " %t=" _("Trackname") +
+                                     " %f=" _("Codec") + "\n%b=" + _("Album") + " %y=" + _("Year") +
+                                    " %n=" + _("Track") + " %va=" _("Various artist")
     @expander100.add(@legend_label)
 #packing 1st column
     @table100.attach(@basedir_label, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0)
