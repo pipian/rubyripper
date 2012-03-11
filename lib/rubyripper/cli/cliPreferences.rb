@@ -205,8 +205,8 @@ private
   end
 
   def setPregaps
-    choices = [['prepend', _('Prepend pregaps to next track')],
-      ['append', _('Append pregaps to previous track')]]
+    choices = [['prepend', _('Prepend pregaps to the track')],
+      ['append', _('Append pregap to previous track')]]
     @prefs.preGaps = multipleChoice(choices)
   end
 
