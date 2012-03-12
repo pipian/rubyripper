@@ -53,7 +53,7 @@ class Rubyripper
   # do some neccesary preparation and start the ripping
   def startRip
     if dirStillAvailable
-      @fileScheme.createDirs()
+      @fileScheme.createFileAndDirs()
       autofixCommonMistakes()
       calculatePercentageUpdateForProgressbar()
       createHelpObjects()

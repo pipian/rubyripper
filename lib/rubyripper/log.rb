@@ -54,7 +54,7 @@ class Log
     ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
       if @prefs.send(codec)
         path = @out.getLogFile(codec)
-        @file.createDirs(path)
+        @file.createDir(path)
         @logfiles << File.open(path, 'a')
       end
     end

@@ -24,185 +24,141 @@
 # Output is initialized as soon as the player pushes Rip Now!
 
 require 'rubyripper/preferences/main'
-require 'fileutils'
+require 'rubyripper/metadata/filter/filterDirs'
+require 'rubyripper/metadata/filter/filterFiles'
+require 'rubyripper/system/fileAndDir'
 
 class FileScheme
   include GetText
   GetText.bindtextdomain("rubyripper")
 
-  attr_reader :status, :artist, :album, :year, :genre, :dir
+  attr_reader :status, :dir
 
   # prefs = prefs object
   # disc = disc object
   # trackSelection = array with tracknumbers to rip
-  def initialize(disc, trackSelection, prefs=nil)
-    @prefs = prefs ? prefs : Preferences::Main.instance
+  def initialize(disc, trackSelection, prefs=nil, filterDirs=nil, filterFiles=nil, file=nil)
     @disc = disc
     @md = disc.metadata
     @trackSelection = trackSelection
-
-    @codecs = ['flac', 'vorbis', 'mp3', 'wav', 'other']
-
-    # the output of the dirs for each codec, and files for each tracknumber + codec.
-    @dir = Hash.new
-    @file = Hash.new
-    @image = Hash.new
-
-    # the metadata made ready for tagging usage
-    @artist = String.new
-    @album = String.new
-    @year = String.new
-    @genre = String.new
-    @tracklist = Hash.new
-    @varArtists = Hash.new
-    @otherExtension = String.new
+    @prefs = prefs ? prefs : Preferences::Main.instance
+    @filterDirs = filterDirs ? filterDirs : Metadata::FilterDirs.new()
+    @filterFiles = filterFiles ? filterFiles : Metadata::FilterFiles.new()
+    @file = file ? file : FileAndDir.instance
   end
   
+  # cleanup the filescheme and calculate output directories
   def prepare
-    splitDirFile()
-    checkNames()
-    setDirectory()
+    setVariables()
+    setFileScheme()
+    correctFilescheme()
+    setDirectoryForEachCodec()
+    detectOtherCodecExtension()
   end
   
   # (re)attempt creation of the dirs, when succesfull create the filenames
-  def createDirs
-    createDir()
+  def createFileAndDirs()
+    createOutputDir()
     createTempDir()
-    setFreedb()
-    findExtensionOther()
     setFileNames()
-    createFiles()
+    createPlaylists()
   end
 
-  # split the filescheme into a dir and a file
-  def splitDirFile
+  private
+  
+  def setVariables      
+    @dir = Hash.new    # store the dirs for each codec in @dir
+    @files = Hash.new   # store the files each tracknumber + codec in @file.
+    @image = Hash.new  # store the image file in @image
+    @otherExtension = String.new
+  end
+  
+  # choose which filescheme is relevant for the rip
+  def setFileScheme
     if @prefs.image
-      fileScheme = @prefs.namingImage
+      @fileScheme = @prefs.namingImage
     elsif @md.various?
-      fileScheme = @prefs.namingVarious
+      @fileScheme = @prefs.namingVarious
     else
-      fileScheme = @prefs.namingNormal
+      @fileScheme = @prefs.namingNormal
     end
-
-    # the basedir is added later on, since we don't want to change it
-    @dirName, @fileName = File.split(fileScheme)
+    @fileScheme = File.expand_path(File.join(@prefs.basedir, @fileScheme))
   end
-
-# Do a few sanity checks
-# 1) Remove dot(s) from the albumname when it's the start of a directory,
-# otherwise they're hidden files in linux.
-# 2) Check if %va exists in filescheme for normal artists
-# 3) Check if %n exists in single file rip scheme
-# 4) Check if %va exists in single file rip scheme
-# 5) Check if %t exists in single file rip scheme
-
-  def checkNames
-    if @dirName.include?("/%b") && @md.album[0,1] == '.'
-      @dirName.sub!(/\.*/, '')
-    end
-
-    if !@md.various? && @fileName.include?('%va')
-      @fileName.gsub!('%va', '')
+  
+  # do a few clever checks on the filescheme
+  def correctFilescheme()
+    if !@md.various? && @fileScheme.include?('%va')
+      @fileScheme.gsub!('%va', '')
       puts "Warning: '%va' in the filescheme for normal cd's makes no sense!"
       puts "This is automatically removed"
     end
 
     if @prefs.image
-      if @fileName.include?('%n')
-        @fileName.gsub!('%n', '')
+      if @fileScheme.include?('%n')
+        @fileScheme.gsub!('%n', '')
         puts "Warning: '%n' in the filescheme for image rips makes no sense!"
         puts "This is automatically removed"
       end
 
-      if @fileName.include?('%va')
-        @fileName.gsub!('%va', '')
-        puts "Warning: '%va' in the filescheme for image rips makes no sense!"
-        puts "This is automatically removed"
+      if @fileScheme.include?('%a') && @md.various?
+        @fileScheme.gsub!('%a', '%va')
+        puts "Replacing '%a' with '%va': ripping a various artist disc in image mode"
       end
 
-      if @fileName.include?('%t')
-        @fileName.gsub!('%t', '')
+      if @fileScheme.include?('%t')
+        @fileScheme.gsub!('%t', '')
         puts "Warning: '%t' in the filescheme for image rips makes no sense!"
         puts "This is automatically removed"
       end
     end
   end
 
-  # fill the @dir variable with all output dirs
-  def setDirectory
-    @codecs.each{|codec| @dir[codec] = giveDir(codec) if @prefs.send(codec)}
-  end
-
-  # determine the output dir
-  def giveDir(codec)
-    dirName = @dirName.dup
-
-    # no forward slashes allowed in dir names
-    @artistFile = @md.artist.gsub('/', '')
-    @albumFile = @md.album.gsub('/', '')
-
-    # do not allow multiple directories for various artists
-    {'%a' => @artistFile, '%b' => @albumFile, '%f' => codec, '%g' => @md.genre,
-    '%y' => @md.year, '%va' => @artistFile}.each do |key, value|
-      if value.nil?
-        dirName.gsub!(key, '')
-      else
-        dirName.gsub!(key, value)
+  # fill the @dir variable with the output dirs for each codec
+  # no forward slashes allowed in dir names
+  # artist and various artist always point at the album artist
+  def setDirectoryForEachCodec
+    artist = @md.artist.gsub('/', '')
+    album = @md.album.gsub('/', '')
+    
+    @prefs.codecs.each do |codec|
+      dir = @fileScheme.dirname
+      {'%a' => artist, '%b' => album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%va' => artist}.each do |key, value|
+        value.nil? ? dir.gsub!(key, '') : dir.gsub!(key, value)
       end
-    end
 
-    if @md.discNumber
-      dirName = File.join(dirName, "CD #{sprintf("%02d", @md.discNumber)}")
+      dir = File.join(dir, "CD #{sprintf("%02d", @md.discNumber)}") if @md.discNumber  
+      @dir[codec] = @filterDirs.filter(dir)
     end
-
-    dirName = fileFilter(dirName, true)
-    return File.expand_path(File.join(@prefs.basedir, dirName))
   end
 
-  def findExtensionOther
+  # find the extension after the output (%o)
+  def detectOtherCodecExtension
     if @prefs.other
-      @prefs.settingsOther =~ /"%o".\S+/ # ruby magic, match %o.+ any characters that are not like spaces
-      @otherExtension = $&[4..-1]
+      @otherExtension = @file.extension(@prefs.settingsOther)
       @prefs.settingsOther.gsub!(@otherExtension, '') # remove any references to the ext in the settings
     end
   end
 
-  # create playlist + cuesheet files
-  def createFiles
-    @codecs.each do |codec|
-      if @prefs.send(codec) && @prefs.playlist && !@prefs.image
-        createPlaylist(codec)
-      end
-    end
-  end
-
   # create the output dirs
-  def createDir
-    @dir.values.each{|dir| FileUtils.mkdir_p(dir)}
+  def createOutputDir
+    @dir.values.each{|dir| @file.createDir(dir)}
   end
 
   # create the temp dir
   def createTempDir
-    if not File.directory?(getTempDir)
-      FileUtils.mkdir_p(getTempDir)
-    end
+    @file.createDir(getTempDir())
   end
 
-  # fill the @file variable, so we have for example @file['flac'][1]
+  # fill the @files variable, so we have for example @files['flac'][1]
   def setFileNames
-    @codecs.each do |codec|
-      if @prefs.send(codec)
-        @file[codec] = Hash.new
-        if @prefs.image
-          @image[codec] = giveFileName(codec)
-        else
-          @trackSelection.each do |track|
-            @file[codec][track] = giveFileName(codec, track)
-          end
-        end
+    @prefs.codecs.each do |codec|
+      if @prefs.image
+        @image[codec] = giveFileName(codec)
+      else
+        @files[codec] = Hash.new
+        @trackSelection.each{|track| @files[codec][track] = giveFileName(codec, track)}
       end
     end
-
     #if no hidden track is detected, getStartSector will return false
     setHiddenTrack() if @disc.getStartSector(0)
   end
@@ -224,106 +180,32 @@ class FileScheme
         file.gsub!(key, value)
       end
     end
-
-    # other codec has the extension already in the command
-    if codec == 'flac' ; file += '.flac'
-    elsif codec == 'vorbis' ; file += '.ogg'
-    elsif codec == 'mp3' ; file += '.mp3'
-    elsif codec == 'wav' ; file += '.wav'
-    elsif codec == 'other' ; file += @otherExtension
-    end
-
-    filename = fileFilter(file)
-    puts filename if @prefs.debug
-    return filename
+  
+    return @filterFiles.filter(filename) + fileExtension(codec)
   end
-
-  # Fill the metadata, made ready for tagging
-  def setFreedb
-    @artist = tagFilter(@md.artist)
-    @album = tagFilter(@md.album)
-    @genre = tagFilter(@md.genre)
-    @year = tagFilter(@md.year)
-    (1..@disc.audiotracks).each do |track|
-      @tracklist[track] = tagFilter(@md.trackname(track))
-    end
-    if @md.various?
-      (1..@disc.audiotracks).each do |track|
-        @varArtists[track] = tagFilter(@md.getVarArtist(track))
-      end
+  
+  def fileExtension(codec)  
+    case codec
+      when 'flac' then '.flac'
+      when 'vorbis' then '.ogg'
+      when 'mp3' then '.mp3'
+      when 'wav' then '.wav'
+      when 'other' then @otherExtension
     end
   end
 
   # Fill the metadata for the hidden track
   def setHiddenTrack
-    @tracklist[0] = tagFilter(_("Hidden Track").dup)
-    @varArtists[0] = tagFilter(_("Unknown Artist").dup) if not @md.varArtists.empty?
-    @codecs.each{|codec| @file[codec][0] = giveFileName(codec, 0) if @prefs.send(codec)}
-  end
-
-  # characters that will be changed for filenames (monkeyproof for FAT32)
-  def fileFilter(var, isDir=false)
-    if not isDir
-      var.gsub!('/', '') #no slashes allowed in filenames
-    end
-    var.gsub!('$', 's') #no dollars allowed
-    var.gsub!(':', '') #no colons allowed in FAT
-    var.gsub!('*', '') #no asterix allowed in FAT
-    var.gsub!('?', '') #no question mark allowed in FAT
-    var.gsub!('<', '') #no smaller than allowed in FAT
-    var.gsub!('>', '') #no greater than allowed in FAT
-    var.gsub!('|', '') #no pipe allowed in FAT
-    var.gsub!('\\', '') #the \\ means a normal \
-    var.gsub!('"', '')
-
-    allFilter(var)
-
-    var.gsub!(" ", "_") if @prefs.noSpaces
-    var.downcase! if @prefs.noCapitals
-    return var.strip
-  end
-
-  #characters that will be changed for tags
-  def tagFilter(var)
-    allFilter(var)
-
-    #Add a slash before the double quote chars,
-    #otherwise the shell will complain
-    var.gsub!('"', '\"')
-    return var.strip
-  end
-
-  # characters that will be changed for tags and filenames
-  def allFilter(var)
-    var.gsub!('`', "'")
-
-    # replace any underscores with spaces, some freedb info got
-    # underscores instead of spaces
-    var.gsub!('_', ' ') unless @prefs.noSpaces
-
-    if var.respond_to?(:encoding)
-      # prepare for byte substitutions
-      enc = var.encoding
-      var.force_encoding("ASCII-8BIT")
-    end
-
-    # replace utf-8 single quotes with latin single quote
-    var.gsub!(/\342\200\230|\342\200\231/, "'")
-
-    # replace utf-8 double quotes with latin double quote
-    var.gsub!(/\342\200\234|\342\200\235/, '"')
-
-    if var.respond_to?(:encoding)
-      # restore the old encoding
-      var.force_encoding(enc)
-    end
+    @md.setTrackname(0, _("Hidden Track"))
+    @md.setVarArtist(0, _("Unknown Artist")) if @md.various?
+    @prefs.codecs.each{|codec| @file[codec][0] = giveFileName(codec, 0)}
   end
 
   # add the first free number as a postfix to the output dir
   def postfixDir
     postfix = 1
     @dir.values.each do |dir|
-      while File.directory?(dir + "\##{postfix}")
+      while @file.directory?(dir + "\##{postfix}")
         postfix += 1
       end
     end
@@ -332,31 +214,24 @@ class FileScheme
 
   # remove the existing dir, starting with the files in it
   def overwriteDir
-    @dir.values.each{|dir| cleanDir(dir) if File.directory?(dir)}
+    @dir.values.each{|dir| @file.removeDir(dir)}
   end
-
-    # clean a directory, starting with the files in it
-  def cleanDir(dir)
-    Dir.foreach(dir) do |file|
-      if File.directory?(file) && file[0..0] != '.' ; cleanDir(File.join(dir, file)) end
-      filename = File.join(dir, file)
-      File.delete(filename) if File.file?(filename)
-    end
-    Dir.delete(dir)
-  end
-
+ 
   # create Playlist for each codec
-  def createPlaylist(codec)
-    playlist = File.new(File.join(@dir[codec],
-      "#{@artistFile} - #{@albumFile} (#{codec}).m3u"), 'w')
-
-    @trackSelection.each{|track| playlist.puts @file[codec][track]}
-    playlist.close
+  def createPlaylists
+    @prefs.codecs.each do |codec|
+      if @prefs.playlist && !@prefs.image}
+        filename = @file.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).m3u")
+        content = String.new
+        @trackSelection.each{|track| content << @file[codec][track]}
+        @file.write(filename, content, false)
+      end
+    end
   end
 
   # clean temporary Dir (when finished)
   def cleanTempDir
-    cleanDir(getTempDir()) if File.directory?(getTempDir())
+    @file.removeDir(getTempDir())
   end
 
   # return the first directory (for the summary)
@@ -366,56 +241,30 @@ class FileScheme
 
   # return the full filename of the track (starting with 1) or image
   def getFile(track=false, codec)
-    if @prefs.image
-      return File.join(@dir[codec], @image[codec])
-    else
-      return File.join(@dir[codec], @file[codec][track])
-    end
+    File.join(@dir[codec], @prefs.image ? @image[codec] : @file[codec][track])
   end
 
   # return the toc file of AdvancedToc class
   def getTocFile
-    return File.join(getTempDir(), "#{@artistFile} - #{@albumFile}.toc")
+    File.join(getTempDir(), "#{@artistFile} - #{@albumFile}.toc")
   end
 
   # return the full filename of the log
   def getLogFile(codec)
-    return File.join(@dir[codec], 'ripping.log')
+    File.join(@dir[codec], 'ripping.log')
   end
 
   # return the full filename of the cuesheet
   def getCueFile(codec)
-    return File.join(@dir[codec], "#{@artistFile} - #{@albumFile} (#{codec}).cue")
+    File.join(@dir[codec], "#{@artistFile} - #{@albumFile} (#{codec}).cue")
   end
 
   def getTempFile(track=false, trial)
-    if @prefs.image
-      return File.join(getTempDir(), "image_#{trial}.wav")
-    else
-      return File.join(getTempDir(), "track#{track}_#{trial}.wav")
-    end
+    File.join(getTempDir(), "#{@prefs.image ? "image" : "track_#{track}"}_#{trial}.wav")
   end
 
   #return the temporary dir
   def getTempDir
-    return File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@prefs.cdrom)}/")
-  end
-
-  #return the trackname for the metadata
-  def getTrackname(track)
-    if @tracklist[track] == nil
-      return ''
-    else
-      return @tracklist[track]
-    end
-  end
-
-  #return the artist for the metadata
-  def getVarArtist(track)
-    if @varArtists[track] == nil
-      return ''
-    else
-      return @varArtists[track]
-    end
+    File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@prefs.cdrom)}/")
   end
 end

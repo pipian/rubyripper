@@ -22,10 +22,33 @@ require 'fileutils'
 class FileAndDir
   include Singleton unless $run_specs
 
-  def mkdir(dir)
-    Dir.mkdir(dir)
+  # create dir + parent directories if needed
+  def createDir(dir)
+    dir = File.dirname(dir) unless File.extname(dir).empty?
+    dir = File.expand_path(dir)
+    FileUtils.mkdir_p(dir) unless File.directory?(dir)
+  end
+  
+  # remove dir + subdirectories if needed
+  def removeDir(dir)
+    dir = File.expand_path(dir)
+    FileUtils.rm_rf(dir) if File.exist?(dir)
+  end
+  
+  # remove the thing, no matter if file or directory
+  def remove(item)
+    item = File.expand_path(item)
+    FileUtils.rm_rf(item) if File.exist?(item)
+  end
+  
+  def join(a, b)
+    File.join(a, b)
   end
 
+  def extension(file)
+    File.extname(file)
+  end
+  
   def exists?(filename)
     if File.exists?(file = File.expand_path(filename))
       return file
@@ -44,36 +67,6 @@ class FileAndDir
 
   def glob(query)
     return Dir.glob(query)
-  end
-
-  # remove the thing, no matter if file or directory
-  def remove(item)
-    if File.exists?(item)
-      if File.file?(item)
-        File.delete(item)
-      elsif File.directory?(item)
-        if Dir.entries(item) == 2
-          Dir.delete(item)
-        end
-      end
-    end
-  end
-
-  # create any directories that are needed for the filename
-  def createDirs(filename)
-    dirs = Array.new
-    
-    # find all directories that do not exist yet
-    # first entry will be the dirname, than it's parent and so on
-    while (!File.directory?(dir = File.dirname(filename)))
-      dirs << dir
-      filename = dir
-    end
-
-    # now create the dirs, starting with the main parent
-    while !dirs.empty?
-      Dir.mkdir(dirs.pop())
-    end
   end
   
   # check if the existing root dir is writable, so subdirs can be created
@@ -105,7 +98,7 @@ class FileAndDir
     if !update && File.file?(filename)
       status = 'fileExists'
     else
-      createDirs(filename) unless File.exists?(File.dirname(filename))
+      createDir(File.dirname(filename))
       writeContent(filename, content)
       status = 'ok'
     end
