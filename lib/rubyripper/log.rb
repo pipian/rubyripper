@@ -51,12 +51,10 @@ class Log
 
   def createLog
     @logfiles = Array.new
-    ['flac', 'vorbis', 'mp3', 'wav', 'other'].each do |codec|
-      if @prefs.send(codec)
-        path = @out.getLogFile(codec)
-        @file.createDir(path)
-        @logfiles << File.open(path, 'a')
-      end
+    if @prefs.codecs.each do |codec|
+      path = @out.getLogFile(codec)
+      @file.createDir(path)
+      @logfiles << File.open(path, 'a')
     end
   end
 

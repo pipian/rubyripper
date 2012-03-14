@@ -27,6 +27,7 @@ require 'fileutils' # for the fileutils object
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
+require 'rubyripper/metadata/filter/filterTags'
 
 class Encode
   include GetText
@@ -34,13 +35,14 @@ class Encode
 
   attr_writer :cancelled
 
-  def initialize(fileScheme, log, trackSelection, disc, deps=nil, exec=nil, prefs=nil)
+  def initialize(fileScheme, log, trackSelection, disc, tags=nil, files=nil, deps=nil, exec=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @out = fileScheme
     @log = log
     @trackSelection = trackSelection
     @disc = disc
     @md = disc.metadata
+    @tags = tags ? tags : Metadata::FilterTags.new(@md)
     @deps = deps ? deps : Dependency.instance
     @exec = exec ? exec : Execute.new()
     @cancelled = false
@@ -185,10 +187,10 @@ class Encode
     # ones defined above, so change it to 'other' to prevent crashes
     lameVersion = `lame --version`[20,4].split('.') # for example [3, 98]
     if (lameVersion[0] == '3' && lameVersion[1].to_i < 98 &&
-    !@possible_lame_tags.include?(@out.genre.upcase))
+    !@possible_lame_tags.include?(@tags.genre.upcase))
       genre = 'other'
     else
-      genre = @out.genre
+      genre = @tags.genre
     end
 
     mp3(filename, genre, track)
@@ -209,17 +211,17 @@ class Encode
     command.gsub!('%n', sprintf("%02d", track)) if track != "image"
     command.gsub!('%f', 'other')
 
-    if @out.getVarArtist(track) != ''
-      command.gsub!('%a', @out.getVarArtist(track))
-      command.gsub!('%va', @out.artist)
+    if @md.various?
+      command.gsub!('%a', @tags.getVarArtist(track))
+      command.gsub!('%va', @tags.artist)
     else
-      command.gsub!('%a', @out.artist)
+      command.gsub!('%a', @tags.artist)
     end
 
-    command.gsub!('%b', @out.album)
-    command.gsub!('%g', @out.genre)
-    command.gsub!('%y', @out.year)
-    command.gsub!('%t', @out.getTrackname(track))
+    command.gsub!('%b', @tags.album)
+    command.gsub!('%g', @tags.genre)
+    command.gsub!('%y', @tags.year)
+    command.gsub!('%t', @tags.getTrackname(track))
     command.gsub!('%i', @out.getTempFile(track, 1))
     command.gsub!('%o', @out.getFile(track, 'other'))
     checkCommand(command, track, 'other')
@@ -228,26 +230,26 @@ class Encode
   def flac(filename, track)
     tags = String.new
     tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
-    tags += "--tag ALBUM=\"#{@out.album}\" "
-    tags += "--tag DATE=\"#{@out.year}\" "
-    tags += "--tag GENRE=\"#{@out.genre}\" "
+    tags += "--tag ALBUM=\"#{@tags.album}\" "
+    tags += "--tag DATE=\"#{@tags.year}\" "
+    tags += "--tag GENRE=\"#{@tags.genre}\" "
     tags += "--tag DISCID=\"#{@disc.freedbDiscid}\" "
     tags += "--tag DISCNUMBER=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image
-      tags += "--tag ARTIST=\"#{@out.artist}\" " #artist is always artist
+      tags += "--tag ARTIST=\"#{@tags.artist}\" " #artist is always artist
       if @prefs.createCue # embed the cuesheet
         tags += "--cuesheet=\"#{@out.getCueFile('flac')}\" "
       end
     else # Handle tags for var artist discs differently
       if @out.getVarArtist(track) != ''
-        tags += "--tag ARTIST=\"#{@out.getVarArtist(track)}\" "
-        tags += "--tag \"ALBUM ARTIST\"=\"#{@out.artist}\" "
+        tags += "--tag ARTIST=\"#{@tags.getVarArtist(track)}\" "
+        tags += "--tag \"ALBUM ARTIST\"=\"#{@tags.artist}\" "
       else
-        tags += "--tag ARTIST=\"#{@out.artist}\" "
+        tags += "--tag ARTIST=\"#{@tags.artist}\" "
       end
-      tags += "--tag TITLE=\"#{@out.getTrackname(track)}\" "
+      tags += "--tag TITLE=\"#{@tags.getTrackname(track)}\" "
       tags += "--tag TRACKNUMBER=#{track} "
       tags += "--tag TRACKTOTAL=#{@disc.audiotracks} "
     end
@@ -263,23 +265,23 @@ class Encode
   def vorbis(filename, track)
     tags = String.new
     tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
-    tags += "-c ALBUM=\"#{@out.album}\" "
-    tags += "-c DATE=\"#{@out.year}\" "
-    tags += "-c GENRE=\"#{@out.genre}\" "
+    tags += "-c ALBUM=\"#{@tags.album}\" "
+    tags += "-c DATE=\"#{@tags.year}\" "
+    tags += "-c GENRE=\"#{@tags.genre}\" "
     tags += "-c DISCID=\"#{@disc.freedbDiscid}\" "
     tags += "-c DISCNUMBER=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image
-      tags += "-c ARTIST=\"#{@out.artist}\" "
+      tags += "-c ARTIST=\"#{@tags.artist}\" "
     else # Handle tags for var artist discs differently
       if @out.getVarArtist(track) != ''
-        tags += "-c ARTIST=\"#{@out.getVarArtist(track)}\" "
+        tags += "-c ARTIST=\"#{@tags.getVarArtist(track)}\" "
         tags += "-c \"ALBUM ARTIST\"=\"#{@out.artist}\" "
       else
-        tags += "-c ARTIST=\"#{@out.artist}\" "
+        tags += "-c ARTIST=\"#{@tags.artist}\" "
       end
-      tags += "-c TITLE=\"#{@out.getTrackname(track)}\" "
+      tags += "-c TITLE=\"#{@tags.getTrackname(track)}\" "
       tags += "-c TRACKNUMBER=#{track} "
       tags += "-c TRACKTOTAL=#{@disc.audiotracks}"
     end
@@ -296,23 +298,23 @@ class Encode
   def mp3(filename, genre, track)
     tags = String.new
     tags.force_encoding("UTF-8") if tags.respond_to?("force_encoding")
-    tags += "--tl \"#{@out.album}\" "
-    tags += "--ty \"#{@out.year}\" "
-    tags += "--tg \"#{@out.genre}\" "
+    tags += "--tl \"#{@tags.album}\" "
+    tags += "--ty \"#{@tags.year}\" "
+    tags += "--tg \"#{@tags.genre}\" "
     tags += "--tv TXXX=DISCID=\"#{@disc.freedbDiscid}\" "
     tags += "--tv TPOS=\"#{@md.discNumber}\" " if @md.discNumber
 
     # Handle tags for single file images differently
     if @prefs.image
-      tags += "--ta \"#{@out.artist}\" "
+      tags += "--ta \"#{@tags.artist}\" "
     else # Handle tags for var artist discs differently
       if @out.getVarArtist(track) != ''
-        tags += "--ta \"#{@out.getVarArtist(track)}\" "
+        tags += "--ta \"#{@tags.getVarArtist(track)}\" "
         tags += "--tv \"ALBUM ARTIST\"=\"#{@out.artist}\" "
       else
-        tags += "--ta \"#{@out.artist}\" "
+        tags += "--ta \"#{@tags.artist}\" "
       end
-      tags += "--tt \"#{@out.getTrackname(track)}\" "
+      tags += "--tt \"#{@tags.getTrackname(track)}\" "
       tags += "--tn #{track}/#{@disc.audiotracks} "
     end
 

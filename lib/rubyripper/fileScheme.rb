@@ -103,6 +103,22 @@ class FileScheme
   def getTempDir
     @file.join(@file.dirname(@dir.values[0]), "temp_#{@file.basename(@prefs.cdrom)}/")
   end
+  
+  # auto rename choice in directory already exist dialog
+  def postfixDir
+    postfix = 1
+    @dir.values.each do |dir|
+      while @file.directory?(dir + "\##{postfix}")
+        postfix += 1
+      end
+    end
+    @dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
+  end
+
+  # remove existing dir choice in directory already exist dialog
+  def overwriteDir
+    @dir.values.each{|dir| @file.removeDir(dir)}
+  end
 
   private
   
@@ -239,22 +255,6 @@ class FileScheme
     @md.setTrackname(0, _("Hidden Track"))
     @md.setVarArtist(0, _("Unknown Artist")) if @md.various?
     @prefs.codecs.each{|codec| @file[codec][0] = giveFileName(codec, 0)}
-  end
-
-  # add the first free number as a postfix to the output dir
-  def postfixDir
-    postfix = 1
-    @dir.values.each do |dir|
-      while @file.directory?(dir + "\##{postfix}")
-        postfix += 1
-      end
-    end
-    @dir.keys.each{|key| @dir[key] = @dir[key] += "\##{postfix}"}
-  end
-
-  # remove the existing dir, starting with the files in it
-  def overwriteDir
-    @dir.values.each{|dir| @file.removeDir(dir)}
   end
  
   # create Playlist for each codec
