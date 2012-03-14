@@ -42,8 +42,8 @@ class FileScheme
     @md = disc.metadata
     @trackSelection = trackSelection
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @filterDirs = filterDirs ? filterDirs : Metadata::FilterDirs.new()
-    @filterFiles = filterFiles ? filterFiles : Metadata::FilterFiles.new()
+    @filterDirs = filterDirs ? filterDirs : Metadata::FilterDirs.new(@md)
+    @filterFiles = filterFiles ? filterFiles : Metadata::FilterFiles.new(@md)
     @file = file ? file : FileAndDir.instance
   end
   
@@ -62,6 +62,46 @@ class FileScheme
     createTempDir()
     setFileNames()
     createPlaylists()
+  end
+  
+  # clean temporary Dir (when finished)
+  def cleanTempDir
+    @file.removeDir(getTempDir())
+  end
+
+  # return the first directory (for the summary)
+  def getDir
+    return @dir.values[0]
+  end
+
+  # return the full filename of the track (starting with 1) or image
+  def getFile(track=false, codec)
+    @file.join(@dir[codec], @prefs.image ? @image[codec] : @files[codec][track])
+  end
+
+  # return the toc file of AdvancedToc class
+  def getTocFile
+    @file.join(getTempDir(), "#{@filterFiles.artist} - #{@filterFiles.album}.toc")
+  end
+
+  # return the full filename of the log
+  def getLogFile(codec)
+    @file.join(@dir[codec], 'ripping.log')
+  end
+
+  # return the full filename of the cuesheet
+  def getCueFile(codec)
+    @file.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).cue")
+  end
+
+  # return the just ripped wave file
+  def getTempFile(track=false, trial)
+    @file.join(getTempDir(), "#{@prefs.image ? "image" : "track_#{track}"}_#{trial}.wav")
+  end
+
+  #return the temporary dir
+  def getTempDir
+    @file.join(@file.dirname(@dir.values[0]), "temp_#{@file.basename(@prefs.cdrom)}/")
   end
 
   private
@@ -82,7 +122,7 @@ class FileScheme
     else
       @fileScheme = @prefs.namingNormal
     end
-    @fileScheme = File.expand_path(File.join(@prefs.basedir, @fileScheme))
+    @fileScheme = File.expand_path(@file.join(@prefs.basedir, @fileScheme))
   end
   
   # do a few clever checks on the filescheme
@@ -126,7 +166,7 @@ class FileScheme
         value.nil? ? dir.gsub!(key, '') : dir.gsub!(key, value)
       end
 
-      dir = File.join(dir, "CD #{sprintf("%02d", @md.discNumber)}") if @md.discNumber  
+      dir = @file.join(dir, "CD #{sprintf("%02d", @md.discNumber)}") if @md.discNumber  
       @dir[codec] = @filterDirs.filter(dir)
     end
   end
@@ -227,44 +267,5 @@ class FileScheme
         @file.write(filename, content, false)
       end
     end
-  end
-
-  # clean temporary Dir (when finished)
-  def cleanTempDir
-    @file.removeDir(getTempDir())
-  end
-
-  # return the first directory (for the summary)
-  def getDir
-    return @dir.values[0]
-  end
-
-  # return the full filename of the track (starting with 1) or image
-  def getFile(track=false, codec)
-    File.join(@dir[codec], @prefs.image ? @image[codec] : @file[codec][track])
-  end
-
-  # return the toc file of AdvancedToc class
-  def getTocFile
-    File.join(getTempDir(), "#{@artistFile} - #{@albumFile}.toc")
-  end
-
-  # return the full filename of the log
-  def getLogFile(codec)
-    File.join(@dir[codec], 'ripping.log')
-  end
-
-  # return the full filename of the cuesheet
-  def getCueFile(codec)
-    File.join(@dir[codec], "#{@artistFile} - #{@albumFile} (#{codec}).cue")
-  end
-
-  def getTempFile(track=false, trial)
-    File.join(getTempDir(), "#{@prefs.image ? "image" : "track_#{track}"}_#{trial}.wav")
-  end
-
-  #return the temporary dir
-  def getTempDir
-    File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@prefs.cdrom)}/")
   end
 end

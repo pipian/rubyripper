@@ -40,33 +40,17 @@ class FileAndDir
     item = File.expand_path(item)
     FileUtils.rm_rf(item) if File.exist?(item)
   end
-  
-  def join(a, b)
-    File.join(a, b)
-  end
 
   def extension(file)
     File.extname(file)
   end
-  
+   
   def exists?(filename)
     if File.exists?(file = File.expand_path(filename))
       return file
     else		  
       return false
     end
-  end
-
-  def file?(file)
-    return File.file?(file)
-  end
-  
-  def directory?(dir)
-    return File.directory?(dir)
-  end
-
-  def glob(query)
-    return Dir.glob(query)
   end
   
   # check if the existing root dir is writable, so subdirs can be created
@@ -106,6 +90,11 @@ class FileAndDir
   end
 
   private
+  
+  # if the method is not found try to look it up in the File object
+  def method_missing(name, *args)
+    File.send(name, *args)
+  end
 
   def writeContent(filename, content)
     File.open(filename, 'w') do |file|
