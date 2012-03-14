@@ -120,7 +120,7 @@ private
     else @out.puts _("Number %s is not a valid choice, try again") % [choice]
     end
 
-    loopMainMenu() unless choice == 99 or (choice == 5 and @arguments['batch'])
+    loopMainMenu() unless choice == 99 or (choice == 5 and @arguments.options['batch'])
   end
 
   # launch the ripping process
@@ -144,8 +144,9 @@ private
   # cancel the rip
   def cancelRip()
     @out.puts _("Rip is canceled, exiting...")
-    eject(@settings['cd'].cdrom)
-    exit()
+    require 'rubyripper/preferences/main'
+    require 'rubyripper/system/dependency'
+    Dependency.instance.eject(Preferences::Main.instance.cdrom)
   end
 
   # get the tracks, verify the settings
@@ -171,7 +172,7 @@ private
     @out.puts _("3) Cancel the rip and eject the disc")
     @out.puts ""
 
-    answer = get_answer(_("Please enter the number of your choice: "), "number", 1)
+    answer = @int.get(_("Please enter the number of your choice: "), 1)
     if answer == 1; @rubyripper.postfixDir() ; @rubyripper.startRip()
     elsif answer == 2; @rubyripper.overwriteDir() ; @rubyripper.startRip()
     else cancelRip()
