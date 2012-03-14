@@ -41,10 +41,16 @@ class FileAndDir
     FileUtils.rm_rf(item) if File.exist?(item)
   end
 
+  # get the extension of the file
   def extension(file)
     File.extname(file)
   end
-   
+  
+  # query for file
+  def glob(pattern)
+    Dir.glob(pattern)
+  end
+  
   def exists?(filename)
     if File.exists?(file = File.expand_path(filename))
       return file

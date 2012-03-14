@@ -85,7 +85,7 @@ class RipStatus
 
   # load default values
   def reset
-    encBar.text = _('Not yet started (0%)')
+    @encBar.text = _('Not yet started (0%)')
     @ripBar.text = _('Not yet started (0%)')
     @encBar.fraction = 0.0
     @ripBar.fraction = 0.0

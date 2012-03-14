@@ -177,7 +177,7 @@ class FileScheme
     album = @md.album.gsub('/', '')
     
     @prefs.codecs.each do |codec|
-      dir = @fileScheme.dirname
+      dir = @file.dirname(@fileScheme)
       {'%a' => artist, '%b' => album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%va' => artist}.each do |key, value|
         value.nil? ? dir.gsub!(key, '') : dir.gsub!(key, value)
       end
@@ -221,15 +221,15 @@ class FileScheme
 
   # give the filename for given codec and track
   def giveFileName(codec, track=0)
-    file = @fileName.dup
+    file = @file.basename(@fileScheme)
 
     # the artist should always refer to the artist that is valid for the track
-    if getVarArtist(track) == '' ; artist = @md.artist ; varArtist = ''
-    else artist = getVarArtist(track) ; varArtist = @md.artist end
+    if @md.getVarArtist(track) == '' ; artist = @md.artist ; varArtist = ''
+    else artist = @md.getVarArtist(track) ; varArtist = @md.artist end
 
     {'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
     '%y' => @md.year, '%n' => sprintf("%02d", track), '%va' => varArtist,
-    '%t' => getTrackname(track)}.each do |key, value|
+    '%t' => @md.trackname(track)}.each do |key, value|
       if value.nil?
         file.gsub!(key, '')
       else
@@ -237,7 +237,7 @@ class FileScheme
       end
     end
   
-    return @filterFiles.filter(filename) + fileExtension(codec)
+    return @filterFiles.filter(file) + fileExtension(codec)
   end
   
   def fileExtension(codec)  
@@ -260,10 +260,10 @@ class FileScheme
   # create Playlist for each codec
   def createPlaylists
     @prefs.codecs.each do |codec|
-      if @prefs.playlist && !@prefs.image}
+      if @prefs.playlist && !@prefs.image
         filename = @file.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).m3u")
         content = String.new
-        @trackSelection.each{|track| content << @file[codec][track]}
+        @trackSelection.each{|track| content << @files[codec][track] + "\n"}
         @file.write(filename, content, false)
       end
     end
