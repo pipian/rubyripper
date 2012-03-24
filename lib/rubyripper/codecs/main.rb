@@ -59,6 +59,7 @@ module Codecs
           when :output then addOutput(track, codec)
         end
       end
+      command.delete('')
       command.join(' ')
     end
     
@@ -74,6 +75,7 @@ module Codecs
           end
         end
       end
+      command.delete('')
       command.join(' ')
     end
   

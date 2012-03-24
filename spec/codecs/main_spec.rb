@@ -253,7 +253,7 @@ describe Codecs::Main do
     end
     
     it "should calculate the command for encoding" do
-      prefs.should_receive(:settingsWavpack).and_return '-q 6'
+      prefs.should_receive(:settingsWavpack).and_return ''
       prefs.should_receive(:createCue).and_return true
       scheme.should_receive(:getCueFile).and_return '/home/wavpack/test.cue'
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
@@ -263,7 +263,7 @@ describe Codecs::Main do
       md.should_receive(:discNumber).twice.and_return "1"
       disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
       
-      main.command(1, 'wavpack').should == 'wavpack -q 6 -w ARTIST="trackArtist 1" -w ALBUM="album" '\
+      main.command(1, 'wavpack').should == 'wavpack -w ARTIST="trackArtist 1" -w ALBUM="album" '\
           '-w GENRE="genre" -w DATE="year" -w "ALBUM ARTIST"="artist" -w DISCNUMBER=1 -w '\
           'ENCODER="Rubyripper test" -w DISCID="ABCDEFGH" -w TITLE="trackname 1" -w TRACKNUMBER=1 -w '\
           'TRACKTOTAL=99 -w CUESHEET="/home/wavpack/test.cue" "input_1.wav" -o "/home/wavpack/1-test.wv"'
