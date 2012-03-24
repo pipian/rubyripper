@@ -248,6 +248,7 @@ class FileScheme
       when 'mp3' then '.mp3'
       when 'wav' then '.wav'
       when 'nero' then '.aac'
+      when 'wavpack' then '.wv'
       when 'other' then @otherExtension
     end
   end

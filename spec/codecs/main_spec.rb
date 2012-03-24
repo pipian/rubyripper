@@ -209,7 +209,7 @@ describe Codecs::Main do
     end
   end
   
-  context "Given Nero AAC is chosen as preferred codec" do
+  context "Given Nero aac is chosen as preferred codec" do
     before(:each) do
       prefs.should_receive(:codecs).and_return ['nero']
       main.prepare()
@@ -236,6 +236,38 @@ describe Codecs::Main do
           '-meta:artist="trackArtist 1" -meta:album="album" -meta:genre="genre" -meta:year="year" '\
           '-meta-user:"ALBUM ARTIST"="artist" -meta:disc=1 -meta-user:ENCODER="Rubyripper test" '\
           '-meta-user:DISCID="ABCDEFGH" -meta:title="trackname 1" -meta:track=1 -meta:totaltracks=99'
+    end
+  end
+  
+  context "Given wavpack is chosen as preferred codec" do
+    before(:each) do
+      prefs.should_receive(:codecs).and_return ['wavpack']
+      main.prepare()
+    end
+    
+    it "should return an empty string for the replaygain commands (not available)" do
+      scheme.should_receive(:getFile).with(1, 'wavpack').and_return 'output.wv'
+      main.replaygain(1, 'wavpack').should == ''
+      scheme.should_receive(:getDir).with('wavpack').and_return '/home/wavpack'
+      main.replaygainAlbum('wavpack').should == ''
+    end
+    
+    it "should calculate the command for encoding" do
+      prefs.should_receive(:settingsWavpack).and_return '-q 6'
+      prefs.should_receive(:createCue).and_return true
+      scheme.should_receive(:getCueFile).and_return '/home/wavpack/test.cue'
+      scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
+      scheme.should_receive(:getFile).with(1, 'wavpack').and_return '/home/wavpack/1-test.wv'
+      disc.should_receive(:audiotracks).and_return 99
+      md.should_receive(:various?).and_return true
+      md.should_receive(:discNumber).twice.and_return "1"
+      disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
+      
+      main.command(1, 'wavpack').should == 'wavpack -q 6 -w ARTIST="trackArtist 1" -w ALBUM="album" '\
+          '-w GENRE="genre" -w DATE="year" -w "ALBUM ARTIST"="artist" -w DISCNUMBER=1 -w '\
+          'ENCODER="Rubyripper test" -w DISCID="ABCDEFGH" -w TITLE="trackname 1" -w TRACKNUMBER=1 -w '\
+          'TRACKTOTAL=99 -w CUESHEET="/home/wavpack/test.cue" "input_1.wav" -o "/home/wavpack/1-test.wv"'
+      main.setTagsAfterEncoding(1, 'wavpack').should == ''
     end
   end
 end

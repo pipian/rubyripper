@@ -15,48 +15,48 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# This is the template for the Flac codec
+# This is the template for the Wavpack codec
 # To add any new codec like "somecodec":
 # * Add a file somecodec.rb into the same directory
-# * Create a class "Somecodec" in it conform Flac
+# * Create a class "Somecodec" in it conform Wavpack
 # * Add the codec to the preferences data
 # * Add the option into the user interfaces
 # * Add the extension to filescheme class
 module Codecs
-  class Flac   
+  class Wavpack   
     def tags
       {
-        :artist => "--tag ARTIST=",
-        :album => "--tag ALBUM=",
-        :genre => "--tag GENRE=",
-        :year => "--tag DATE=",
-        :albumArtist => "--tag \"ALBUM ARTIST\"=",
-        :discNumber => "--tag DISCNUMBER=",
-        :encoder => "--tag ENCODER=",
-        :discId => "--tag DISCID=",
-        :trackname => "--tag TITLE=",
-        :tracknumber => "--tag TRACKNUMBER=",
-        :tracktotal => "--tag TRACKTOTAL=",
-        :cuesheet => "--cuesheet="
+        :artist => "-w ARTIST=",
+        :album => "-w ALBUM=",
+        :genre => "-w GENRE=",
+        :year => "-w DATE=",
+        :albumArtist => "-w \"ALBUM ARTIST\"=",
+        :discNumber => "-w DISCNUMBER=",
+        :encoder => "-w ENCODER=",
+        :discId => "-w DISCID=",
+        :trackname => "-w TITLE=",
+        :tracknumber => "-w TRACKNUMBER=",
+        :tracktotal => "-w TRACKTOTAL=",
+        :cuesheet => "-w CUESHEET="
       }
     end
   
-    def binary ; 'flac' ; end
+    def binary ; 'wavpack' ; end
     def outputEncodingTag ; '-o' ; end  
-    def extension ; 'flac' ; end 
-    def default; "--best" ; end
+    def extension ; 'wv' ; end 
+    def default; "" ; end
   
     # the sequence of the command
-    def sequence ; [:binary, :output, :prefs, :tags, :input] ; end
+    def sequence ; [:binary, :prefs, :tags, :input, :output] ; end
   
-    # %s will be replaced by the output file
+    # replaygain is not supported for wavpack
     def replaygain(track)
-      "metaflac --add-replay-gain %s"
+      ""
     end
   
-    # %s will be replaced by a File.join(output directory, *.extension)
+    # replaygain is not supported for wavpack
     def replaygainAlbum
-      "metaflac --add-replay-gain %s"
+      ""
     end
   end
 end

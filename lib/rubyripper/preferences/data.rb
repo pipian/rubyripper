@@ -106,6 +106,12 @@ module Preferences
     # Pass nero parameters
     attr_accessor :settingsNero
     
+    # Use Wavpack
+    attr_accessor :wavpack
+    
+    # Pass wavpack parameters
+    attr_accessor :settingsWavpack
+    
     # Use other codec
     attr_accessor :other
 
