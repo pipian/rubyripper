@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010 Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2012 Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -29,7 +29,7 @@ module Metadata
       #otherwise the shell will complain
       item.gsub!('"', '\"')
       item = super(item)
-      return item
+      return "\"#{item}\""
     end
   end
 end

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2012  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -70,8 +70,8 @@ class FileScheme
   end
 
   # return the first directory (for the summary)
-  def getDir
-    return @dir.values[0]
+  def getDir(codec=nil)
+    codec ? @dir[codec] : @dir.values[0]
   end
 
   # return the full filename of the track (starting with 1) or image
@@ -95,7 +95,8 @@ class FileScheme
   end
 
   # return the just ripped wave file
-  def getTempFile(track=false, trial)
+  def getTempFile(track=false, trial=nil)
+    trial ||= 1
     @file.join(getTempDir(), "#{@prefs.image ? "image" : "track_#{track}"}_#{trial}.wav")
   end
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2011  Ian Jacobi (pipian@pipian.com)
+#    Copyright (C) 2012  Ian Jacobi (pipian@pipian.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -16,9 +16,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/metadata/musicbrainz/musicbrainzWebService'
-
-# needed to test query
-$rr_version = 'test'
 
 describe MusicBrainzWebService do
 
