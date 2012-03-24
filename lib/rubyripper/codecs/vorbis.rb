@@ -15,8 +15,6 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/codecs/main'
-
 # This is the template for the Vorbis codec
 # To add any new codec like "somecodec":
 # * Add a file somecodec.rb into the same directory

@@ -15,12 +15,10 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/codecs/main'
-
-# This is the template for the Vorbis codec
+# This is the template for the Wav codec
 # To add any new codec like "somecodec":
 # * Add a file somecodec.rb into the same directory
-# * Create a class "Somecodec" in it conform Vorbis
+# * Create a class "Somecodec" in it conform Wav
 # * Add the codec to the preferences data
 # * Add the option into the user interfaces
 module Codecs
