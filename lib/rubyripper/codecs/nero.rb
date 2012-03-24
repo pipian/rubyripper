@@ -15,30 +15,48 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# This is the template for the Wav codec
+# This is the template for the Nero AAC codec
 # To add any new codec like "somecodec":
 # * Add a file somecodec.rb into the same directory
-# * Create a class "Somecodec" in it conform Wav
+# * Create a class "Somecodec" in it conform Nero
 # * Add the codec to the preferences data
 # * Add the option into the user interfaces
 # * Add the extension to filescheme class
 module Codecs
-  class Wav   
-    def tags ; Hash.new ; end  
-    def binary ; 'cp' ; end
-    def extension ; 'wav' ; end 
+  class Nero   
+    def tags
+      {
+        :artist => "-meta:artist=",
+        :album => "-meta:album=",
+        :genre => "-meta:genre=",
+        :year => "-meta:year=",
+        :albumArtist => "-meta-user:\"ALBUM ARTIST\"=",
+        :discNumber => "-meta:disc=",
+        :encoder => "-meta-user:ENCODER=",
+        :discId => "-meta-user:DISCID=",
+        :trackname => "-meta:title=",
+        :tracknumber => "-meta:track=",
+        :tracktotal => "-meta:totaltracks="
+      }
+    end
+    
+    def inputEncodingTag ; '-if'; end
+    def outputEncodingTag ; '-of'; end
+  
+    def binary ; 'neroAacEnc' ; end
+    def extension ; 'aac' ; end 
+    def default; "-q 0.5" ; end
   
     # the sequence of the command
-    def sequence ; [:binary, :input, :output] ; end
+    def sequence ; [:binary, :prefs, :input, :output] ; end
+      
+    def tagBinary ; 'neroAacTag' ; end
+    def sequenceTags; [:binary, :input, :tags] ; end
   
-    # %s will be replaced by the output file
-    def replaygain(track)
-      "wavegain %s"
-    end
+    # not supported for nero AAC
+    def replaygain(track) ; "" ; end
   
-    # %s will be replaced by a File.join(output directory, *.extension)
-    def replaygainAlbum
-      "wavegain -a %s"
-    end
+    # not supported for nero AAC
+    def replaygainAlbum ; "" ; end
   end
 end

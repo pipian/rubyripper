@@ -241,12 +241,13 @@ class FileScheme
     return @filterFiles.filter(file) + fileExtension(codec)
   end
   
-  def fileExtension(codec)  
+  def fileExtension(codec)
     case codec
       when 'flac' then '.flac'
       when 'vorbis' then '.ogg'
       when 'mp3' then '.mp3'
       when 'wav' then '.wav'
+      when 'nero' then '.aac'
       when 'other' then @otherExtension
     end
   end

@@ -66,6 +66,7 @@ describe Codecs::Main do
         main.command(1, 'mp3').should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
             '--tg "genre" --ty "year" --tv TENC="Rubyripper test" --tt "trackname 1" '\
             '--tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
+        main.setTagsAfterEncoding(1, 'mp3').should == ''
       end
       
       it "should add the various artist tag if relevant" do
@@ -127,6 +128,7 @@ describe Codecs::Main do
           'ARTIST="trackArtist 1" -c ALBUM="album" -c GENRE="genre" -c DATE="year" -c '\
           '"ALBUM ARTIST"="artist" -c DISCNUMBER=1 -c ENCODER="Rubyripper test" -c '\
           'DISCID="ABCDEFGH" -c TITLE="trackname 1" -c TRACKNUMBER=1 -c TRACKTOTAL=99 "input_1.wav"'
+      main.setTagsAfterEncoding(1, 'vorbis').should == ''
     end
   end
   
@@ -161,6 +163,7 @@ describe Codecs::Main do
           '--tag "ALBUM ARTIST"="artist" --tag DISCNUMBER=1 --tag ENCODER="Rubyripper test" '\
           '--tag DISCID="ABCDEFGH" --tag TITLE="trackname 1" --tag TRACKNUMBER=1 --tag '\
           'TRACKTOTAL=99 "input_1.wav"'
+      main.setTagsAfterEncoding(1, 'flac').should == ''
     end
     
     it "should save the cuesheet file if available" do
@@ -202,6 +205,37 @@ describe Codecs::Main do
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with(1, 'wav').and_return '/home/wav/1-test.wav'   
       main.command(1, 'wav').should == 'cp "input_1.wav" "/home/wav/1-test.wav"'
+      main.setTagsAfterEncoding(1, 'wav').should == ''
+    end
+  end
+  
+  context "Given Nero AAC is chosen as preferred codec" do
+    before(:each) do
+      prefs.should_receive(:codecs).and_return ['nero']
+      main.prepare()
+    end
+    
+    it "should return an empty string for the replaygain commands (not available)" do
+      scheme.should_receive(:getFile).with(1, 'nero').and_return 'output.aac'
+      main.replaygain(1, 'nero').should == ''
+      scheme.should_receive(:getDir).with('nero').and_return '/home/nero'
+      main.replaygainAlbum('nero').should == ''
+    end
+       
+    it "should calculate the command for encoding and tagging" do
+      prefs.should_receive(:settingsNero).and_return '-q 1'
+      scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
+      scheme.should_receive(:getFile).with(1, 'nero').twice.and_return '/home/nero/1-test.aac'
+      disc.should_receive(:audiotracks).and_return 99
+      md.should_receive(:various?).and_return true
+      md.should_receive(:discNumber).twice.and_return "1"
+      disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
+      
+      main.command(1, 'nero').should == 'neroAacEnc -q 1 -if "input_1.wav" -of "/home/nero/1-test.aac"'
+      main.setTagsAfterEncoding(1, 'nero').should == 'neroAacTag "/home/nero/1-test.aac" '\
+          '-meta:artist="trackArtist 1" -meta:album="album" -meta:genre="genre" -meta:year="year" '\
+          '-meta-user:"ALBUM ARTIST"="artist" -meta:disc=1 -meta-user:ENCODER="Rubyripper test" '\
+          '-meta-user:DISCID="ABCDEFGH" -meta:title="trackname 1" -meta:track=1 -meta:totaltracks=99'
     end
   end
 end

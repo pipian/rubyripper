@@ -18,6 +18,7 @@
 require 'rubyripper/disc/disc'
 require 'rubyripper/fileScheme'
 require 'rubyripper/metadata/filter/filterTags'
+require 'rubyripper/preferences/main'
 
 # build up the command for the codec
 module Codecs
@@ -54,8 +55,23 @@ module Codecs
           when :binary then addBinary(codec)
           when :prefs then addPreference(codec)
           when :tags then addTags(track, codec)
-          when :input then input(track)
-          when :output then output(track, codec)
+          when :input then addInput(track, codec)
+          when :output then addOutput(track, codec)
+        end
+      end
+      command.join(' ')
+    end
+    
+    # some codecs set the tags after the encoding (for example nero AAC)
+    def setTagsAfterEncoding(track, codec)
+      command = Array.new()
+      if @handler[codec].respond_to?(:sequenceTags)
+        @handler[codec].sequenceTags.each do |part|
+          command << case part
+            when :binary then addTagBinary(codec)
+            when :input then addTagInput(track, codec)
+            when :tags then addTags(track, codec)
+          end
         end
       end
       command.join(' ')
@@ -99,6 +115,30 @@ module Codecs
         result << tag unless tag.nil? || tag.strip().empty?
       end
       result.join(" ")
+    end
+    
+    def addInput(track, codec)
+      if @handler[codec].respond_to?(:inputEncodingTag)
+        add(@handler[codec].inputEncodingTag, input(track))
+      else
+        input(track)
+      end
+    end
+    
+    def addOutput(track, codec)
+      if @handler[codec].respond_to?(:outputEncodingTag)
+        add(@handler[codec].outputEncodingTag, output(track, codec))
+      else
+        output(track, codec)
+      end
+    end
+    
+    def addTagBinary(codec)
+      @handler[codec].tagBinary
+    end
+    
+    def addTagInput(track, codec)
+      output(track, codec)
     end
     
     # return the input file for encoding

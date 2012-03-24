@@ -26,6 +26,7 @@ module Preferences
       codecs << 'mp3' if mp3
       codecs << 'vorbis' if vorbis
       codecs << 'wav' if wav
+      codecs << 'nero' if nero
       codecs << 'other' if other
       codecs
     end
@@ -99,6 +100,12 @@ module Preferences
     # Use wav
     attr_accessor :wav
 
+    # Use Nero AAC
+    attr_accessor :nero
+    
+    # Pass nero parameters
+    attr_accessor :settingsNero
+    
     # Use other codec
     attr_accessor :other
 

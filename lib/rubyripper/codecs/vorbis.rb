@@ -21,6 +21,7 @@
 # * Create a class "Somecodec" in it conform Vorbis
 # * Add the codec to the preferences data
 # * Add the option into the user interfaces
+# * Add the extension to filescheme class
 module Codecs
   class Vorbis   
     def tags
@@ -39,7 +40,8 @@ module Codecs
       }
     end
   
-    def binary ; 'oggenc -o' ; end
+    def binary ; 'oggenc' ; end
+    def outputEncodingTag ; '-o' ; end
     def extension ; 'ogg' ; end 
     def default; "-q 6" ; end
   

@@ -21,6 +21,7 @@
 # * Create a class "Somecodec" in it conform Mp3
 # * Add the codec to the preferences data
 # * Add the option into the user interfaces
+# * Add the extension to filescheme class
 module Codecs
   class Mp3   
     # if the tag ends with a equal sign no space is added

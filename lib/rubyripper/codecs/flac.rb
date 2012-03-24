@@ -21,6 +21,7 @@
 # * Create a class "Somecodec" in it conform Flac
 # * Add the codec to the preferences data
 # * Add the option into the user interfaces
+# * Add the extension to filescheme class
 module Codecs
   class Flac   
     def tags
@@ -40,7 +41,8 @@ module Codecs
       }
     end
   
-    def binary ; 'flac -o' ; end
+    def binary ; 'flac' ; end
+    def outputEncodingTag ; '-o' ; end  
     def extension ; 'flac' ; end 
     def default; "--best" ; end
   
