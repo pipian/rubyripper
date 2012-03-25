@@ -32,22 +32,20 @@ describe Codecs::Main do
   let(:tags) {TagFilterStub.new()}
   let(:prefs) {double('Preferences').as_null_object}
   let(:md) {double('Metadata').as_null_object}
-  let(:main) {Codecs::Main.new(disc, scheme, tags, prefs, md)}
   
   context "Given mp3 is chosen as preferred codec" do
     before(:each) do
-      prefs.should_receive(:codecs).and_return ['mp3']
-      main.prepare()
+      @codec = Codecs::Main.new('mp3', disc, scheme, tags, prefs, md)
     end
     
     it "should return the command to replaygain a track" do
       scheme.should_receive(:getFile).with(1, 'mp3').and_return 'output.mp3'
-      main.replaygain(1, 'mp3').should == 'mp3gain -c -r "output.mp3"'
+      @codec.replaygain(1).should == 'mp3gain -c -r "output.mp3"'
     end
     
     it "should return the command to replaygain an album" do
       scheme.should_receive(:getDir).with('mp3').and_return '/home/mp3'
-      main.replaygainAlbum('mp3').should == 'mp3gain -c -a "/home/mp3"/*.mp3'
+      @codec.replaygainAlbum().should == 'mp3gain -c -a "/home/mp3"/*.mp3'
     end
     
     # all conditional logic is only tested for mp3 since it's generic
@@ -63,17 +61,17 @@ describe Codecs::Main do
         md.should_receive(:various?).and_return nil
         disc.should_receive(:freedbDiscid).and_return nil
 
-        main.command(1, 'mp3').should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
+        @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
             '--tg "genre" --ty "year" --tv TENC="Rubyripper test" --tt "trackname 1" '\
             '--tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
-        main.setTagsAfterEncoding(1, 'mp3').should == ''
+        @codec.setTagsAfterEncoding(1).should == ''
       end
       
       it "should add the various artist tag if relevant" do
         md.should_receive(:various?).and_return true
         disc.should_receive(:freedbDiscid).and_return nil
         
-        main.command(1, 'mp3').should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
+        @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
             '--tg "genre" --ty "year" --tv TPE2="artist" --tv TENC="Rubyripper test" '\
             '--tt "trackname 1" --tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
       end
@@ -82,7 +80,7 @@ describe Codecs::Main do
         md.should_receive(:various?).and_return nil
         disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
         
-        main.command(1, 'mp3').should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
+        @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
             '--tg "genre" --ty "year" --tv TENC="Rubyripper test" --tc DISCID="ABCDEFGH" '\
             '--tt "trackname 1" --tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
       end
@@ -92,7 +90,7 @@ describe Codecs::Main do
         md.should_receive(:discNumber).twice.and_return "1"
         disc.should_receive(:freedbDiscid).and_return nil
         
-        main.command(1, 'mp3').should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
+        @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
             '--tg "genre" --ty "year" --tv TPOS=1 --tv TENC="Rubyripper test" --tt '\
             '"trackname 1" --tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
       end
@@ -101,18 +99,17 @@ describe Codecs::Main do
   
   context "Given vorbis is chosen as preferred codec" do
     before(:each) do
-      prefs.should_receive(:codecs).and_return ['vorbis']
-      main.prepare()
+      @codec = Codecs::Main.new('vorbis', disc, scheme, tags, prefs, md)
     end
     
     it "should return the command to replaygain a track" do
       scheme.should_receive(:getFile).with(1, 'vorbis').and_return 'output.ogg'
-      main.replaygain(1, 'vorbis').should == 'vorbisgain "output.ogg"'
+      @codec.replaygain(1).should == 'vorbisgain "output.ogg"'
     end
     
     it "should return the command to replaygain an album" do
       scheme.should_receive(:getDir).with('vorbis').and_return '/home/vorbis'
-      main.replaygainAlbum('vorbis').should == 'vorbisgain -a "/home/vorbis"/*.ogg'
+      @codec.replaygainAlbum.should == 'vorbisgain -a "/home/vorbis"/*.ogg'
     end
     
     it "should calculate the command for encoding" do
@@ -124,28 +121,27 @@ describe Codecs::Main do
       md.should_receive(:discNumber).twice.and_return "1"
       disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
       
-      main.command(1, 'vorbis').should == 'oggenc -o "/home/vorbis/1-test.ogg" -q 6 -c '\
+      @codec.command(1).should == 'oggenc -o "/home/vorbis/1-test.ogg" -q 6 -c '\
           'ARTIST="trackArtist 1" -c ALBUM="album" -c GENRE="genre" -c DATE="year" -c '\
           '"ALBUM ARTIST"="artist" -c DISCNUMBER=1 -c ENCODER="Rubyripper test" -c '\
           'DISCID="ABCDEFGH" -c TITLE="trackname 1" -c TRACKNUMBER=1 -c TRACKTOTAL=99 "input_1.wav"'
-      main.setTagsAfterEncoding(1, 'vorbis').should == ''
+      @codec.setTagsAfterEncoding(1).should == ''
     end
   end
   
   context "Given flac is chosen as preferred codec" do
     before(:each) do
-      prefs.should_receive(:codecs).and_return ['flac']
-      main.prepare()
+      @codec = Codecs::Main.new('flac', disc, scheme, tags, prefs, md)
     end
     
     it "should return the command to replaygain a track" do
       scheme.should_receive(:getFile).with(1, 'flac').and_return 'output.flac'
-      main.replaygain(1, 'flac').should == 'metaflac --add-replay-gain "output.flac"'
+      @codec.replaygain(1).should == 'metaflac --add-replay-gain "output.flac"'
     end
     
     it "should return the command to replaygain an album" do
       scheme.should_receive(:getDir).with('flac').and_return '/home/flac'
-      main.replaygainAlbum('flac').should == 'metaflac --add-replay-gain "/home/flac"/*.flac'
+      @codec.replaygainAlbum.should == 'metaflac --add-replay-gain "/home/flac"/*.flac'
     end
     
     it "should calculate the command for encoding" do
@@ -158,12 +154,12 @@ describe Codecs::Main do
       md.should_receive(:discNumber).twice.and_return "1"
       disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
       
-      main.command(1, 'flac').should == 'flac -o "/home/flac/1-test.flac" -q 6 --tag '\
+      @codec.command(1).should == 'flac -o "/home/flac/1-test.flac" -q 6 --tag '\
           'ARTIST="trackArtist 1" --tag ALBUM="album" --tag GENRE="genre" --tag DATE="year" '\
           '--tag "ALBUM ARTIST"="artist" --tag DISCNUMBER=1 --tag ENCODER="Rubyripper test" '\
           '--tag DISCID="ABCDEFGH" --tag TITLE="trackname 1" --tag TRACKNUMBER=1 --tag '\
           'TRACKTOTAL=99 "input_1.wav"'
-      main.setTagsAfterEncoding(1, 'flac').should == ''
+      @codec.setTagsAfterEncoding(1).should == ''
     end
     
     it "should save the cuesheet file if available" do
@@ -177,7 +173,7 @@ describe Codecs::Main do
       md.should_receive(:discNumber).twice.and_return "1"
       disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
       
-      main.command(1, 'flac').should == 'flac -o "/home/flac/1-test.flac" -q 6 --tag '\
+      @codec.command(1).should == 'flac -o "/home/flac/1-test.flac" -q 6 --tag '\
           'ARTIST="trackArtist 1" --tag ALBUM="album" --tag GENRE="genre" --tag DATE="year" '\
           '--tag "ALBUM ARTIST"="artist" --tag DISCNUMBER=1 --tag ENCODER="Rubyripper test" '\
           '--tag DISCID="ABCDEFGH" --tag TITLE="trackname 1" --tag TRACKNUMBER=1 --tag '\
@@ -187,39 +183,37 @@ describe Codecs::Main do
   
   context "Given wav is chosen as preferred codec" do
     before(:each) do
-      prefs.should_receive(:codecs).and_return ['wav']
-      main.prepare()
+      @codec = Codecs::Main.new('wav', disc, scheme, tags, prefs, md)
     end
     
     it "should return the command to replaygain a track" do
       scheme.should_receive(:getFile).with(1, 'wav').and_return 'output.wav'
-      main.replaygain(1, 'wav').should == 'wavegain "output.wav"'
+      @codec.replaygain(1).should == 'wavegain "output.wav"'
     end
     
     it "should return the command to replaygain an album" do
       scheme.should_receive(:getDir).with('wav').and_return '/home/wav'
-      main.replaygainAlbum('wav').should == 'wavegain -a "/home/wav"/*.wav'
+      @codec.replaygainAlbum.should == 'wavegain -a "/home/wav"/*.wav'
     end
     
     it "should calculate the command for encoding" do
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with(1, 'wav').and_return '/home/wav/1-test.wav'   
-      main.command(1, 'wav').should == 'cp "input_1.wav" "/home/wav/1-test.wav"'
-      main.setTagsAfterEncoding(1, 'wav').should == ''
+      @codec.command(1).should == 'cp "input_1.wav" "/home/wav/1-test.wav"'
+      @codec.setTagsAfterEncoding(1).should == ''
     end
   end
   
   context "Given Nero aac is chosen as preferred codec" do
     before(:each) do
-      prefs.should_receive(:codecs).and_return ['nero']
-      main.prepare()
+      @codec = Codecs::Main.new('nero', disc, scheme, tags, prefs, md)
     end
     
     it "should return an empty string for the replaygain commands (not available)" do
       scheme.should_receive(:getFile).with(1, 'nero').and_return 'output.aac'
-      main.replaygain(1, 'nero').should == ''
+      @codec.replaygain(1).should == ''
       scheme.should_receive(:getDir).with('nero').and_return '/home/nero'
-      main.replaygainAlbum('nero').should == ''
+      @codec.replaygainAlbum.should == ''
     end
        
     it "should calculate the command for encoding and tagging" do
@@ -231,8 +225,8 @@ describe Codecs::Main do
       md.should_receive(:discNumber).twice.and_return "1"
       disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
       
-      main.command(1, 'nero').should == 'neroAacEnc -q 1 -if "input_1.wav" -of "/home/nero/1-test.aac"'
-      main.setTagsAfterEncoding(1, 'nero').should == 'neroAacTag "/home/nero/1-test.aac" '\
+      @codec.command(1).should == 'neroAacEnc -q 1 -if "input_1.wav" -of "/home/nero/1-test.aac"'
+      @codec.setTagsAfterEncoding(1).should == 'neroAacTag "/home/nero/1-test.aac" '\
           '-meta:artist="trackArtist 1" -meta:album="album" -meta:genre="genre" -meta:year="year" '\
           '-meta-user:"ALBUM ARTIST"="artist" -meta:disc=1 -meta-user:ENCODER="Rubyripper test" '\
           '-meta-user:DISCID="ABCDEFGH" -meta:title="trackname 1" -meta:track=1 -meta:totaltracks=99'
@@ -241,15 +235,14 @@ describe Codecs::Main do
   
   context "Given wavpack is chosen as preferred codec" do
     before(:each) do
-      prefs.should_receive(:codecs).and_return ['wavpack']
-      main.prepare()
+      @codec = Codecs::Main.new('wavpack', disc, scheme, tags, prefs, md)
     end
     
     it "should return an empty string for the replaygain commands (not available)" do
       scheme.should_receive(:getFile).with(1, 'wavpack').and_return 'output.wv'
-      main.replaygain(1, 'wavpack').should == ''
+      @codec.replaygain(1).should == ''
       scheme.should_receive(:getDir).with('wavpack').and_return '/home/wavpack'
-      main.replaygainAlbum('wavpack').should == ''
+      @codec.replaygainAlbum.should == ''
     end
     
     it "should calculate the command for encoding" do
@@ -263,11 +256,11 @@ describe Codecs::Main do
       md.should_receive(:discNumber).twice.and_return "1"
       disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
       
-      main.command(1, 'wavpack').should == 'wavpack -w ARTIST="trackArtist 1" -w ALBUM="album" '\
+      @codec.command(1).should == 'wavpack -w ARTIST="trackArtist 1" -w ALBUM="album" '\
           '-w GENRE="genre" -w DATE="year" -w "ALBUM ARTIST"="artist" -w DISCNUMBER=1 -w '\
           'ENCODER="Rubyripper test" -w DISCID="ABCDEFGH" -w TITLE="trackname 1" -w TRACKNUMBER=1 -w '\
           'TRACKTOTAL=99 -w CUESHEET="/home/wavpack/test.cue" "input_1.wav" -o "/home/wavpack/1-test.wv"'
-      main.setTagsAfterEncoding(1, 'wavpack').should == ''
+      @codec.setTagsAfterEncoding(1).should == ''
     end
   end
 end

@@ -42,7 +42,8 @@ module Codecs
     
     def inputEncodingTag ; '-if'; end
     def outputEncodingTag ; '-of'; end
-  
+
+    def name ; 'nero' ; end
     def binary ; 'neroAacEnc' ; end
     def extension ; 'aac' ; end 
     def default; "-q 0.5" ; end

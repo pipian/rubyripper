@@ -40,7 +40,8 @@ module Codecs
         :tracknumberTotal => "--tn"
       }
     end
-  
+
+    def name ; 'mp3' ; end
     def binary ; 'lame' ; end
     def extension ; 'mp3' ; end 
     def default; "--preset fast standard" ; end

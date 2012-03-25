@@ -20,43 +20,40 @@ require 'rubyripper/fileScheme'
 require 'rubyripper/metadata/filter/filterTags'
 require 'rubyripper/preferences/main'
 
-# build up the command for the codec
+# build up the command for any specific codec using the configuration
+# in each codec file like mp3.rb, vorbis.rb, etcetera. Also provide
+# ways to return the replaygain command. Execution is not part of this class.
 module Codecs
   class Main
-    def initialize(disc=nil, scheme=nil, tags=nil, prefs=nil, metadata=nil)
+    def initialize(codec, disc=nil, scheme=nil, tags=nil, prefs=nil, metadata=nil)
+      @codec = config(codec)
       @disc = disc
       @scheme = scheme
       @tags = tags ? tags : Metadata::FilterTags.new(@disc.metadata)
       @md = metadata ? metadata : @disc.metadata
       @prefs = prefs ? prefs : Preferences::Main.instance()
     end
-  
-    # make handlers for all active codecs
-    def prepare
-      @handler = Hash.new
-      @prefs.codecs.each{|codec| registerHandler(codec)}
-    end
-  
+     
     # to replaygain a single track
-    def replaygain(track, codec)
-      @handler[codec].replaygain(track) % [output(track, codec)]
+    def replaygain(track)
+      @codec.replaygain(track) % [output(track)]
     end
   
     # to replaygain a complete album
-    def replaygainAlbum(codec)
-      @handler[codec].replaygainAlbum() % [File.join(dir(codec), '*.' + @handler[codec].extension)]
+    def replaygainAlbum()
+      @codec.replaygainAlbum() % [File.join(dir(), '*.' + @codec.extension)]
     end
   
     # return the command for the track and codec
-    def command(track, codec)
+    def command(track)
       command = Array.new()
-      @handler[codec].sequence.each do |part|
+      @codec.sequence.each do |part|
         command << case part
-          when :binary then addBinary(codec)
-          when :prefs then addPreference(codec)
-          when :tags then addTags(track, codec)
-          when :input then addInput(track, codec)
-          when :output then addOutput(track, codec)
+          when :binary then addBinary()
+          when :prefs then addPreference()
+          when :tags then addTags(track)
+          when :input then addInput(track)
+          when :output then addOutput(track)
         end
       end
       command.delete('')
@@ -64,14 +61,14 @@ module Codecs
     end
     
     # some codecs set the tags after the encoding (for example nero AAC)
-    def setTagsAfterEncoding(track, codec)
+    def setTagsAfterEncoding(track)
       command = Array.new()
-      if @handler[codec].respond_to?(:sequenceTags)
-        @handler[codec].sequenceTags.each do |part|
+      if @codec.respond_to?(:sequenceTags)
+        @codec.sequenceTags.each do |part|
           command << case part
-            when :binary then addTagBinary(codec)
-            when :input then addTagInput(track, codec)
-            when :tags then addTags(track, codec)
+            when :binary then addTagBinary()
+            when :input then addTagInput(track)
+            when :tags then addTags(track)
           end
         end
       end
@@ -81,24 +78,25 @@ module Codecs
   
     private
   
-    def registerHandler(codec)
+    # get the configuration and return the specific codec object
+    def config(codec)
       require "rubyripper/codecs/#{codec}"
-      @handler[codec] = Codecs.const_get(codec.capitalize).new
+      Codecs.const_get(codec.capitalize).new
     end
     
-    def addBinary(codec)
-      @handler[codec].binary
+    def addBinary
+      @codec.binary
     end
     
-    def addPreference(codec)
-      prefs = @prefs.send("settings" + codec.capitalize)
-      prefs = @handler[codec].default if prefs == nil || prefs.strip().empty?
+    def addPreference
+      prefs = @prefs.send("settings" + @codec.name.capitalize)
+      prefs = @codec.default if prefs == nil || prefs.strip().empty?
       prefs.strip()
     end
     
-    def addTags(track, codec)
+    def addTags(track)
       result = Array.new
-      @handler[codec].tags.each do |key, value|
+      @codec.tags.each do |key, value|
         tag = case key
           when :artist then add(value, @tags.trackArtist(track))
           when :album then add(value, @tags.album)
@@ -108,7 +106,7 @@ module Codecs
           when :discId then add(value, "\"#{@disc.freedbDiscid}\"") if @disc.freedbDiscid
           when :discNumber then add(value, @md.discNumber) if @md.discNumber
           when :encoder then add(value, "\"Rubyripper #{$rr_version}\"")
-          when :cuesheet then add(value, "\"#{@scheme.getCueFile(codec)}\"") if @prefs.createCue
+          when :cuesheet then add(value, "\"#{@scheme.getCueFile(@codec.name)}\"") if @prefs.createCue
           when :trackname then add(value, @tags.trackname(track))
           when :tracknumber then add(value, "#{track}")
           when :tracktotal then add(value, "#{@disc.audiotracks}")
@@ -119,28 +117,28 @@ module Codecs
       result.join(" ")
     end
     
-    def addInput(track, codec)
-      if @handler[codec].respond_to?(:inputEncodingTag)
-        add(@handler[codec].inputEncodingTag, input(track))
+    def addInput(track)
+      if @codec.respond_to?(:inputEncodingTag)
+        add(@codec.inputEncodingTag, input(track))
       else
         input(track)
       end
     end
     
-    def addOutput(track, codec)
-      if @handler[codec].respond_to?(:outputEncodingTag)
-        add(@handler[codec].outputEncodingTag, output(track, codec))
+    def addOutput(track)
+      if @codec.respond_to?(:outputEncodingTag)
+        add(@codec.outputEncodingTag, output(track))
       else
-        output(track, codec)
+        output(track)
       end
     end
     
-    def addTagBinary(codec)
-      @handler[codec].tagBinary
+    def addTagBinary
+      @codec.tagBinary
     end
     
-    def addTagInput(track, codec)
-      output(track, codec)
+    def addTagInput(track)
+      output(track)
     end
     
     # return the input file for encoding
@@ -149,8 +147,8 @@ module Codecs
     end
   
     # return the output file for encoding
-    def output(track, codec)
-      "\"#{@scheme.getFile(track, codec)}\""
+    def output(track)
+      "\"#{@scheme.getFile(track, @codec.name)}\""
     end
   
     # if tag ends with equal sign dont use a space separator
@@ -159,8 +157,8 @@ module Codecs
       value.empty? ? '' : tag + separator + value
     end
   
-    def dir(codec)
-      "\"#{@scheme.getDir(codec)}\""
+    def dir()
+      "\"#{@scheme.getDir(@codec.name)}\""
     end
   end
 end

@@ -40,7 +40,8 @@ module Codecs
         :cuesheet => "--cuesheet="
       }
     end
-  
+
+    def name ; 'flac' ; end
     def binary ; 'flac' ; end
     def outputEncodingTag ; '-o' ; end  
     def extension ; 'flac' ; end 

@@ -40,7 +40,8 @@ module Codecs
         :cuesheet => "-w CUESHEET="
       }
     end
-  
+
+    def name ; 'wavpack' ; end
     def binary ; 'wavpack' ; end
     def outputEncodingTag ; '-o' ; end  
     def extension ; 'wv' ; end 

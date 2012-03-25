@@ -24,7 +24,8 @@
 # * Add the extension to filescheme class
 module Codecs
   class Wav   
-    def tags ; Hash.new ; end  
+    def tags ; Hash.new ; end
+    def name ; 'wav' ; end
     def binary ; 'cp' ; end
     def extension ; 'wav' ; end 
   

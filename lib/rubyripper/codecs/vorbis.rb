@@ -39,7 +39,8 @@ module Codecs
         :tracktotal => "-c TRACKTOTAL="
       }
     end
-  
+
+    def name ; 'vorbis' ; end
     def binary ; 'oggenc' ; end
     def outputEncodingTag ; '-o' ; end
     def extension ; 'ogg' ; end 
