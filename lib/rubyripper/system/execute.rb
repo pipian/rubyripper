@@ -41,16 +41,20 @@ attr_reader :status
   def launch(command, filename=false, noTranslations=nil)
     program = command.split[0]
     command = "LANG=C; #{command}" if noTranslations
-    puts command if @prefs.debug
+    puts "DEBUG command: #{command}" if @prefs.debug
 
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
       begin
         stdin, stdout, stderr = Open3.popen3(command)
-        output = stdout.readlines() + stderr.readlines()
+        output = Array.new
+        while (line = stdout.gets || line = stderr.gets)
+          output << line
+        end
+        output = output.join()
       rescue
         puts Errors.failedToExecute(program, command)
-        output = nil
+        output = ''
       end
       @filename = filename
     else
