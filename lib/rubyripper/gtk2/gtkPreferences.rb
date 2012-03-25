@@ -113,11 +113,15 @@ class GtkPreferences
     @flac.active = @prefs.flac
     @vorbis.active = @prefs.vorbis
     @mp3.active = @prefs.mp3
+    @nero.active = @prefs.nero
+    @wavpack.active = @prefs.wavpack
     @wav.active = @prefs.wav
     @other.active = @prefs.other
     @flacEntry.text = @prefs.settingsFlac
     @vorbisEntry.text = @prefs.settingsVorbis
     @mp3Entry.text = @prefs.settingsMp3
+    @neroEntry.text = @prefs.settingsNero
+    @wavpackEntry.text = @prefs.settingsWavpack
     @otherEntry.text = @prefs.settingsOther
     @playlist.active = @prefs.playlist
     @noSpaces.active = @prefs.noSpaces
@@ -186,11 +190,15 @@ class GtkPreferences
     @prefs.flac = @flac.active?
     @prefs.vorbis = @vorbis.active?
     @prefs.mp3 = @mp3.active?
+    @prefs.nero = @nero.active?
+    @prefs.wavpack = @wavpack.active?
     @prefs.wav = @wav.active?
     @prefs.other = @other.active?
     @prefs.settingsFlac = @flacEntry.text
     @prefs.settingsVorbis = @vorbisEntry.text
     @prefs.settingsMp3 = @mp3Entry.text
+    @prefs.settingsNero = @neroEntry.text
+    @prefs.settingsWavpack = @wavpackEntry.text
     @prefs.settingsOther = @otherEntry.text
     @prefs.playlist = @playlist.active?
     @prefs.noSpaces = @noSpaces.active?
@@ -466,11 +474,13 @@ It is recommended to enable this option.")
   end
 
   def buildFrameSelectAudioCodecs # Select audio codecs frame
-    @table70 = newTable(rows=6, columns=2)
+    @table70 = newTable(rows=8, columns=2)
 #objects 1st column
     @flac = Gtk::CheckButton.new(_('Flac'))
     @vorbis = Gtk::CheckButton.new(_('Vorbis'))
-    @mp3=  Gtk::CheckButton.new(_('Lame Mp3'))
+    @mp3=  Gtk::CheckButton.new(_('Lame MP3'))
+    @nero = Gtk::CheckButton.new(_('Nero AAC'))
+    @wavpack = Gtk::CheckButton.new(_('Wavpack'))
     @wav = Gtk::CheckButton.new(_('Wav'))
     @other = Gtk::CheckButton.new(_('Other'))
     @expander70 = Gtk::Expander.new(_('Show options for "Other"'))
@@ -478,6 +488,8 @@ It is recommended to enable this option.")
     @flacEntry= Gtk::Entry.new()
     @vorbisEntry= Gtk::Entry.new()
     @mp3Entry= Gtk::Entry.new()
+    @neroEntry = Gtk::Entry.new()
+    @wavpackEntry = Gtk::Entry.new()
     @otherEntry= Gtk::Entry.new()
 #fill expander
     @legend = Gtk::Label.new(_("%a=artist   %g=genre   %t=trackname   %f=codec\n%b=album   %y=year   %n=track   %va=various artist\n%o = outputfile   %i = inputfile"))
@@ -486,13 +498,17 @@ It is recommended to enable this option.")
     @table70.attach(@flac, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 1st row
     @table70.attach(@vorbis, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 2nd row
     @table70.attach(@mp3, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 3rd row
-    @table70.attach(@wav, 0, 2, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 4th row
-    @table70.attach(@other, 0, 1, 4, 5, Gtk::FILL, Gtk::SHRINK, 0, 0) # 1st column, 5th row
-    @table70.attach(@expander70, 0, 2, 5, 6, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 6th row
+    @table70.attach(@nero, 0, 1, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 4th row
+    @table70.attach(@wavpack, 0, 1, 4, 5, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 5th row
+    @table70.attach(@wav, 0, 2, 5, 6, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 6th row
+    @table70.attach(@other, 0, 1, 6, 7, Gtk::FILL, Gtk::SHRINK, 0, 0) # 1st column, 7th row
+    @table70.attach(@expander70, 0, 2, 7, 8, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 8th row
     @table70.attach(@flacEntry, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd column, 1st row
     @table70.attach(@vorbisEntry, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd column, 2nd row
     @table70.attach(@mp3Entry, 1, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 3rd row
-    @table70.attach(@otherEntry, 1, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 5th row
+    @table70.attach(@neroEntry, 1, 2, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 4th row
+    @table70.attach(@wavpackEntry, 1, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 5th row
+    @table70.attach(@otherEntry, 1, 2, 6, 7, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 7th row
     @frame70 = newFrame(_('Select audio codecs'), child=@table70)
   end
 

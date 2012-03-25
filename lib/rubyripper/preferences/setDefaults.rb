@@ -63,6 +63,10 @@ module Preferences
       @data.settingsVorbis = '-q 4'
       @data.mp3 = false
       @data.settingsMp3 = '-V 3 --id3v2-only'
+      @data.nero = false
+      @data.settingsNero = '-q 0.5'
+      @data.wavpack = false
+      @data.settingsWavpack = ''
       @data.wav = false
       @data.other = false
       @data.settingsOther = 'flac %i %o.flac'
