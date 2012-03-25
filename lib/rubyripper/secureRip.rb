@@ -393,7 +393,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       command += " -O #{@prefs.offset}"
     end
     command += " \"#{@out.getTempFile(track, @trial)}\""
-    puts command if @prefs.debug
+
     @exec.launch(command) if @cancelled == false #Launch the cdparanoia command
     # TODO: Missing Filename
     timeElapsed = Time.now - timeStarted
