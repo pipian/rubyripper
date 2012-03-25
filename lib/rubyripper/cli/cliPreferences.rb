@@ -225,17 +225,21 @@ private
     @out.puts ' 2) ' + _("Flac options passed") + ": %s" % [@prefs.settingsFlac]
     @out.puts ' 3) ' + _("Vorbis %s") % [showBool(@prefs.vorbis)]
     @out.puts ' 4) ' + _("Oggenc options passed") + ": %s" % [@prefs.settingsVorbis]
-    @out.puts ' 5) ' + _("Mp3 %s") % [showBool(@prefs.mp3)]
+    @out.puts ' 5) ' + _("Lame MP3 %s") % [showBool(@prefs.mp3)]
     @out.puts ' 6) ' + _("Lame options passed") + ": %s" % [@prefs.settingsMp3]
-    @out.puts ' 7) ' + _("Wav %s") % [showBool(@prefs.wav)]
-    @out.puts ' 8) ' + _("Other codec %s") % [showBool(@prefs.other)]
-    @out.puts ' 9) ' + _("Commandline passed") + ": %s" % [@prefs.settingsOther]
-    @out.puts '10) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
-    @out.puts '11) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.maxThreads]
-    @out.puts '12) ' + _("Replace spaces with underscores %s") % [showBool(@prefs.noSpaces)]
-    @out.puts '13) ' + _("Downsize all capital letters in filenames %s") %[showBool(@prefs.noCapitals)]
-    @out.puts '14) ' + _("Normalize program") + ": %s" % [@prefs.normalizer]
-    @out.puts '15) ' + _("Normalize modus") + ": %s" % [@prefs.gain]
+    @out.puts ' 7) ' + _("Nero AAC %s") % [showBool(@prefs.nero)]
+    @out.puts ' 8) ' + _("Nero options passed") + ": %s" % [@prefs.settingsNero]
+    @out.puts ' 9) ' + _("Wavpack %s") % [showBool(@prefs.wavpack)]
+    @out.puts '10) ' + _("Wavpack options passed") + ": %s" % [@prefs.settingsWavpack]
+    @out.puts '11) ' + _("Wav %s") % [showBool(@prefs.wav)]
+    @out.puts '12) ' + _("Other codec %s") % [showBool(@prefs.other)]
+    @out.puts '13) ' + _("Commandline passed") + ": %s" % [@prefs.settingsOther]
+    @out.puts '14) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
+    @out.puts '15) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.maxThreads]
+    @out.puts '16) ' + _("Replace spaces with underscores %s") % [showBool(@prefs.noSpaces)]
+    @out.puts '17) ' + _("Downsize all capital letters in filenames %s") %[showBool(@prefs.noCapitals)]
+    @out.puts '18) ' + _("Normalize program") + ": %s" % [@prefs.normalizer]
+    @out.puts '19) ' + _("Normalize modus") + ": %s" % [@prefs.gain]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -247,23 +251,29 @@ private
       when 99 then loopMainMenu()
       when 1 then switchBool('flac')
       when 2 then @prefs.settingsFlac = \
-        @string.get(_("Flac options passed"), '--best -V')
+        @string.get(_("Flac options passed"), @prefs.settingsFlac)
       when 3 then switchBool('vorbis')
       when 4 then @prefs.settingsVorbis = \
-        @string.get(_("Oggenc options passed"), '-q 4')
+        @string.get(_("Oggenc options passed"), @prefs.settingsVorbis)
       when 5 then switchBool('mp3')
       when 6 then @prefs.settingsMp3 = \
-        @string.get(_("Lame options passed"), '-V 3 --id3v2-only')
-      when 7 then switchBool('wav')
-      when 8 then switchBool('other')
-      when 9 then setOtherCodec()
-      when 10 then switchBool('playlist')
-      when 11 then @prefs.maxThreads = \
+        @string.get(_("Lame options passed"), @prefs.settingsMp3)
+      when 7 then switchBool('nero')
+      when 8 then @prefs.settingsNero = \
+        @string.get(_("Nero options passed"), @prefs.settingsNero)
+      when 9 then switchBool('wavpack')
+      when 10 then @prefs.settingsWavpack = \
+        @string.get(_("Wavpack options passed"), @prefs.settingsWavpack)
+      when 11 then switchBool('wav')
+      when 12 then switchBool('other')
+      when 13 then setOtherCodec()
+      when 14 then switchBool('playlist')
+      when 15 then @prefs.maxThreads = \
         @int.get(_("Maximum extra encoding threads"), 2)
-      when 12 then switchBool('noSpaces')
-      when 13 then switchBool('noCapitals')
-      when 14 then setNormalizer()
-      when 15 then setNormalizeModus()
+      when 16 then switchBool('noSpaces')
+      when 17 then switchBool('noCapitals')
+      when 18 then setNormalizer()
+      when 19 then setNormalizeModus()
     else noValidChoiceMessage(choice)
     end
     loopSubMenuCodecs() unless choice == 99

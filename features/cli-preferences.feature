@@ -137,17 +137,21 @@ Feature: Manage rubyripper preferences
        2) Flac options passed: --best -V
        3) Vorbis [*]
        4) Oggenc options passed: -q 4
-       5) Mp3 [ ]
+       5) Lame MP3 [ ]
        6) Lame options passed: -V 3 --id3v2-only
-       7) Wav [ ]
-       8) Other codec [ ]
-       9) Commandline passed: flac %i %o.flac
-      10) Playlist support [*]
-      11) Maximum extra encoding threads: 2
-      12) Replace spaces with underscores [ ]
-      13) Downsize all capital letters in filenames [ ]
-      14) Normalize program: none
-      15) Normalize modus: album
+       7) Nero AAC [ ]
+       8) Nero options passed: -q 0.5
+       9) Wavpack [ ]
+      10) Wavpack options passed: 
+      11) Wav [ ]
+      12) Other codec [ ]
+      13) Commandline passed: flac %i %o.flac
+      14) Playlist support [*]
+      15) Maximum extra encoding threads: 2
+      16) Replace spaces with underscores [ ]
+      17) Downsize all capital letters in filenames [ ]
+      18) Normalize program: none
+      19) Normalize modus: album
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
@@ -164,14 +168,19 @@ Feature: Manage rubyripper preferences
         | 5  |                    |
         | 6  | -V 4               |
         | 7  |                    |
-        | 8  |                    |
-        | 9  | lame "%i" "%o".mp3 |
-        | 10 |                    |
-        | 11 | 3                  |
+        | 8  | -q 0.6             |
+        | 9  |                    |
+        | 10 | -f                 |
+        | 11 |                    |
         | 12 |                    |
-        | 13 |                    |
-        | 14 | 2                  |
-        | 15 | 2                  |
+        | 13 | lame "%i" "%o".mp3 |
+        | 14 |                    |
+        | 15 | 3                  |
+        | 16 |                    |
+        | 17 |                    |
+        | 18 | 2                  |
+        | 19 | 2                  |
+
       And I press ENTER "3" times to close the application
       Then the output should contain:
       """
@@ -181,17 +190,21 @@ Feature: Manage rubyripper preferences
        2) Flac options passed: --fast -V
        3) Vorbis [ ]
        4) Oggenc options passed: -q 5
-       5) Mp3 [*]
+       5) Lame MP3 [*]
        6) Lame options passed: -V 4
-       7) Wav [*]
-       8) Other codec [*]
-       9) Commandline passed: lame "%i" "%o".mp3
-      10) Playlist support [ ]
-      11) Maximum extra encoding threads: 3
-      12) Replace spaces with underscores [*]
-      13) Downsize all capital letters in filenames [*]
-      14) Normalize program: replaygain
-      15) Normalize modus: track
+       7) Nero AAC [*]
+       8) Nero options passed: -q 0.6
+       9) Wavpack [*]
+      10) Wavpack options passed: -f
+      11) Wav [*]
+      12) Other codec [*]
+      13) Commandline passed: lame "%i" "%o".mp3
+      14) Playlist support [ ]
+      15) Maximum extra encoding threads: 3
+      16) Replace spaces with underscores [*]
+      17) Downsize all capital letters in filenames [*]
+      18) Normalize program: replaygain
+      19) Normalize modus: track
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
