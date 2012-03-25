@@ -77,14 +77,17 @@ private
     isFound?('cdparanoia')
     isFound?('flac') if @prefs.flac
     isFound?('oggenc') if @prefs.vorbis
-    isFound('lame') if @prefs.mp3
-    isFound('normalize') if @prefs.normalizer == 'normalize'
+    isFound?('lame') if @prefs.mp3
+    isFound?('neroAacEnc') if @prefs.nero
+    isFound?('wavpack') if @prefs.wavpack
+    isFound?('normalize') if @prefs.normalizer == 'normalize'
 
     if @prefs.normalizer == 'replaygain'
       isFound?('metaflac') if @prefs.flac
       isFound?('vorbisgain') if @prefs.vorbis
       isFound?('mp3gain') if @prefs.mp3
       isFound?('wavegain') if @prefs.wav
+      isFound?('aacgain') if @prefs.nero
     end
   end
 

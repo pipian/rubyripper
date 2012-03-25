@@ -22,6 +22,7 @@
 # * Add a default for the preferences
 # * Add the option into the user interfaces
 # * Add the extension to filescheme class
+# * Add some configuration checks to CheckConfigBeforeRipping
 
 require 'rubyripper/disc/disc'
 require 'rubyripper/fileScheme'
