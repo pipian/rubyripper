@@ -397,7 +397,8 @@ attr_reader :instances
   
   def showSummary(succes)
     @buttons[0..3].each{|button| button.sensitive = true}
-    @gtkSummary = Summary.new(@settings['editor'], @settings['filemanager'], @rubyripper.outputDir, @rubyripper.summary, succes)
+    require 'rubyripper/gtk2/gtkSummary'
+    @gtkSummary = GtkSummary.new(@rubyripper.outputDir, @rubyripper.summary, succes)
     changeDisplay(@gtkSummary)
     showClosedTray if @prefs.eject == true
     @rubyripper = false # some resetting of variables, I suspect some optimization of ruby otherwise would prevent refreshing

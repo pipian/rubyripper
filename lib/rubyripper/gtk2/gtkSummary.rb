@@ -15,16 +15,29 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+require 'rubyripper/preferences/main'
+require 'rubyripper/system/execute'
+
 # Summary handles the rubyripper window while displaying the summary of a rip.
 # Notice that the left part of the gui with the icons is not in this class
-
-class Summary
+class GtkSummary
   include GetText
   GetText.bindtextdomain("rubyripper")
 
   attr_reader :display
 
-  def initialize(editor, filemanager, directory, summary, succes)
+  def initialize(directory, summary, succes)
+    @prefs = Preferences::Main.instance
+    @exec = Execute.instance
+    showMainResult(succes)
+    buildSummary(summary)
+    buildOpenLogButton()
+    buildOpenDirButton()
+    setSignals(directory)
+    assemblePage()
+  end
+
+  def showMainResult(succes)
     if succes == true
       @label1 = Gtk::Label.new(_("The rip has succesfully finished.\nA short summary is shown below."))
       @image1 = Gtk::Image.new(Gtk::Stock::DIALOG_INFO, Gtk::IconSize::DIALOG)
@@ -32,6 +45,9 @@ class Summary
       @label1 = Gtk::Label.new(_("The rip had some problems.\nA short summary is shown below."))
       @image1 = Gtk::Image.new(Gtk::Stock::DIALOG_ERROR, Gtk::IconSize::DIALOG)
     end
+  end
+
+  def buildSummary()
     @hbox1 = Gtk::HBox.new()
     [@image1, @label1].each{|object| @hbox1.pack_start(object)}
     @hbox1.border_width = 10
@@ -44,23 +60,38 @@ class Summary
     @scrolled_window.border_width = 7
     @scrolled_window.add(@textview)
     @textview.buffer.insert(@textview.buffer.end_iter, summary)
+  end
 
+  def buildOpenLogButton
     @button1 = Gtk::Button.new()
     @label2 = Gtk::Label.new(_("Open log file"))
     @image2 = Gtk::Image.new(Gtk::Stock::EXECUTE, Gtk::IconSize::LARGE_TOOLBAR)
     @hbox2 = Gtk::HBox.new()
     [@image2, @label2].each{|object| @hbox2.pack_start(object)}
     @button1.add(@hbox2)
-    @button1.signal_connect("released"){Thread.new{if installed(editor.split()[0]) ; `#{editor} "#{directory + '/ripping.log'}"` else puts _("%s is not found on your system!") % [editor.split()[0]] end}}
+  end
 
+  def buildOpenDirButton
+    # assemble button 2
     @button2 = Gtk::Button.new()
     @label3 = Gtk::Label.new(_("Open directory"))
     @image3 = Gtk::Image.new(Gtk::Stock::OPEN, Gtk::IconSize::LARGE_TOOLBAR)
     @hbox3 = Gtk::HBox.new()
     [@image3, @label3].each{|object| @hbox3.pack_start(object)}
     @button2.add(@hbox3)
-    @button2.signal_connect("released"){Thread.new{if installed(filemanager.split()[0]) ; `#{filemanager} "#{directory}"` else puts _("%s is not found on your system!") % [filemanager.split()[0]] end}}
+  end
 
+  def setSignals(directory)
+    @button1.signal_connect("released") do
+      Thread.new{@exec.launch("#{@prefs.editor} #{directory}/ripping.log")}
+    end
+
+    @button2.signal_connect("released") do
+      Thread.new{@exec.launch("#{@prefs.filemanager} #{directory}")}
+    end
+  end
+
+  def assemblePage
     @hbox4 = Gtk::HBox.new(true, 5) #put the two buttons in a box
     [@button1, @button2].each{|object| @hbox4.pack_start(object)}
 
