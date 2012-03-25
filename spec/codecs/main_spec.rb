@@ -62,7 +62,7 @@ describe Codecs::Main do
         disc.should_receive(:freedbDiscid).and_return nil
 
         @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
-            '--tg "genre" --ty "year" --tv TENC="Rubyripper test" --tt "trackname 1" '\
+            '--tv TCON="genre" --ty "year" --tv TENC="Rubyripper test" --tt "trackname 1" '\
             '--tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
         @codec.setTagsAfterEncoding(1).should == ''
       end
@@ -72,7 +72,7 @@ describe Codecs::Main do
         disc.should_receive(:freedbDiscid).and_return nil
         
         @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
-            '--tg "genre" --ty "year" --tv TPE2="artist" --tv TENC="Rubyripper test" '\
+            '--tv TCON="genre" --ty "year" --tv TPE2="artist" --tv TENC="Rubyripper test" '\
             '--tt "trackname 1" --tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
       end
       
@@ -81,7 +81,7 @@ describe Codecs::Main do
         disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
         
         @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
-            '--tg "genre" --ty "year" --tv TENC="Rubyripper test" --tc DISCID="ABCDEFGH" '\
+            '--tv TCON="genre" --ty "year" --tv TENC="Rubyripper test" --tc DISCID="ABCDEFGH" '\
             '--tt "trackname 1" --tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
       end
       
@@ -91,7 +91,7 @@ describe Codecs::Main do
         disc.should_receive(:freedbDiscid).and_return nil
         
         @codec.command(1).should == 'lame -V 2 --ta "trackArtist 1" --tl "album" '\
-            '--tg "genre" --ty "year" --tv TPOS=1 --tv TENC="Rubyripper test" --tt '\
+            '--tv TCON="genre" --ty "year" --tv TPOS=1 --tv TENC="Rubyripper test" --tt '\
             '"trackname 1" --tn 1/99 "input_1.wav" "/home/mp3/1-test.mp3"'
       end
     end

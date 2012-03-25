@@ -16,12 +16,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # This is the template for the Wavpack codec
-# To add any new codec like "somecodec":
-# * Add a file somecodec.rb into the same directory
-# * Create a class "Somecodec" in it conform Wavpack
-# * Add the codec to the preferences data
-# * Add the option into the user interfaces
-# * Add the extension to filescheme class
 module Codecs
   class Wavpack   
     def tags

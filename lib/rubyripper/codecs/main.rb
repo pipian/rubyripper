@@ -15,14 +15,21 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
+# To add any new codec like "somecodec":
+# * Add a file somecodec.rb into the same directory
+# * Create a class "Somecodec" in it conform Mp3
+# * Add the codec to the preferences data
+# * Add a default for the preferences
+# * Add the option into the user interfaces
+# * Add the extension to filescheme class
+
 require 'rubyripper/disc/disc'
 require 'rubyripper/fileScheme'
 require 'rubyripper/metadata/filter/filterTags'
 require 'rubyripper/preferences/main'
 
-# build up the command for any specific codec using the configuration
-# in each codec file like mp3.rb, vorbis.rb, etcetera. Also provide
-# ways to return the replaygain command. Execution is not part of this class.
+# build up the commands for any specific codec using the configuration
+# including the replaygain command. Execution is triggered by Encode class.
 module Codecs
   class Main
     def initialize(codec, disc=nil, scheme=nil, tags=nil, prefs=nil, metadata=nil)
@@ -32,6 +39,10 @@ module Codecs
       @tags = tags ? tags : Metadata::FilterTags.new(@disc.metadata)
       @md = metadata ? metadata : @disc.metadata
       @prefs = prefs ? prefs : Preferences::Main.instance()
+      
+      # Set the charset environment variable to UTF-8. Oggenc needs this.
+      # Perhaps others need it as well.
+      ENV['CHARSET'] = "UTF-8"
     end
      
     # to replaygain a single track
@@ -75,6 +86,8 @@ module Codecs
       command.delete('')
       command.join(' ')
     end
+    
+    def name ; @codec.name ; end
   
     private
   

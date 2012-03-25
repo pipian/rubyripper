@@ -16,12 +16,6 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 # This is the template for the Mp3 codec
-# To add any new codec like "somecodec":
-# * Add a file somecodec.rb into the same directory
-# * Create a class "Somecodec" in it conform Mp3
-# * Add the codec to the preferences data
-# * Add the option into the user interfaces
-# * Add the extension to filescheme class
 module Codecs
   class Mp3   
     # if the tag ends with a equal sign no space is added
@@ -30,7 +24,7 @@ module Codecs
       {
         :artist => "--ta",
         :album => "--tl",
-        :genre => "--tg",
+        :genre => "--tv TCON=",
         :year => "--ty",
         :albumArtist => "--tv TPE2=",
         :discNumber => "--tv TPOS=",

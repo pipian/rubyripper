@@ -25,8 +25,9 @@ require 'open3'
 class Execute
 attr_reader :status
 
-  def initialize(deps=nil)
+  def initialize(deps=nil, prefs=nil)
     @deps = deps ? deps : Dependency.instance
+    @prefs = prefs ? prefs : Preferences::Main.instance
   end
 
   # return a temporary filename
@@ -40,6 +41,7 @@ attr_reader :status
   def launch(command, filename=false, noTranslations=nil)
     program = command.split[0]
     command = "LANG=C; #{command}" if noTranslations
+    puts command if @prefs.debug
 
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
@@ -47,6 +49,7 @@ attr_reader :status
         stdin, stdout, stderr = Open3.popen3(command)
         output = stdout.readlines() + stderr.readlines()
       rescue
+        puts Errors.failedToExecute(program, command)
         output = nil
       end
       @filename = filename

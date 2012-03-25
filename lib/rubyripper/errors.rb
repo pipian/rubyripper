@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2012  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -30,6 +30,7 @@ class Errors
     :noCodecSelected => _("Please select at least one codec."),
     :noValidUserInterface => _("No update function found in the user interface"),
     :binaryNotFound => _("%s is needed, but not detected on your system!"),
+    :failedToExecute => _("The program %s failed to execute correctly:\n%s"),
     :dirNotWritable => _("Can't create output directory!\nYou have no writing access for dir %s"),
   }
 
