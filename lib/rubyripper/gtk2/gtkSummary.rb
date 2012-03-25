@@ -28,7 +28,7 @@ class GtkSummary
 
   def initialize(directory, summary, succes)
     @prefs = Preferences::Main.instance
-    @exec = Execute.instance
+    @exec = Execute.new
     showMainResult(succes)
     buildSummary(summary)
     buildOpenLogButton()
