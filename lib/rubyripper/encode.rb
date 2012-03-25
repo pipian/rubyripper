@@ -70,11 +70,11 @@ class Encode
       if @prefs.maxThreads == 0
         encodeTrack(track, codec)
       else
-        puts "Adding track #{track} (#{codec.name}) to the queue.." if @prefs.debug
+        puts "DEBUG: Adding track #{track} (#{codec.name}) to the queue.." if @prefs.debug
         @queue << 1 # add a value to the queue, if full wait here.
         @threads << Thread.new do
           encodeTrack(track, codec)
-          puts "Removing track #{track} (#{codec.name}) from the queue.." if @prefs.debug
+          puts "DEBUG: Removing track #{track} (#{codec.name}) from the queue.." if @prefs.debug
           @queue.shift() # move up in the queue to the first waiter
         end
       end

@@ -53,8 +53,8 @@ private
 
     if @freedbString.nil?
       if @prefs.debug
-        puts _("Warning: discid or cd-discid isn't found on your system!)")
-        puts _("Using fallback...")
+        puts "DEBUG: discid or cd-discid isn't found on your system!"
+        puts "DEUBG: Using fallback..."
       end
       manualCalcFreedb()
     else

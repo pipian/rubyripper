@@ -59,12 +59,12 @@ class SecureRip
     @log.updateRippingProgress() # Give a hint to the gui that ripping has started
 
     if @prefs.image
-      puts "Ripping image" if @prefs.debug
+      puts "DEBUG: Ripping image" if @prefs.debug
       ripTrack(@trackSelection[0])
     else
       @trackSelection.each do |track|
         break if @cancelled == true
-        puts "Ripping track #{track}" if @prefs.debug
+        puts "DEBUG: Ripping track #{track}" if @prefs.debug
         ripTrack(track)
       end
     end
@@ -119,13 +119,13 @@ class SecureRip
   end
 
   def sizeTest(track)
-    puts "Expected filesize for #{if @prefs.image ; "image" else "track #{track}" end} \
+    puts "DEBUG: Expected filesize for #{@prefs.image ? "image" : "track #{track}"} \
 is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     if @deps.installed?('df')
       output = @exec.launch("df \"#{@out.getDir()}\"", filename=false, noTranslations=true)
       freeDiskSpace = output[1].split()[3].to_i
-      puts "Free disk space is #{freeDiskSpace} MB" if @prefs.debug
+      puts "DEBUG: Free disk space is #{freeDiskSpace} MB" if @prefs.debug
       if @disc.getFileSize(track) > freeDiskSpace*1000
         @log.error(_("Not enough disk space left! Rip aborted"))
         return false
@@ -198,14 +198,14 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     if sizeDiff == 0
       # expected size matches exactly
     elsif sizeDiff < 0
-      puts "More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_SECTOR} sector(s)" if @prefs.debug
+      puts "DEBUG: More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_SECTOR} sector(s)" if @prefs.debug
     elsif @prefs.offset != 0 && (@prefs.image || track == @disc.audiotracks)
       # This should no longer happen.
-      puts _("The ripped file misses %s sectors.") % [sizeDiff / BYTES_AUDIO_SECTOR.to_f] if @prefs.debug
+      puts "DEBUG: The ripped file misses %s sectors." % [sizeDiff / BYTES_AUDIO_SECTOR.to_f] if @prefs.debug
     elsif @cancelled == false
       if @prefs.debug
-        puts "Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
-        puts "Filesize should be : #{@disc.getFileSize(track)}"
+        puts "DEBUG: Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
+        puts "DEBUG: Filesize should be: #{@disc.getFileSize(track)}"
       end
 
       #someone might get out of free diskspace meanwhile
@@ -346,7 +346,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
   # add a timeout if a disc takes longer than 30 minutes to rip (this might save the hardware and the disc)
   def cooldownNeeded
-    puts "Minutes ripping is #{(Time.now - @timeStarted) / 60}." if @prefs.debug
+    puts "DEBUG: Minutes ripping is #{(Time.now - @timeStarted) / 60}." if @prefs.debug
 
     if (((Time.now - @timeStarted) / 60) > 30 && @prefs.maxThreads != 0)
       puts _("The drive is spinning for more than 30 minutes.")

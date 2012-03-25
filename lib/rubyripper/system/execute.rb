@@ -41,7 +41,7 @@ attr_reader :status
   def launch(command, filename=false, noTranslations=nil)
     program = command.split[0]
     command = "LANG=C; #{command}" if noTranslations
-    puts "DEBUG command: #{command}" if @prefs.debug
+    puts "DEBUG: #{command}" if @prefs.debug
 
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
