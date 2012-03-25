@@ -32,10 +32,11 @@ describe Codecs::Main do
   let(:tags) {TagFilterStub.new()}
   let(:prefs) {double('Preferences').as_null_object}
   let(:md) {double('Metadata').as_null_object}
+  let(:file) {double('FileAndDir').as_null_object}
   
   context "Given mp3 is chosen as preferred codec" do
     before(:each) do
-      @codec = Codecs::Main.new('mp3', disc, scheme, tags, prefs, md)
+      @codec = Codecs::Main.new('mp3', disc, scheme, tags, prefs, md, file)
     end
     
     it "should return the command to replaygain a track" do
@@ -99,7 +100,7 @@ describe Codecs::Main do
   
   context "Given vorbis is chosen as preferred codec" do
     before(:each) do
-      @codec = Codecs::Main.new('vorbis', disc, scheme, tags, prefs, md)
+      @codec = Codecs::Main.new('vorbis', disc, scheme, tags, prefs, md, file)
     end
     
     it "should return the command to replaygain a track" do
@@ -131,7 +132,7 @@ describe Codecs::Main do
   
   context "Given flac is chosen as preferred codec" do
     before(:each) do
-      @codec = Codecs::Main.new('flac', disc, scheme, tags, prefs, md)
+      @codec = Codecs::Main.new('flac', disc, scheme, tags, prefs, md, file)
     end
     
     it "should return the command to replaygain a track" do
@@ -166,6 +167,7 @@ describe Codecs::Main do
       prefs.should_receive(:settingsFlac).and_return '-q 6'
       prefs.should_receive(:createCue).and_return true
       scheme.should_receive(:getCueFile).and_return '/home/flac/test.cue'
+      file.should_receive(:exist?).with('/home/flac/test.cue').and_return true
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with(1, 'flac').and_return '/home/flac/1-test.flac'
       disc.should_receive(:audiotracks).and_return 99
@@ -183,7 +185,7 @@ describe Codecs::Main do
   
   context "Given wav is chosen as preferred codec" do
     before(:each) do
-      @codec = Codecs::Main.new('wav', disc, scheme, tags, prefs, md)
+      @codec = Codecs::Main.new('wav', disc, scheme, tags, prefs, md, file)
     end
     
     it "should return the command to replaygain a track" do
@@ -206,7 +208,7 @@ describe Codecs::Main do
   
   context "Given Nero aac is chosen as preferred codec" do
     before(:each) do
-      @codec = Codecs::Main.new('nero', disc, scheme, tags, prefs, md)
+      @codec = Codecs::Main.new('nero', disc, scheme, tags, prefs, md, file)
     end
     
     it "should return the command to replaygain a track" do
@@ -238,7 +240,7 @@ describe Codecs::Main do
   
   context "Given wavpack is chosen as preferred codec" do
     before(:each) do
-      @codec = Codecs::Main.new('wavpack', disc, scheme, tags, prefs, md)
+      @codec = Codecs::Main.new('wavpack', disc, scheme, tags, prefs, md, file)
     end
     
     it "should return an empty string for the replaygain commands (not available)" do
@@ -252,6 +254,7 @@ describe Codecs::Main do
       prefs.should_receive(:settingsWavpack).and_return ''
       prefs.should_receive(:createCue).and_return true
       scheme.should_receive(:getCueFile).and_return '/home/wavpack/test.cue'
+      file.should_receive(:exist?).with('/home/wavpack/test.cue').and_return true
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with(1, 'wavpack').and_return '/home/wavpack/1-test.wv'
       disc.should_receive(:audiotracks).and_return 99

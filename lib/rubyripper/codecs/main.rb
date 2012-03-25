@@ -28,18 +28,20 @@ require 'rubyripper/disc/disc'
 require 'rubyripper/fileScheme'
 require 'rubyripper/metadata/filter/filterTags'
 require 'rubyripper/preferences/main'
+require 'rubyripper/system/fileAndDir'
 
 # build up the commands for any specific codec using the configuration
 # including the replaygain command. Execution is triggered by Encode class.
 module Codecs
   class Main
-    def initialize(codec, disc=nil, scheme=nil, tags=nil, prefs=nil, metadata=nil)
+    def initialize(codec, disc=nil, scheme=nil, tags=nil, prefs=nil, metadata=nil, file=nil)
       @codec = config(codec)
       @disc = disc
       @scheme = scheme
       @tags = tags ? tags : Metadata::FilterTags.new(@disc.metadata)
       @md = metadata ? metadata : @disc.metadata
       @prefs = prefs ? prefs : Preferences::Main.instance()
+      @file = file ? file : FileAndDir.instance()
       
       # Set the charset environment variable to UTF-8. Oggenc needs this.
       # Perhaps others need it as well.
@@ -120,7 +122,7 @@ module Codecs
           when :discId then add(value, "\"#{@disc.freedbDiscid}\"") if @disc.freedbDiscid
           when :discNumber then add(value, @md.discNumber) if @md.discNumber
           when :encoder then add(value, "\"Rubyripper #{$rr_version}\"")
-          when :cuesheet then add(value, "\"#{@scheme.getCueFile(@codec.name)}\"") if @prefs.createCue
+          when :cuesheet then addCuesheet(value)
           when :trackname then add(value, @tags.trackname(track))
           when :tracknumber then add(value, "#{track}")
           when :tracktotal then add(value, "#{@disc.audiotracks}")
@@ -129,6 +131,15 @@ module Codecs
         result << tag unless tag.nil? || tag.strip().empty?
       end
       result.join(" ")
+    end
+    
+    def addCuesheet(value)
+      filename = @scheme.getCueFile(@codec.name)
+      if @prefs.createCue && @file.exist?(filename)
+        add(value, "\"#{filename}\"")
+      else
+        ''
+      end
     end
     
     def addInput(track)
