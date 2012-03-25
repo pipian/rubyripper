@@ -26,14 +26,14 @@ class GtkSummary
 
   attr_reader :display
 
-  def initialize(directory, summary, succes)
+  def initialize(scheme, summary, succes)
     @prefs = Preferences::Main.instance
     @exec = Execute.new
     showMainResult(succes)
     buildSummary(summary)
     buildOpenLogButton()
     buildOpenDirButton()
-    setSignals(directory)
+    setSignals(scheme)
     assemblePage()
   end
 
@@ -81,13 +81,13 @@ class GtkSummary
     @button2.add(@hbox3)
   end
 
-  def setSignals(directory)
+  def setSignals(scheme)
     @button1.signal_connect("released") do
-      Thread.new{@exec.launch("#{@prefs.editor} #{directory}/ripping.log")}
+      Thread.new{@exec.launch("#{@prefs.editor} \"#{File.join(scheme.getDir(), "ripping.log")}\"")}
     end
 
     @button2.signal_connect("released") do
-      Thread.new{@exec.launch("#{@prefs.filemanager} #{directory}")}
+      Thread.new{@exec.launch("#{@prefs.filemanager} \"#{scheme.getDir()}\"")}
     end
   end
 
