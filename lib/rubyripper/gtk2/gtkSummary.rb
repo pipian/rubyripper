@@ -47,7 +47,7 @@ class GtkSummary
     end
   end
 
-  def buildSummary()
+  def buildSummary(summary)
     @hbox1 = Gtk::HBox.new()
     [@image1, @label1].each{|object| @hbox1.pack_start(object)}
     @hbox1.border_width = 10
