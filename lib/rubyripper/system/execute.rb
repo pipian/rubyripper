@@ -51,7 +51,6 @@ attr_reader :status
         while (line = stdout.gets || line = stderr.gets)
           output << line
         end
-        output = output.join()
       rescue
         puts Errors.failedToExecute(program, command)
         output = ''
