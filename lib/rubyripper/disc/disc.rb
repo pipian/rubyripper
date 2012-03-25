@@ -41,17 +41,18 @@ attr_reader :metadata
   
   # return the object that is used for calculating the freedb string
   def advancedTocScanner(cdinfo=nil, cdcontrol=nil)
+    @scanner ||= 
     if @deps.installed?('cd-info')
       require 'rubyripper/disc/scanDiscCdinfo'
-      scanner = cdinfo ? cdinfo : ScanDiscCdinfo.new()
+      cdinfo ? cdinfo : ScanDiscCdinfo.new()
     elsif @deps.installed?('cdcontrol')
       require 'rubyripper/disc/scanDiscCdcontrol'
-      scanner = cdcontrol ? cdcontrol : ScanDiscCdcontrol.new()
+      cdcontrol ? cdcontrol : ScanDiscCdcontrol.new()
     else
-      scanner = @cdparanoia
+      @cdparanoia
     end
     
-    return scanner
+    return @scanner
   end
   
   # helper functions for @freedb
@@ -63,19 +64,17 @@ attr_reader :metadata
   def musicbrainzDiscid ; @calcMusicbrainzID.discid ; end
 
   def getLengthSector(track)
-    scanner = advancedTocScanner
-    if scanner != @cdparanoia
-      # TODO: This can be called multiple times.  Can we cache the
-      #       scan results?
-      scanner.scan
-      if @prefs.image and scanner.dataTracks.include?(scanner.audiotracks + 1)
-        return getStartSector(scanner.audiotracks) + scanner.getLengthSector(scanner.audiotracks) - 11400 - getStartSector(track)
-      elsif !@prefs.image and scanner.dataTracks.include?(track + 1)
-        return scanner.getLengthSector(track) - 11400
+    advancedTocScanner()
+    if @scanner != @cdparanoia
+      @scanner.scan
+      if @prefs.image and @scanner.dataTracks.include?(@scanner.audiotracks + 1)
+        return getStartSector(@scanner.audiotracks) + @scanner.getLengthSector(@scanner.audiotracks) - 11400 - getStartSector(track)
+      elsif !@prefs.image and @scanner.dataTracks.include?(track + 1)
+        return @scanner.getLengthSector(track) - 11400
       end
     end
     if @prefs.image
-      getStartSector(scanner.audiotracks) + @cdparanoia.getLengthSector(scanner.audiotracks) - getStartSector(track)
+      getStartSector(@scanner.audiotracks) + @cdparanoia.getLengthSector(@scanner.audiotracks) - getStartSector(track)
     else
       @cdparanoia.getLengthSector(track)
     end

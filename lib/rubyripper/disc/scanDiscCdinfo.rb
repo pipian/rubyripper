@@ -39,6 +39,7 @@ class ScanDiscCdinfo
 
   # scan the contents of the disc
   def scan
+    return true if @status == 'ok'
     query = @exec.launch("cd-info -C #{@prefs.cdrom} -A --no-cddb")
 
     if isValidQuery(query)
