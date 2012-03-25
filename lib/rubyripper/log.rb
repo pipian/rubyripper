@@ -51,7 +51,7 @@ class Log
 
   def createLog
     @logfiles = Array.new
-    if @prefs.codecs.each do |codec|
+    @prefs.codecs.each do |codec|
       path = @out.getLogFile(codec)
       @file.createDir(path)
       @logfiles << File.open(path, 'a')
@@ -79,7 +79,7 @@ class Log
 
     @ui.update("encoding_progress", @progressEncoding)
   end
-
+ 
   def update(type, message=nil)
     @ui.update(type, message)
   end
@@ -180,10 +180,6 @@ class Log
       add(_("Track %2d\n\n") % [track])
     end
     
-    # Print the filename
-    # NOTE: These two should probably be called before Log is created.
-    @out.setFreedb()
-    @out.setFileNames()
     add("     " + _("Filename %s\n") % [@out.getFile(track, 'flac')]) if @prefs.flac
     add("     " + _("Filename %s\n") % [@out.getFile(track, 'vorbis')]) if @prefs.vorbis
     add("     " + _("Filename %s\n") % [@out.getFile(track, 'mp3')]) if @prefs.mp3

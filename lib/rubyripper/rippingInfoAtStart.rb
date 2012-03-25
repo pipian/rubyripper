@@ -46,7 +46,7 @@ private
 
   def showVersion
     @logString << _("Rubyripper version %s") % [$rr_version]
-    @logString << _("\nWebsite:") + " http://code.google.com/p/rubyripper\n\n")
+    @logString << _("\nWebsite:") + " http://code.google.com/p/rubyripper\n\n"
   end
 
   def showBasicRipInfo
@@ -55,19 +55,19 @@ private
   end
 
   def showRippingPrefs
-    @logString << _("Used drive") + '     : ' = @prefs.devicename + '   '
-    @logString << _("Device") + ': ' + @prefs.cdrom + "\n\n")
+    @logString << _("Used drive") + '     : ' + @disc.devicename + '   '
+    @logString << _("Device") + ': ' + @prefs.cdrom + "\n\n"
     
     @logString << _("Used ripper") + '    : ' + version('cdparanoia') + "\n"
     @logString << _("Selected flags") + ' : ' + @prefs.rippersettings + "\n\n"
     
-    @logString << _("Matches required for all chunks") + '       : ' + @prefs.reqMatchesAll + "\n"
-    @logString << _("Matches required for erroneous chunks") + ' : ' + @prefs.reqMatchesErrors + "\n\n"
+    @logString << _("Matches required for all chunks") + '       : ' + "#{@prefs.reqMatchesAll}\n"
+    @logString << _("Matches required for erroneous chunks") + ' : ' + "#{@prefs.reqMatchesErrors}\n\n"
 
-    @logString << _("Read offset correction") + '                      : ' + @prefs.offset +"\n"
+    @logString << _("Read offset correction") + '                      : ' + "#{@prefs.offset}\n"
     @logString << _("Overread into Lead-In and Lead-Out") + '          : ' + _("No") + "\n"
     @logString << _("Fill up missing offset samples with silence : %s\n") % [@prefs.padMissingSamples ? _("Yes") : _("No")]
-    @logString << _("Null samples used in CRC calculations") + '       : ' + _("Yes") + "\n\n")
+    @logString << _("Null samples used in CRC calculations") + '       : ' + _("Yes") + "\n\n"
   end
 
   def showEncodingPrefs
@@ -81,13 +81,13 @@ private
     end
     if @prefs.other
       @logString << _("Used output encoder : %s\n") % [_("User defined encoder")]
-      @logString << _("Command line") + "        : %s\n\n") % [@prefs.settingsOther]
+      @logString << _("Command line") + "        : %s\n\n" % [@prefs.settingsOther]
     end
   end
   
   def printEncoder(executable, flags)
     @logString << _("Used output encoder : %s\n") % [version(executable)]
-    @logString << _("Selected flags") + "      : %s\n\n") % [flags]
+    @logString << _("Selected flags") + "      : %s\n\n" % [flags]
   end
 
   def version(name)

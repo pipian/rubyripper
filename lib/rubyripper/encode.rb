@@ -121,7 +121,7 @@ class Encode
     
     @lock.synchronize do
       @tasks[track].delete(codec.name)
-      @file.delete(@scheme.getTempFile(track)) if (@tasks[track].empty?
+      @file.delete(@scheme.getTempFile(track)) if @tasks[track].empty?
       @log.updateEncodingProgress(track, @codecs.size)
     end
   end
