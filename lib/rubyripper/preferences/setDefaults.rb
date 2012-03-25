@@ -76,7 +76,6 @@ module Preferences
       @data.noCapitals = false
       @data.normalizer = 'none'
       @data.gain = 'album'
-      @data.gainTagsOnly = false
     end
 
     def setFreedbDefaults
