@@ -31,7 +31,7 @@ class Rubyripper
     @disc = disc
     @trackSelection = trackSelection
     @file = file ? file : FileAndDir.instance()
-    puts "trackselection = #{@trackSelection}"
+    puts "DEBUG: trackselection = #{@trackSelection}" if @prefs.debug
   end
 
   # check if all is ready to go
