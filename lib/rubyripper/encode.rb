@@ -113,9 +113,9 @@ class Encode
   
     if @prefs.normalizer == "replaygain"
       if @prefs.gain == "track"
-        @exec.launch(codec.replaygain(track))
+        @exec.launch(codec.replaygain(track)) unless codec.replaygain(track).empty?
       elsif not @tasks.values.flatten.include?(codec.name)
-        @exec.launch(codec.replaygainAlbum())
+        @exec.launch(codec.replaygainAlbum()) unless codec.replaygainAlbum.empty?
       end
     end
     
