@@ -48,10 +48,14 @@ module Codecs
     def tagBinary ; 'neroAacTag' ; end
     def sequenceTags; [:binary, :input, :tags] ; end
   
-    # not supported for nero AAC
-    def replaygain(track) ; "" ; end
+    # %s will be replaced by the output file
+    def replaygain(track)
+      "aacgain -c -r %s"
+    end
   
-    # not supported for nero AAC
-    def replaygainAlbum ; "" ; end
+    # %s will be replaced by a File.join(output directory, *.extension)
+    def replaygainAlbum
+      "aacgain -c -a %s"
+    end
   end
 end

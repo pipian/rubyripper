@@ -136,9 +136,6 @@ module Preferences
     # Normalize modus 'album' || 'track'
     attr_accessor :gain
 
-    # Set the gain in the tags only (for mp3 only)
-    attr_accessor :gainTagsOnly
-
     # METADATA PREFERENCES
     # Choose metadata provider 'none' || 'freedb' || 'musicbrainz' 
     attr_accessor :metadataProvider

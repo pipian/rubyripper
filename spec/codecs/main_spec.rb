@@ -209,11 +209,14 @@ describe Codecs::Main do
       @codec = Codecs::Main.new('nero', disc, scheme, tags, prefs, md)
     end
     
-    it "should return an empty string for the replaygain commands (not available)" do
+    it "should return the command to replaygain a track" do
       scheme.should_receive(:getFile).with(1, 'nero').and_return 'output.aac'
-      @codec.replaygain(1).should == ''
+      @codec.replaygain(1).should == 'aacgain -c -r "output.aac"'
+    end
+    
+    it "should return the command to replaygain an album" do
       scheme.should_receive(:getDir).with('nero').and_return '/home/nero'
-      @codec.replaygainAlbum.should == ''
+      @codec.replaygainAlbum().should == 'aacgain -c -a "/home/nero"/*.aac'
     end
        
     it "should calculate the command for encoding and tagging" do
