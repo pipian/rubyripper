@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'digest/md5' # Needed for secure class, only have to load them ones here.
+require 'zlib' # Needed for CRC calculation
 require 'rubyripper/waveFile'
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
