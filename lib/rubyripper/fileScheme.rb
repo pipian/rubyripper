@@ -76,7 +76,8 @@ class FileScheme
 
   # return the full filename of the track (starting with 1) or image
   def getFile(track=false, codec)
-    @file.join(@dir[codec], @prefs.image ? @image[codec] : @files[codec][track])
+    filename = @prefs.image ? @image[codec] : @files[codec][track]
+    @file.join(@dir[codec], filename)
   end
 
   # return the toc file of AdvancedToc class
