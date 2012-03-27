@@ -39,6 +39,7 @@ attr_reader :status
   # return output for command
   # clear the file if it exists before the program runs
   def launch(command, filename=false, noTranslations=nil)
+    return true if command.empty?
     program = command.split[0]
     command = "LANG=C; #{command}" if noTranslations
     puts "DEBUG: #{command}" if @prefs.debug

@@ -113,11 +113,13 @@ class Encode
   
     if @prefs.normalizer == "replaygain"
       if @prefs.gain == "track"
-        @exec.launch(codec.replaygain(track)) unless codec.replaygain(track).empty?
+        @exec.launch(codec.replaygain(track))
       elsif not @tasks.values.flatten.include?(codec.name)
-        @exec.launch(codec.replaygainAlbum()) unless codec.replaygainAlbum.empty?
+        @exec.launch(codec.replaygainAlbum())
       end
     end
+    
+    @exec.launch(codec.setTagsAfterEncoding())
     
     @lock.synchronize do
       @tasks[track].delete(codec.name)
