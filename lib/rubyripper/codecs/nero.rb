@@ -39,7 +39,7 @@ module Codecs
 
     def name ; 'nero' ; end
     def binary ; 'neroAacEnc' ; end
-    def extension ; 'aac' ; end 
+    def extension ; 'm4a' ; end 
     def default; "-q 0.5" ; end
   
     # the sequence of the command
