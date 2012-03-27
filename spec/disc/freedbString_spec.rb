@@ -40,7 +40,7 @@ describe CalcFreedbID do
 
     it "should first try to use discid" do      
       deps.should_receive(:installed?).with('discid').and_return true
-      exec.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
+      exec.should_receive(:launch).with('discid /dev/cdrom').and_return [@freedbString]
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
     end
@@ -48,7 +48,7 @@ describe CalcFreedbID do
     it "should then try to use cd-discid" do
       deps.should_receive(:installed?).with('discid').and_return false
       deps.should_receive(:installed?).with('cd-discid').and_return true
-      exec.should_receive(:launch).with('cd-discid /dev/cdrom').and_return @freedbString
+      exec.should_receive(:launch).with('cd-discid /dev/cdrom').and_return [@freedbString]
       @freedb.freedbString.should == @freedbString
       @freedb.discid.should == "7F087C0A"
     end
@@ -59,7 +59,7 @@ describe CalcFreedbID do
       deps.should_receive(:platform).twice.and_return('i686-darwin')
       deps.should_receive(:installed?).with('discid').and_return true
       exec.should_receive(:launch).with('diskutil unmount /dev/cdrom')
-      exec.should_receive(:launch).with('discid /dev/cdrom').and_return @freedbString
+      exec.should_receive(:launch).with('discid /dev/cdrom').and_return [@freedbString]
       exec.should_receive(:launch).with('diskutil mount /dev/cdrom')
 
       @freedb.freedbString.should == @freedbString
