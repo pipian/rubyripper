@@ -119,7 +119,7 @@ class Encode
       end
     end
     
-    @exec.launch(codec.setTagsAfterEncoding())
+    @exec.launch(codec.setTagsAfterEncoding(track))
     
     @lock.synchronize do
       @tasks[track].delete(codec.name)
