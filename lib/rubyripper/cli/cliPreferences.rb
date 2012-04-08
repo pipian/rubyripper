@@ -395,7 +395,7 @@ private
     @out.puts _("\nCurrent naming scheme: %s") % [filescheme]
     showExampleForFilescheme(sort, filescheme)
 
-    @out.puts ("\n%a = " + _("Artist") + "\n%b = " + _("Album") +
+    @out.puts("\n%a = " + _("Artist") + "\n%b = " + _("Album") +
         "\n%g = " + _("Genre")+ "\n%y = " + _("Year") + "\n%f = " +
         _("Codec") + "\n%n = " + _("Tracknumber") + "\n%t = " +
         _("Trackname") + "\n%va = " + _("Various Artist") + "\n\n")

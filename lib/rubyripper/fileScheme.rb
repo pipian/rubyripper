@@ -71,11 +71,16 @@ class FileScheme
 
   # return the first directory (for the summary)
   def getDir(codec=nil)
-    codec ? @dir[codec] : @dir.values[0]
+    if codec == nil
+      @dir[codec]
+    else
+      @dir.values[0]
+    end
   end
 
   # return the full filename of the track (starting with 1) or image
-  def getFile(track=false, codec)
+  # track will be ignored if the user prefers an image rip
+  def getFile(track, codec)
     filename = @prefs.image ? @image[codec] : @files[codec][track]
     @file.join(@dir[codec], filename)
   end
