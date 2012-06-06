@@ -71,7 +71,7 @@ class FileScheme
 
   # return the first directory (for the summary)
   def getDir(codec=nil)
-    if codec == nil
+    if codec != nil
       @dir[codec]
     else
       @dir.values[0]
