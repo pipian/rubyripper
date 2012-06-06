@@ -40,6 +40,7 @@ class ScanDiscCdcontrol
 
   # scan the contents of the disc
   def scan
+    return true if @status == 'ok'
     query = @exec.launch("cdcontrol -f #{@prefs.cdrom} info")
 
     if isValidQuery(query)

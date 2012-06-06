@@ -42,6 +42,7 @@ class ScanDiscCdparanoia
 
   # scan the disc for input and return the object
   def scan
+    return true if @status == 'ok'
     if @perm.problems?(@prefs.cdrom)
       setError(:permissionDrive, @perm.error)
     else
