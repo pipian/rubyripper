@@ -17,7 +17,7 @@
 
 require 'rubyripper/system/dependency'
 require 'rubyripper/errors'
-require 'open3'
+require 'pty'
 
 # This class manages the executing of external commands
 # A seperate class allows unified checking of exit status
@@ -47,10 +47,12 @@ attr_reader :status
     if @deps.installed?(program)
       File.delete(filename) if filename && File.exist?(filename)
       begin
-        stdin, stdout, stderr = Open3.popen3(command)
         output = Array.new
-        while (line = stdout.gets || line = stderr.gets)
-          output << line
+        PTY.spawn(command) do |stdin, stdout, pid|
+          begin
+            stdin.each { |line| output << line }
+          rescue Errno::EIO
+          end
         end
       rescue
         puts Errors.failedToExecute(program, command)
