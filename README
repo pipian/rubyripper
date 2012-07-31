@@ -74,6 +74,8 @@ Suggested:
 * flac, oggenc, lame, neroAacEnc, wavpack (if the codec is wanted)
 * wavgain, vorbisgain, mp3gain, aacgain (for replaygain support)
 * normalize (for normalize support)
+* sox (for de-emphasize audio tracks)
+* cdrdao (for advanced toc analysis)
 
 Run from directory:
 (1) ./bin/rubyripper_gtk2 or
