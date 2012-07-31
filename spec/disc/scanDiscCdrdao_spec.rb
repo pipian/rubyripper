@@ -21,7 +21,9 @@ describe ScanDiscCdrdao do
 
   let(:prefs) {double('Preferences').as_null_object}
   let(:exec) {double('Execute').as_null_object}
-  let(:disc) {ScanDiscCdrdao.new(exec, prefs)}
+  let(:file) {double('FileAndDir').as_null_object}
+  let(:log) {double('Log').as_null_object}
+  let(:disc) {ScanDiscCdrdao.new(exec, prefs, file)}
 
   context "Before scanning any disc" do
     it "shouldn't set default values" do
@@ -42,7 +44,7 @@ describe ScanDiscCdrdao do
     exec.should_receive(:getTempFile).with('cdrom.toc').and_return('/tmp/cdrom.toc')
     exec.should_receive(:status).and_return(status)
     exec.should_receive(:readFile).and_return(response) unless response.nil?
-    disc.scan()
+    disc.scan(log)
   end
 
   context "When the outputfile is not valid" do

@@ -59,12 +59,12 @@ class Rubyripper
       createHelpObjects()
       @log.start() # TODO find a better name for the class and function
       @rippingInfoAtStart.show()
+      @disc.extendedTocScanner.scan(@log) if @prefs.createCue
       @ripper.ripTracks()
     else
       @ui.update("dir_exists", @fileScheme.dir.values[0])
     end
     # @disc.md.saveChanges() # TODO update the local freedb file
-    #waitForToc() # TODO ??
   end
 
   def createHelpObjects
@@ -153,21 +153,6 @@ class Rubyripper
     @ripping.cancelled = true if @ripping != nil
     @ripping = nil
     `killall cdparanoia` # kill any rip that is already started
-  end
-
-  # wait for the Advanced Toc class to finish
-  # cdrdao takes a while to finish reading the disc
-  def waitForToc
-    if @prefs['create_cue'] && installed('cdrdao')
-      @prefs['log'].add(_("\nADVANCED TOC ANALYSIS (with cdrdao)\n"))
-      @prefs['log'].add(_("...please be patient, this may take a while\n\n"))
-
-      @prefs['cd'].updateprefs(@prefs) # update the rip prefs
-
-      @prefs['cd'].toc.log.each do |message|
-        @log.add(message)
-      end
-    end
   end
 
   def summary

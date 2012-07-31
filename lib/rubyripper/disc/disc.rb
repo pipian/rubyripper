@@ -79,6 +79,13 @@ attr_reader :metadata
       @cdparanoia.getLengthSector(track)
     end
   end
+  
+  # return the object that is used for the extended gap detection
+  def extendedTocScanner()
+    @extendedTocScan ||=
+    require 'rubyripper/disc/scanDiscCdrdao'
+    @extendedTocScan = ScanDiscCdrdao.new()
+  end
 
   def getFileSize(track)
     44 + getLengthSector(track) * 2352

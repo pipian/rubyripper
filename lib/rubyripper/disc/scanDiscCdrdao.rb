@@ -29,21 +29,26 @@
 # TODO perhaps call the cuesheet generation as well
 
 require 'rubyripper/preferences/main'
+require 'rubyripper/system/execute'
+require 'rubyripper/system/fileAndDir'
 
 class ScanDiscCdrdao
   include GetText
   GetText.bindtextdomain("rubyripper")
 
-  attr_reader :log, :status, :dataTracks, :discType, :tracks,
+  attr_reader :status, :dataTracks, :discType, :tracks,
     :artist, :album
 
-  def initialize(execute, prefs=nil)
+  def initialize(execute=nil, prefs=nil, fileAndDir=nil)
     @prefs = @prefs = prefs ? prefs : Preferences::Main.instance
-    @exec = execute
+    @exec = execute ? execute : Execute.new()
+    @fileAndDir = fileAndDir ? fileAndDir : FileAndDir.instance()
   end
 
   # scan the disc and parse the resulting file
-  def scan
+  def scan(log)
+    @log = log
+    displayStartMessage()
     @tempfile = nil ; @cdrom = nil
 
     @output = getOutput()
@@ -85,25 +90,29 @@ class ScanDiscCdrdao
 
 private
 
+  def displayStartMessage
+    @log << _("\nADVANCED TOC ANALYSIS (with cdrdao)\n")
+    @log << _("...please be patient, this may take a while\n\n")
+  end
+
   def assertScanFinished(name)
     raise "Can't #{name} when scanDiscCdparanoia status is not ok!" unless @status == 'ok'
   end
 
-  # return the cdrom drive
-  def cdrom
-    @cdrom ||= @prefs.cdrom
-  end
-
   # return a temporary filename, based on the drivename to make it unique
   def tempfile
-    @tempfile ||= @exec.getTempFile("#{File.basename(cdrom)}.toc")
+    @tempfile ||= @exec.getTempFile("#{File.basename(@prefs.cdrom)}.toc")
   end
 
   # get all the cdrdao info
   def getOutput
-    command = "cdrdao read-toc --device #{cdrom} \"#{tempfile()}\""
-    @exec.launch(command, tempfile())
-    @exec.status == 'ok' ? @exec.readFile() : nil
+    @exec.launch("cdrdao read-toc --device #{@prefs.cdrom} \"#{tempfile()}\"")
+    if @fileAndDir.exists?(tempfile)
+      @fileAndDir.read(tempfile)
+      @status = 'ok'
+    else
+      String.new
+    end
   end
 
   # check if the output is valid
@@ -120,7 +129,6 @@ private
 
   # set some variables
   def setVars
-    @log = Array.new
     @preEmphasis = Array.new
     @dataTracks = Array.new
     @preGap = Hash.new
@@ -174,8 +182,10 @@ private
       return true
     end
 
-    @log << _("Silence detected for disc : %s sectors\n") % [@silence]
-
+    unless @silence.nil?
+      @log << _("Silence detected for disc : %s sectors\n") % [@silence]
+    end
+    
     (1..@tracks).each do |track|
       @log << _("Pregap detected for track %s : %s sectors\n") %
       [track, @preGap[track]] if @preGap.key?(track)

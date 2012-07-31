@@ -52,10 +52,15 @@ private
 
   def checkPreferences
     checkMinOneCodec()
+    checkCuesheetPossible()
   end
 
   def checkMinOneCodec()
     addError(:noCodecSelected) if @prefs.codecs.empty?
+  end
+  
+  def checkCuesheetPossible
+    addError(:cdrdaoNotFound) unless @deps.installed?('cdrdao')
   end
 
   def checkUserInterface
