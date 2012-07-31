@@ -1,8 +1,8 @@
 # translation of rr_cli.po to spanish
-# Spanish translations for PACKAGE package
-# Traducciones al español para el paquete PACKAGE.
-# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
+# Spanish translations for Rubyripper package
+# Traducciones al español para el paquete Rubyripper.
+# Copyright (C) 2007 Bouke Woudstra
+# This file is distributed under the same license as the Rubyripper package.
 # javi <anom.cuen@yahoo.es>, 2007.
 #
 #

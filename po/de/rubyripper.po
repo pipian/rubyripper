@@ -1,5 +1,5 @@
 # German translations for Rubyripper package.
-# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
+# Copyright (C) 2007 Bouke Woudstra
 # This file is distributed under the same license as the Rubyripper package.
 #  <h-m.w@gmx.de>, 2007.
 #

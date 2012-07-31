@@ -1,7 +1,7 @@
-# Dutch translations for PACKAGE package.
-# Copyright (C) 2007 THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-#  <rubyripperdev@gmail.com>, 2007.
+# Dutch translation for Rubyripper package.
+# Copyright (C) 2012 Bouke Woudstra
+# This file is distributed under the same license as the Rubyripper package.
+# Bouke Woudstra boukewoudstra@gmail.com, 2012.
 #
 msgid ""
 msgstr ""
