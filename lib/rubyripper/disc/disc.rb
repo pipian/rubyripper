@@ -36,7 +36,10 @@ attr_reader :metadata
   # scan the disc for a drive
   def scan(metadata=nil)
     @cdparanoia.scan()
-    setMetadata(metadata) if @cdparanoia.status == 'ok'
+    if @cdparanoia.status == 'ok'
+      setMetadata(metadata)
+      startExtendedTocScan if @prefs.createCue && @deps.installed?('cdrdao')
+    end
   end
   
   # return the object that is used for calculating the freedb string
@@ -80,11 +83,20 @@ attr_reader :metadata
     end
   end
   
-  # return the object that is used for the extended gap detection
-  def extendedTocScanner()
-    @extendedTocScan ||=
+  # this can take a while so run in background
+  def startExtendedTocScan()
     require 'rubyripper/disc/scanDiscCdrdao'
-    @extendedTocScan = ScanDiscCdrdao.new()
+    @cdrdao = ScanDiscCdrdao.new()
+    @cdrdao.scanInBackground()
+  end
+  
+  # join with the main thread again
+  def finishExtendedTocScan(log)
+    @cdrdao.joinWithMainThread(log)
+  end
+  
+  def preEmph?(track)
+    @cdrdao.preEmph?(track) unless @cdrdao.nil?
   end
 
   def getFileSize(track)

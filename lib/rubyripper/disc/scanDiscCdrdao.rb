@@ -25,19 +25,18 @@
 # cuesheet is necessary to store the gap info.
 # The scanning will take about 1 - 2 minutes.
 
-# TODO handle the extra thread from within this class
 # TODO perhaps call the cuesheet generation as well
 
 require 'rubyripper/preferences/main'
 require 'rubyripper/system/execute'
 require 'rubyripper/system/fileAndDir'
+require 'rubyripper/errors'
 
 class ScanDiscCdrdao
   include GetText
   GetText.bindtextdomain("rubyripper")
 
-  attr_reader :status, :dataTracks, :discType, :tracks,
-    :artist, :album
+  attr_reader :error, :dataTracks, :discType, :tracks, :artist, :album
 
   def initialize(execute=nil, prefs=nil, fileAndDir=nil)
     @prefs = @prefs = prefs ? prefs : Preferences::Main.instance
@@ -46,89 +45,79 @@ class ScanDiscCdrdao
   end
 
   # scan the disc and parse the resulting file
-  def scan(log)
-    @log = log
-    displayStartMessage()
-    @tempfile = nil ; @cdrom = nil
-
-    @output = getOutput()
-    if isValidQuery()
-      @status = 'ok'
-      setVars()
-      parseQuery()
-      makeLog() unless @tracks.nil?
+  def scanInBackground()
+    @cdrdaoThread = Thread.new do
+      prepareCdrdaoScan()
+      launchCdrdaoScan()
+      setVariables()
+      parseCdrdaoFile() if cdrdaoScanSuccesfull && cdrdaoFileValid
     end
   end
-
+  
+  # Let the ripping wait for the process to finish, print the info to the screen (log)
+  def joinWithMainThread(log)
+    scan() if @cdrdaoThread.nil?
+    @log = log
+    displayStartMessage()
+    @cdrdaoThread.join()
+    displayScanResults()
+  end
+  
   # some discs have a silence tag at the start of the disc
   def getSilenceSectors
-    assertScanFinished('getSilenceSectors')
     return @silence
   end
 
   # return the pregap if found, otherwise return 0
   def getPregapSectors(track)
-    assertScanFinished('getPregapSectors')
     @preGap.key?(track) ? @preGap[track] : 0
   end
 
   # return if a track has pre-emphasis
   def preEmph?(track)
-    assertScanFinished('preEmph?')
     @preEmphasis.include?(track)
   end
 
   def getTrackname(track)
-    assertScanFinished('getTrackname')
     @trackNames.key?(track) ? @trackNames[track] : String.new
   end
 
   def getVarArtist(track)
-    assertScanFinished('getVarArtist')
     @varArtists.key?(track) ? @varArtists[track] : String.new
   end
 
 private
 
-  def displayStartMessage
-    @log << _("\nADVANCED TOC ANALYSIS (with cdrdao)\n")
-    @log << _("...please be patient, this may take a while\n\n")
+  def prepareCdrdaoScan
+    @tempfile = @exec.getTempFile("#{File.basename(@prefs.cdrom)}.toc")
+    cleanupTempFile()
+  end
+  
+  def cleanupTempFile
+    @fileAndDir.remove(@tempfile) if @fileAndDir.exist?(@tempfile)
   end
 
-  def assertScanFinished(name)
-    raise "Can't #{name} when scanDiscCdparanoia status is not ok!" unless @status == 'ok'
+  def launchCdrdaoScan
+    @result = @exec.launch("cdrdao read-toc --device #{@prefs.cdrom} \"#{@tempfile}\"")
   end
-
-  # return a temporary filename, based on the drivename to make it unique
-  def tempfile
-    @tempfile ||= @exec.getTempFile("#{File.basename(@prefs.cdrom)}.toc")
+  
+  def cdrdaoScanSuccesfull
+    @error = case @result
+      when nil then Error.binaryNotFound('cdrdao')
+      when /ERROR: Unit not ready, giving up./ then Error.noDiscInDrive(@prefs.cdrom)
+      when /Usage: cdrdao/ then Error.wrongParameters
+      when /ERROR: Cannot setup device/ then Error.unknownDrive(@prefs.cdrom)
+      else nil
+    end   
+    @error.nil?
   end
-
-  # get all the cdrdao info
-  def getOutput
-    @exec.launch("cdrdao read-toc --device #{@prefs.cdrom} \"#{tempfile()}\"")
-    if @fileAndDir.exists?(tempfile)
-      @fileAndDir.read(tempfile)
-      @status = 'ok'
-    else
-      String.new
-    end
+  
+  def cdrdaoFileValid
+    @fileAndDir.exists?(@tempfile) && @contents = @fileAndDir.read(@tempfile)
+    cleanupTempFile()
   end
-
-  # check if the output is valid
-  def isValidQuery
-    case @output
-      when nil then @status = 'notInstalled'
-      when /ERROR: Unit not ready, giving up./ then @status = 'noDiscInDrive'
-      when /Usage: cdrdao/ then @status = 'wrongParameters'
-      when /ERROR: Cannot setup device/ then @status = 'unknownDrive'
-    end
-
-    return @status.nil?
-  end
-
-  # set some variables
-  def setVars
+  
+  def setVariables
     @preEmphasis = Array.new
     @dataTracks = Array.new
     @preGap = Hash.new
@@ -136,20 +125,9 @@ private
     @varArtists = Hash.new
   end
 
-  # minutes:seconds:sectors to sectors
-  def toSectors(time)
-    count = 0
-    minutes, seconds, sectors = time.split(':')
-    count += sectors.to_i
-    count += (seconds.to_i * 75)
-    count += (minutes.to_i * 60 * 75)
-    return count
-  end
-
-  # read the file of cdrdao into the scan Hash
-  def parseQuery
+  def parseCdrdaoFile
     track = nil
-    @output.each_line do |line|
+    @contents.each_line do |line|
       if line[0..1] == 'CD' && @discType.nil?
         @discType = line.strip()
       elsif !track && line =~ /TITLE /
@@ -175,10 +153,24 @@ private
     @tracks = track
   end
 
-  # report all special cases
-  def makeLog
+  def displayStartMessage
+    @log << _("\nADVANCED TOC ANALYSIS (with cdrdao)\n")
+    @log << _("...please be patient, this may take a while\n\n")
+  end
+
+  # minutes:seconds:sectors to sectors
+  def toSectors(time)
+    count = 0
+    minutes, seconds, sectors = time.split(':')
+    count += sectors.to_i
+    count += (seconds.to_i * 75)
+    count += (minutes.to_i * 60 * 75)
+    return count
+  end
+
+  def displayScanResults
     if @preEmphasis.empty? && @preGap.empty? && @silence.nil?
-      @log << _("No pregaps, silences or pre-emphasis detected\n")
+      @log << _("No pregaps, silences or pre-emphasis detected\n\n")
       return true
     end
 

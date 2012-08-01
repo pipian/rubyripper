@@ -40,6 +40,7 @@ describe Disc do
     it "should trigger the metadata class if a disc is found" do
       cdpar.should_receive(:status).once().and_return 'ok'
       metadata.should_receive(:get).once().and_return 1
+      prefs.should_receive(:createCue).once().and_return false
       disc.scan(metadata)
       disc.metadata.should == 1
     end

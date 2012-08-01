@@ -59,7 +59,7 @@ class Rubyripper
       createHelpObjects()
       @log.start() # TODO find a better name for the class and function
       @rippingInfoAtStart.show()
-      @disc.extendedTocScanner.scan(@log) if @prefs.createCue
+      @disc.finishExtendedTocScan(@log) if @prefs.createCue
       @ripper.ripTracks()
     else
       @ui.update("dir_exists", @fileScheme.dir.values[0])
