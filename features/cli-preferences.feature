@@ -88,7 +88,7 @@ Feature: Manage rubyripper preferences
       """
       *** TOC ANALYSIS PREFERENCES ***
 
-       1) Create a cuesheet [*]
+       1) Create a cuesheet [ ]
        2) Rip to single file [ ]
        3) Rip hidden audio sectors [*]
        4) Minimum seconds hidden track: 2
@@ -114,7 +114,7 @@ Feature: Manage rubyripper preferences
       """
       *** TOC ANALYSIS PREFERENCES ***
 
-       1) Create a cuesheet [ ]
+       1) Create a cuesheet [*]
        2) Rip to single file [*]
        3) Rip hidden audio sectors [ ]
        4) Minimum seconds hidden track: 3
