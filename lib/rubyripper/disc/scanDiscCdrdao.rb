@@ -25,6 +25,9 @@
 # cuesheet is necessary to store the gap info.
 # The scanning will take about 1 - 2 minutes.
 
+
+
+
 # TODO perhaps call the cuesheet generation as well
 
 require 'rubyripper/preferences/main'
@@ -39,11 +42,12 @@ class ScanDiscCdrdao
   attr_reader :error, :dataTracks, :discType, :tracks, :artist, :album
 
   def initialize(execute=nil, prefs=nil, fileAndDir=nil)
-    @prefs = @prefs = prefs ? prefs : Preferences::Main.instance
     @exec = execute ? execute : Execute.new()
+    @prefs = @prefs = prefs ? prefs : Preferences::Main.instance
     @fileAndDir = fileAndDir ? fileAndDir : FileAndDir.instance()
   end
 
+  # The scan is called after the initial scan in Disc.
   # scan the disc and parse the resulting file
   def scanInBackground()
     @cdrdaoThread = Thread.new do
@@ -53,14 +57,19 @@ class ScanDiscCdrdao
       parseCdrdaoFile() if cdrdaoScanSuccesfull && cdrdaoFileValid
     end
   end
-  
+ 
+  # The thread is joined in the Rubyripper class.
   # Let the ripping wait for the process to finish, print the info to the screen (log)
   def joinWithMainThread(log)
-    scan() if @cdrdaoThread.nil?
     @log = log
-    displayStartMessage()
-    @cdrdaoThread.join()
-    displayScanResults()
+    if @error.nil?
+      scan() if @cdrdaoThread.nil?
+      displayStartMessage()
+      @cdrdaoThread.join()
+      displayScanResults()
+    else
+      @log << @error
+    end
   end
   
   # some discs have a silence tag at the start of the disc
@@ -103,17 +112,18 @@ private
   
   def cdrdaoScanSuccesfull
     @error = case @result
-      when nil then Error.binaryNotFound('cdrdao')
-      when /ERROR: Unit not ready, giving up./ then Error.noDiscInDrive(@prefs.cdrom)
-      when /Usage: cdrdao/ then Error.wrongParameters
-      when /ERROR: Cannot setup device/ then Error.unknownDrive(@prefs.cdrom)
+      when nil then Errors.binaryNotFound('cdrdao')
+      when /ERROR: Unit not ready, giving up./ then Errors.noDiscInDrive(@prefs.cdrom)
+      when /Usage: cdrdao/ then Errors.wrongParameters('cdrdao')
+      when /ERROR: Cannot setup device/ then Errors.unknownDrive(@prefs.cdrom)
       else nil
     end   
     @error.nil?
   end
   
   def cdrdaoFileValid
-    @fileAndDir.exists?(@tempfile) && @contents = @fileAndDir.read(@tempfile)
+    return false unless @fileAndDir.exists?(@tempfile)
+    @contents = @fileAndDir.read(@tempfile)
     cleanupTempFile()
   end
   
@@ -169,8 +179,13 @@ private
   end
 
   def displayScanResults
-    if @preEmphasis.empty? && @preGap.empty? && @silence.nil?
-      @log << _("No pregaps, silences or pre-emphasis detected\n\n")
+    if not @error.nil?
+      @log << @error
+      return false
+    end
+    
+    if @preEmphasis.empty? && @preGap.empty? && @silence.nil? && @dataTracks.empty?
+      @log << _("No pregaps, silences, pre-emphasis or datatracks detected\n\n")
       return true
     end
 
@@ -178,17 +193,19 @@ private
       @log << _("Silence detected for disc : %s sectors\n") % [@silence]
     end
     
-    (1..@tracks).each do |track|
-      @log << _("Pregap detected for track %s : %s sectors\n") %
-      [track, @preGap[track]] if @preGap.key?(track)
+    unless @tracks.nil?
+      (1..@tracks).each do |track|
+        @log << _("Pregap detected for track %s : %s sectors\n") %
+        [track, @preGap[track]] if @preGap.key?(track)
 
-      # pre emphasis detected?
-      @log << ("Pre_emphasis detected for track %s\n") %
-      [track] if @preEmphasis.include?(track)
+        # pre emphasis detected?
+        @log << ("Pre_emphasis detected for track %s\n") %
+        [track] if @preEmphasis.include?(track)
 
-      # is the track marked as data track?
-      @log << _("Track %s is marked as a DATA track\n") %
-      [track] if @dataTracks.include?(track)
+        # is the track marked as data track?
+        @log << _("Track %s is marked as a DATA track\n") %
+        [track] if @dataTracks.include?(track)
+      end
     end
 
     #set an extra whiteline before starting to rip

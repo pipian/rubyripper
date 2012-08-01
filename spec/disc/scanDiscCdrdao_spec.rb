@@ -23,119 +23,134 @@ describe ScanDiscCdrdao do
   let(:exec) {double('Execute').as_null_object}
   let(:file) {double('FileAndDir').as_null_object}
   let(:log) {double('Log').as_null_object}
-  let(:disc) {ScanDiscCdrdao.new(exec, prefs, file)}
+  let(:cdrdao) {ScanDiscCdrdao.new(exec, prefs, file)}
+  
+  before(:each){prefs.stub!(:cdrom).and_return('/dev/cdrom')}
 
-  context "Before scanning any disc" do
-    it "shouldn't set default values" do
-      disc.status.should == nil
-      disc.log.should == nil
+  context "In case cdrdao exits with an error" do
+    it "should detect cdrdao is not installed" do
+      exec.stub!(:launch).and_return(nil)
+      log.should_receive(:<<).with('Error: cdrdao is needed, but not detected on your system!')
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
     end
-
-    it "should raise an error when a function other than scan() is called" do
-      lambda{disc.getSilenceSectors}.should raise_error(RuntimeError, /getSilenceSectors/)
-      lambda{disc.getPregapSectors(1)}.should raise_error(RuntimeError, /getPregapSectors/)
-      lambda{disc.preEmph?(1)}.should raise_exception(RuntimeError, /preEmph/)
+    
+    it "should detect if there is no disc in the drive" do
+      exec.stub!(:launch).and_return('ERROR: Unit not ready, giving up.')
+      log.should_receive(:<<).with('Error: There is no audio disc ready in drive /dev/cdrom.')
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
     end
-  end
-
-  def setQueryReply(response, status='ok')
-    prefs.should_receive(:cdrom).and_return('/dev/cdrom')
-    exec.should_receive(:launch).with(%Q{cdrdao read-toc --device /dev/cdrom \"/tmp/cdrom.toc\"}, "/tmp/cdrom.toc")
-    exec.should_receive(:getTempFile).with('cdrom.toc').and_return('/tmp/cdrom.toc')
-    exec.should_receive(:status).and_return(status)
-    exec.should_receive(:readFile).and_return(response) unless response.nil?
-    disc.scan(log)
-  end
-
-  context "When the outputfile is not valid" do
-     it "should detect if cdrdao is not installed" do
-      setQueryReply(response=nil, status=nil)
-      disc.status.should == 'notInstalled'
+    
+    it "should detect if there is a parameter problem" do
+      exec.stub!(:launch).and_return('Usage: cdrdao')
+      log.should_receive(:<<).with('Error: cdrdao does not recognize the parameters used.')
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
     end
-
-    it "should detect if the drive is not valid" do
-      setQueryReply(response='ERROR: Cannot setup device /dev/cdrom.')
-      disc.status.should == 'unknownDrive'
+    
+    it "should detect if the drive is not recognized" do
+      exec.stub!(:launch).and_return('ERROR: Cannot setup device')
+      log.should_receive(:<<).with('Error: The device /dev/cdrom doesn\'t exist on your system!')
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
     end
-
-    it "should detect a problem with parameters" do
-      setQueryReply(response='Usage: cdrdao <command> [options] [toc-file]')
-      disc.status.should == 'wrongParameters'
-    end
-
-    it "should detect if there is no disc inserted" do
-      setQueryReply(response="ERROR: Unit not ready, giving up.\nERROR: Cannot setup device /dev/cdrom.")
-      disc.status.should == 'noDiscInDrive'
+    
+    it "should not give a warning with correct results" do
+      exec.stub!(:launch).and_return('ok')
+      log.should_receive(:<<).with("No pregaps, silences, pre-emphasis or datatracks detected\n\n")
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.error.nil? == true
     end
   end
+  
+  context "When parsing the file" do
+    before(:each){exec.stub!(:launch).and_return('ok')}
 
-  context "When the outputfile is valid" do
-
+    # notice there are 75 sectors in a second
     it "should detect if the disc starts with a silence" do
-      setQueryReply(response='SILENCE 00:01:20')
-      disc.getSilenceSectors.should == 95
-      disc.status.should == 'ok'
+      file.should_receive(:read).and_return('SILENCE 00:01:20')
+      log.should_receive(:<<).with("Silence detected for disc : 95 sectors\n")
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.getSilenceSectors.should == 95
     end
-
+    
     it "should detect if a track has a pregap" do
-      setQueryReply(response= %Q{// Track 3\n// Track 4\nSTART 00:00:35\n// Track 5})
-      disc.getPregapSectors(track=2).should == 0
-      disc.getPregapSectors(track=3).should == 0
-      disc.getPregapSectors(track=4).should == 35
-      disc.getPregapSectors(track=5).should == 0
-      disc.getPregapSectors(track=6).should == 0
-      disc.status.should == 'ok'
+      file.should_receive(:read).and_return(%Q{// Track 3\n// Track 4\nSTART 00:00:35\n// Track 5})
+      log.should_receive(:<<).with("Pregap detected for track 4 : 35 sectors\n")
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.getPregapSectors(track=3).should == 0
+      cdrdao.getPregapSectors(track=4).should == 35
+      cdrdao.getPregapSectors(track=5).should == 0
     end
-
+    
     it "should detect if a track has pre-emphasis" do
-      setQueryReply(response= %Q{// Track 3\n// Track 4\nPRE_EMPHASIS\n// Track 5})
-      disc.preEmph?(2).should == false
-      disc.preEmph?(3).should == false
-      disc.preEmph?(4).should == true
-      disc.preEmph?(5).should == false
-      disc.preEmph?(6).should == false
-      disc.status.should == 'ok'
+      file.should_receive(:read).and_return(%Q{// Track 3\n// Track 4\nPRE_EMPHASIS\n// Track 5})
+      log.should_receive(:<<).with("Pre_emphasis detected for track 4\n")
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.preEmph?(3).should == false
+      cdrdao.preEmph?(4).should == true
+      cdrdao.preEmph?(5).should == false
     end
-
-    it "should detect which tracks are a data track" do
-      setQueryReply(response= %Q{// Track 3\n// Track 4\nTRACK DATA\n// Track 5\nTRACK DATA})
-      disc.dataTracks.should == [4, 5]
-      disc.status.should == 'ok'
+    
+    it "should detect data tracks" do
+      file.should_receive(:read).and_return(%Q{// Track 3\n// Track 4\nTRACK DATA\n// Track 5\nTRACK DATA})
+      log.should_receive(:<<).with("Track 4 is marked as a DATA track\n")
+      log.should_receive(:<<).with("Track 5 is marked as a DATA track\n")
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.dataTracks.should == [4,5]
     end
-
+    
     it "should detect the type of the disc" do
-      setQueryReply(response='CD_DA')
-      disc.discType.should == 'CD_DA'
+      file.should_receive(:read).and_return('CD_DA')
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.discType.should == 'CD_DA'
     end
-
+    
     it "should detect the highest track number" do
-      setQueryReply(response= %Q{// Track 3\n// Track 4\nTRACK DATA\n// Track 5\nTRACK DATA})
-      disc.tracks.should == 5
+      file.should_receive(:read).and_return(%Q{// Track 3\n// Track 4\nTRACK DATA\n// Track 5\nTRACK DATA})
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.tracks.should == 5
     end
   end
-
+  
   context "When there is cd-text on the disc" do
+    before(:each){exec.stub!(:launch).and_return('ok')}
+    
     it "should detect the artist and album" do
-      response = %Q[CD_TEXT {\n  LANGUAGE 0 {\n    TITLE "SYSTEM OF A DOWN   STEAL THIS ALBUM!"]
-      setQueryReply(response)
-      disc.artist.should == "SYSTEM OF A DOWN"
-      disc.album.should == "STEAL THIS ALBUM!"
+      file.should_receive(:read).and_return(%Q[CD_TEXT {\n  LANGUAGE 0 {\n    TITLE "SYSTEM OF A DOWN   STEAL THIS ALBUM!"])
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.artist.should == "SYSTEM OF A DOWN"
+      cdrdao.album.should == "STEAL THIS ALBUM!"
     end
-
+    
     it "should detect the tracknames" do
-      response = %Q[// Track 3\nCD_TEXT {\n  LANGUAGE 0 {\n    TITLE "BUBBLES"\n    PERFORMER ""\n  }\n}]
-      setQueryReply(response)
-      disc.getTrackname(track=2).should == ""
-      disc.getTrackname(track=3).should == "BUBBLES"
-      disc.getTrackname(track=4).should == ""
+      file.should_receive(:read).and_return(%Q[// Track 3\nCD_TEXT {\n  LANGUAGE 0 {\n    TITLE "BUBBLES"\n    PERFORMER ""\n  }\n}])
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.getTrackname(track=2).should == ""
+      cdrdao.getTrackname(track=3).should == "BUBBLES"
+      cdrdao.getTrackname(track=4).should == ""
     end
-
+    
     it "should detect the various artists" do
-      response = %Q[// Track 3\nCD_TEXT {\n  LANGUAGE 0 {\n    TITLE "BUBBLES"\n    PERFORMER "ABCDE"\n  }\n}]
-      setQueryReply(response)
-      disc.getVarArtist(track=2).should == ""
-      disc.getVarArtist(track=3).should == "ABCDE"
-      disc.getVarArtist(track=4).should == ""
-    end
+      file.should_receive(:read).and_return(%Q[// Track 3\nCD_TEXT {\n  LANGUAGE 0 {\n    TITLE "BUBBLES"\n    PERFORMER "ABCDE"\n  }\n}])
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.getVarArtist(track=2).should == ""
+      cdrdao.getVarArtist(track=3).should == "ABCDE"
+      cdrdao.getVarArtist(track=4).should == ""
+    end    
   end
 end
+
+# 
+
