@@ -85,7 +85,7 @@ class FileScheme
     @file.join(@dir[codec], filename)
   end
 
-  # return the toc file of AdvancedToc class
+  # return the toc file of Cdrdao class // TODO this can't be; the dir is not yet created.
   def getTocFile
     @file.join(getTempDir(), "#{@filterFiles.artist} - #{@filterFiles.album}.toc")
   end
