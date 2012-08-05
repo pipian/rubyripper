@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2012  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -14,20 +14,14 @@
 #
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
-
-# The Cuesheet class is there to provide a Cuesheet. It is
-# called from the AccurateScanDisc class after the toc scanning has
-# finished. There are several variants for building a cuesheet.
-# It at least needs a reference to all files. Single file is
-# the most simple, since the prepend / append discussion isn't
-# relevant here.
 #
 # NOTE Currently Data tracks are totally ignored for the cuesheet.
-# INFO -> TRACK 01 = Start point of track hh:mm:ff (h =hours, m = minutes, f = frames
-# INFO -> After each FILE entry should follow the format. Only WAVE and MP3 are allowed AND relevant.
-
-
-# Assume all tracks are ripped
+#
+# The Cuesheet class is there to provide a Cuesheet.
+# A cuesheet contains all necessary info to exactly reproduce
+# the structure of a disc. It is used by advanced burning programs.
+# The assumption is made that all tracks are ripped, why else would
+# you need a cuesheet?
 class Cuesheet
   
   FRAMES_A_SECOND = 75
@@ -83,7 +77,8 @@ private
     @cuesheet << "TITLE \"#{@md.album}\""
   end
   
-  # First track is handled differently because of possible hidden track before track 1
+  # The trackinfo for an image rip is relatively simple, since we don't have to account
+  # for the prepend / append preference since it's not relevant for image rips.
   def printTrackDataImage(codec)
     writeFileLine(codec)
     (1..@disc.audiotracks).each do |track|
@@ -91,6 +86,8 @@ private
     end
   end
   
+  # First track is handled differently because of a possible hidden track before track 1
+  # This in fact leads to the special case of a track zero
   def printDataImageFirstTrack(track)
     printTrackLine(track)
     printPregapForHiddenTrack(track)
