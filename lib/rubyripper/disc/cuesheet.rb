@@ -77,10 +77,10 @@ private
     @cuesheet << "REM GENRE #{@md.genre}"
     @cuesheet << "REM DATE #{@md.year}"
     @cuesheet << "REM DISCID #{@disc.freedbDiscid}"
-    @cuesheet << "REM FREEDB_QUERY #{@disc.freedbString}"
-    @cuesheet << "REM COMMENT Rubyripper #{$rr_version}"
-    @cuesheet << "PERFORMER #{@md.artist}"
-    @cuesheet << "TITLE #{@md.album}"
+    @cuesheet << "REM FREEDB_QUERY \"#{@disc.freedbString}\""
+    @cuesheet << "REM COMMENT \"Rubyripper #{$rr_version}\""
+    @cuesheet << "PERFORMER \"#{@md.artist}\""
+    @cuesheet << "TITLE \"#{@md.album}\""
   end
   
   # First track is handled differently because of possible hidden track before track 1
@@ -123,7 +123,7 @@ private
   # write the info for a single track
   def printTrackMetadata(track)
     @cuesheet << "    TITLE \"#{@md.getTrackname(track)}\""
-    @cuesheet << "    PERFORMER \"#{@md.various ? @md.getVarArtist(track) : @md.artist}\""
+    @cuesheet << "    PERFORMER \"#{@md.various? ? @md.getVarArtist(track) : @md.artist}\""
   end
   
   # If there are sectors before track 1, print an index 00 for sector 0

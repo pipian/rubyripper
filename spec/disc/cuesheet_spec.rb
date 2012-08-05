@@ -33,7 +33,6 @@ class DiscStub
 end
 
 class MetadataStub
-  attr_accessor :various
   attr_reader :genre, :year, :artist, :album
   
   def initialize
@@ -41,10 +40,9 @@ class MetadataStub
     @year = '1983'
     @artist = 'Iron Maiden'
     @album = 'Number of the Beast'
-    @various = false
   end
   
-  def various? ; @various ; end 
+  def various? ; false ; end 
   def getTrackname(track) ; "Title track #{track}" ; end
 end
 
@@ -61,8 +59,8 @@ describe Cuesheet do
   it "should show all relevant disc data at the top" do
     cue.test_printDiscData()
     cue.cuesheet.should == ['REM GENRE rock', 'REM DATE 1983', 'REM DISCID AAAA1234',
-                            'REM FREEDB_QUERY This is a freedb string', 'REM COMMENT Rubyripper test',
-                            'PERFORMER Iron Maiden', 'TITLE Number of the Beast']
+                            'REM FREEDB_QUERY "This is a freedb string"', 'REM COMMENT "Rubyripper test"',
+                            'PERFORMER "Iron Maiden"', 'TITLE "Number of the Beast"']
   end
   
   context "When printing the track info for image rips" do
