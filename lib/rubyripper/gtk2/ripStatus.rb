@@ -22,7 +22,7 @@ class RipStatus
   include GetText
   GetText.bindtextdomain("rubyripper")
 
-  attr_reader :textview, :display, :updateProgress, :logChange
+  attr_reader :textview, :display
 
   def initialize
     createObjects()
@@ -53,6 +53,7 @@ class RipStatus
     @textview = Gtk::TextView.new
     @textview.editable = false
     @textview.wrap_mode = Gtk::TextTag::WRAP_WORD
+    
     @scrolledWindow = Gtk::ScrolledWindow.new
     @scrolledWindow.set_policy(Gtk::POLICY_NEVER,Gtk::POLICY_AUTOMATIC)
     @scrolledWindow.border_width = 7
