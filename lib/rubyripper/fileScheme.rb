@@ -82,33 +82,33 @@ class FileScheme
   # track will be ignored if the user prefers an image rip
   def getFile(codec, track=nil)
     filename = @prefs.image ? @image[codec] : @files[codec][track]
-    @file.join(@dir[codec], filename)
+    File.join(@dir[codec], filename)
   end
 
   # return the toc file of Cdrdao class // TODO this can't be; the dir is not yet created.
   def getTocFile
-    @file.join(getTempDir(), "#{@filterFiles.artist} - #{@filterFiles.album}.toc")
+    File.join(getTempDir(), "#{@filterFiles.artist} - #{@filterFiles.album}.toc")
   end
 
   # return the full filename of the log
   def getLogFile(codec)
-    @file.join(@dir[codec], 'ripping.log')
+    File.join(@dir[codec], 'ripping.log')
   end
 
   # return the full filename of the cuesheet
   def getCueFile(codec)
-    @file.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).cue")
+    File.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).cue")
   end
 
   # return the just ripped wave file
   def getTempFile(track=false, trial=nil)
     trial ||= 1
-    @file.join(getTempDir(), "#{@prefs.image ? "image" : "track_#{track}"}_#{trial}.wav")
+    File.join(getTempDir(), "#{@prefs.image ? "image" : "track_#{track}"}_#{trial}.wav")
   end
 
   #return the temporary dir
   def getTempDir
-    @file.join(@file.dirname(@dir.values[0]), "temp_#{@file.basename(@prefs.cdrom)}/")
+    File.join(File.dirname(@dir.values[0]), "temp_#{File.basename(@prefs.cdrom)}/")
   end
   
   # auto rename choice in directory already exist dialog
@@ -145,7 +145,7 @@ class FileScheme
     else
       @fileScheme = @prefs.namingNormal
     end
-    @fileScheme = File.expand_path(@file.join(@prefs.basedir, @fileScheme))
+    @fileScheme = File.expand_path(File.join(@prefs.basedir, @fileScheme))
   end
   
   # do a few clever checks on the filescheme
@@ -184,12 +184,12 @@ class FileScheme
     album = @md.album.gsub('/', '')
     
     @prefs.codecs.each do |codec|
-      dir = @file.dirname(@fileScheme)
+      dir = File.dirname(@fileScheme)
       {'%a' => artist, '%b' => album, '%f' => codec, '%g' => @md.genre, '%y' => @md.year, '%va' => artist}.each do |key, value|
         value.nil? ? dir.gsub!(key, '') : dir.gsub!(key, value)
       end
 
-      dir = @file.join(dir, "CD #{sprintf("%02d", @md.discNumber)}") if @md.discNumber  
+      dir = File.join(dir, "CD #{sprintf("%02d", @md.discNumber)}") if @md.discNumber  
       @dir[codec] = @filterDirs.filter(dir)
     end
   end
@@ -228,11 +228,14 @@ class FileScheme
 
   # give the filename for given codec and track
   def giveFileName(codec, track=0)
-    file = @file.basename(@fileScheme)
+    file = File.basename(@fileScheme)
 
     # the artist should always refer to the artist that is valid for the track
-    if @md.getVarArtist(track) == '' ; artist = @md.artist ; varArtist = ''
-    else artist = @md.getVarArtist(track) ; varArtist = @md.artist end
+    if (@prefs.image || !@md.various?)
+      artist = @md.artist ; varArtist = ''
+    else
+      artist = @md.getVarArtist(track) ; varArtist = @md.artist
+    end
 
     {'%a' => artist, '%b' => @md.album, '%f' => codec, '%g' => @md.genre,
     '%y' => @md.year, '%n' => sprintf("%02d", track), '%va' => varArtist,
@@ -263,14 +266,14 @@ class FileScheme
   def setHiddenTrack
     @md.setTrackname(0, _("Hidden Track"))
     @md.setVarArtist(0, _("Unknown Artist")) if @md.various?
-    @prefs.codecs.each{|codec| @file[codec][0] = giveFileName(codec, 0)}
+    @prefs.codecs.each{|codec| @files[codec][0] = giveFileName(codec, 0)} unless @prefs.image
   end
  
   # create Playlist for each codec
   def createPlaylists
     @prefs.codecs.each do |codec|
       if @prefs.playlist && !@prefs.image
-        filename = @file.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).m3u")
+        filename = File.join(@dir[codec], "#{@filterFiles.artist} - #{@filterFiles.album} (#{codec}).m3u")
         content = String.new
         @trackSelection.each{|track| content << @files[codec][track] + "\n"}
         @file.write(filename, content, false)
