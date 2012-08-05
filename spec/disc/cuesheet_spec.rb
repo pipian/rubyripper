@@ -43,9 +43,10 @@ class MetadataStub
   end
   
   def various? ; false ; end 
-  def getTrackname(track) ; "Title track #{track}" ; end
+  def trackname(track) ; "Title track #{track}" ; end
 end
 
+# A nice source for info is http://wiki.hydrogenaudio.org/index.php?title=EAC_and_Cue_Sheets
 describe Cuesheet do
 
   let(:disc) {DiscStub.new()}

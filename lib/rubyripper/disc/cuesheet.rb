@@ -119,7 +119,7 @@ private
   
   # write the info for a single track
   def printTrackMetadata(track)
-    @cuesheet << "    TITLE \"#{@md.getTrackname(track)}\""
+    @cuesheet << "    TITLE \"#{@md.trackname(track)}\""
     @cuesheet << "    PERFORMER \"#{@md.various? ? @md.getVarArtist(track) : @md.artist}\""
   end
   
@@ -143,6 +143,10 @@ private
   end
   
   def printTrackData(codec)
+    puts "WARNING: Cuesheets for track ripping doesn't work yet !!"
+  end
+  
+  def repair_printTrackData(codec)
     (1..@disc.audiotracks).each do |track|
       if @cdrdao.preEmph?(track) && (@prefs.preEmphasis == 'cue' || !@deps.installed?('sox'))
         @cuesheet << "FLAGS PRE"
@@ -196,8 +200,8 @@ private
     end
   end
   
-  def saveCuesheet
-    file = File.new(@fileScheme.getCueFile(@codec), 'w')
+  def saveCuesheet(codec)
+    file = File.new(@fileScheme.getCueFile(codec), 'w')
     @cuesheet.each{|line| file.puts(line)}
     file.close()
   end
