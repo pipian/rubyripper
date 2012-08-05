@@ -56,27 +56,30 @@ class SecureRip
     @digest = nil
   end
 
-  def ripTracks
+  def rip
     @log.updateRippingProgress() # Give a hint to the gui that ripping has started
-
-    if @prefs.image
-      puts "DEBUG: Ripping image" if @prefs.debug
-      ripTrack(@trackSelection[0])
-    else
-      @trackSelection.each do |track|
-        break if @cancelled == true
-        puts "DEBUG: Ripping track #{track}" if @prefs.debug
-        ripTrack(track)
-      end
-    end
-
+    @prefs.image ? ripImage() : ripTracks()
     @deps.eject(@prefs.cdrom) if @prefs.eject
   end
-
+  
+  def ripImage
+    puts "DEBUG: Ripping image" if @prefs.debug
+    checkParanoiaSettings()
+    ripTrack()
+  end
+    
+  def ripTracks
+    @trackSelection.each do |track|
+      break if @cancelled == true
+      puts "DEBUG: Ripping track #{track}" if @prefs.debug
+      checkParanoiaSettings(track)
+      ripTrack(track)
+    end
+  end
 
   # Due to a bug in cdparanoia the -Z setting has to be replaced for last track.
   # This is only needed when an offset is set. See issue nr. 13.
-  def checkParanoiaSettings(track)
+  def checkParanoiaSettings(track=nil)
     if @prefs.rippersettings.include?('-Z') && @prefs.offset != 0
       if @prefs.image || track == @disc.audiotracks
         @prefs.rippersettings.gsub!(/-Z\s?/, '')
@@ -85,10 +88,8 @@ class SecureRip
   end
 
   # rip one output file
-  def ripTrack(track)
-    checkParanoiaSettings(track)
-
-    #reset next three variables for each track
+  def ripTrack(track=nil)
+    #reset next three variables for each rip
     @errors = Hash.new()
     @filesizes = Array.new
     @trial = 0
@@ -96,7 +97,7 @@ class SecureRip
     # first check if there's enough size available in the output dir
     if sizeTest(track)
       if main(track)
-        deEmphasize(track)
+        deEmphasize(track) unless @prefs.image
         @encoding.addTrack(track)
       else
         return false
@@ -119,7 +120,7 @@ class SecureRip
     end
   end
 
-  def sizeTest(track)
+  def sizeTest(track=nil)
     puts "DEBUG: Expected filesize for #{@prefs.image ? "image" : "track #{track}"} \
 is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
@@ -135,7 +136,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     return true
   end
 
-  def main(track)
+  def main(track=nil)
     @reqMatchesAll.times{if not doNewTrial(track) ; return false end} # The amount of matches all sectors should match
     analyzeFiles(track) #If there are differences, save them in the @errors hash
     status = _("Copy OK")
@@ -169,7 +170,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     return true
   end
 
-  def doNewTrial(track)
+  def doNewTrial(track=nil)
     fileOk = false
 
     while (!@cancelled && !fileOk)
@@ -184,7 +185,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     return fileOk
   end
 
-  def fileCreated(track) #check if cdparanoia outputs wav files (passing bad parameters?)
+  def fileCreated(track=nil) #check if cdparanoia outputs wav files (passing bad parameters?)
     if not File.exist?(@out.getTempFile(track, @trial))
       @log.update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
       return false
@@ -192,7 +193,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     return true
   end
 
-  def testFileSize(track) #check if wavfile is of correct size
+  def testFileSize(track=nil) #check if wavfile is of correct size
     sizeDiff = @disc.getFileSize(track) - File.size(@out.getTempFile(track, @trial))
 
     # at the end the disc may differ 1 sector on some drives (2352 bytes)
@@ -222,7 +223,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   # Start and close the first file comparisons
-  def analyzeFiles(track)
+  def analyzeFiles(track=nil)
     start = Time.now()
     @crcs = []
     @reqMatchesAll.times{|time| @crcs << getCRC(track, time + 1)}
@@ -234,6 +235,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     if @errors.size == 0
       @log.allSectorsMatched()
     else
+      track ||= 'image'
       @log.mismatch(track, @trial, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track)) # report for later position analysis
       @log.listBadSectors(_("Sector mismatches at the following times, requiring extra trials:"),
                           @errors)
@@ -241,7 +243,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   # Compare if trial_1 matches trial_2, if trial_2 matches trial_3, and so on
-  def filesEqual?(track)
+  def filesEqual?(track=nil)
     comparesNeeded = @reqMatchesAll - 1
     trial = 1
     success = true
@@ -357,7 +359,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     end
   end
 
-  def rip(track) # set cdparanoia command + parameters
+  def rip(track=nil) # set cdparanoia command + parameters
     cooldownNeeded()
 
     timeStarted = Time.now

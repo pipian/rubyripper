@@ -80,7 +80,7 @@ class FileScheme
 
   # return the full filename of the track (starting with 1) or image
   # track will be ignored if the user prefers an image rip
-  def getFile(track, codec)
+  def getFile(codec, track=nil)
     filename = @prefs.image ? @image[codec] : @files[codec][track]
     @file.join(@dir[codec], filename)
   end

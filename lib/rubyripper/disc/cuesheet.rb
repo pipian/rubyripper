@@ -103,7 +103,7 @@ private
   
    #writes the location of the file in the Cue
   def writeFileLine(codec, track=nil)
-    @cuesheet << "FILE \"#{File.basename(@fileScheme.getFile(track, codec))}\" #{getCueFileType(codec)}"
+    @cuesheet << "FILE \"#{File.basename(@fileScheme.getFile(codec, track))}\" #{getCueFileType(codec)}"
   end
   
   def printTrackLine(track)

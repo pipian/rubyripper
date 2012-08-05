@@ -56,24 +56,24 @@ class Encode
   end
 
   # is called when a track is ripped succesfully
-  def addTrack(track)
+  def addTrack(track=nil)
     startEncoding(track) unless waitingForNormalizeToFinish(track)
   end
 
   # encode track when normalize is finished
-  def startEncoding(track)
+  def startEncoding(track=nil)
     # mark the progress bar as being started
-    @log.updateEncodingProgress() if track == @trackSelection[0]
+    @log.updateEncodingProgress() if track == @trackSelection[0] || @prefs.image
     return false if @cancelled != false
     
     @codecs.each do |codec|
-      if @prefs.maxThreads == 0
-        encodeTrack(track, codec)
+      if @prefs.maxThreads == 0 || @prefs.image
+        encodeTrack(codec, track)
       else
         puts "DEBUG: Adding track #{track} (#{codec.name}) to the queue.." if @prefs.debug
         @queue << 1 # add a value to the queue, if full wait here.
         @threads << Thread.new do
-          encodeTrack(track, codec)
+          encodeTrack(codec, track)
           puts "DEBUG: Removing track #{track} (#{codec.name}) from the queue.." if @prefs.debug
           @queue.shift() # move up in the queue to the first waiter
         end
@@ -108,7 +108,7 @@ class Encode
   end
 
   # call the specific codec function for the track and apply replaygain if desired
-  def encodeTrack(track, codec)
+  def encodeTrack(codec, track=nil)
     @log.encodingErrors = true if @exec.launch(codec.command(track)).empty?
   
     if @prefs.normalizer == "replaygain"

@@ -49,7 +49,7 @@ private
   end
 
   def showBasicRipInfo
-    @logString << _("Rubyripper extraction logfile from %s\n\n") % [Time.now.strftime("%a %b %d %H:%M:%S %Z %Y")]
+    @logString << _("Rubyripper extraction logfile from:\n%s\n\n") % [Time.now.strftime("%a %b %d %H:%M:%S %Z %Y")]
     @logString << "%s / %s\n\n" % [@md.artist, @md.album]
   end
 

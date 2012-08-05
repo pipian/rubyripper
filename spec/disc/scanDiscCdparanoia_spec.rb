@@ -92,6 +92,7 @@ describe ScanDiscCdparanoia do
       @cdparanoia ||= File.read('spec/disc/data/cdparanoia').split("\n")
       perm.should_receive(:problems?).once.and_return(false)
       perm.should_receive(:problemsSCSI?).once.and_return(false)
+      prefs.stub!(:image).and_return false
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
 
@@ -132,7 +133,6 @@ describe ScanDiscCdparanoia do
       disc.getStartSector(1).should == 0
       disc.getStartSector(10).should == 124080
       disc.getStartSector(11).should == nil
-      disc.getStartSector('image').should == 0
     end
 
     it "should return the amount of sectors for a track" do
@@ -142,7 +142,6 @@ describe ScanDiscCdparanoia do
       disc.getLengthSector(1).should == 13209
       disc.getLengthSector(10).should == 38839
       disc.getLengthSector(11).should == nil
-      disc.getLengthSector('image').should == 162919
     end
 
     it "should return the length in mm:ss for a track" do
@@ -152,7 +151,6 @@ describe ScanDiscCdparanoia do
       disc.getLengthText(1).should == '02:56'
       disc.getLengthText(10).should == '08:37'
       disc.getLengthText(11).should == nil
-      disc.getLengthText('image').should == '36:12'
     end
 
     it "should return the filesize in bytes for a track" do
@@ -162,7 +160,16 @@ describe ScanDiscCdparanoia do
       disc.getFileSize(1).should == 31067612
       disc.getFileSize(10).should == 91349372
       disc.getFileSize(11).should == nil
-      disc.getFileSize('image').should == 383185532
+    end
+    
+    it "should serve image ripping as well" do
+      setQueryReply(@cdparanoia)
+      prefs.stub!(:image).and_return true
+      disc.scan()
+      disc.getStartSector(nil).should == 0
+      disc.getLengthSector(nil).should == 162919
+      disc.getLengthText(nil).should == '36:12'
+      disc.getFileSize(nil).should == 383185532
     end
 
     it "should detect the total sectors of the disc" do

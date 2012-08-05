@@ -60,7 +60,7 @@ class Rubyripper
       @log.start() # TODO find a better name for the class and function
       @rippingInfoAtStart.show()
       waitForCuesheet() if @prefs.createCue
-      @ripper.ripTracks()
+      @ripper.rip()
     else
       @ui.update("dir_exists", @fileScheme.dir.values[0])
     end

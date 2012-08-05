@@ -49,7 +49,7 @@ module Codecs
     end
      
     # to replaygain a single track
-    def replaygain(track)
+    def replaygain(track=nil)
       @codec.replaygain(track) % [output(track)]
     end
   
@@ -173,7 +173,7 @@ module Codecs
   
     # return the output file for encoding
     def output(track)
-      "\"#{@scheme.getFile(track, @codec.name)}\""
+      "\"#{@scheme.getFile(@codec.name, track)}\""
     end
   
     # if tag ends with equal sign dont use a space separator

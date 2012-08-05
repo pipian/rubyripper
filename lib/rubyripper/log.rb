@@ -174,17 +174,8 @@ class Log
   end
 
   def newTrack(track)
-    if @prefs.image
-      add(_("Disc Image\n\n"))
-    else
-      add(_("Track %2d\n\n") % [track])
-    end
-    
-    add("     " + _("Filename %s\n") % [@out.getFile(track, 'flac')]) if @prefs.flac
-    add("     " + _("Filename %s\n") % [@out.getFile(track, 'vorbis')]) if @prefs.vorbis
-    add("     " + _("Filename %s\n") % [@out.getFile(track, 'mp3')]) if @prefs.mp3
-    add("     " + _("Filename %s\n") % [@out.getFile(track, 'wav')]) if @prefs.wav
-    add("     " + _("Filename %s\n") % [@out.getFile(track, 'other')]) if @prefs.other
+    @prefs.image ? add(_("Disc Image\n\n")) : add(_("Track %2d\n\n") % [track])
+    @prefs.codecs.each{|codec| add("     " + _("Filename %s\n") % [@out.getFile(codec, track)])}
     add("\n")
   end
 

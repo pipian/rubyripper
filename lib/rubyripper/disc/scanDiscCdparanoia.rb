@@ -57,39 +57,27 @@ class ScanDiscCdparanoia
 
   # return the startSector, example for track 1 getStartSector(1)
   # if image, return the start sector for the lowest tracknumber
-  def getStartSector(track)
+  def getStartSector(track=nil)
     assertDiscFound('getStartSector')
-    case track
-      when 'image' then @startSector[@startSector.keys.sort[0]]
-      else @startSector[track]
-    end
+    @prefs.image ? @startSector[@startSector.keys.sort[0]] : @startSector[track]
   end
 
   # return the sectors, example for track 1 getLengthSector(1)
-  def getLengthSector(track)
+  def getLengthSector(track=nil)
     assertDiscFound('getLengthSector')
-    case track
-      when 'image' then @totalSectors
-      else @lengthSector[track]
-    end
+    @prefs.image ? @totalSectors : @lengthSector[track]
   end
 
   # return the length in text, example for track 1 getLengthSector(1)
-  def getLengthText(track)
+  def getLengthText(track=nil)
     assertDiscFound('getLengthText')
-    case track
-      when 'image' then @playtime
-      else @lengthText[track]
-    end
+    @prefs.image ? @playtime : @lengthText[track]
   end
 
   # return the length in bytes, example for track 1 getFileSize(1)
-  def getFileSize(track)
+  def getFileSize(track=nil)
     assertDiscFound('getFileSize')
-    case track
-      when 'image' then 44 + @totalSectors * 2352
-      else (44 + @lengthSector[track] * 2352) if @lengthSector.key?(track)
-    end
+    @prefs.image ? (44 + @totalSectors * 2352) : (44 + @lengthSector[track] * 2352 if @lengthSector.key?(track))
   end
 
   def tracks ; return @audiotracks ; end

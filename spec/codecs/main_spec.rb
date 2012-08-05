@@ -40,7 +40,7 @@ describe Codecs::Main do
     end
     
     it "should return the command to replaygain a track" do
-      scheme.should_receive(:getFile).with(1, 'mp3').and_return 'output.mp3'
+      scheme.should_receive(:getFile).with('mp3', 1).and_return 'output.mp3'
       @codec.replaygain(1).should == 'mp3gain -c -r "output.mp3"'
     end
     
@@ -54,7 +54,7 @@ describe Codecs::Main do
       before(:each) do
         prefs.should_receive(:settingsMp3).and_return '-V 2'
         scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-        scheme.should_receive(:getFile).with(1, 'mp3').and_return '/home/mp3/1-test.mp3'
+        scheme.should_receive(:getFile).with('mp3', 1).and_return '/home/mp3/1-test.mp3'
         disc.should_receive(:audiotracks).and_return 99
       end
       
@@ -104,7 +104,7 @@ describe Codecs::Main do
     end
     
     it "should return the command to replaygain a track" do
-      scheme.should_receive(:getFile).with(1, 'vorbis').and_return 'output.ogg'
+      scheme.should_receive(:getFile).with('vorbis', 1).and_return 'output.ogg'
       @codec.replaygain(1).should == 'vorbisgain "output.ogg"'
     end
     
@@ -116,7 +116,7 @@ describe Codecs::Main do
     it "should calculate the command for encoding" do
       prefs.should_receive(:settingsVorbis).and_return '-q 6'
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-      scheme.should_receive(:getFile).with(1, 'vorbis').and_return '/home/vorbis/1-test.ogg'
+      scheme.should_receive(:getFile).with('vorbis', 1).and_return '/home/vorbis/1-test.ogg'
       disc.should_receive(:audiotracks).and_return 99
       md.should_receive(:various?).and_return true
       md.should_receive(:discNumber).twice.and_return "1"
@@ -136,7 +136,7 @@ describe Codecs::Main do
     end
     
     it "should return the command to replaygain a track" do
-      scheme.should_receive(:getFile).with(1, 'flac').and_return 'output.flac'
+      scheme.should_receive(:getFile).with('flac', 1).and_return 'output.flac'
       @codec.replaygain(1).should == 'metaflac --add-replay-gain "output.flac"'
     end
     
@@ -149,7 +149,7 @@ describe Codecs::Main do
       prefs.should_receive(:settingsFlac).and_return '-q 6'
       prefs.should_receive(:createCue).and_return false
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-      scheme.should_receive(:getFile).with(1, 'flac').and_return '/home/flac/1-test.flac'
+      scheme.should_receive(:getFile).with('flac', 1).and_return '/home/flac/1-test.flac'
       disc.should_receive(:audiotracks).and_return 99
       md.should_receive(:various?).and_return true
       md.should_receive(:discNumber).twice.and_return "1"
@@ -169,7 +169,7 @@ describe Codecs::Main do
       scheme.should_receive(:getCueFile).and_return '/home/flac/test.cue'
       file.should_receive(:exist?).with('/home/flac/test.cue').and_return true
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-      scheme.should_receive(:getFile).with(1, 'flac').and_return '/home/flac/1-test.flac'
+      scheme.should_receive(:getFile).with('flac', 1).and_return '/home/flac/1-test.flac'
       disc.should_receive(:audiotracks).and_return 99
       md.should_receive(:various?).and_return true
       md.should_receive(:discNumber).twice.and_return "1"
@@ -189,7 +189,7 @@ describe Codecs::Main do
     end
     
     it "should return the command to replaygain a track" do
-      scheme.should_receive(:getFile).with(1, 'wav').and_return 'output.wav'
+      scheme.should_receive(:getFile).with('wav', 1).and_return 'output.wav'
       @codec.replaygain(1).should == 'wavegain "output.wav"'
     end
     
@@ -200,7 +200,7 @@ describe Codecs::Main do
     
     it "should calculate the command for encoding" do
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-      scheme.should_receive(:getFile).with(1, 'wav').and_return '/home/wav/1-test.wav'   
+      scheme.should_receive(:getFile).with('wav', 1).and_return '/home/wav/1-test.wav'   
       @codec.command(1).should == 'cp "input_1.wav" "/home/wav/1-test.wav"'
       @codec.setTagsAfterEncoding(1).should == ''
     end
@@ -212,7 +212,7 @@ describe Codecs::Main do
     end
     
     it "should return the command to replaygain a track" do
-      scheme.should_receive(:getFile).with(1, 'nero').and_return 'output.m4a'
+      scheme.should_receive(:getFile).with('nero', 1).and_return 'output.m4a'
       @codec.replaygain(1).should == 'aacgain -c -r "output.m4a"'
     end
     
@@ -224,7 +224,7 @@ describe Codecs::Main do
     it "should calculate the command for encoding and tagging" do
       prefs.should_receive(:settingsNero).and_return '-q 1'
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-      scheme.should_receive(:getFile).with(1, 'nero').twice.and_return '/home/nero/1-test.m4a'
+      scheme.should_receive(:getFile).with('nero', 1).twice.and_return '/home/nero/1-test.m4a'
       disc.should_receive(:audiotracks).and_return 99
       md.should_receive(:various?).and_return true
       md.should_receive(:discNumber).twice.and_return "1"
@@ -244,7 +244,7 @@ describe Codecs::Main do
     end
     
     it "should return an empty string for the replaygain commands (not available)" do
-      scheme.should_receive(:getFile).with(1, 'wavpack').and_return 'output.wv'
+      scheme.should_receive(:getFile).with('wavpack', 1).and_return 'output.wv'
       @codec.replaygain(1).should == ''
       scheme.should_receive(:getDir).with('wavpack').and_return '/home/wavpack'
       @codec.replaygainAlbum.should == ''
@@ -256,7 +256,7 @@ describe Codecs::Main do
       scheme.should_receive(:getCueFile).and_return '/home/wavpack/test.cue'
       file.should_receive(:exist?).with('/home/wavpack/test.cue').and_return true
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
-      scheme.should_receive(:getFile).with(1, 'wavpack').and_return '/home/wavpack/1-test.wv'
+      scheme.should_receive(:getFile).with('wavpack', 1).and_return '/home/wavpack/1-test.wv'
       disc.should_receive(:audiotracks).and_return 99
       md.should_receive(:various?).and_return true
       md.should_receive(:discNumber).twice.and_return "1"
