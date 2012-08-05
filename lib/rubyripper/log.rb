@@ -34,7 +34,7 @@ class Log
     @prefs = prefs ? prefs : Preferences::Main.instance
     @file = fileAndDir ? fileAndDir : FileAndDir.instance
     @md = disc.metadata
-    @out = fileScheme
+    @fileScheme = fileScheme
     @ui = userInterface
     @updatePercForEachTrack = updatePercForEachTrack
   end
@@ -52,7 +52,7 @@ class Log
   def createLog
     @logfiles = Array.new
     @prefs.codecs.each do |codec|
-      path = @out.getLogFile(codec)
+      path = @fileScheme.getLogFile(codec)
       @file.createDir(path)
       @logfiles << File.open(path, 'a')
     end
@@ -92,7 +92,7 @@ class Log
   def finished
     summary()
     deleteLogfiles if @prefs.noLog
-    @out.cleanTempDir()
+    @fileScheme.cleanTempDir()
     @ui.update("finished", noProblems = !(@rippingErrors || @encodingErrors))
   end
 
@@ -173,9 +173,9 @@ class Log
     add("     #{_("Corrected all sector mismatches! (%s matches found for each chunk)") % [reqMatchesErrors]}\n")
   end
 
-  def newTrack(track)
+  def newTrack(track=nil)
     @prefs.image ? add(_("Disc Image\n\n")) : add(_("Track %2d\n\n") % [track])
-    @prefs.codecs.each{|codec| add("     " + _("Filename %s\n") % [@out.getFile(codec, track)])}
+    @prefs.codecs.each{|codec| add("     " + _("Filename %s\n") % [@fileScheme.getFile(codec, track)])}
     add("\n")
   end
 

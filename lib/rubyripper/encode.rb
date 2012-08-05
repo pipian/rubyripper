@@ -52,7 +52,12 @@ class Encode
     @lock = Monitor.new
 
     # all encoding tasks are saved here, to determine when to delete a wav
-    @tasks = Hash.new ; @trackSelection.each{|track| @tasks[track] = @prefs.codecs}
+    @tasks = Hash.new
+    if @prefs.image
+      @tasks['image'] = @prefs.codecs
+    else
+      @trackSelection.each{|track| @tasks[track] = @prefs.codecs}
+    end
   end
 
   # is called when a track is ripped succesfully
@@ -122,8 +127,9 @@ class Encode
     @exec.launch(codec.setTagsAfterEncoding(track))
     
     @lock.synchronize do
-      @tasks[track].delete(codec.name)
-      @file.delete(@scheme.getTempFile(track)) if @tasks[track].empty?
+      key = @prefs.image ? 'image' : track 
+      @tasks[key].delete(codec.name)
+      @file.delete(@scheme.getTempFile(track)) if @tasks[key].empty?
       @log.updateEncodingProgress(track, @codecs.size)
     end
   end
