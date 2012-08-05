@@ -59,7 +59,7 @@ class Rubyripper
       createHelpObjects()
       @log.start() # TODO find a better name for the class and function
       @rippingInfoAtStart.show()
-      @disc.finishExtendedTocScan(@log) if @prefs.createCue
+      waitForCuesheet() if @prefs.createCue
       @ripper.ripTracks()
     else
       @ui.update("dir_exists", @fileScheme.dir.values[0])
@@ -83,6 +83,11 @@ class Rubyripper
     # to execute the ripping
     require 'rubyripper/secureRip'
     @ripper = SecureRip.new(@trackSelection, @disc, @fileScheme, @log, @encoding)
+  end
+  
+  def waitForCuesheet
+    @disc.finishExtendedTocScan(@log)
+    @disc.saveCuesheet(@fileScheme)
   end
 
   def calculatePercentageUpdateForProgressbar()

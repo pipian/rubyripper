@@ -95,6 +95,12 @@ attr_reader :metadata
     @cdrdao.joinWithMainThread(log)
   end
   
+  def saveCuesheet(fileScheme)
+    require 'rubyripper/disc/cuesheet'
+    @cuesheet = Cuesheet.new(self, @cdrdao, fileScheme)
+    @cuesheet.save()
+  end
+  
   def preEmph?(track)
     @cdrdao.preEmph?(track) unless @cdrdao.nil?
   end
