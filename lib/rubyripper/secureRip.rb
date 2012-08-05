@@ -36,11 +36,11 @@ class SecureRip
   BYTES_WAV_CONTAINER = 44 # to store the type of wav file
   BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
 
-  def initialize(trackSelection, disc, outputFile, log, encoding, deps=nil, exec=nil, prefs=nil)
+  def initialize(trackSelection, disc, fileScheme, log, encoding, deps=nil, exec=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @trackSelection = trackSelection
     @disc = disc
-    @out = outputFile
+    @fileScheme = fileScheme
     @log = log
     @encoding = encoding
     @deps = deps ? deps : Dependency.instance()
@@ -56,7 +56,7 @@ class SecureRip
     @digest = nil
   end
 
-  def rip
+  def startTheRip()
     @log.updateRippingProgress() # Give a hint to the gui that ripping has started
     @prefs.image ? ripImage() : ripTracks()
     @deps.eject(@prefs.cdrom) if @prefs.eject
@@ -111,9 +111,9 @@ class SecureRip
   def deEmphasize(track)
     if @prefs.createCue && @prefs.preEmphasis == "sox" &&
       @disc.preEmph?(track) && @deps.installed?("sox")
-      @exec.launch("sox #{@out.getTempFile(track, 1)} #{@out.getTempFile(track, 2)}")
+      @exec.launch("sox #{@fileScheme.getTempFile(track, 1)} #{@fileScheme.getTempFile(track, 2)}")
       if @exec.status == 'ok'
-        FileUtils.mv(@out.getTempFile(track, 2), @out.getTempFile(track, 1))
+        FileUtils.mv(@fileScheme.getTempFile(track, 2), @fileScheme.getTempFile(track, 1))
       else
         puts "sox failed somehow."
       end
@@ -125,7 +125,7 @@ class SecureRip
 is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     if @deps.installed?('df')
-      output = @exec.launch("df \"#{@out.getDir()}\"", filename=false, noTranslations=true)
+      output = @exec.launch("df \"#{@fileScheme.getDir()}\"", filename=false, noTranslations=true)
       freeDiskSpace = output[1].split()[3].to_i
       puts "DEBUG: Free disk space is #{freeDiskSpace} MB" if @prefs.debug
       if @disc.getFileSize(track) > freeDiskSpace*1000
@@ -186,7 +186,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   def fileCreated(track=nil) #check if cdparanoia outputs wav files (passing bad parameters?)
-    if not File.exist?(@out.getTempFile(track, @trial))
+    if not File.exist?(@fileScheme.getTempFile(track, @trial))
       @log.update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
       return false
     end
@@ -194,7 +194,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   def testFileSize(track=nil) #check if wavfile is of correct size
-    sizeDiff = @disc.getFileSize(track) - File.size(@out.getTempFile(track, @trial))
+    sizeDiff = @disc.getFileSize(track) - File.size(@fileScheme.getTempFile(track, @trial))
 
     # at the end the disc may differ 1 sector on some drives (2352 bytes)
     if sizeDiff == 0
@@ -213,7 +213,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       #someone might get out of free diskspace meanwhile
       @cancelled = true if not sizeTest(track)
 
-      File.delete(@out.getTempFile(track, @trial)) # Delete file with wrong filesize
+      File.delete(@fileScheme.getTempFile(track, @trial)) # Delete file with wrong filesize
       @trial -= 1 # reset the counter because the filesize is not right
       # TODO: Atack this log entry
       puts _("Filesize is not correct! Trying another time")
@@ -230,7 +230,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     compareSectors(track) unless filesEqual?(track)
 
     # Remove the files now we analyzed them. Differences are saved in memory.
-    (@reqMatchesAll - 1).times{|time| File.delete(@out.getTempFile(track, time + 2))}
+    (@reqMatchesAll - 1).times{|time| File.delete(@fileScheme.getTempFile(track, time + 2))}
 
     if @errors.size == 0
       @log.allSectorsMatched()
@@ -249,8 +249,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     success = true
 
     while comparesNeeded > 0 && success == true
-      file1 = @out.getTempFile(track, trial)
-      file2 = @out.getTempFile(track, trial + 1)
+      file1 = @fileScheme.getTempFile(track, trial)
+      file2 = @fileScheme.getTempFile(track, trial + 1)
       success = FileUtils.compare_file(file1, file2)
       trial += 1
       comparesNeeded -= 1
@@ -262,9 +262,9 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   # Compare the different sectors now we know the files are not equal
   # The first trial is used as a reference to compare the others
   # Bytes of erronous sectors are kept in memory for future comparisons
-  def compareSectors(track)
+  def compareSectors(track=nil)
     files = Array.new
-    (1..@reqMatchesAll).each{|trial| files << File.new(@out.getTempFile(track, trial), 'r')}
+    (1..@reqMatchesAll).each{|trial| files << File.new(@fileScheme.getTempFile(track, trial), 'r')}
 
     comparesNeeded = @reqMatchesAll - 1
     (1..comparesNeeded).each do |trial|
@@ -298,8 +298,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   # Wav-containter overhead = 44 bytes.
   # Audio-cd sector = 2352 bytes.
 
-  def readErrorPos(track)
-    file = File.new(@out.getTempFile(track, @trial), 'r')
+  def readErrorPos(track=nil)
+    file = File.new(@fileScheme.getTempFile(track, @trial), 'r')
     @errors.keys.sort.each do |start_chunk|
       file.pos = start_chunk + BYTES_WAV_CONTAINER
       @errors[start_chunk] << file.sysread(BYTES_AUDIO_SECTOR)
@@ -307,7 +307,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     file.close
 
     # Remove the file now we read it. Differences are saved in memory.
-    File.delete(@out.getTempFile(track, @trial))
+    File.delete(@fileScheme.getTempFile(track, @trial))
 
     # Give an update for the trials for later analysis
     @log.mismatch(track, @trial, @errors.keys, @disc.getFileSize(track), @disc.getLengthSector(track))
@@ -318,8 +318,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   # indeed this amount of matches is found, correct the sector in the
   # reference file (trial 1).
 
-  def correctErrorPos(track)
-    file1 = File.new(@out.getTempFile(track, 1), 'r+')
+  def correctErrorPos(track=nil)
+    file1 = File.new(@fileScheme.getTempFile(track, 1), 'r+')
     minimumIndexDiff = @reqMatchesErrors - 1 # index 2 minus index 0 = 3 results
 
     # Sort the hash keys to prevent jumping forward and backwards in the file
@@ -364,9 +364,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     timeStarted = Time.now
 
-    if @trial == 1
-      @log.newTrack(@prefs.image ? 'image' : track)
-    end
+    @log.newTrack(track) if @trial == 1
 
     command = "cdparanoia"
 
@@ -395,7 +393,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     if !noOffset
       command += " -O #{@prefs.offset}"
     end
-    command += " \"#{@out.getTempFile(track, @trial)}\""
+    command += " \"#{@fileScheme.getTempFile(track, @trial)}\""
 
     @exec.launch(command) if @cancelled == false #Launch the cdparanoia command
     # TODO: Missing Filename
@@ -406,15 +404,15 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       # Range includes either the start of a negative offset or the
       # end of a positive offset, and we need to trim and pad the
       # appropriate sides.
-      file = WaveFile.new(@out.getTempFile(track, @trial))
+      file = WaveFile.new(@fileScheme.getTempFile(track, @trial))
       file.offset = @prefs.offset
       file.padMissingSamples = @prefs.padMissingSamples
       file.save!
     end
   end
 
-  def getCRC(track, trial)
-    file = File.open(@out.getTempFile(track, trial), 'r')
+  def getCRC(track=nil, trial)
+    file = File.open(@fileScheme.getTempFile(track, trial), 'r')
     if trial == 1
       # Calculate the MD5 and peak level while we're at it.
       @digest = Digest::MD5.new()
