@@ -66,23 +66,6 @@ attr_reader :metadata
   def musicbrainzLookupPath ; @calcMusicbrainzID.musicbrainzLookupPath ; end
   def musicbrainzDiscid ; @calcMusicbrainzID.discid ; end
 
-  def getLengthSector(track)
-    advancedTocScanner()
-    if @scanner != @cdparanoia
-      @scanner.scan
-      if @prefs.image and @scanner.dataTracks.include?(@scanner.audiotracks + 1)
-        return getStartSector(@scanner.audiotracks) + @scanner.getLengthSector(@scanner.audiotracks) - 11400 - getStartSector(track)
-      elsif !@prefs.image and @scanner.dataTracks.include?(track + 1)
-        return @scanner.getLengthSector(track) - 11400
-      end
-    end
-    if @prefs.image
-      getStartSector(@scanner.audiotracks) + @cdparanoia.getLengthSector(@scanner.audiotracks) - getStartSector(track)
-    else
-      @cdparanoia.getLengthSector(track)
-    end
-  end
-  
   # this can take a while so run in background
   def startExtendedTocScan()
     require 'rubyripper/disc/scanDiscCdrdao'
@@ -103,10 +86,6 @@ attr_reader :metadata
   
   def preEmph?(track)
     @cdrdao.preEmph?(track) unless @cdrdao.nil?
-  end
-
-  def getFileSize(track)
-    44 + getLengthSector(track) * 2352
   end
 
   private

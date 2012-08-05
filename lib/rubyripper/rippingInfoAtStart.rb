@@ -100,9 +100,7 @@ private
     @logString << "     " + _("Track") + " |   " + _("Start") + "  |  "
     @logString << _("Length") + "  | " + _("Start sector") + " | " + _("End sector") + " \n"
     @logString << "    ---------------------------------------------------------\n"
-    # KLUDGE: Temporarily toggle @prefs.image off to get the right sectors
-    old_image = @prefs.image
-    @prefs.image = false
+
     (1..@disc.audiotracks).each do |track|
       # TODO: Needs start sector of data tracks too.
       start = @disc.getStartSector(track)
@@ -117,7 +115,6 @@ private
       
       @logString << "       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n" % [track, start_min, start_sec, start_frm, length_min, length_sec, length_frm, start, start + length - 1]
     end
-    @prefs.image = old_image
     @logString << "\n"
   end
 
