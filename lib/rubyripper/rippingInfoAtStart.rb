@@ -38,7 +38,6 @@ class RippingInfoAtStart
     showRippingPrefs()
     showEncodingPrefs()
     showDiscInfo()
-    showLaunch()
     updateInterface()
   end
 
@@ -115,10 +114,6 @@ private
       
       @logString << "       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n" % [track, start_min, start_sec, start_frm, length_min, length_sec, length_frm, start, start + length - 1]
     end
-    @logString << "\n"
-  end
-
-  def showLaunch
     @logString << "\n"
   end
   
