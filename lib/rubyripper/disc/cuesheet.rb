@@ -57,6 +57,7 @@ class Cuesheet
 
   # for testing purposes
   def test_printDiscData ; printDiscData() ; end
+  def test_printTrackDataImage(codec) ; printTrackDataImage(codec) ; end
   def test_printTrackData(codec) ; printTrackData(codec) ; end 
    
 private
@@ -82,14 +83,71 @@ private
     @cuesheet << "TITLE #{@md.album}"
   end
   
+  # First track is handled differently because of possible hidden track before track 1
   def printTrackDataImage(codec)
-    writeFileLine('image')
-    (1..@disc.audiotracks).each{|audiotrack| trackinfo(audiotrack)}
+    writeFileLine(codec)
+    (1..@disc.audiotracks).each do |track|
+      track == 1 ? printDataImageFirstTrack(track) : printDataImageOtherTracks(track)
+    end
+  end
+  
+  def printDataImageFirstTrack(track)
+    printTrackLine(track)
+    printPregapForHiddenTrack(track)
+    printTrackMetadata(track)
+    printIndexImageFirstTrack(track)
+  end
+  
+  def printDataImageOtherTracks(track)
+    printTrackLine(track)
+    printTrackMetadata(track)
+    printIndexImageOtherTracks(track) if track != 1
+  end
+  
+   #writes the location of the file in the Cue
+  def writeFileLine(codec, track=nil)
+    @cuesheet << "FILE \"#{File.basename(@fileScheme.getFile(track, codec))}\" #{getCueFileType(codec)}"
+  end
+  
+  def printTrackLine(track)
+    @cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
+  end
+  
+  # if the hidden audio is not ripped, only write a pregap tag
+  def printPregapForHiddenTrack(track)
+    if @prefs.ripHiddenAudio == false && @disc.getStartSector(track) > 0
+      @cuesheet << "  PREGAP #{time(@disc.getStartSector(track))}"
+    end
+  end
+  
+  # write the info for a single track
+  def printTrackMetadata(track)
+    @cuesheet << "    TITLE \"#{@md.getTrackname(track)}\""
+    @cuesheet << "    PERFORMER \"#{@md.various ? @md.getVarArtist(track) : @md.artist}\""
+  end
+  
+  # If there are sectors before track 1, print an index 00 for sector 0
+  def printIndexImageFirstTrack(track)
+    if @prefs.ripHiddenAudio == true && @disc.getStartSector(track) > 0
+      @cuesheet << "    INDEX 00 #{time(0)}"
+      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track))}"
+    else
+      @cuesheet << "    INDEX 01 #{time(0)}"
+    end
+  end
+
+  def printIndexImageOtherTracks(track)
+    if @cdrdao.getPregapSectors(track) > 0
+      @cuesheet << "    INDEX 00 #{time(@disc.getStartSector(track))}"
+      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track) + @cdrdao.getPregapSectors(track))}"
+    else # no pregap
+      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track))}"
+    end
   end
   
   def printTrackData(codec)
     (1..@disc.audiotracks).each do |track|
-      if @cdrdao.hasPreEmph(track) && (@prefs.preEmphasis == 'cue' || !@deps.installed?('sox'))
+      if @cdrdao.preEmph?(track) && (@prefs.preEmphasis == 'cue' || !@deps.installed?('sox'))
         @cuesheet << "FLAGS PRE"
         puts "Added PRE(emphasis) flag for track #{track}." if @settings['debug']
       end
@@ -112,45 +170,13 @@ private
       else
         trackinfo(track)
       end
+      
+      trackindex(track)
     end
-  end
-
-  #writes the location of the file in the Cue
-  def writeFileLine(track, codec)
-    @cuesheet << "FILE \"#{File.basename(@fileScheme.getFile(track, codec))}\" #{getCueFileType(codec)}"
-  end
-
-  # write the info for a single track
-  def trackinfo(track)
-    @cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
-
-    if track == 1 && @settings['ripHiddenAudio'] == false && @disc.getStartSector(1) > 0
-      @cuesheet << "  PREGAP #{time(@disc.getStartSector(1))}"
-    end
-
-    @cuesheet << "    TITLE \"#{@md.getTrackname(track)}\""
-    if @settings['Out'].getVarArtist(track) == ''
-      @cuesheet << "    PERFORMER \"#{@md.artist}\""
-    else
-      @cuesheet << "    PERFORMER \"#{@md.getVarArtist(track)}\""
-    end
-    
-    trackindex(track)
   end
 
   def trackindex(track)
-    if @settings['image']
-      # There is a different handling for track 1 and the rest
-      if track == 1 && @disc.getStartSector(1) > 0
-        @cuesheet << "    INDEX 00 #{time(0)}"
-        @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track))}"
-      elsif @cdrdao.getPregap(track) > 0
-        @cuesheet << "    INDEX 00 #{time(@disc.getStartSector(track))}"
-        @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track) + @cdrdao.getPregap(track))}"
-      else # no pregap
-        @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track))}"
-      end
-    elsif @settings['pregaps'] == "append" && @cdrdao.getPregap(track) > 0 && track != 1
+    if @settings['pregaps'] == "append" && @cdrdao.getPregap(track) > 0 && track != 1
       @cuesheet << "    INDEX 00 #{time(@disc.getLengthSector(track-1) - @cdrdao.getPregap(track))}"
       writeFileLine(track)
       @cuesheet << "    INDEX 01 #{time(0)}"
