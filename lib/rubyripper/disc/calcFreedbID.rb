@@ -67,9 +67,9 @@ private
     unmountDiscDarwin() if @deps.platform.include?('darwin')
 
     if @deps.installed?('discid')
-      @freedbString = @exec.launch("discid #{@prefs.cdrom}")[0]
+      @freedbString = @exec.launch("discid #{@prefs.cdrom}")[0].chomp
     elsif @deps.installed?('cd-discid')
-      @freedbString = @exec.launch("cd-discid #{@prefs.cdrom}")[0]
+      @freedbString = @exec.launch("cd-discid #{@prefs.cdrom}")[0].chomp
     end
 
     remountDiscDarwin() if @deps.platform.include?('darwin')
