@@ -92,7 +92,6 @@ describe ScanDiscCdparanoia do
       @cdparanoia ||= File.read('spec/disc/data/cdparanoia').split("\n")
       perm.should_receive(:problems?).once.and_return(false)
       perm.should_receive(:problemsSCSI?).once.and_return(false)
-      prefs.stub!(:image).and_return false
       prefs.should_receive(:cdrom).at_least(:once).and_return('/dev/cdrom')
     end
 
@@ -164,7 +163,6 @@ describe ScanDiscCdparanoia do
     
     it "should serve image ripping as well" do
       setQueryReply(@cdparanoia)
-      prefs.stub!(:image).and_return true
       disc.scan()
       disc.getStartSector(nil).should == 0
       disc.getLengthSector(nil).should == 162919
