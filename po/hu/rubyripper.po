@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Rubyripper 0.7.0a1\n"
-"POT-Creation-Date: 2012-03-11 21:46+0100\n"
+"POT-Creation-Date: 2012-08-05 19:13+0200\n"
 "PO-Revision-Date: 2009-07-14 06:27+0100\n"
 "Last-Translator: Berke Viktor <bervi@users.sourceforge.net>\n"
 "Language-Team: Hungarian\n"
@@ -99,34 +99,38 @@ msgid ""
 "\n"
 msgstr ""
 
-#: lib/rubyripper/disc/scanDiscCdrdao.rb:173
-msgid "No pregaps, silences or pre-emphasis detected\n"
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:167
+msgid ""
+"\n"
+"ADVANCED TOC ANALYSIS (with cdrdao)\n"
 msgstr ""
 
-#: lib/rubyripper/disc/scanDiscCdrdao.rb:177
-msgid "Silence detected for disc : %s sectors\n"
-msgstr ""
-
-#: lib/rubyripper/disc/scanDiscCdrdao.rb:180
-msgid "Pregap detected for track %s : %s sectors\n"
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:168
+msgid ""
+"...please be patient, this may take a while\n"
+"\n"
 msgstr ""
 
 #: lib/rubyripper/disc/scanDiscCdrdao.rb:188
+msgid ""
+"No pregaps, silences, pre-emphasis or datatracks detected\n"
+"\n"
+msgstr ""
+
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:193
+msgid "Silence detected for disc : %s sectors\n"
+msgstr ""
+
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:198
+msgid "Pregap detected for track %s : %s sectors\n"
+msgstr ""
+
+#: lib/rubyripper/disc/scanDiscCdrdao.rb:206
 msgid "Track %s is marked as a DATA track\n"
 msgstr ""
 
-#: lib/rubyripper/disc/scanDiscCdparanoia.rb:220
+#: lib/rubyripper/disc/scanDiscCdparanoia.rb:221
 msgid "ERROR: No audio tracks found!"
-msgstr ""
-
-#: lib/rubyripper/disc/calcFreedbID.rb:56
-#, fuzzy
-msgid "Warning: discid or cd-discid isn't found on your system!)"
-msgstr ""
-"figyelmeztetés: nem található a discid vagy a cd-discid. Visszaugrás..."
-
-#: lib/rubyripper/disc/calcFreedbID.rb:57
-msgid "Using fallback..."
 msgstr ""
 
 #: lib/rubyripper/disc/permissionDrive.rb:84
@@ -199,43 +203,39 @@ msgstr ""
 "%s\n"
 "Talán hozzá kell adnod magad a szükséges csoporthoz az /etc/group-ban"
 
-#: lib/rubyripper/fileScheme.rb:259
+#: lib/rubyripper/fileScheme.rb:264
 msgid "Hidden Track"
 msgstr ""
 
-#: lib/rubyripper/fileScheme.rb:260
+#: lib/rubyripper/fileScheme.rb:265
 msgid "Unknown Artist"
 msgstr ""
 
-#: lib/rubyripper/base.rb:38
+#: lib/rubyripper/base.rb:46
 msgid "test"
 msgstr ""
 
-#: lib/rubyripper/gtk2/summary.rb:29
+#: lib/rubyripper/gtk2/gtkSummary.rb:42
 msgid ""
 "The rip has succesfully finished.\n"
 "A short summary is shown below."
 msgstr ""
 
-#: lib/rubyripper/gtk2/summary.rb:32
+#: lib/rubyripper/gtk2/gtkSummary.rb:45
 msgid ""
 "The rip had some problems.\n"
 "A short summary is shown below."
 msgstr ""
 
-#: lib/rubyripper/gtk2/summary.rb:49
+#: lib/rubyripper/gtk2/gtkSummary.rb:67
 msgid "Open log file"
 msgstr "Naplófájl megnyitása"
 
-#: lib/rubyripper/gtk2/summary.rb:54 lib/rubyripper/gtk2/summary.rb:62
-msgid "%s is not found on your system!"
-msgstr "A %s nem található a rendszeren!"
-
-#: lib/rubyripper/gtk2/summary.rb:57
+#: lib/rubyripper/gtk2/gtkSummary.rb:77
 msgid "Open directory"
 msgstr "Mappa megnyitása"
 
-#: lib/rubyripper/gtk2/summary.rb:73
+#: lib/rubyripper/gtk2/gtkSummary.rb:104
 msgid "Ripping and encoding is finished"
 msgstr "A másolás és tömörítés befejeződött"
 
@@ -300,9 +300,9 @@ msgid "All"
 msgstr "Mind"
 
 #: lib/rubyripper/gtk2/gtkDisc.rb:174
-#: lib/rubyripper/gtk2/gtkPreferences.rb:625
-#: lib/rubyripper/cli/cliPreferences.rb:273
-#: lib/rubyripper/cli/cliPreferences.rb:388
+#: lib/rubyripper/gtk2/gtkPreferences.rb:641
+#: lib/rubyripper/cli/cliPreferences.rb:283
+#: lib/rubyripper/cli/cliPreferences.rb:398
 msgid "Artist"
 msgstr "Előadó"
 
@@ -354,19 +354,19 @@ msgstr ""
 msgid "Dir already exists..."
 msgstr "A mappa már létezik..."
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:272
+#: lib/rubyripper/gtk2/gtkPreferences.rb:280
 msgid "Cdrom device:"
 msgstr "CD-ROM eszköz:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:274
+#: lib/rubyripper/gtk2/gtkPreferences.rb:282
 msgid "Cdrom offset:"
 msgstr "CD-ROM offset:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:279
+#: lib/rubyripper/gtk2/gtkPreferences.rb:287
 msgid "List with offsets"
 msgstr "Offset-ek listája"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:281
+#: lib/rubyripper/gtk2/gtkPreferences.rb:289
 msgid ""
 "A website which lists the offset for most drives.\n"
 "Your drivename can be found in each logfile."
@@ -374,11 +374,11 @@ msgstr ""
 "Egy weblap, ahol megtalálható a legtöbb meghajtó offset-je.\n"
 "A meghajtó típusát minden naplófájlban megtalálhatod."
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:283
+#: lib/rubyripper/gtk2/gtkPreferences.rb:291
 msgid "Pad missing samples with zero's"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:284
+#: lib/rubyripper/gtk2/gtkPreferences.rb:292
 msgid ""
 "Cdparanoia can't handle offsets larger than 580 for \n"
 "first (negative offset) and last (positive offset) track.\n"
@@ -387,149 +387,159 @@ msgid ""
 "It is recommended to enable this option."
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:299
+#: lib/rubyripper/gtk2/gtkPreferences.rb:307
 msgid "Cdrom device"
 msgstr "CD-ROM eszköz"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:316
+#: lib/rubyripper/gtk2/gtkPreferences.rb:324
 msgid "Match all chunks:"
 msgstr "Összvetés minden darabra:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:317
+#: lib/rubyripper/gtk2/gtkPreferences.rb:325
 msgid "Match erroneous chunks:"
 msgstr "Összvetés a hibás darabokra:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:318
+#: lib/rubyripper/gtk2/gtkPreferences.rb:326
 msgid "Maximum trials (0 = unlimited):"
 msgstr "Maximum próbálkozás (0 = végtelen):"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:322
-#: lib/rubyripper/gtk2/gtkPreferences.rb:323
-#: lib/rubyripper/gtk2/gtkPreferences.rb:324
+#: lib/rubyripper/gtk2/gtkPreferences.rb:330
+#: lib/rubyripper/gtk2/gtkPreferences.rb:331
+#: lib/rubyripper/gtk2/gtkPreferences.rb:332
 msgid "times"
 msgstr "alkalommal"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:337
+#: lib/rubyripper/gtk2/gtkPreferences.rb:345
 msgid "Ripping options"
 msgstr "Másolási beállítások"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:343
+#: lib/rubyripper/gtk2/gtkPreferences.rb:351
 msgid "Pass cdparanoia options:"
 msgstr "cdparanoia kapcsolók:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:344
+#: lib/rubyripper/gtk2/gtkPreferences.rb:352
 msgid "Eject cd when finished"
 msgstr "CD kiadása, ha kész"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:345
+#: lib/rubyripper/gtk2/gtkPreferences.rb:353
 msgid "Only keep logfile if correction is needed"
 msgstr "Naplófájl megtartása csak hiba esetén"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:352
+#: lib/rubyripper/gtk2/gtkPreferences.rb:360
 msgid "Ripping related"
 msgstr "Másolással kapcsolatos"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:356
+#: lib/rubyripper/gtk2/gtkPreferences.rb:364
 msgid "Secure Ripping"
 msgstr "Biztonságos másolás"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:363
+#: lib/rubyripper/gtk2/gtkPreferences.rb:371
 msgid "Rip hidden audio sectors"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:364
+#: lib/rubyripper/gtk2/gtkPreferences.rb:372
 msgid "Mark as a hidden track when bigger than"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:365
+#: lib/rubyripper/gtk2/gtkPreferences.rb:373
 msgid "seconds"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:368
+#: lib/rubyripper/gtk2/gtkPreferences.rb:376
 msgid "Uncheck this if cdparanoia crashes with your ripping drive."
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:369
+#: lib/rubyripper/gtk2/gtkPreferences.rb:377
 msgid ""
 "A hidden track will rip to a seperate file if used in track modus.\n"
 "If it's smaller the sectors will be prepended to the first track."
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:379
+#: lib/rubyripper/gtk2/gtkPreferences.rb:387
 msgid "Audio sectors before track 1"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:385
+#: lib/rubyripper/gtk2/gtkPreferences.rb:393
 msgid "Create cuesheet"
 msgstr "cuesheet készítése"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:386
+#: lib/rubyripper/gtk2/gtkPreferences.rb:394
 msgid "Rip CD to single file"
 msgstr "CD másolása egyetlen fájlba"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:392
+#: lib/rubyripper/gtk2/gtkPreferences.rb:400
 msgid "Advanced Toc analysis"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:395
+#: lib/rubyripper/gtk2/gtkPreferences.rb:403
 msgid "Cdrdao installed?"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:404
+#: lib/rubyripper/gtk2/gtkPreferences.rb:412
 msgid "Append pregap to the previous track"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:405
+#: lib/rubyripper/gtk2/gtkPreferences.rb:413
+#: lib/rubyripper/cli/cliPreferences.rb:208
 msgid "Prepend pregaps to the track"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:409
+#: lib/rubyripper/gtk2/gtkPreferences.rb:417
 msgid "Handling pregaps other than track 1"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:416
+#: lib/rubyripper/gtk2/gtkPreferences.rb:424
 msgid "Correct pre-emphasis tracks with sox"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:417
+#: lib/rubyripper/gtk2/gtkPreferences.rb:425
 msgid "Save the pre-emphasis tag in the cuesheet."
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:421
+#: lib/rubyripper/gtk2/gtkPreferences.rb:429
 msgid "Handling tracks with pre-emphasis"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:427
+#: lib/rubyripper/gtk2/gtkPreferences.rb:435
 msgid "TOC analysis"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:471
+#: lib/rubyripper/gtk2/gtkPreferences.rb:479
 msgid "Flac"
 msgstr "FLAC"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:472
+#: lib/rubyripper/gtk2/gtkPreferences.rb:480
 msgid "Vorbis"
 msgstr "Vorbis"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:473
-msgid "Lame Mp3"
+#: lib/rubyripper/gtk2/gtkPreferences.rb:481
+#, fuzzy
+msgid "Lame MP3"
 msgstr "LAME mp3"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:474
+#: lib/rubyripper/gtk2/gtkPreferences.rb:482
+msgid "Nero AAC"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:483
+msgid "Wavpack"
+msgstr ""
+
+#: lib/rubyripper/gtk2/gtkPreferences.rb:484
 msgid "Wav"
 msgstr "Wav"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:475
-#: lib/rubyripper/gtk2/gtkPreferences.rb:714
+#: lib/rubyripper/gtk2/gtkPreferences.rb:485
+#: lib/rubyripper/gtk2/gtkPreferences.rb:730
 #: lib/rubyripper/cli/cliPreferences.rb:108
 msgid "Other"
 msgstr "Egyéb"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:476
+#: lib/rubyripper/gtk2/gtkPreferences.rb:486
 msgid "Show options for \"Other\""
 msgstr "Opciók az \"Egyéb\"-hez"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:483
+#: lib/rubyripper/gtk2/gtkPreferences.rb:495
 msgid ""
 "%a=artist   %g=genre   %t=trackname   %f=codec\n"
 "%b=album   %y=year   %n=track   %va=various artist\n"
@@ -539,220 +549,220 @@ msgstr ""
 "%b=album   %y=év   %n=szám   %va=több előadó\n"
 "%o = kimenet   %i = bemenet"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:496
+#: lib/rubyripper/gtk2/gtkPreferences.rb:512
 msgid "Select audio codecs"
 msgstr "Hangkodekek kiválasztása"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:502
+#: lib/rubyripper/gtk2/gtkPreferences.rb:518
 msgid "Create m3u playlist"
 msgstr "m3u számlista készítése"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:503
+#: lib/rubyripper/gtk2/gtkPreferences.rb:519
 msgid "Replace spaces with underscores in filenames"
 msgstr "Szóközök kicserélése aláhúzásjelre a fájlnevekben"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:504
+#: lib/rubyripper/gtk2/gtkPreferences.rb:520
 msgid "Downsize all capital letters in filenames"
 msgstr "Nagybetűk cseréje kisbetűre a fájlnevekben"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:506
+#: lib/rubyripper/gtk2/gtkPreferences.rb:522
 msgid "Number of extra encoding threads"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:513
+#: lib/rubyripper/gtk2/gtkPreferences.rb:529
 msgid "Codec related"
 msgstr "Kodekkel kapcsolatos"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:520
+#: lib/rubyripper/gtk2/gtkPreferences.rb:536
 msgid "Don't standardize volume"
 msgstr "Hangerő változatlanul hagyása"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:521
+#: lib/rubyripper/gtk2/gtkPreferences.rb:537
 msgid "Use replaygain on audio files"
 msgstr "Replaygain használata"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:522
+#: lib/rubyripper/gtk2/gtkPreferences.rb:538
 msgid "Use normalize on wav files"
 msgstr "wav fájlok normalizálása"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:525
+#: lib/rubyripper/gtk2/gtkPreferences.rb:541
 msgid "Album / Audiophile modus"
 msgstr "Album / Audiofil mód"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:526
+#: lib/rubyripper/gtk2/gtkPreferences.rb:542
 msgid "Track modus"
 msgstr "Szám mód"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:533
+#: lib/rubyripper/gtk2/gtkPreferences.rb:549
 msgid "Normalize to standard volume"
 msgstr "Normalizálás standard hangerőre "
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:537
+#: lib/rubyripper/gtk2/gtkPreferences.rb:553
 #: lib/rubyripper/cli/cliPreferences.rb:106
 msgid "Codecs"
 msgstr "Tömörítők"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:543
+#: lib/rubyripper/gtk2/gtkPreferences.rb:559
 msgid "Primary metadata provider:"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:545
+#: lib/rubyripper/gtk2/gtkPreferences.rb:561
 msgid "Freedb"
 msgstr "freedb"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:546
+#: lib/rubyripper/gtk2/gtkPreferences.rb:562
 msgid "Musicbrainz"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:547
+#: lib/rubyripper/gtk2/gtkPreferences.rb:563
 msgid "Don't use a metadata provider"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:550
+#: lib/rubyripper/gtk2/gtkPreferences.rb:566
 msgid "Choose your metadata provider"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:556
+#: lib/rubyripper/gtk2/gtkPreferences.rb:572
 msgid "Always use first freedb hit"
 msgstr "Első freedb találat használata mindig"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:557
+#: lib/rubyripper/gtk2/gtkPreferences.rb:573
 msgid "Freedb server:"
 msgstr "freedb szerver:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:558
+#: lib/rubyripper/gtk2/gtkPreferences.rb:574
 msgid "Username:"
 msgstr "Felhasználónév:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:559
+#: lib/rubyripper/gtk2/gtkPreferences.rb:575
 msgid "Hostname:"
 msgstr "Gépnév:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:571
+#: lib/rubyripper/gtk2/gtkPreferences.rb:587
 msgid "Freedb options"
 msgstr "freedb beállítások"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:577
+#: lib/rubyripper/gtk2/gtkPreferences.rb:593
 #, fuzzy
 msgid "Preferred countries:"
 msgstr "Beállítások"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:579
+#: lib/rubyripper/gtk2/gtkPreferences.rb:595
 msgid "Preferred release date:"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:581
+#: lib/rubyripper/gtk2/gtkPreferences.rb:597
 msgid "Preferred year (metadata):"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:597
+#: lib/rubyripper/gtk2/gtkPreferences.rb:613
 #, fuzzy
 msgid "Musicbrainz options"
 msgstr "Másolási beállítások"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:610
+#: lib/rubyripper/gtk2/gtkPreferences.rb:626
 #: lib/rubyripper/cli/cliPreferences.rb:107
 msgid "Metadata"
 msgstr ""
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:617
+#: lib/rubyripper/gtk2/gtkPreferences.rb:633
 msgid "Base directory:"
 msgstr "Fő könyvtár:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:618
+#: lib/rubyripper/gtk2/gtkPreferences.rb:634
 msgid "Standard:"
 msgstr "Standard"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:619
+#: lib/rubyripper/gtk2/gtkPreferences.rb:635
 msgid "Various artists:"
 msgstr "Több előadó:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:620
+#: lib/rubyripper/gtk2/gtkPreferences.rb:636
 msgid "Single file image:"
 msgstr "Egyetlen képfájl: "
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:622
+#: lib/rubyripper/gtk2/gtkPreferences.rb:638
 msgid "Show options for \"Filenaming scheme\""
 msgstr "Opciók mutatása a \"\"Elnevezési sémá\"-hoz"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:625
-#: lib/rubyripper/cli/cliPreferences.rb:273
-#: lib/rubyripper/cli/cliPreferences.rb:389
+#: lib/rubyripper/gtk2/gtkPreferences.rb:641
+#: lib/rubyripper/cli/cliPreferences.rb:283
+#: lib/rubyripper/cli/cliPreferences.rb:399
 #, fuzzy
 msgid "Genre"
 msgstr "Műfaj:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:625
-#: lib/rubyripper/cli/cliPreferences.rb:274
-#: lib/rubyripper/cli/cliPreferences.rb:391
+#: lib/rubyripper/gtk2/gtkPreferences.rb:641
+#: lib/rubyripper/cli/cliPreferences.rb:284
+#: lib/rubyripper/cli/cliPreferences.rb:401
 #, fuzzy
 msgid "Trackname"
 msgstr "Felhasználónév:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:626
-#: lib/rubyripper/cli/cliPreferences.rb:390
+#: lib/rubyripper/gtk2/gtkPreferences.rb:642
+#: lib/rubyripper/cli/cliPreferences.rb:400
 #, fuzzy
 msgid "Codec"
 msgstr "Tömörítők"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:626
-#: lib/rubyripper/cli/cliPreferences.rb:273
-#: lib/rubyripper/cli/cliPreferences.rb:388
+#: lib/rubyripper/gtk2/gtkPreferences.rb:642
+#: lib/rubyripper/cli/cliPreferences.rb:283
+#: lib/rubyripper/cli/cliPreferences.rb:398
 #, fuzzy
 msgid "Album"
 msgstr "Album:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:626
-#: lib/rubyripper/cli/cliPreferences.rb:273
-#: lib/rubyripper/cli/cliPreferences.rb:389
+#: lib/rubyripper/gtk2/gtkPreferences.rb:642
+#: lib/rubyripper/cli/cliPreferences.rb:283
+#: lib/rubyripper/cli/cliPreferences.rb:399
 #, fuzzy
 msgid "Year"
 msgstr "Év:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:627
+#: lib/rubyripper/gtk2/gtkPreferences.rb:643
 #: lib/rubyripper/rippingInfoAtStart.rb:100
 #, fuzzy
 msgid "Track"
 msgstr "%s. szám"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:627
+#: lib/rubyripper/gtk2/gtkPreferences.rb:643
 #, fuzzy
 msgid "Various artist"
 msgstr "Több előadó:"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:657
+#: lib/rubyripper/gtk2/gtkPreferences.rb:673
 msgid "Filenaming scheme"
 msgstr "Elnevezési séma"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:661
-#: lib/rubyripper/gtk2/gtkPreferences.rb:665
-#: lib/rubyripper/gtk2/gtkPreferences.rb:670
-#: lib/rubyripper/cli/cliPreferences.rb:399
+#: lib/rubyripper/gtk2/gtkPreferences.rb:677
+#: lib/rubyripper/gtk2/gtkPreferences.rb:681
+#: lib/rubyripper/gtk2/gtkPreferences.rb:686
+#: lib/rubyripper/cli/cliPreferences.rb:409
 #, fuzzy
 msgid "Example filename: "
 msgstr "Egy fájlnév minta: %s.ext"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:687
+#: lib/rubyripper/gtk2/gtkPreferences.rb:703
 msgid "Log file viewer: "
 msgstr "Naplófájl olvasó: "
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:688
+#: lib/rubyripper/gtk2/gtkPreferences.rb:704
 msgid "File manager: "
 msgstr "Fájlkezelő: "
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:696
+#: lib/rubyripper/gtk2/gtkPreferences.rb:712
 msgid "Programs of choice"
 msgstr "Kiválaszott programok"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:704
+#: lib/rubyripper/gtk2/gtkPreferences.rb:720
 msgid "Verbose mode"
 msgstr "Részletes mód"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:705
+#: lib/rubyripper/gtk2/gtkPreferences.rb:721
 msgid "Debug mode"
 msgstr "Hibakeresési mód"
 
-#: lib/rubyripper/gtk2/gtkPreferences.rb:708
+#: lib/rubyripper/gtk2/gtkPreferences.rb:724
 msgid "Debug options"
 msgstr "Hibakeresési beállítások"
 
@@ -821,23 +831,23 @@ msgstr "OK"
 msgid "Multiple hits found..."
 msgstr "Több találat..."
 
-#: lib/rubyripper/secureRip.rb:130
+#: lib/rubyripper/secureRip.rb:131
 msgid "Not enough disk space left! Rip aborted"
 msgstr "Nincs elég szabad hely! A másolás megszakítva"
 
-#: lib/rubyripper/secureRip.rb:140
+#: lib/rubyripper/secureRip.rb:141
 msgid "Copy OK"
 msgstr ""
 
-#: lib/rubyripper/secureRip.rb:146
+#: lib/rubyripper/secureRip.rb:147
 msgid "Irrecoverable sectors at the following times:"
 msgstr ""
 
-#: lib/rubyripper/secureRip.rb:149
+#: lib/rubyripper/secureRip.rb:150
 msgid "Copy finished"
 msgstr ""
 
-#: lib/rubyripper/secureRip.rb:188
+#: lib/rubyripper/secureRip.rb:189
 msgid ""
 "Cdparanoia doesn't output wav files.\n"
 "Check your settings please."
@@ -845,24 +855,20 @@ msgstr ""
 "A cdparanoia nem készít wav fájlokat.\n"
 "Ellenőrizd a beállításokat."
 
-#: lib/rubyripper/secureRip.rb:204
-msgid "The ripped file misses %s sectors."
-msgstr ""
-
-#: lib/rubyripper/secureRip.rb:217
+#: lib/rubyripper/secureRip.rb:218
 #, fuzzy
 msgid "Filesize is not correct! Trying another time"
 msgstr "A fájlméret helytelen! Újabb próbálkozás\n"
 
-#: lib/rubyripper/secureRip.rb:237
+#: lib/rubyripper/secureRip.rb:238
 msgid "Sector mismatches at the following times, requiring extra trials:"
 msgstr ""
 
-#: lib/rubyripper/secureRip.rb:352
+#: lib/rubyripper/secureRip.rb:353
 msgid "The drive is spinning for more than 30 minutes."
 msgstr ""
 
-#: lib/rubyripper/secureRip.rb:353
+#: lib/rubyripper/secureRip.rb:354
 msgid "Taking a timeout of 2 minutes to protect the hardware."
 msgstr ""
 
@@ -911,6 +917,16 @@ msgid "%s is needed, but not detected on your system!"
 msgstr "A %s nem található a rendszeren!"
 
 #: lib/rubyripper/errors.rb:33
+msgid "Please install cdrdao or disable cuesheet generation."
+msgstr ""
+
+#: lib/rubyripper/errors.rb:34
+msgid ""
+"The program %s failed to execute correctly:\n"
+"%s"
+msgstr ""
+
+#: lib/rubyripper/errors.rb:35
 #, fuzzy
 msgid ""
 "Can't create output directory!\n"
@@ -919,14 +935,9 @@ msgstr ""
 "A kimeneti mappa nem hozható létre!\n"
 "Nincs írási jogod a %s mappára"
 
-#: lib/rubyripper/errors.rb:41
-msgid "Error:"
+#: lib/rubyripper/errors.rb:43
+msgid "Error"
 msgstr ""
-
-#: lib/rubyripper/encode.rb:360
-#, fuzzy
-msgid "WARNING: Encoding to %s exited with an error with track %s!"
-msgstr "FIGYELMEZTETÉS: A %s hibával leállt a %s. szám tömörítésekor!\n"
 
 #: lib/rubyripper/rippingInfoAtStart.rb:48
 #: lib/rubyripper/cli/cliArguments.rb:47 bin/rubyripper_cli:82
@@ -1056,31 +1067,31 @@ msgstr ""
 "Előadó : %s\n"
 "Album: %s\n"
 
-#: lib/rubyripper/log.rb:180
+#: lib/rubyripper/log.rb:178
 msgid ""
 "Disc Image\n"
 "\n"
 msgstr ""
 
-#: lib/rubyripper/log.rb:182
+#: lib/rubyripper/log.rb:180
 #, fuzzy
 msgid ""
 "Track %2d\n"
 "\n"
 msgstr "%s. szám"
 
-#: lib/rubyripper/log.rb:189 lib/rubyripper/log.rb:190
-#: lib/rubyripper/log.rb:191 lib/rubyripper/log.rb:192
-#: lib/rubyripper/log.rb:193
+#: lib/rubyripper/log.rb:183 lib/rubyripper/log.rb:184
+#: lib/rubyripper/log.rb:185 lib/rubyripper/log.rb:186
+#: lib/rubyripper/log.rb:187
 #, fuzzy
 msgid "Filename %s\n"
 msgstr "Elnevezési séma"
 
-#: lib/rubyripper/log.rb:198
+#: lib/rubyripper/log.rb:192
 msgid "Trial %s: %s seconds (%sx)\n"
 msgstr ""
 
-#: lib/rubyripper/log.rb:218
+#: lib/rubyripper/log.rb:212
 #, fuzzy
 msgid ""
 "Copy MD5: %s\n"
@@ -1089,7 +1100,7 @@ msgstr ""
 "MD5 sum: %s\n"
 "\n"
 
-#: lib/rubyripper/log.rb:222
+#: lib/rubyripper/log.rb:216
 msgid ""
 "\n"
 "WARNING: ENCODING ERRORS WERE DETECTED\n"
@@ -1097,7 +1108,7 @@ msgstr ""
 "\n"
 "FIGYELMEZTETÉS: TÖMÖRÍTÉSI HIBÁT ÉSZLELTEM\n"
 
-#: lib/rubyripper/log.rb:223
+#: lib/rubyripper/log.rb:217
 msgid ""
 "\n"
 "RIPPING SUMMARY\n"
@@ -1107,52 +1118,52 @@ msgstr ""
 "MÁSOLÁS ÖSSZEGZÉSE\n"
 "\n"
 
-#: lib/rubyripper/log.rb:225
+#: lib/rubyripper/log.rb:219
 msgid "All chunks were tried to match at least %s times.\n"
 msgstr "Minden darab legalább %s alkalommal volt összevetve.\n"
 
-#: lib/rubyripper/log.rb:227
+#: lib/rubyripper/log.rb:221
 #, fuzzy
 msgid "Chunks that differed after %s trials,"
 msgstr ""
 "A %s próbálkozás után is különböző darabokat\n"
 "%s alkalommal próbáltam összevetni.\n"
 
-#: lib/rubyripper/log.rb:228
+#: lib/rubyripper/log.rb:222
 #, fuzzy
 msgid ""
 "\n"
 "were tried to match %s times.\n"
 msgstr "Minden darab legalább %s alkalommal volt összevetve.\n"
 
-#: lib/rubyripper/log.rb:232
+#: lib/rubyripper/log.rb:226
 msgid "No errors occurred"
 msgstr ""
 
-#: lib/rubyripper/log.rb:233
+#: lib/rubyripper/log.rb:227
 msgid "None of the tracks gave any problems\n"
 msgstr "Egyik szám másolásával sem volt probléma\n"
 
-#: lib/rubyripper/log.rb:235
+#: lib/rubyripper/log.rb:229
 msgid "There were errors which could not be corrected"
 msgstr ""
 
-#: lib/rubyripper/log.rb:236
+#: lib/rubyripper/log.rb:230
 msgid ""
 "Some track(s) could NOT be corrected within the maximum amount of trials\n"
 msgstr ""
 "Néhány számot nem lehetett kijavítani a megadott maximális próbálkozás "
 "alatt\n"
 
-#: lib/rubyripper/log.rb:239
+#: lib/rubyripper/log.rb:233
 msgid "Track %s could NOT be corrected completely\n"
 msgstr "A %s. számot nem lehetett teljesen kijavítani\n"
 
-#: lib/rubyripper/log.rb:243
+#: lib/rubyripper/log.rb:237
 msgid "There were errors which required correction"
 msgstr ""
 
-#: lib/rubyripper/log.rb:244
+#: lib/rubyripper/log.rb:238
 msgid ""
 "Some track(s) needed correction,but could\n"
 "be corrected within the maximum amount of trials\n"
@@ -1160,29 +1171,17 @@ msgstr ""
 "Néhány számot javítani kellett, de sikerült\n"
 "kijavítani a megadott maximális próbálkozás alatt\n"
 
-#: lib/rubyripper/log.rb:247
+#: lib/rubyripper/log.rb:241
 msgid "There were errors during encoding\n"
 msgstr ""
 
-#: lib/rubyripper/log.rb:250
+#: lib/rubyripper/log.rb:244
 msgid ""
 "The exact positions of the suspicious chunks\n"
 "can be found in the ripping log\n"
 msgstr ""
 "A gyanús darabok pontos helye\n"
 "megtalálható a másolási naplóban\n"
-
-#: lib/rubyripper/rubyripper.rb:162
-msgid ""
-"\n"
-"ADVANCED TOC ANALYSIS (with cdrdao)\n"
-msgstr ""
-
-#: lib/rubyripper/rubyripper.rb:163
-msgid ""
-"...please be patient, this may take a while\n"
-"\n"
-msgstr ""
 
 #: lib/rubyripper/cli/cliArguments.rb:45
 msgid "Show current version of rubyripper."
@@ -1333,9 +1332,9 @@ msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:150
 #: lib/rubyripper/cli/cliPreferences.rb:186
-#: lib/rubyripper/cli/cliPreferences.rb:239
-#: lib/rubyripper/cli/cliPreferences.rb:305
-#: lib/rubyripper/cli/cliPreferences.rb:358
+#: lib/rubyripper/cli/cliPreferences.rb:243
+#: lib/rubyripper/cli/cliPreferences.rb:315
+#: lib/rubyripper/cli/cliPreferences.rb:368
 msgid "Back to settings main menu"
 msgstr ""
 
@@ -1375,12 +1374,8 @@ msgstr ""
 msgid "Way to handle pre-emphasis"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:208
-msgid "Prepend pregaps to next track"
-msgstr ""
-
 #: lib/rubyripper/cli/cliPreferences.rb:209
-msgid "Append pregaps to previous track"
+msgid "Append pregap to previous track"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:214
@@ -1397,7 +1392,7 @@ msgid "Flac %s"
 msgstr "FLAC"
 
 #: lib/rubyripper/cli/cliPreferences.rb:225
-#: lib/rubyripper/cli/cliPreferences.rb:250
+#: lib/rubyripper/cli/cliPreferences.rb:254
 msgid "Flac options passed"
 msgstr ""
 
@@ -1407,221 +1402,241 @@ msgid "Vorbis %s"
 msgstr "Vorbis"
 
 #: lib/rubyripper/cli/cliPreferences.rb:227
-#: lib/rubyripper/cli/cliPreferences.rb:253
+#: lib/rubyripper/cli/cliPreferences.rb:257
 msgid "Oggenc options passed"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:228
-msgid "Mp3 %s"
-msgstr ""
+#, fuzzy
+msgid "Lame MP3 %s"
+msgstr "LAME mp3"
 
 #: lib/rubyripper/cli/cliPreferences.rb:229
-#: lib/rubyripper/cli/cliPreferences.rb:256
+#: lib/rubyripper/cli/cliPreferences.rb:260
 msgid "Lame options passed"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:230
-msgid "Wav %s"
+msgid "Nero AAC %s"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:231
-msgid "Other codec %s"
+#: lib/rubyripper/cli/cliPreferences.rb:263
+msgid "Nero options passed"
 msgstr ""
 
 #: lib/rubyripper/cli/cliPreferences.rb:232
-#: lib/rubyripper/cli/cliPreferences.rb:276
+#, fuzzy
+msgid "Wavpack %s"
+msgstr "%s. szám"
+
+#: lib/rubyripper/cli/cliPreferences.rb:233
+#: lib/rubyripper/cli/cliPreferences.rb:266
+msgid "Wavpack options passed"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:234
+msgid "Wav %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:235
+msgid "Other codec %s"
+msgstr ""
+
+#: lib/rubyripper/cli/cliPreferences.rb:236
+#: lib/rubyripper/cli/cliPreferences.rb:286
 msgid "Commandline passed"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:233
+#: lib/rubyripper/cli/cliPreferences.rb:237
 #, fuzzy
 msgid "Playlist support %s"
 msgstr "6)  számlista támogatás [%s]"
 
-#: lib/rubyripper/cli/cliPreferences.rb:234
-#: lib/rubyripper/cli/cliPreferences.rb:262
+#: lib/rubyripper/cli/cliPreferences.rb:238
+#: lib/rubyripper/cli/cliPreferences.rb:272
 msgid "Maximum extra encoding threads"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:235
+#: lib/rubyripper/cli/cliPreferences.rb:239
 #, fuzzy
 msgid "Replace spaces with underscores %s"
 msgstr "Szóközök kicserélése aláhúzásjelre a fájlnevekben"
 
-#: lib/rubyripper/cli/cliPreferences.rb:236
+#: lib/rubyripper/cli/cliPreferences.rb:240
 #, fuzzy
 msgid "Downsize all capital letters in filenames %s"
 msgstr "Nagybetűk cseréje kisbetűre a fájlnevekben"
 
-#: lib/rubyripper/cli/cliPreferences.rb:237
+#: lib/rubyripper/cli/cliPreferences.rb:241
 msgid "Normalize program"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:238
+#: lib/rubyripper/cli/cliPreferences.rb:242
 #, fuzzy
 msgid "Normalize modus"
 msgstr "Szám mód"
 
-#: lib/rubyripper/cli/cliPreferences.rb:274
-#: lib/rubyripper/cli/cliPreferences.rb:390
+#: lib/rubyripper/cli/cliPreferences.rb:284
+#: lib/rubyripper/cli/cliPreferences.rb:400
 #, fuzzy
 msgid "Tracknumber"
 msgstr "Felhasználónév:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:274
+#: lib/rubyripper/cli/cliPreferences.rb:284
 msgid "Inputfile"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:275
+#: lib/rubyripper/cli/cliPreferences.rb:285
 msgid "Outputfile"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:275
+#: lib/rubyripper/cli/cliPreferences.rb:285
 msgid " (don't forget the extension)"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:280
+#: lib/rubyripper/cli/cliPreferences.rb:290
 msgid "Don't normalize the audio"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:281
+#: lib/rubyripper/cli/cliPreferences.rb:291
 #, fuzzy
 msgid "Use replaygain"
 msgstr "Replaygain használata"
 
-#: lib/rubyripper/cli/cliPreferences.rb:282
+#: lib/rubyripper/cli/cliPreferences.rb:292
 #, fuzzy
 msgid "Use normalize"
 msgstr "wav fájlok normalizálása"
 
-#: lib/rubyripper/cli/cliPreferences.rb:287
+#: lib/rubyripper/cli/cliPreferences.rb:297
 msgid "Use album based gain"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:288
+#: lib/rubyripper/cli/cliPreferences.rb:298
 msgid "Use track based gain"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:295
+#: lib/rubyripper/cli/cliPreferences.rb:305
 msgid "METADATA PREFERENCES"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:297
+#: lib/rubyripper/cli/cliPreferences.rb:307
 msgid "Metadata provider"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:298
+#: lib/rubyripper/cli/cliPreferences.rb:308
 #, fuzzy
 msgid "Freedb use first hit %s"
 msgstr "18) mindig az első találat használata [%s]"
 
-#: lib/rubyripper/cli/cliPreferences.rb:299
-#: lib/rubyripper/cli/cliPreferences.rb:316
+#: lib/rubyripper/cli/cliPreferences.rb:309
+#: lib/rubyripper/cli/cliPreferences.rb:326
 #, fuzzy
 msgid "Freedb server"
 msgstr "freedb szerver:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:300
-#: lib/rubyripper/cli/cliPreferences.rb:318
+#: lib/rubyripper/cli/cliPreferences.rb:310
+#: lib/rubyripper/cli/cliPreferences.rb:328
 #, fuzzy
 msgid "Freedb username"
 msgstr "freedb szerver:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:301
-#: lib/rubyripper/cli/cliPreferences.rb:320
+#: lib/rubyripper/cli/cliPreferences.rb:311
+#: lib/rubyripper/cli/cliPreferences.rb:330
 #, fuzzy
 msgid "Freedb hostname"
 msgstr "freedb beállítások"
 
-#: lib/rubyripper/cli/cliPreferences.rb:302
+#: lib/rubyripper/cli/cliPreferences.rb:312
 msgid "Musicbrainz preferred countries (1st, 2nd,...)"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:303
+#: lib/rubyripper/cli/cliPreferences.rb:313
 msgid "Musicbrainz preferred date"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:304
+#: lib/rubyripper/cli/cliPreferences.rb:314
 msgid "Musicbrainz use first known year (including LPs) %s"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:322
+#: lib/rubyripper/cli/cliPreferences.rb:332
 msgid "Prefer releases from countries (better,worse,...)"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:332
+#: lib/rubyripper/cli/cliPreferences.rb:342
 msgid "Don't fetch metadata from the internet"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:333
+#: lib/rubyripper/cli/cliPreferences.rb:343
 msgid "Use the freedb protocol as primary resource"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:334
+#: lib/rubyripper/cli/cliPreferences.rb:344
 msgid "Use the musicbrainz protocol as primary resource"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:339
+#: lib/rubyripper/cli/cliPreferences.rb:349
 msgid "Prefer releases with earlier dates"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:340
+#: lib/rubyripper/cli/cliPreferences.rb:350
 msgid "Prefer releases with later dates"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:341
+#: lib/rubyripper/cli/cliPreferences.rb:351
 msgid "Ignore dates when selecting releases"
 msgstr ""
 
-#: lib/rubyripper/cli/cliPreferences.rb:348
+#: lib/rubyripper/cli/cliPreferences.rb:358
 #, fuzzy
 msgid "OTHER PREFERENCES"
 msgstr "*** RUBYRIPPER BEÁLLÍTÁSOK ***"
 
-#: lib/rubyripper/cli/cliPreferences.rb:350
-#: lib/rubyripper/cli/cliPreferences.rb:367
+#: lib/rubyripper/cli/cliPreferences.rb:360
+#: lib/rubyripper/cli/cliPreferences.rb:377
 #, fuzzy
 msgid "Base directory"
 msgstr "Fő könyvtár:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:351
+#: lib/rubyripper/cli/cliPreferences.rb:361
 #, fuzzy
 msgid "Standard filescheme"
 msgstr "15) standard séma: %s"
 
-#: lib/rubyripper/cli/cliPreferences.rb:352
+#: lib/rubyripper/cli/cliPreferences.rb:362
 #, fuzzy
 msgid "Various artist filescheme"
 msgstr "16) több előadó séma: %s"
 
-#: lib/rubyripper/cli/cliPreferences.rb:353
+#: lib/rubyripper/cli/cliPreferences.rb:363
 #, fuzzy
 msgid "Single file rip filescheme"
 msgstr "Egyetlen képfájl: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:354
-#: lib/rubyripper/cli/cliPreferences.rb:372
+#: lib/rubyripper/cli/cliPreferences.rb:364
+#: lib/rubyripper/cli/cliPreferences.rb:382
 #, fuzzy
 msgid "Log file viewer"
 msgstr "Naplófájl olvasó: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:355
-#: lib/rubyripper/cli/cliPreferences.rb:374
+#: lib/rubyripper/cli/cliPreferences.rb:365
+#: lib/rubyripper/cli/cliPreferences.rb:384
 #, fuzzy
 msgid "File manager"
 msgstr "Fájlkezelő: "
 
-#: lib/rubyripper/cli/cliPreferences.rb:356
+#: lib/rubyripper/cli/cliPreferences.rb:366
 #, fuzzy
 msgid "Verbose mode %s"
 msgstr "Részletes mód"
 
-#: lib/rubyripper/cli/cliPreferences.rb:357
+#: lib/rubyripper/cli/cliPreferences.rb:367
 #, fuzzy
 msgid "Debug mode %s"
 msgstr "Hibakeresési mód"
 
-#: lib/rubyripper/cli/cliPreferences.rb:385
+#: lib/rubyripper/cli/cliPreferences.rb:395
 msgid ""
 "\n"
 "Current naming scheme: %s"
@@ -1629,12 +1644,12 @@ msgstr ""
 "\n"
 "Jelenlegi elnevezési séma: %s"
 
-#: lib/rubyripper/cli/cliPreferences.rb:391
+#: lib/rubyripper/cli/cliPreferences.rb:401
 #, fuzzy
 msgid "Various Artist"
 msgstr "Több előadó:"
 
-#: lib/rubyripper/cli/cliPreferences.rb:393
+#: lib/rubyripper/cli/cliPreferences.rb:403
 #, fuzzy
 msgid "New naming scheme (q to quit)"
 msgstr "Új %s elnevezési séma (q a kilépéshez) : "
@@ -1750,8 +1765,8 @@ msgstr "Ehh.. Semmi másnak nem kéne lennie. WTF?"
 msgid "Secret modus = %s"
 msgstr "Titkos mód = %s"
 
-#: bin/rubyripper_gtk2:155 bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:319
-#: bin/rubyripper_gtk2:343
+#: bin/rubyripper_gtk2:155 bin/rubyripper_gtk2:194 bin/rubyripper_gtk2:320
+#: bin/rubyripper_gtk2:344
 msgid "Open tray"
 msgstr "Tálca kidobása"
 
@@ -1775,15 +1790,15 @@ msgstr "Beolvasás"
 msgid "Rip cd now!"
 msgstr "Másolás!"
 
-#: bin/rubyripper_gtk2:273
+#: bin/rubyripper_gtk2:274
 msgid "Disc info"
 msgstr "Lemezinfó"
 
-#: bin/rubyripper_gtk2:338
+#: bin/rubyripper_gtk2:339
 msgid "Close tray"
 msgstr "Tálca betöltése"
 
-#: bin/rubyripper_gtk2:391 bin/rubyripper_cli:139
+#: bin/rubyripper_gtk2:392 bin/rubyripper_cli:139
 msgid "Please solve the following configuration errors first:"
 msgstr ""
 
@@ -1835,25 +1850,37 @@ msgstr ""
 msgid "Rip is canceled, exiting..."
 msgstr "Másolás leállítva, kilépés..."
 
-#: bin/rubyripper_cli:167
+#: bin/rubyripper_cli:168
 msgid "The output directory already exists. What would you like to do?"
 msgstr "A kimeneti mappa már létezik. Mit szeretnél tenni?"
 
-#: bin/rubyripper_cli:169
+#: bin/rubyripper_cli:170
 msgid "1) Auto rename the output directory"
 msgstr "1) Kimeneti mappa automatikus átnevezése"
 
-#: bin/rubyripper_cli:170
+#: bin/rubyripper_cli:171
 msgid "2) Overwrite the existing directory"
 msgstr "2) Létező mappa felülírása"
 
-#: bin/rubyripper_cli:171
+#: bin/rubyripper_cli:172
 msgid "3) Cancel the rip and eject the disc"
 msgstr "3) Megszakítani a másolást, és a lemezt kivenni"
 
-#: bin/rubyripper_cli:174
+#: bin/rubyripper_cli:175
 msgid "Please enter the number of your choice: "
 msgstr "Add meg a kívánt lehetőség számát: "
+
+#, fuzzy
+#~ msgid "Warning: discid or cd-discid isn't found on your system!)"
+#~ msgstr ""
+#~ "figyelmeztetés: nem található a discid vagy a cd-discid. Visszaugrás..."
+
+#~ msgid "%s is not found on your system!"
+#~ msgstr "A %s nem található a rendszeren!"
+
+#, fuzzy
+#~ msgid "WARNING: Encoding to %s exited with an error with track %s!"
+#~ msgstr "FIGYELMEZTETÉS: A %s hibával leállt a %s. szám tömörítésekor!\n"
 
 #~ msgid ""
 #~ "%a=artist   %g=genre   %t=trackname   %f=codec\n"
