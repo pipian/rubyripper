@@ -37,6 +37,6 @@ module Metadata
       item.gsub!(" ", "_") if @prefs.noSpaces
       item.downcase! if @prefs.noCapitals
       item = super(item)
-  end
+    end
   end
 end
