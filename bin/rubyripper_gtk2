@@ -244,6 +244,7 @@ attr_reader :instances
 
   def exit
     `killall cdparanoia 2>&1`
+    `killall cdrdao`
     Gtk.main_quit
   end
   
