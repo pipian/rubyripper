@@ -269,4 +269,26 @@ describe Codecs::Main do
       @codec.setTagsAfterEncoding(1).should == ''
     end
   end
+  
+  context "Given opus is chosen as preferred codec" do
+    before(:each) do
+      @codec = Codecs::Main.new('opus', disc, scheme, tags, prefs, md, file)
+    end
+      
+    it "should calculate the command for encoding" do
+      prefs.should_receive(:settingsOpus).and_return '--bitrate 160'
+      scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
+      scheme.should_receive(:getFile).with('opus', 1).and_return '/home/opus/1-test.opus'
+      disc.should_receive(:audiotracks).and_return 99
+      md.should_receive(:various?).and_return true
+      md.should_receive(:discNumber).twice.and_return "1"
+      disc.should_receive(:freedbDiscid).twice.and_return 'ABCDEFGH'
+      
+      @codec.command(1).should == 'opusenc --bitrate 160 --artist "trackArtist 1" --comment ALBUM="album" '\
+          '--comment GENRE="genre" --comment DATE="year" --comment "ALBUM ARTIST"="artist" '\
+          '--comment DISCNUMBER=1 --comment ENCODER="Rubyripper test" --comment DISCID="ABCDEFGH" --title "trackname 1" '\
+          '--comment TRACKNUMBER=1 --comment TRACKTOTAL=99 "input_1.wav" "/home/opus/1-test.opus"'
+      @codec.setTagsAfterEncoding(1).should == ''
+    end
+  end
 end

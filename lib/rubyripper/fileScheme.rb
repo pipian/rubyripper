@@ -258,6 +258,7 @@ class FileScheme
       when 'wav' then '.wav'
       when 'nero' then '.m4a'
       when 'wavpack' then '.wv'
+      when 'opus' then '.opus'
       when 'other' then @otherExtension
     end
   end

@@ -112,6 +112,12 @@ module Preferences
     # Pass wavpack parameters
     attr_accessor :settingsWavpack
     
+    # Use Opus
+    attr_accessor :opus
+    
+    # Pass Opus parameters
+    attr_accessor :settingsOpus
+    
     # Use other codec
     attr_accessor :other
 
