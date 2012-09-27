@@ -22,6 +22,11 @@
 # the structure of a disc. It is used by advanced burning programs.
 # The assumption is made that all tracks are ripped, why else would
 # you need a cuesheet?
+
+require 'rubyripper/system/fileAndDir'
+require 'rubyripper/preferences/main'
+require 'rubyripper/system/dependency'
+
 class Cuesheet
   
   FRAMES_A_SECOND = 75
@@ -38,15 +43,15 @@ class Cuesheet
     @prefs = prefs ? prefs : Preferences::Main.instance()
     @deps = deps ? deps : Dependency.instance()
     @md = @disc.metadata
-    @cuesheet = Array.new
+    @cuesheet = Array.new # for testing purposes
   end
 
-  def save
-    @prefs.codecs.each do |codec|
-      printDiscData
-      @prefs.image ? printTrackDataImage(codec) : printTrackData(codec)
-      saveCuesheet(codec)
-    end
+  # return an array with the cuesheet for a codec
+  def save(codec)
+    @cuesheet = Array.new
+    printDiscData
+    @prefs.image ? printTrackDataImage(codec) : printTrackData(codec)
+    @cuesheet
   end
 
   # for testing purposes
@@ -98,7 +103,7 @@ private
   def printDataImageOtherTracks(track)
     printTrackLine(track)
     printTrackMetadata(track)
-    printIndexImageOtherTracks(track) if track != 1
+    printIndexImageOtherTracks(track)
   end
   
    #writes the location of the file in the Cue
@@ -198,11 +203,5 @@ private
         @cuesheet << "    INDEX 01 #{time(0)}"
       end
     end
-  end
-  
-  def saveCuesheet(codec)
-    file = File.new(@fileScheme.getCueFile(codec), 'w')
-    @cuesheet.each{|line| file.puts(line)}
-    file.close()
   end
 end

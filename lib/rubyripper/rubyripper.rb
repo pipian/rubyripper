@@ -87,7 +87,7 @@ class Rubyripper
   
   def waitForCuesheet
     @disc.finishExtendedTocScan(@log)
-    @disc.saveCuesheet(@fileScheme)
+    @prefs.codecs.each{|codec| @file.write(@fileScheme.getCueFile(codec), @disc.getCuesheet(codec, fileScheme))}
   end
 
   def calculatePercentageUpdateForProgressbar()
