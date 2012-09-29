@@ -1119,7 +1119,7 @@ attr_accessor :artist, :album, :genre, :year, :tracklist, :varArtists, :discNumb
 
 	def searchMetadata
  		if File.exist?(@settings['freedbCache'])
-			@metadataFile = YAML.load(File.open(@settings['freedbCache']))
+			@metadataFile = YAML.load_file(@settings['freedbCache'])
 			#in case it got corrupted somehow
 			@metadataFile = Hash.new if @metadataFile.class != Hash
 		else
