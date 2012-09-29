@@ -231,15 +231,17 @@ private
     @out.puts ' 8) ' + _("Nero options passed") + ": %s" % [@prefs.settingsNero]
     @out.puts ' 9) ' + _("Wavpack %s") % [showBool(@prefs.wavpack)]
     @out.puts '10) ' + _("Wavpack options passed") + ": %s" % [@prefs.settingsWavpack]
-    @out.puts '11) ' + _("Wav %s") % [showBool(@prefs.wav)]
-    @out.puts '12) ' + _("Other codec %s") % [showBool(@prefs.other)]
-    @out.puts '13) ' + _("Commandline passed") + ": %s" % [@prefs.settingsOther]
-    @out.puts '14) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
-    @out.puts '15) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.maxThreads]
-    @out.puts '16) ' + _("Replace spaces with underscores %s") % [showBool(@prefs.noSpaces)]
-    @out.puts '17) ' + _("Downsize all capital letters in filenames %s") %[showBool(@prefs.noCapitals)]
-    @out.puts '18) ' + _("Normalize program") + ": %s" % [@prefs.normalizer]
-    @out.puts '19) ' + _("Normalize modus") + ": %s" % [@prefs.gain]
+    @out.puts '11) ' + _("Opus %s") % [showBool(@prefs.opus)]
+    @out.puts '12) ' + _("Opus options passed") + ": %s" % [@prefs.settingsOpus]
+    @out.puts '13) ' + _("Wav %s") % [showBool(@prefs.wav)]
+    @out.puts '14) ' + _("Other codec %s") % [showBool(@prefs.other)]
+    @out.puts '15) ' + _("Commandline passed") + ": %s" % [@prefs.settingsOther]
+    @out.puts '16) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
+    @out.puts '17) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.maxThreads]
+    @out.puts '18) ' + _("Replace spaces with underscores %s") % [showBool(@prefs.noSpaces)]
+    @out.puts '19) ' + _("Downsize all capital letters in filenames %s") %[showBool(@prefs.noCapitals)]
+    @out.puts '20) ' + _("Normalize program") + ": %s" % [@prefs.normalizer]
+    @out.puts '21) ' + _("Normalize modus") + ": %s" % [@prefs.gain]
     @out.puts '99) ' + _("Back to settings main menu")
     @out.puts ""
     @int.get("Please type the number of the setting you wish to change", 99)
@@ -264,16 +266,19 @@ private
       when 9 then switchBool('wavpack')
       when 10 then @prefs.settingsWavpack = \
         @string.get(_("Wavpack options passed"), @prefs.settingsWavpack)
-      when 11 then switchBool('wav')
-      when 12 then switchBool('other')
-      when 13 then setOtherCodec()
-      when 14 then switchBool('playlist')
-      when 15 then @prefs.maxThreads = \
+      when 11 then switchBool('opus')
+      when 12 then @prefs.settingsOpus = \
+        @string.get(_("Opus options passed"), @prefs.settingsOpus)
+      when 13 then switchBool('wav')
+      when 14 then switchBool('other')
+      when 15 then setOtherCodec()
+      when 16 then switchBool('playlist')
+      when 17 then @prefs.maxThreads = \
         @int.get(_("Maximum extra encoding threads"), 2)
-      when 16 then switchBool('noSpaces')
-      when 17 then switchBool('noCapitals')
-      when 18 then setNormalizer()
-      when 19 then setNormalizeModus()
+      when 18 then switchBool('noSpaces')
+      when 19 then switchBool('noCapitals')
+      when 20 then setNormalizer()
+      when 21 then setNormalizeModus()
     else noValidChoiceMessage(choice)
     end
     loopSubMenuCodecs() unless choice == 99

@@ -143,15 +143,17 @@ Feature: Manage rubyripper preferences
        8) Nero options passed: -q 0.5
        9) Wavpack [ ]
       10) Wavpack options passed: 
-      11) Wav [ ]
-      12) Other codec [ ]
-      13) Commandline passed: flac %i %o.flac
-      14) Playlist support [*]
-      15) Maximum extra encoding threads: 2
-      16) Replace spaces with underscores [ ]
-      17) Downsize all capital letters in filenames [ ]
-      18) Normalize program: none
-      19) Normalize modus: album
+      11) Opus [ ]
+      12) Opus options passed: --bitrate 160
+      13) Wav [ ]
+      14) Other codec [ ]
+      15) Commandline passed: flac %i %o.flac
+      16) Playlist support [*]
+      17) Maximum extra encoding threads: 2
+      18) Replace spaces with underscores [ ]
+      19) Downsize all capital letters in filenames [ ]
+      20) Normalize program: none
+      21) Normalize modus: album
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
@@ -172,14 +174,16 @@ Feature: Manage rubyripper preferences
         | 9  |                    |
         | 10 | -f                 |
         | 11 |                    |
-        | 12 |                    |
-        | 13 | lame "%i" "%o".mp3 |
+        | 12 | --bitrate 200      |
+        | 13 |                    |
         | 14 |                    |
-        | 15 | 3                  |
+        | 15 | lame "%i" "%o".mp3 |
         | 16 |                    |
-        | 17 |                    |
-        | 18 | 2                  |
-        | 19 | 2                  |
+        | 17 | 3                  |
+        | 18 |                    |
+        | 19 |                    |
+        | 20 | 2                  |
+        | 21 | 2                  |
 
       And I press ENTER "3" times to close the application
       Then the output should contain:
@@ -196,15 +200,17 @@ Feature: Manage rubyripper preferences
        8) Nero options passed: -q 0.6
        9) Wavpack [*]
       10) Wavpack options passed: -f
-      11) Wav [*]
-      12) Other codec [*]
-      13) Commandline passed: lame "%i" "%o".mp3
-      14) Playlist support [ ]
-      15) Maximum extra encoding threads: 3
-      16) Replace spaces with underscores [*]
-      17) Downsize all capital letters in filenames [*]
-      18) Normalize program: replaygain
-      19) Normalize modus: track
+      11) Opus [*]
+      12) Opus options passed: --bitrate 200
+      13) Wav [*]
+      14) Other codec [*]
+      15) Commandline passed: lame "%i" "%o".mp3
+      16) Playlist support [ ]
+      17) Maximum extra encoding threads: 3
+      18) Replace spaces with underscores [*]
+      19) Downsize all capital letters in filenames [*]
+      20) Normalize program: replaygain
+      21) Normalize modus: track
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
