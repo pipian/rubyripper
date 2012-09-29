@@ -27,6 +27,7 @@ module Preferences
       @data = @prefs.data()
       @file = fileAndDir ? fileAndDir : FileAndDir.instance
       save()
+      @data.setActiveCodecs()
     end
 
     private

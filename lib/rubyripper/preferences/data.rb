@@ -18,17 +18,22 @@
 #The Data class stores all preferences
 module Preferences
   class Data
+
+    def codecs
+      @codecs ||= setActiveCodecs()
+    end
     
     # return all active codecs in an array
-    def codecs
-      codecs = Array.new
-      codecs << 'flac' if flac
-      codecs << 'mp3' if mp3
-      codecs << 'vorbis' if vorbis
-      codecs << 'wav' if wav
-      codecs << 'nero' if nero
-      codecs << 'other' if other
-      codecs
+    def setActiveCodecs
+      @codecs = Array.new
+      @codecs << 'flac' if flac
+      @codecs << 'mp3' if mp3
+      @codecs << 'vorbis' if vorbis
+      @codecs << 'wav' if wav
+      @codecs << 'nero' if nero
+      @codecs << 'opus' if opus
+      @codecs << 'other' if other
+      @codecs
     end
     
     # RIPPING PREFERENCES
