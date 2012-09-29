@@ -85,6 +85,7 @@ private
     isFound?('lame') if @prefs.mp3
     isFound?('neroAacEnc') if @prefs.nero
     isFound?('wavpack') if @prefs.wavpack
+    isFound?('opusenc') if @prefs.opus
     isFound?('normalize') if @prefs.normalizer == 'normalize'
 
     if @prefs.normalizer == 'replaygain'
