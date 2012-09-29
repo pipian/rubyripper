@@ -41,7 +41,7 @@ attr_reader :status
   def launch(command, filename=false, noTranslations=nil)
     return true if command.empty?
     program = command.split[0]
-    command = "LANG=C; #{command}" if noTranslations
+    command = "LC_ALL=C; #{command}" if noTranslations
     puts "DEBUG: #{command}" if @prefs.debug
 
     if @deps.installed?(program)
