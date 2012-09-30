@@ -51,7 +51,7 @@ module Preferences
       @data.createCue = true
       @data.image = false
       @data.ripHiddenAudio = true
-      @data.minLengthHiddenTrack = 2
+      @data.minLengthHiddenTrack = 6
       @data.preGaps = 'prepend'
       @data.preEmphasis = 'cue'
     end
