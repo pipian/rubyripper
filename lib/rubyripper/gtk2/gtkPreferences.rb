@@ -109,22 +109,7 @@ class GtkPreferences
     @prependPregaps.active = @prefs.preGaps == 'prepend'
     @correctPreEmphasis.active = @prefs.preEmphasis == 'sox'
     @doNotCorrectPreEmphasis.active = @prefs.preEmphasis == 'cue'
-#codec settings
-    @flac.active = @prefs.flac
-    @vorbis.active = @prefs.vorbis
-    @mp3.active = @prefs.mp3
-    @nero.active = @prefs.nero
-    @wavpack.active = @prefs.wavpack
-    @opus.active = @prefs.opus
-    @wav.active = @prefs.wav
-    @other.active = @prefs.other
-    @flacEntry.text = @prefs.settingsFlac
-    @vorbisEntry.text = @prefs.settingsVorbis
-    @mp3Entry.text = @prefs.settingsMp3
-    @neroEntry.text = @prefs.settingsNero
-    @wavpackEntry.text = @prefs.settingsWavpack
-    @opusEntry.text = @prefs.settingsOpus
-    @otherEntry.text = @prefs.settingsOther
+#codec settings (codecs itself are loaded when the objects are created)
     @playlist.active = @prefs.playlist
     @noSpaces.active = @prefs.noSpaces
     @noCapitals.active = @prefs.noCapitals
@@ -189,21 +174,10 @@ class GtkPreferences
     @prefs.preGaps = @appendPregaps.active? ? 'append' : 'prepend'
     @prefs.preEmphasis = @correctPreEmphasis.active? ? 'sox' : 'cue'
 #codec settings
-    @prefs.flac = @flac.active?
-    @prefs.vorbis = @vorbis.active?
-    @prefs.mp3 = @mp3.active?
-    @prefs.nero = @nero.active?
-    @prefs.wavpack = @wavpack.active?
-    @prefs.opus = @opus.active?
-    @prefs.wav = @wav.active?
-    @prefs.other = @other.active?
-    @prefs.settingsFlac = @flacEntry.text
-    @prefs.settingsVorbis = @vorbisEntry.text
-    @prefs.settingsMp3 = @mp3Entry.text
-    @prefs.settingsNero = @neroEntry.text
-    @prefs.settingsWavpack = @wavpackEntry.text
-    @prefs.settingsOpus = @opusEntry.text
-    @prefs.settingsOther = @otherEntry.text
+    @codecRows.each do |codec, objects|
+      @prefs.send(codec + '=', true)
+      @prefs.send('settings' + codec.capitalize + '=', objects[1].text)
+    end
     @prefs.playlist = @playlist.active?
     @prefs.noSpaces = @noSpaces.active?
     @prefs.noCapitals = @noCapitals.active?
@@ -477,47 +451,87 @@ It is recommended to enable this option.")
     @image.signal_connect("clicked"){createSingle()}
   end
 
-  def buildFrameSelectAudioCodecs # Select audio codecs frame
-    @table70 = newTable(rows=9, columns=2)
-#objects 1st column
-    @flac = Gtk::CheckButton.new(_('Flac'))
-    @vorbis = Gtk::CheckButton.new(_('Vorbis'))
-    @mp3=  Gtk::CheckButton.new(_('Lame MP3'))
-    @nero = Gtk::CheckButton.new(_('Nero AAC'))
-    @wavpack = Gtk::CheckButton.new(_('Wavpack'))
-    @opus = Gtk::CheckButton.new(_('Opus'))
-    @wav = Gtk::CheckButton.new(_('Wav'))
-    @other = Gtk::CheckButton.new(_('Other'))
-    @expander70 = Gtk::Expander.new(_('Show options for "Other"'))
-#objects 2nd column
-    @flacEntry= Gtk::Entry.new()
-    @vorbisEntry= Gtk::Entry.new()
-    @mp3Entry= Gtk::Entry.new()
-    @neroEntry = Gtk::Entry.new()
-    @wavpackEntry = Gtk::Entry.new()
-    @opusEntry = Gtk::Entry.new()
-    @otherEntry= Gtk::Entry.new()
-#fill expander
-    @legend = Gtk::Label.new(_("%a=artist   %g=genre   %t=trackname   %f=codec\n%b=album   %y=year   %n=track   %va=various artist\n%o = outputfile   %i = inputfile"))
-    @expander70.add(@legend)
-#pack_objects
-    @table70.attach(@flac, 0, 1, 0, 1, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 1st row
-    @table70.attach(@vorbis, 0, 1, 1, 2, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 2nd row
-    @table70.attach(@mp3, 0, 1, 2, 3, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 3rd row
-    @table70.attach(@nero, 0, 1, 3, 4, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 4th row
-    @table70.attach(@wavpack, 0, 1, 4, 5, Gtk::FILL, Gtk::SHRINK, 0, 0) #1st column, 5th row
-    @table70.attach(@opus, 0, 1, 5, 6, Gtk::FILL, Gtk::SHRINK, 0, 0) # 1st column, 6th row
-    @table70.attach(@wav, 0, 2, 6, 7, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 7th row
-    @table70.attach(@other, 0, 1, 7, 8, Gtk::FILL, Gtk::SHRINK, 0, 0) # 1st column, 8th row
-    @table70.attach(@expander70, 0, 2, 8, 9, Gtk::FILL, Gtk::SHRINK, 0, 0) #both columns, 9th row
-    @table70.attach(@flacEntry, 1, 2, 0, 1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd column, 1st row
-    @table70.attach(@vorbisEntry, 1, 2, 1, 2, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) #2nd column, 2nd row
-    @table70.attach(@mp3Entry, 1, 2, 2, 3, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 3rd row
-    @table70.attach(@neroEntry, 1, 2, 3, 4, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 4th row
-    @table70.attach(@wavpackEntry, 1, 2, 4, 5, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 5th row
-    @table70.attach(@opusEntry, 1, 2, 5, 6, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 6th row
-    @table70.attach(@otherEntry, 1, 2, 7, 8, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0) # 2nd column, 8th row
-    @frame70 = newFrame(_('Select audio codecs'), child=@table70)
+  def buildFrameSelectAudioCodecs # Select audio codecs frame   
+    @codecRows = Hash.new    
+    @prefs.codecs.each{|codec| createCodecRow(codec)}
+    @selectCodecsTable = newTable(@codecRows.size + 1, columns = 3)
+    createCodecsTable()
+    @frame70 = newFrame(_('Active audio codecs'), child=@selectCodecsTable)
+  end
+  
+  def createCodecRow(codec)
+    @codecRows[codec] = [Gtk::Label.new(codec.capitalize)]
+    @codecRows[codec][0].set_alignment(0, 0.5)
+    if codec == 'wav'
+      @codecRows[codec] << Gtk::Label.new(_('No settings available'))
+      @codecRows[codec][1].set_alignment(0, 0.5)
+    else
+      @codecRows[codec] << Gtk::Entry.new()
+      @codecRows[codec][1].text = @prefs.send('settings' + codec.capitalize)
+    end
+    @codecRows[codec] << Gtk::Button.new(Gtk::Stock::REMOVE)
+    addTooltipForOtherCodec(@codecRows[codec][1]) if codec == 'other' 
+            
+    # connect the remove button signal
+    @codecRows[codec][2].signal_connect("button_release_event") do |a, b|
+      @codecRows[codec].each{|object| @selectCodecsTable.remove(object)}
+      @codecRows.delete(codec)
+      @prefs.send(codec + '=', false)
+      updateCodecsView()
+    end
+  end
+  
+  def updateCodecsView
+    @selectCodecsTable.each{|child| @selectCodecsTable.remove(child)}
+    @selectCodecsTable.resize(@codecRows.size + 1, columns = 3)
+    createCodecsTable()
+    @selectCodecsTable.show_all()
+  end
+  
+  def createCodecsTable
+    top = 0
+    @codecRows.each do |codec, row|
+      @selectCodecsTable.attach(row[0], 0, 1, top, top+1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+      @selectCodecsTable.attach(row[1], 1, 2, top, top+1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0)
+      @selectCodecsTable.attach(row[2], 2, 3, top, top+1, Gtk::FILL, Gtk::SHRINK, 0, 0)  
+      top += 1
+    end
+    
+    createAddCodecRow()
+  end
+  
+  def addTooltipForOtherCodec(entry)
+    entry.tooltip_text = _('%a=artist %g=genre %t=trackname %f=codec %b=album 
+%y=year %n=track %va=various artist %o=outputfile %i=inputfile') 
+  end
+  
+  def createAddCodecRow
+    @addCodecComboBox = Gtk::ComboBox.new()
+    @prefs.allCodecs.each do |codec|
+      @addCodecComboBox.append_text(codec.capitalize) unless @codecRows.key?(codec)
+    end
+    
+    if @addCodecLabel.nil?
+      @addCodecLabel = Gtk::Label.new(_('Codec'))
+      @addCodecLabel.set_alignment(0, 0.5)
+      @addCodecButton = Gtk::Button.new(Gtk::Stock::ADD)
+    
+      # create the signal for the button
+      @addCodecButton.signal_connect("button_release_event") do |a, b|
+        
+        codec = @addCodecComboBox.active_text
+        if not codec.nil?
+          createCodecRow(codec.downcase)
+          updateCodecsView()
+        end
+      end
+    end
+    
+    # put the row into the table
+    top = @codecRows.size
+    @selectCodecsTable.attach(@addCodecLabel, 0, 1, top, top+1, Gtk::FILL, Gtk::SHRINK, 0, 0)
+    @selectCodecsTable.attach(@addCodecComboBox, 1, 2, top, top+1, Gtk::FILL|Gtk::EXPAND, Gtk::SHRINK, 0, 0)
+    @selectCodecsTable.attach(@addCodecButton, 2, 3, top, top+1, Gtk::FILL, Gtk::SHRINK, 0, 0)
   end
 
   def buildFrameCodecRelated #Encoding related frame
