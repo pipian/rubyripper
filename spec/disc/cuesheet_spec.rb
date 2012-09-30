@@ -46,12 +46,18 @@ class MetadataStub
   def trackname(track) ; "Title track #{track}" ; end
 end
 
+class FileAndDirStub
+  def getFile(codec, track)
+    track == nil ? '/home/test/Image_rip.flac' : "/home/test/Track_#{track}.flac"
+  end
+end
+
 # A nice source for info is http://wiki.hydrogenaudio.org/index.php?title=EAC_and_Cue_Sheets
 describe Cuesheet do
 
   let(:disc) {DiscStub.new()}
   let(:cdrdao) {double('ScanDiscCdrdao').as_null_object}
-  let(:fileScheme) {double('FileScheme').as_null_object}
+  let(:fileScheme) {FileAndDirStub.new()}
   let(:fileAndDir) {double('FileAndDir').as_null_object}
   let(:prefs) {double('Preferences::Main').as_null_object}
   let(:deps) {double('Dependency').as_null_object}
@@ -67,14 +73,13 @@ describe Cuesheet do
   context "When printing the track info for image rips" do
     
     before(:each) do
-      @cuesheet = ['FILE "image_rip.flac" WAVE', 
+      @cuesheet = ['FILE "Image_rip.flac" WAVE', 
                    '  TRACK 01 AUDIO', '    TITLE "Title track 1"', 
                    '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
                    '  TRACK 02 AUDIO', '    TITLE "Title track 2"', 
                    '    PERFORMER "Iron Maiden"', '    INDEX 01 00:03:00',
                    '  TRACK 03 AUDIO', '    TITLE "Title track 3"', 
                    '    PERFORMER "Iron Maiden"', '    INDEX 01 00:06:00']
-      fileScheme.should_receive(:getFile).and_return '/home/test/image_rip.flac'
     end
     
     it "should handle the default case for a disc correctly" do
@@ -111,5 +116,67 @@ describe Cuesheet do
       cue.test_printTrackDataImage('flac')
       cue.cuesheet.should == @cuesheet
     end
+  end
+  
+  context "When printing the track info for image rips" do
+    before(:each) do
+      cdrdao.stub!(:preEmph?).and_return false
+      cdrdao.stub!(:getPregapSectors).and_return 0
+      prefs.stub!(:preGaps).and_return 'prepend'
+      @cuesheet = ['FILE "Track_1.flac" WAVE',
+                   '  TRACK 01 AUDIO', '    TITLE "Title track 1"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
+                   'FILE "Track_2.flac" WAVE',
+                   '  TRACK 02 AUDIO', '    TITLE "Title track 2"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
+                   'FILE "Track_3.flac" WAVE',
+                   '  TRACK 03 AUDIO', '    TITLE "Title track 3"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00']
+    end
+    
+    it "should handle the default case for a disc correctly" do
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    it "should set the pre-emphasis flag if the preference is marking in cuesheet" do
+      prefs.stub!(:preEmphasis).and_return 'cue'
+      cdrdao.stub!(:preEmph?).with(1).and_return false
+      cdrdao.stub!(:preEmph?).with(2).and_return true
+      cdrdao.stub!(:preEmph?).with(3).and_return false
+      @cuesheet.insert(9, '    FLAGS PRE')
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    it "should skip the pre-emphasis flag if the preference is decoding with sox" do
+      prefs.stub!(:preEmphasis).and_return 'sox'
+      cdrdao.stub!(:preEmph?).with(1).and_return false
+      cdrdao.stub!(:preEmph?).with(2).and_return true
+      cdrdao.stub!(:preEmph?).with(3).and_return false
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    it "should print the pregap correctly if preference is prepend" do
+      cdrdao.stub!(:getPregapSectors).with(1).and_return 0
+      cdrdao.stub!(:getPregapSectors).with(2).and_return 40
+      cdrdao.stub!(:getPregapSectors).with(3).and_return 0
+      @cuesheet.insert(9, '    INDEX 00 00:00:00')
+      @cuesheet[10] = '    INDEX 01 00:00:40'
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    #it "should print the pregap correctly if preference is append" do
+    #  prefs.stub!(:preGaps).and_return 'append'
+    #  cdrdao.stub!(:getPregapSectors).with(1).and_return 0
+    #  cdrdao.stub!(:getPregapSectors).with(2).and_return 40
+    #  cdrdao.stub!(:getPregapSectors).with(3).and_return 0
+    #  @cuesheet.insert(9, '    INDEX 00 00:00:00')
+    #  @cuesheet[10] = '    INDEX 01 00:00:40'
+    #  cue.test_printTrackData('flac')
+    #  cue.cuesheet.should == @cuesheet
+    #end
   end
 end

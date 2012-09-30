@@ -85,7 +85,7 @@ private
   # The trackinfo for an image rip is relatively simple, since we don't have to account
   # for the prepend / append preference since it's not relevant for image rips.
   def printTrackDataImage(codec)
-    writeFileLine(codec)
+    printFileLine(codec)
     (1..@disc.audiotracks).each do |track|
       track == 1 ? printDataImageFirstTrack(track) : printDataImageOtherTracks(track)
     end
@@ -107,7 +107,7 @@ private
   end
   
    #writes the location of the file in the Cue
-  def writeFileLine(codec, track=nil)
+  def printFileLine(codec, track=nil)
     @cuesheet << "FILE \"#{File.basename(@fileScheme.getFile(codec, track))}\" #{getCueFileType(codec)}"
   end
   
@@ -147,17 +147,42 @@ private
     end
   end
   
+  # Start the logic for rips that are based on track ripping
   def printTrackData(codec)
-    puts "WARNING: Cuesheets for track ripping doesn't work yet !!"
+    @prefs.preGaps == 'prepend' ? printLinesPrepend(codec) : printLinesAppend(codec)
+  end
+    
+  def printLinesPrepend(codec)
+    (1..@disc.audiotracks).each do |track|
+      printFileLine(codec, track)
+      printTrackLine(track)
+      printTrackMetadata(track)
+      printFlags(track)
+      printIndexTrack(track)
+    end
+  end
+  
+  def printLinesAppend(codec)
+    puts "WARNING: Appending gaps is not working currently!"
+  end
+  
+  def printFlags(track)
+    if @cdrdao.preEmph?(track) && @prefs.preEmphasis == 'cue'
+      @cuesheet << '    FLAGS PRE'
+    end
+  end
+  
+  def printIndexTrack(track)
+    if @cdrdao.getPregapSectors(track) == 0
+      @cuesheet << "    INDEX 01 #{time(0)}"
+    else
+      @cuesheet << "    INDEX 00 #{time(0)}"
+      @cuesheet << "    INDEX 01 #{time(@cdrdao.getPregapSectors(track))}"
+    end
   end
   
   def repair_printTrackData(codec)
     (1..@disc.audiotracks).each do |track|
-      if @cdrdao.preEmph?(track) && (@prefs.preEmphasis == 'cue' || !@deps.installed?('sox'))
-        @cuesheet << "FLAGS PRE"
-        puts "Added PRE(emphasis) flag for track #{track}." if @settings['debug']
-      end
-
       # do not put Track 00 AUDIO, but instead only mention the filename
       # when a hidden track exists first enter the trackinfo, then the file
       if track == 1 && @disc.getStartSector(HIDDEN_FIRST_TRACK)
