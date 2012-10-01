@@ -38,6 +38,7 @@ module Preferences
     def save
       content = String.new
       @data.instance_variables.each do |var|
+        next if var == :@codecs
         content << "#{var[1..-1]}=#{@data.send(var[1..-1].to_sym)}\n"
       end
 
