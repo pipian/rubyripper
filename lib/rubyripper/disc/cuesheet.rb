@@ -32,6 +32,7 @@ class Cuesheet
   FRAMES_A_SECOND = 75
   FRAMES_A_MINUTE = 60 * FRAMES_A_SECOND
   HIDDEN_FIRST_TRACK = 0
+  FIRST_TRACK = 1
   
   attr_reader :cuesheet
   
@@ -86,26 +87,18 @@ private
   # for the prepend / append preference since it's not relevant for image rips.
   def printTrackDataImage(codec)
     printFileLine(codec)
-    (1..@disc.audiotracks).each do |track|
-      track == 1 ? printDataImageFirstTrack(track) : printDataImageOtherTracks(track)
+    (1..@disc.audiotracks).each  do |track|
+      printTrackLine(track)
+      printTrackMetadata(track)
+      if track == FIRST_TRACK
+        printPregapForHiddenTrack()
+        printIndexFirstTrack()
+      else
+        printIndexImageOtherTracks(track)
+      end
     end
   end
-  
-  # First track is handled differently because of a possible hidden track before track 1
-  # This in fact leads to the special case of a track zero
-  def printDataImageFirstTrack(track)
-    printTrackLine(track)
-    printPregapForHiddenTrack(track)
-    printTrackMetadata(track)
-    printIndexImageFirstTrack(track)
-  end
-  
-  def printDataImageOtherTracks(track)
-    printTrackLine(track)
-    printTrackMetadata(track)
-    printIndexImageOtherTracks(track)
-  end
-  
+
    #writes the location of the file in the Cue
   def printFileLine(codec, track=nil)
     @cuesheet << "FILE \"#{File.basename(@fileScheme.getFile(codec, track))}\" #{getCueFileType(codec)}"
@@ -114,25 +107,31 @@ private
   def printTrackLine(track)
     @cuesheet << "  TRACK #{sprintf("%02d", track)} AUDIO"
   end
-  
-  # if the hidden audio is not ripped, only write a pregap tag
-  def printPregapForHiddenTrack(track)
-    if @prefs.ripHiddenAudio == false && @disc.getStartSector(track) > 0
-      @cuesheet << "  PREGAP #{time(@disc.getStartSector(track))}"
-    end
-  end
-  
+
   # write the info for a single track
   def printTrackMetadata(track)
     @cuesheet << "    TITLE \"#{@md.trackname(track)}\""
     @cuesheet << "    PERFORMER \"#{@md.various? ? @md.getVarArtist(track) : @md.artist}\""
   end
   
+  def aHiddenTrackIsRipped
+    hiddenSectorsInMinutes = @disc.getStartSector(FIRST_TRACK) / FRAMES_A_SECOND
+    @prefs.image == false && @prefs.ripHiddenAudio == true && hiddenSectorsInMinutes >= @prefs.minLengthHiddenTrack
+  end
+  
+  # if the hidden audio is not prepended to the file, only write a pregap tag
+  def printPregapForHiddenTrack
+    if (@prefs.ripHiddenAudio == false || aHiddenTrackIsRipped()) &&
+        @disc.getStartSector(FIRST_TRACK) > 0
+      @cuesheet << "    PREGAP #{time(@disc.getStartSector(FIRST_TRACK))}"
+    end
+  end
+
   # If there are sectors before track 1, print an index 00 for sector 0
-  def printIndexImageFirstTrack(track)
-    if @prefs.ripHiddenAudio == true && @disc.getStartSector(track) > 0
+  def printIndexFirstTrack()
+    if @prefs.ripHiddenAudio == true && @disc.getStartSector(FIRST_TRACK) > 0 && !aHiddenTrackIsRipped()
       @cuesheet << "    INDEX 00 #{time(0)}"
-      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track))}"
+      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(FIRST_TRACK))}"
     else
       @cuesheet << "    INDEX 01 #{time(0)}"
     end
@@ -158,7 +157,12 @@ private
       printTrackLine(track)
       printTrackMetadata(track)
       printFlags(track)
-      printIndexTrack(track)
+      if track == FIRST_TRACK
+        printPregapForHiddenTrack()
+        printIndexFirstTrack()
+      else
+        printIndexOtherTracks(track)
+      end
     end
   end
   
@@ -172,7 +176,7 @@ private
     end
   end
   
-  def printIndexTrack(track)
+  def printIndexOtherTracks(track)
     if @cdrdao.getPregapSectors(track) == 0
       @cuesheet << "    INDEX 01 #{time(0)}"
     else

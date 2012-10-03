@@ -102,7 +102,7 @@ describe Cuesheet do
       prefs.stub!(:ripHiddenAudio).and_return false
       disc.startSectors[1] = 100
       cdrdao.stub!(:getPregapSectors).and_return 0
-      @cuesheet.insert(2, '  PREGAP 00:01:25')
+      @cuesheet.insert(4, '    PREGAP 00:01:25')
       cue.test_printTrackDataImage('flac')
       cue.cuesheet.should == @cuesheet
     end
@@ -118,11 +118,12 @@ describe Cuesheet do
     end
   end
   
-  context "When printing the track info for image rips" do
+  context "When printing the track info for prepend based track ripping" do
     before(:each) do
       cdrdao.stub!(:preEmph?).and_return false
       cdrdao.stub!(:getPregapSectors).and_return 0
       prefs.stub!(:preGaps).and_return 'prepend'
+      prefs.stub!(:image).and_return false
       @cuesheet = ['FILE "Track_1.flac" WAVE',
                    '  TRACK 01 AUDIO', '    TITLE "Title track 1"',
                    '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
@@ -141,9 +142,7 @@ describe Cuesheet do
     
     it "should set the pre-emphasis flag if the preference is marking in cuesheet" do
       prefs.stub!(:preEmphasis).and_return 'cue'
-      cdrdao.stub!(:preEmph?).with(1).and_return false
       cdrdao.stub!(:preEmph?).with(2).and_return true
-      cdrdao.stub!(:preEmph?).with(3).and_return false
       @cuesheet.insert(9, '    FLAGS PRE')
       cue.test_printTrackData('flac')
       cue.cuesheet.should == @cuesheet
@@ -151,32 +150,47 @@ describe Cuesheet do
     
     it "should skip the pre-emphasis flag if the preference is decoding with sox" do
       prefs.stub!(:preEmphasis).and_return 'sox'
-      cdrdao.stub!(:preEmph?).with(1).and_return false
       cdrdao.stub!(:preEmph?).with(2).and_return true
-      cdrdao.stub!(:preEmph?).with(3).and_return false
       cue.test_printTrackData('flac')
       cue.cuesheet.should == @cuesheet
     end
     
-    it "should print the pregap correctly if preference is prepend" do
-      cdrdao.stub!(:getPregapSectors).with(1).and_return 0
+    it "should print the pregap correctly" do
       cdrdao.stub!(:getPregapSectors).with(2).and_return 40
-      cdrdao.stub!(:getPregapSectors).with(3).and_return 0
       @cuesheet.insert(9, '    INDEX 00 00:00:00')
       @cuesheet[10] = '    INDEX 01 00:00:40'
       cue.test_printTrackData('flac')
       cue.cuesheet.should == @cuesheet
     end
-    
-    #it "should print the pregap correctly if preference is append" do
-    #  prefs.stub!(:preGaps).and_return 'append'
-    #  cdrdao.stub!(:getPregapSectors).with(1).and_return 0
-    #  cdrdao.stub!(:getPregapSectors).with(2).and_return 40
-    #  cdrdao.stub!(:getPregapSectors).with(3).and_return 0
-    #  @cuesheet.insert(9, '    INDEX 00 00:00:00')
-    #  @cuesheet[10] = '    INDEX 01 00:00:40'
-    #  cue.test_printTrackData('flac')
-    #  cue.cuesheet.should == @cuesheet
-    #end
+
+    context "When printing the info for 1st track with hidden sectors" do
+      before(:each) do
+        disc.startSectors[1] = 450 # 450 / 75 = 6 minutes
+      end
+
+      it "should mark a pregap if the sectors are not ripped" do
+        prefs.stub!(:ripHiddenAudio).and_return false
+        @cuesheet.insert(4, '    PREGAP 00:06:00')
+        cue.test_printTrackData('flac')
+        cue.cuesheet.should == @cuesheet
+      end
+
+      it "should prepend to track 1 if hidden sectors are < minutes than preference" do
+        prefs.stub!(:ripHiddenAudio).and_return true
+        prefs.stub!(:minLengthHiddenTrack).and_return 7
+        @cuesheet.insert(4, '    INDEX 00 00:00:00')
+        @cuesheet[5] = '    INDEX 01 00:06:00'
+        cue.test_printTrackData('flac')
+        cue.cuesheet.should == @cuesheet
+      end
+
+      it "should use a pregap if hidden sectors are >= minutes than preference" do
+        prefs.stub!(:ripHiddenAudio).and_return true
+        prefs.stub!(:minLengthHiddenTrack).and_return 6
+        @cuesheet.insert(4, '    PREGAP 00:06:00')
+        cue.test_printTrackData('flac')
+        cue.cuesheet.should == @cuesheet
+      end
+    end
   end
 end
