@@ -165,7 +165,7 @@ describe Cuesheet do
 
     context "When printing the info for 1st track with hidden sectors" do
       before(:each) do
-        disc.startSectors[1] = 450 # 450 / 75 = 6 minutes
+        disc.startSectors[1] = 450 # 450 / 75 = 6 seconds
       end
 
       it "should mark a pregap if the sectors are not ripped" do
@@ -175,7 +175,7 @@ describe Cuesheet do
         cue.cuesheet.should == @cuesheet
       end
 
-      it "should prepend to track 1 if hidden sectors are < minutes than preference" do
+      it "should prepend to track 1 if hidden sectors are < seconds than preference" do
         prefs.stub!(:ripHiddenAudio).and_return true
         prefs.stub!(:minLengthHiddenTrack).and_return 7
         @cuesheet.insert(4, '    INDEX 00 00:00:00')
@@ -184,7 +184,7 @@ describe Cuesheet do
         cue.cuesheet.should == @cuesheet
       end
 
-      it "should use a pregap if hidden sectors are >= minutes than preference" do
+      it "should use a pregap if hidden sectors are >= seconds than preference" do
         prefs.stub!(:ripHiddenAudio).and_return true
         prefs.stub!(:minLengthHiddenTrack).and_return 6
         @cuesheet.insert(4, '    PREGAP 00:06:00')
