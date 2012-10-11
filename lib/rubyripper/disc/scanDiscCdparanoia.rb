@@ -233,10 +233,7 @@ class ScanDiscCdparanoia
     elsif (@startSector[1] != 0 && @startSector[1] / 75.0 > @prefs.minLengthHiddenTrack)
       @startSector[0] = 0
       @lengthSector[0] = @startSector[1]
-      # otherwise prepend it to the first track
-    elsif @startSector[1] != 0
-      @lengthSector[1] += @startSector[1]
-      @startSector[1] = 0
+      # otherwise ignore it
     end
   end
 end
