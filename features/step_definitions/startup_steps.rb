@@ -20,6 +20,8 @@ Given /^rubyripper will find "([^"]*)" is inserted$/ do |disc|
     @testdisc = File.join(@testdisc, 'noAudioDisc')
   elsif disc == 'Motorhead/Inferno'
     @testdisc = File.join(@testdisc, 'normalAudioDisc')
+  elsif disc == 'aLatinEncodedDisc'
+    @testdisc = File.join(@testdisc, 'latinEncodedDisc')
   else
     raise "Unknown disc from cucumber!"
   end

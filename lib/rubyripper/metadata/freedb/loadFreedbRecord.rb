@@ -67,7 +67,7 @@ private
   def getFile(path)
     freedb = String.new
     if freedb.respond_to?(:encoding)
-      ['r:UTF-8', 'r:GB18030', 'r:ISO-8859-1'].each do |encoding|
+      ['r:UTF-8', 'r:ISO-8859-1', 'r:GB18030'].each do |encoding|
         @encoding = encoding
         freedb = @file.read(path, encoding)
         break if freedb.valid_encoding? && freedb != nil
