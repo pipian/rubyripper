@@ -64,7 +64,7 @@ private
       if value == "false" ; value = false
       elsif value == "true" ; value = true
       # replace two quotes with an empty string
-      elsif value.empty? ; value = nil
+      elsif value.empty? ; value = ''
       elsif value == "''" ; value = ''
       # replace an integer string with an integer
       elsif value.to_i > 0 || value == '0' ; value = value.to_i
