@@ -114,6 +114,11 @@ private
     @cuesheet << "    PERFORMER \"#{@md.various? ? @md.getVarArtist(track) : @md.artist}\""
   end
   
+  # print a line for the index of a track
+  def printIndexLine(index, sector)
+    @cuesheet << "    INDEX #{index} #{time(sector)}"
+  end
+
   def aHiddenTrackIsRipped
     hiddenSectorsInMinutes = @disc.getStartSector(FIRST_TRACK) / FRAMES_A_SECOND
     @prefs.image == false && @prefs.ripHiddenAudio == true && hiddenSectorsInMinutes >= @prefs.minLengthHiddenTrack
@@ -130,30 +135,26 @@ private
   # If there are sectors before track 1, print an index 00 for sector 0
   def printIndexFirstTrack()
     if @prefs.ripHiddenAudio == true && @disc.getStartSector(FIRST_TRACK) > 0 && !aHiddenTrackIsRipped()
-      @cuesheet << "    INDEX 00 #{time(0)}"
-      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(FIRST_TRACK))}"
+      printIndexLine('00', 0)
+      printIndexLine('01', @disc.getStartSector(FIRST_TRACK))
     else
-      @cuesheet << "    INDEX 01 #{time(0)}"
+      printIndexLine('01', 0)
     end
   end
 
   def printIndexImageOtherTracks(track)
     if @cdrdao.getPregapSectors(track) > 0
-      @cuesheet << "    INDEX 00 #{time(@disc.getStartSector(track))}"
-      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track) + @cdrdao.getPregapSectors(track))}"
+      printIndexLine('00', @disc.getStartSector(track))
+      printIndexLine('01', @disc.getStartSector(track) + @cdrdao.getPregapSectors(track))
     else # no pregap
-      @cuesheet << "    INDEX 01 #{time(@disc.getStartSector(track))}"
+      printIndexLine('01', @disc.getStartSector(track))
     end
   end
   
   # Start the logic for rips that are based on track ripping
   def printTrackData(codec)
-    @prefs.preGaps == 'prepend' ? printLinesPrepend(codec) : printLinesAppend(codec)
-  end
-    
-  def printLinesPrepend(codec)
     (1..@disc.audiotracks).each do |track|
-      printFileLine(codec, track)
+      @prefs.preGaps == 'prepend' ? printFileLine(codec, track) : printFileLineAppend(codec, track)
       printTrackLine(track)
       printTrackMetadata(track)
       printFlags(track)
@@ -161,15 +162,11 @@ private
         printPregapForHiddenTrack()
         printIndexFirstTrack()
       else
-        printIndexOtherTracks(track)
+        @prefs.preGaps == 'prepend' ? printIndexOtherTracks(track) : printIndexOtherTracksAppend(track)
       end
     end
   end
-  
-  def printLinesAppend(codec)
-    puts "WARNING: Appending gaps is not working currently!"
-  end
-  
+
   def printFlags(track)
     if @cdrdao.preEmph?(track) && @prefs.preEmphasis == 'cue'
       @cuesheet << '    FLAGS PRE'
@@ -178,59 +175,33 @@ private
   
   def printIndexOtherTracks(track)
     if @cdrdao.getPregapSectors(track) == 0
-      @cuesheet << "    INDEX 01 #{time(0)}"
+      printIndexLine('01', 0)
     else
-      @cuesheet << "    INDEX 00 #{time(0)}"
-      @cuesheet << "    INDEX 01 #{time(@cdrdao.getPregapSectors(track))}"
-    end
-  end
-  
-  def repair_printTrackData(codec)
-    (1..@disc.audiotracks).each do |track|
-      # do not put Track 00 AUDIO, but instead only mention the filename
-      # when a hidden track exists first enter the trackinfo, then the file
-      if track == 1 && @disc.getStartSector(HIDDEN_FIRST_TRACK)
-        writeFileLine(HIDDEN_FIRST_TRACK, 'wav')
-        trackinfo(track)
-        writeFileLine(track)
-        # if there's a hidden track, start the first track at 0
-        @cuesheet << "    INDEX 01 #{time(0)}"
-      # when no hidden track exists write the file and then the trackinfo
-      elsif track == 1
-        writeFileLine(track)
-        trackinfo(track)
-      elsif @prefs.preGaps == "prepend" || @cdrdao.getPregap(track) == 0
-        writeFileLine(track)
-        trackinfo(track)
-      else
-        trackinfo(track)
-      end
-      
-      trackindex(track)
+      printIndexLine('00', 0)
+      printIndexLine('01', @cdrdao.getPregapSectors(track))
     end
   end
 
-  def trackindex(track)
-    if @settings['pregaps'] == "append" && @cdrdao.getPregap(track) > 0 && track != 1
-      @cuesheet << "    INDEX 00 #{time(@disc.getLengthSector(track-1) - @cdrdao.getPregap(track))}"
-      writeFileLine(track)
-      @cuesheet << "    INDEX 01 #{time(0)}"
-    else
-      # There is a different handling for track 1 and the rest
-      # If no hidden audio track or modus is prepending
-      if track == 1 && @disc.getStartSector(1) > 0 && !@disc.getStartSector(0)
-        @cuesheet << "    INDEX 00 #{time(0)}"
-        @cuesheet << "    INDEX 01 #{time(@cdrdao.getPregap(track))}"
-      elsif track == 1 && @disc.getStartSector(0)
-        @cuesheet << "    INDEX 01 #{time(0)}"
-      elsif @settings['pregaps'] == "prepend" && @cdrdao.getPregap(track) > 0
-        @cuesheet << "    INDEX 00 #{time(0)}"
-        @cuesheet << "    INDEX 01 #{time(@cdrdao.getPregap(track))}"
-      elsif track == 0 # hidden track needs index 00
-        @cuesheet << "    INDEX 00 #{time(0)}"
-      else # no pregap or appended to previous which means it starts at 0
-        @cuesheet << "    INDEX 01 #{time(0)}"
-      end
+  # if gaps, print the file line + 01 index at start of next track
+  # else just write the fileline like the prepend modus at current track.
+  def printFileLineAppend(codec, track)
+    if @cdrdao.getPregapSectors(track) != 0
+      printFileLine(codec, track - 1)
+      printIndexLine('01', 0)
+    end
+
+    if @cdrdao.getPregapSectors(track + 1) == 0
+      printFileLine(codec, track)
     end
   end
+  
+  # if no gaps next track, just write 01 index
+  # else write a zero index at the end of the file
+  def printIndexOtherTracksAppend(track)
+    if @cdrdao.getPregapSectors(track + 1) == 0
+      printIndexLine('01', 0)
+    else
+      printIndexLine('00', @disc.getLengthSector(track) - @cdrdao.getPregapSectors(track + 1))
+    end
+  end 
 end

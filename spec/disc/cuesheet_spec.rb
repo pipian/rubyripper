@@ -27,9 +27,11 @@ class DiscStub
     @metadata = MetadataStub.new()
     @audiotracks = 3
     @startSectors = {1=>0, 2=>225, 3=>450}
+    @lengthSectors = {1=>225, 2=>225, 3=>225}
   end
   
   def getStartSector(track) ; @startSectors[track] ; end
+  def getLengthSector(track) ; @lengthSectors[track] ; end
 end
 
 class MetadataStub
@@ -155,7 +157,7 @@ describe Cuesheet do
       cue.cuesheet.should == @cuesheet
     end
     
-    it "should print the pregap correctly" do
+    it "should prepend the gap to the track" do
       cdrdao.stub!(:getPregapSectors).with(2).and_return 40
       @cuesheet.insert(9, '    INDEX 00 00:00:00')
       @cuesheet[10] = '    INDEX 01 00:00:40'
@@ -191,6 +193,55 @@ describe Cuesheet do
         cue.test_printTrackData('flac')
         cue.cuesheet.should == @cuesheet
       end
+    end
+  end
+  
+  context "When printing the track info for append based track ripping" do
+    before(:each) do
+      cdrdao.stub!(:preEmph?).and_return false
+      cdrdao.stub!(:getPregapSectors).and_return 0
+      prefs.stub!(:preGaps).and_return 'append'
+      prefs.stub!(:image).and_return false
+      @cuesheet = ['FILE "Track_1.flac" WAVE',
+                   '  TRACK 01 AUDIO', '    TITLE "Title track 1"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
+                   'FILE "Track_2.flac" WAVE',
+                   '  TRACK 02 AUDIO', '    TITLE "Title track 2"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
+                   'FILE "Track_3.flac" WAVE',
+                   '  TRACK 03 AUDIO', '    TITLE "Title track 3"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00']
+    end
+    
+    it "should handle the default case for a disc correctly" do
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    it "should set the pre-emphasis flag if the preference is marking in cuesheet" do
+      prefs.stub!(:preEmphasis).and_return 'cue'
+      cdrdao.stub!(:preEmph?).with(2).and_return true
+      @cuesheet.insert(9, '    FLAGS PRE')
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    it "should skip the pre-emphasis flag if the preference is decoding with sox" do
+      prefs.stub!(:preEmphasis).and_return 'sox'
+      cdrdao.stub!(:preEmph?).with(2).and_return true
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+    
+    it "should append the gaps to previous track" do
+      cdrdao.stub!(:getPregapSectors).with(3).and_return 40
+      @cuesheet[5] = '  TRACK 02 AUDIO'
+      @cuesheet[6] = '    TITLE "Title track 2"'
+      @cuesheet[7] = '    PERFORMER "Iron Maiden"'
+      @cuesheet[8] = '    INDEX 00 00:02:35'
+      @cuesheet.insert(9, 'FILE "Track_2.flac" WAVE')
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
     end
   end
 end
