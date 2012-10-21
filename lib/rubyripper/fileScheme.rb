@@ -219,7 +219,7 @@ class FileScheme
         @image[codec] = giveFileName(codec)
       else
         @files[codec] = Hash.new
-        @trackSelection.each{|track| @files[codec][track] = giveFileName(codec, track)}
+        (1..@disc.audiotracks).each{|track| @files[codec][track] = giveFileName(codec, track)}
       end
     end
     #if no hidden track is detected, getStartSector will return false
