@@ -233,15 +233,22 @@ describe Cuesheet do
       cue.cuesheet.should == @cuesheet
     end
     
-    it "should append the gaps to previous track" do
+    it "should append the gaps to previous track for gap track 3" do
       cdrdao.stub!(:getPregapSectors).with(3).and_return 40
-      @cuesheet[5] = '  TRACK 02 AUDIO'
-      @cuesheet[6] = '    TITLE "Title track 2"'
-      @cuesheet[7] = '    PERFORMER "Iron Maiden"'
-      @cuesheet[8] = '    INDEX 00 00:02:35'
-      @cuesheet.insert(9, 'FILE "Track_2.flac" WAVE')
+      @cuesheet.delete_at(10)
+      @cuesheet.insert(13, '    INDEX 00 00:02:35')
+      @cuesheet.insert(14, 'FILE "Track_3.flac" WAVE')
       cue.test_printTrackData('flac')
       cue.cuesheet.should == @cuesheet
     end
+    
+    it "should append the gaps to previous track for gap track 2" do
+      cdrdao.stub!(:getPregapSectors).with(2).and_return 40
+      @cuesheet.delete_at(5)
+      @cuesheet.insert(8, '    INDEX 00 00:02:35')
+      @cuesheet.insert(9, 'FILE "Track_2.flac" WAVE')
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end    
   end
 end

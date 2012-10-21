@@ -165,6 +165,7 @@ private
         @prefs.preGaps == 'prepend' ? printIndexOtherTracks(track) : printIndexOtherTracksAppend(track)
       end
     end
+    writeFinalTrackIndex(codec, @disc.audiotracks) if @prefs.preGaps == 'append'
   end
 
   def printFlags(track)
@@ -185,12 +186,12 @@ private
   # if gaps, print the file line + 01 index at start of next track
   # else just write the fileline like the prepend modus at current track.
   def printFileLineAppend(codec, track)
-    if @cdrdao.getPregapSectors(track) != 0
+    if @cdrdao.getPregapSectors(track - 1) != 0
       printFileLine(codec, track - 1)
       printIndexLine('01', 0)
     end
 
-    if @cdrdao.getPregapSectors(track + 1) == 0
+    if @cdrdao.getPregapSectors(track) == 0
       printFileLine(codec, track)
     end
   end
@@ -198,10 +199,17 @@ private
   # if no gaps next track, just write 01 index
   # else write a zero index at the end of the file
   def printIndexOtherTracksAppend(track)
-    if @cdrdao.getPregapSectors(track + 1) == 0
+    if @cdrdao.getPregapSectors(track) == 0
       printIndexLine('01', 0)
     else
-      printIndexLine('00', @disc.getLengthSector(track) - @cdrdao.getPregapSectors(track + 1))
+      printIndexLine('00', @disc.getLengthSector(track) - @cdrdao.getPregapSectors(track))
     end
-  end 
+  end
+  
+  def writeFinalTrackIndex(codec, track)
+    if @cdrdao.getPregapSectors(track) != 0
+      printFileLine(codec, track)
+      printIndexLine('01', 0)
+    end
+  end
 end
