@@ -183,14 +183,21 @@ private
     end
   end
 
-  # if gaps, print the file line + 01 index at start of next track
-  # else just write the fileline like the prepend modus at current track.
+  # Example if only track 2 has pre-gap
+  # Track | append | normal
+  # ------------------------
+  # 1     | false  | true
+  # 2     | false  | false
+  # 3     | true   | true
+  # 4     | false  | true
   def printFileLineAppend(codec, track)
+    # append
     if @cdrdao.getPregapSectors(track - 1) != 0
       printFileLine(codec, track - 1)
       printIndexLine('01', 0)
     end
 
+    # normal
     if @cdrdao.getPregapSectors(track) == 0
       printFileLine(codec, track)
     end
@@ -202,10 +209,12 @@ private
     if @cdrdao.getPregapSectors(track) == 0
       printIndexLine('01', 0)
     else
-      printIndexLine('00', @disc.getLengthSector(track) - @cdrdao.getPregapSectors(track))
+      printIndexLine('00', @disc.getLengthSector(track - 1) - @cdrdao.getPregapSectors(track))
     end
   end
   
+  # don't forget pregap of last track
+  # other tracks get written in the loop of next track
   def writeFinalTrackIndex(codec, track)
     if @cdrdao.getPregapSectors(track) != 0
       printFileLine(codec, track)

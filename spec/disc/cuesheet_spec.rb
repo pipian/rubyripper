@@ -164,36 +164,6 @@ describe Cuesheet do
       cue.test_printTrackData('flac')
       cue.cuesheet.should == @cuesheet
     end
-
-    context "When printing the info for 1st track with hidden sectors" do
-      before(:each) do
-        disc.startSectors[1] = 450 # 450 / 75 = 6 seconds
-      end
-
-      it "should mark a pregap if the sectors are not ripped" do
-        prefs.stub!(:ripHiddenAudio).and_return false
-        @cuesheet.insert(4, '    PREGAP 00:06:00')
-        cue.test_printTrackData('flac')
-        cue.cuesheet.should == @cuesheet
-      end
-
-      it "should prepend to track 1 if hidden sectors are < seconds than preference" do
-        prefs.stub!(:ripHiddenAudio).and_return true
-        prefs.stub!(:minLengthHiddenTrack).and_return 7
-        @cuesheet.insert(4, '    INDEX 00 00:00:00')
-        @cuesheet[5] = '    INDEX 01 00:06:00'
-        cue.test_printTrackData('flac')
-        cue.cuesheet.should == @cuesheet
-      end
-
-      it "should use a pregap if hidden sectors are >= seconds than preference" do
-        prefs.stub!(:ripHiddenAudio).and_return true
-        prefs.stub!(:minLengthHiddenTrack).and_return 6
-        @cuesheet.insert(4, '    PREGAP 00:06:00')
-        cue.test_printTrackData('flac')
-        cue.cuesheet.should == @cuesheet
-      end
-    end
   end
   
   context "When printing the track info for append based track ripping" do
@@ -233,7 +203,7 @@ describe Cuesheet do
       cue.cuesheet.should == @cuesheet
     end
     
-    it "should append the gaps to previous track for gap track 3" do
+    it "should append the gaps to previous track for last track" do
       cdrdao.stub!(:getPregapSectors).with(3).and_return 40
       @cuesheet.delete_at(10)
       @cuesheet.insert(13, '    INDEX 00 00:02:35')
@@ -242,7 +212,7 @@ describe Cuesheet do
       cue.cuesheet.should == @cuesheet
     end
     
-    it "should append the gaps to previous track for gap track 2" do
+    it "should append the gaps to track 1 for second track" do
       cdrdao.stub!(:getPregapSectors).with(2).and_return 40
       @cuesheet.delete_at(5)
       @cuesheet.insert(8, '    INDEX 00 00:02:35')
@@ -250,5 +220,48 @@ describe Cuesheet do
       cue.test_printTrackData('flac')
       cue.cuesheet.should == @cuesheet
     end    
+  end
+  
+  context "When printing the info for 1st track with hidden sectors" do
+    before(:each) do
+      disc.startSectors[1] = 450 # 450 / 75 = 6 seconds
+      cdrdao.stub!(:preEmph?).and_return false
+      cdrdao.stub!(:getPregapSectors).and_return 0
+      prefs.stub!(:preGaps).and_return 'prepend'
+      prefs.stub!(:image).and_return false
+      @cuesheet = ['FILE "Track_1.flac" WAVE',
+                   '  TRACK 01 AUDIO', '    TITLE "Title track 1"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
+                   'FILE "Track_2.flac" WAVE',
+                   '  TRACK 02 AUDIO', '    TITLE "Title track 2"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00',
+                   'FILE "Track_3.flac" WAVE',
+                   '  TRACK 03 AUDIO', '    TITLE "Title track 3"',
+                   '    PERFORMER "Iron Maiden"', '    INDEX 01 00:00:00']
+    end
+
+    it "should mark a pregap if the sectors are not ripped" do
+      prefs.stub!(:ripHiddenAudio).and_return false
+      @cuesheet.insert(4, '    PREGAP 00:06:00')
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+
+    it "should prepend to track 1 if hidden sectors are < seconds than preference" do
+      prefs.stub!(:ripHiddenAudio).and_return true
+      prefs.stub!(:minLengthHiddenTrack).and_return 7
+      @cuesheet.insert(4, '    INDEX 00 00:00:00')
+      @cuesheet[5] = '    INDEX 01 00:06:00'
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
+
+    it "should use a pregap if hidden sectors are >= seconds than preference" do
+      prefs.stub!(:ripHiddenAudio).and_return true
+      prefs.stub!(:minLengthHiddenTrack).and_return 6
+      @cuesheet.insert(4, '    PREGAP 00:06:00')
+      cue.test_printTrackData('flac')
+      cue.cuesheet.should == @cuesheet
+    end
   end
 end
