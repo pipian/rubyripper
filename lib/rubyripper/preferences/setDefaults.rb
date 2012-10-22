@@ -52,7 +52,7 @@ module Preferences
       @data.image = false
       @data.ripHiddenAudio = true
       @data.minLengthHiddenTrack = 6
-      @data.preGaps = 'prepend'
+      @data.preGaps = 'append' # see issue 527
       @data.preEmphasis = 'cue'
     end
 
