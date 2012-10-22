@@ -112,6 +112,7 @@ private
   def printTrackMetadata(track)
     @cuesheet << "    TITLE \"#{@md.trackname(track)}\""
     @cuesheet << "    PERFORMER \"#{@md.various? ? @md.getVarArtist(track) : @md.artist}\""
+    @cuesheet << "    ISRC \"#{@cdrdao.getIsrcForTrack(track)}\"" unless @cdrdao.getIsrcForTrack(track).empty?
   end
   
   # print a line for the index of a track

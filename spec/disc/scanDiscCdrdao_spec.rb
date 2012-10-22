@@ -96,6 +96,15 @@ describe ScanDiscCdrdao do
       cdrdao.preEmph?(4).should == true
       cdrdao.preEmph?(5).should == false
     end
+
+    it "should detect if a track has a ISRC code" do
+      file.should_receive(:read).and_return(%Q{// Track 3\n// Track 4\nISRC "USSM10007452"\n// Track 5})
+      cdrdao.scanInBackground()
+      cdrdao.joinWithMainThread(log)
+      cdrdao.getIsrcForTrack(3).should == ''
+      cdrdao.getIsrcForTrack(4).should == 'USSM10007452'
+      cdrdao.getIsrcForTrack(5).should == ''
+    end
     
     it "should detect data tracks" do
       file.should_receive(:read).and_return(%Q{// Track 3\n// Track 4\nTRACK DATA\n// Track 5\nTRACK DATA})

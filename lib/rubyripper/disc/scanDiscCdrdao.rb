@@ -25,9 +25,6 @@
 # cuesheet is necessary to store the gap info.
 # The scanning will take about 1 - 2 minutes.
 
-
-
-
 # TODO perhaps call the cuesheet generation as well
 
 require 'rubyripper/preferences/main'
@@ -94,6 +91,10 @@ class ScanDiscCdrdao
   def getVarArtist(track)
     @varArtists.key?(track) ? @varArtists[track] : String.new
   end
+  
+  def getIsrcForTrack(track)
+    @trackIsrc.key?(track) ? @trackIsrc[track] : String.new
+  end
 
 private
 
@@ -128,6 +129,7 @@ private
   end
   
   def setVariables
+    @trackIsrc = Hash.new
     @preEmphasis = Array.new
     @dataTracks = Array.new
     @preGap = Hash.new
@@ -158,6 +160,8 @@ private
         if $'.strip().length > 2
           @varArtists[track] = $'.strip()[1..-2] #exclude quotes
         end
+      elsif line[0..3] == 'ISRC'
+        @trackIsrc[track] = line[4..-1].strip()[1..-2] #exclude quotes
       end
     end
     @tracks = track
