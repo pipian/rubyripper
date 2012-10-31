@@ -412,18 +412,42 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   def getCRC(track=nil, trial)
+    calculateHashes(track, trial)
+    calculatePeakLevel(track, trial)
+  end
+  
+  # calculate the MD5 hash of the whole file
+  # calculate the CRC hash of the music part
+  def calculateHashes(track, trial)
+    puts "DEBUG: Start of hashes algorithm #{Time.now}." if @prefs.debug
+ 
+    @digest = Digest::MD5.new()
+    @crc32 = Zlib.crc32()
+    
+    File.open(@fileScheme.getTempFile(track, trial), 'r') do |inputfile|
+      @digest << inputfile.read(BYTES_WAV_CONTAINER)
+      
+      while (line = inputfile.gets)
+        @digest << line
+        @crc32 = Zlib.crc32(line, @crc32)
+      end
+    end
+    
+    puts "DEBUG: End of hashes algorithm #{Time.now}." if @prefs.debug
+    puts "DEBUG: MD5 Digest is #{@digest.hexdigest}." if @prefs.debug
+    puts "DEBUG: CRC Digest is #{"%08X" % [@crc32]}."
+  end
+  
+  def calculatePeakLevel(track, trial)
+    puts "DEBUG: Start of calculatePeakLevel algorithm: #{Time.now}." if @prefs.debug && trial == 1
     file = File.open(@fileScheme.getTempFile(track, trial), 'r')
     if trial == 1
-      # Calculate the MD5 and peak level while we're at it.
-      @digest = Digest::MD5.new()
-      @digest << file.sysread(BYTES_WAV_CONTAINER)
       @peakLevel = 0
     else
       file.pos += BYTES_WAV_CONTAINER
     end
     chunksize = 100000
     index = BYTES_WAV_CONTAINER
-    crc = Zlib.crc32()
     while (index < @disc.getFileSize(track))
       begin
         data = file.sysread(chunksize)
@@ -432,19 +456,19 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
         break
       end
       if trial == 1
-        @digest << data
         samples = data.unpack("v#{data.length / 2}")
         samples.each do |sample|
           @peakLevel = [@peakLevel, sample.abs].max
         end
       end
-      crc = Zlib.crc32(data, crc)
       index += chunksize
     end
     file.close()
     if trial == 1
       @peakLevel = @peakLevel.to_f / 0xFFFF * 100
     end
-    "%08X" % [crc]
+
+    puts "DEBUG: End of calculatePeakLevel algorithm: #{Time.now}." if @prefs.debug && trial == 1
+    "%08X" % [@crc32]
   end
 end
