@@ -25,20 +25,16 @@ class GtkDisc
   include GetText
   GetText.bindtextdomain("rubyripper")
 
-  attr_reader :display, :tracks_to_rip, :error, :selection, :disc
-
-  def initialize(disc=nil)
-    @disc = disc ? disc : Disc.new()
-    @selection = []
-  end
-  
+  attr_reader :display, :error, :selection, :disc
+ 
   def start
     refresh(firsttime = true)   
   end
 
   def refresh(firsttime=false)
-    @tracks_to_rip = Array.new
+    @selection = []
     @error = nil
+    @disc = Disc.new()
     @disc.scan()
 
     if @disc.status == 'ok'
