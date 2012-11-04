@@ -34,7 +34,13 @@ class GetFreedbRecord
   def queryDisc(freedbString)
     @freedbString = freedbString
     @network.setupConnection('cgi')
-    analyzeQueryResult(queryFreedbForMatches())
+
+    begin
+      analyzeQueryResult(queryFreedbForMatches())
+    rescue => error
+      puts "DEBUG: Freedb connection error: #{error.message}" if @prefs.debug
+      noRecordsFound()
+    end
   end
 
   # choose number in the array [0-XX] which result you want to return
