@@ -431,7 +431,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     @peakLevel = 0
 
     File.open(filename, 'r') do |inputfile|
-      inputfile.index = BYTES_WAV_CONTAINER
+      inputfile.pos = BYTES_WAV_CONTAINER
 
       while (data = inputfile.gets)
         samples = data.unpack("v#{data.length / 2}")
