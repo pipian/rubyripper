@@ -16,6 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/system/fileHash'
+require 'rubyripper/calcPeakLevel'
 require 'rubyripper/waveFile'
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
@@ -51,7 +52,6 @@ class SecureRip
     @timeStarted = Time.now # needed for a time break after 30 minutes
     @crcs = []
     @correctedcrc = nil
-    @peakLevel = 0
     @digest = nil
   end
 
@@ -419,30 +419,11 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     @digest = hash.md5
     @crc32 = hash.crc32
 
-    calculatePeakLevel(filename) if trial == 1
-
-    return @crc32
-  end
-  
-  # calculate the peaklevel, the header is therefore ignored
-  def calculatePeakLevel(filename)
-    puts "DEBUG: Start of calculatePeakLevel algorithm: #{Time.now}." if @prefs.debug
-
-    @peakLevel = 0
-
-    File.open(filename, 'r') do |inputfile|
-      inputfile.pos = BYTES_WAV_CONTAINER
-
-      while (data = inputfile.gets)
-        samples = data.unpack("v#{data.length / 2}")
-        samples.each do |sample|
-          @peakLevel = [@peakLevel, sample.abs].max
-        end
-      end
+    if trial == 1
+      @calcPeakLevel ||= CalcPeakLevel.new()
+      @peakLevel = @calcPeakLevel.getPeakLevel(filename)
     end
 
-    @peakLevel = @peakLevel.to_f / 0xFFFF * 100
-
-    puts "DEBUG: End of calculatePeakLevel algorithm: #{Time.now}." if @prefs.debug
+    return @crc32
   end
 end
