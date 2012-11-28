@@ -62,9 +62,9 @@ private
   # There can be none, one or multiple hits, depending on the response.
   def queryMusicBrainzForMatches()
     uri = URI::parse(File::expand_path(@musicbrainzLookupPath, @server.path))
-
     # Add necessary inclusions for proper parsing.
     query = CGI.parse(uri.query)
+
     if query['inc'][-1].nil?
       inclusions = []
     else
@@ -93,6 +93,7 @@ private
     end
     uri.query = new_query[0..-2]
 
+    puts "DEBUG: MusicBrainz URL to query disc: #{'http://musicbrainz.org' + uri.to_s}" if @prefs.debug
     # Need to parse the XML response
     return REXML::Document.new(@server.get(uri.to_s))
   end

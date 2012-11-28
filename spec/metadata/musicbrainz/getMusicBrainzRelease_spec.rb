@@ -37,6 +37,7 @@ describe GetMusicBrainzRelease do
 
   context "Given some existing inclusion parameters in the lookup path" do
     before(:each) do
+      prefs.stub!(:debug).and_return false
       http.should_receive(:path).at_least(:once).and_return "/ws/2/"
     end
 
@@ -67,6 +68,7 @@ describe GetMusicBrainzRelease do
 
   context "Given there is only an empty instance" do
     it "should not crash if there are no choices but the caller still chooses" do
+      prefs.stub!(:debug).and_return false
       getMusicBrainz.choose(0)
       getMusicBrainz.status.should == 'noChoices'
       getMusicBrainz.musicbrainzRelease.should == nil
@@ -76,6 +78,7 @@ describe GetMusicBrainzRelease do
   context "After firing a query for a disc to the MusicBrainz web service" do
 
     before(:each) do
+      prefs.stub!(:debug).and_return false
       http.should_receive(:path).at_least(:once).and_return "/ws/2/"
       prefs.should_receive(:useEarliestDate).at_least(:once).and_return false
     end

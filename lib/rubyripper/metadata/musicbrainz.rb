@@ -39,6 +39,8 @@ attr_reader :status
   # get the metadata for the disc
   def get()
     @getMusicBrainz.queryDisc(@disc.musicbrainzLookupPath)
+    puts "DEBUG: MusicBrainz status after the disc query: #{@getMusicBrainz.status}" if @prefs.debug 
+    
     if @getMusicBrainz.status == 'ok'
       @parser.parse(@getMusicBrainz.musicbrainzRelease, @disc.musicbrainzDiscid, @disc.freedbDiscid)
       @status = @parser.status
