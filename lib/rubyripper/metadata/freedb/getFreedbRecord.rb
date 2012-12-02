@@ -33,7 +33,7 @@ class GetFreedbRecord
   # handle the initial connection with the freedb server
   def queryDisc(freedbString)
     @freedbString = freedbString
-    @network.setupConnection('cgi')
+    @network.startCgiConnection(@prefs.site)
 
     begin
       analyzeQueryResult(queryFreedbForMatches())

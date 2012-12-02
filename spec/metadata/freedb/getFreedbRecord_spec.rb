@@ -22,8 +22,10 @@ describe GetFreedbRecord do
 
   # helper function to return the query message in the stub
   def setQueryReply(query=nil)
+    prefs.stub!(:debug).and_return false
+    prefs.stub!(:site).and_return 'http://freedb.freedb.org/~cddb/cddb.cgi'
     query ||= '200 blues 7F087C0A Some random artist / Some random album'
-    network.should_receive(:setupConnection).once.with('cgi')
+    network.should_receive(:startCgiConnection).once.with('http://freedb.freedb.org/~cddb/cddb.cgi')
     network.should_receive(:encode).at_least(:once).with(anything()).and_return {|a| CGI.escape(a)}
     network.should_receive(:get).with(@query_disc).and_return query
   end

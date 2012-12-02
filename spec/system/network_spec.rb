@@ -30,7 +30,7 @@ describe Network do
 
   context "When setting up a CGI connection" do
     before(:each) do
-      prefs.should_receive(:site).once
+      prefs.stub!(:debug).and_return false
       url.should_receive(:host).once.and_return 1
       url.should_receive(:port).once.and_return 2
       url.should_receive(:path).once.and_return 3
@@ -41,7 +41,7 @@ describe Network do
       uri.should_receive(:parse).once.and_return(url)
       http.should_receive(:new).with(1, 2)
       
-      network.setupConnection('cgi')
+      network.startCgiConnection('http://freedb.freedb.org/~cddb/cddb.cgi')
       network.path.should == 3
     end
     
@@ -55,7 +55,7 @@ describe Network do
       uri.should_receive(:parse).with(4).and_return proxy
       http.should_receive(:new).with(1, 2, 5, 6, 7, '')
       
-      network.setupConnection('cgi')
+      network.startCgiConnection('http://freedb.freedb.org/~cddb/cddb.cgi')
       network.path.should == 3
     end
   end

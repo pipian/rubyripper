@@ -34,42 +34,36 @@ class Network
     @cgi = cgi ? cgi : CGI
   end
   
-  # make a connection of a certain type
-  def setupConnection(type='cgi')
-    if type == 'cgi'
-      @type = 'cgi'
-      setupCgiConnection()
-    end
+  # website is the base URL without the subpath
+  # example website is: http://freedb.freedb.org/~cddb/cddb.cgi
+  def startCgiConnection(website)
+    configureCgiConnection(website)
   end
 
   # fire up a CGI command to the server
   def get(query)
-    if @type == 'cgi'
-      answer = @connection.get(query).body
-    end
-
-    return answer
+    puts "DEBUG: CGI query: #{'http://' +  @host + @path + query}" if @prefs.debug
+    @connection.get(query).body
   end
   
   # encode for a specific protocol in order to escape certain characters
   def encode(string)
-    if @type == 'cgi'
-      @cgi.escape(string)
-    end
+    @cgi.escape(string)
   end
 
 private
   # first configure the connection (with proxy if needed)
-  def setupCgiConnection
-    url = @uri.parse(@prefs.site)
+  def configureCgiConnection(website)
+    url = @uri.parse(website)
+    @host = url.host
+    @path = url.path
 
     if @deps.env('http_proxy')
       proxy = @uri.parse(@deps.env('http_proxy'))
-      @connection = @http.new(url.host, url.port, proxy.host,
+      @connection = @http.new(@host, url.port, proxy.host,
       proxy.port, proxy.user, proxy.password ? @cgi.unescape(proxy.password) : '')
     else
-      @connection = @http.new(url.host, url.port)
+      @connection = @http.new(@host, url.port)
     end
-    @path = url.path
   end
 end
