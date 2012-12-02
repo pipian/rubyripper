@@ -15,20 +15,21 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-require 'rubyripper/metadata/musicbrainz/musicbrainzWebService'
 require 'rubyripper/metadata/data'
 require 'rubyripper/preferences/main'
+require 'rubyripper/system/network'
 
 # This class can interpret MusicBrainz release XML
 class MusicBrainzReleaseParser
 attr_reader :status, :md
 
+  WEB_SERVICE_BASE_URI = 'http://musicbrainz.org/ws/2/'
   VARIOUS_ARTISTS_ID = '89ad4ac3-39f7-470e-963a-56509c546377'
   MMD_NAMESPACE = 'http://musicbrainz.org/ns/mmd-2.0#'
 
-  def initialize(md=nil, server=nil, prefs=nil)
+  def initialize(md=nil, network=nil, prefs=nil)
     @md = md ? md : Metadata::Data.new()
-    @server = server ? server : MusicBrainzWebService.new()
+    @network = network ? network : Network.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
   end
 
@@ -38,6 +39,7 @@ attr_reader :status, :md
     @musicbrainzRelease = musicbrainzRelease
     @musicbrainzDiscid = musicbrainzDiscid
     @freedbDiscid = freedbDiscid
+    @network.startCgiConnection(WEB_SERVICE_BASE_URI)
 
     analyzeResult()
     @status = 'ok'
@@ -90,7 +92,7 @@ private
             xpath = 'artist'
           end
           lookupPath = "#{xpath}/#{id}?inc=tags"
-          objectDoc = REXML::Document.new(@server.get(File::expand_path(lookupPath, @server.path)))
+          objectDoc = REXML::Document.new(@network.get(File::expand_path(lookupPath, @network.path)))
           tags = REXML::XPath::match(objectDoc, "//tag").sort {|x,y| y.attributes['count'].to_i <=> x.attributes['count'].to_i or x.elements['name'].text <=> y.elements['name'].text}
           tags.collect! {|tag| tagMap[tag.elements['name'].text]}
           tags.each do |tag|
