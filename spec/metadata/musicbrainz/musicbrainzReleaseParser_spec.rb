@@ -114,12 +114,12 @@ describe MusicBrainzReleaseParser do
         parser.md.genre.should == 'Rock'
       end
 
-      it "shouldn't set the genre if no good tag could be found" do
+      it "should leave the default genre (Unknown) if no good tag is found" do
         # By default we return no tags
         parser.parse(readRelease('spec/metadata/musicbrainz/data/oneAlbumArtist.xml'),
                      'cm9L.BbeuJ_zNOwr0C_e.K0.D0E-', '86099d0c')
 
-        parser.md.genre.should == nil
+        parser.md.genre.should == 'Unknown'
       end
 
       it "should map certain non-ID3-genre tags to ID3 genres" do
