@@ -54,7 +54,7 @@ attr_reader :status
           rescue Errno::EIO
             # normal end of input stream
           rescue Exception => exception
-            puts "DEBUG: Command #{command} failed with exception: #{exception.message}"
+            puts "DEBUG: Command #{command} failed with exception: #{exception.message}" if @prefs.debug
           end
         end
       rescue

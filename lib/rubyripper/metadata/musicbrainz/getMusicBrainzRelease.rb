@@ -94,10 +94,8 @@ private
     end
     uri.query = new_query[0..-2]
 
-    puts "DEBUG: MusicBrainz URL to query disc: #{'http://musicbrainz.org' + uri.to_s}" if @prefs.debug
     # Need to parse the XML response
     xml = @network.get(uri.to_s)
-    puts "DEBUG: XML from MusicBrainz is a Nill object!!" if xml == nil && @prefs.debug
     return REXML::Document.new(xml)
   end
 
