@@ -52,6 +52,9 @@ attr_reader :status
           begin
             stdin.each { |line| output << line }
           rescue Errno::EIO
+            # normal end of input stream
+          rescue Exception => exception
+            puts "DEBUG: Command #{command} failed with exception: #{exception.message}"
           end
         end
       rescue
