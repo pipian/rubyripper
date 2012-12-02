@@ -15,8 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
-# helper class to handle the http traffic
-require 'rubyripper/metadata/musicbrainz/musicbrainzWebService'
+require 'rubyripper/system/network'
 require 'rubyripper/preferences/main'
 
 #for parsing xml
@@ -31,16 +30,18 @@ require 'cgi'
 class GetMusicBrainzRelease
   attr_reader :status, :musicbrainzRelease, :choices
 
+  WEB_SERVICE_BASE_URI = 'http://musicbrainz.org/ws/2/'
   MMD_NAMESPACE = 'http://musicbrainz.org/ns/mmd-2.0#'
 
-  def initialize(server=nil, prefs=nil)
+  def initialize(network=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
-    @server = server ? server : MusicBrainzWebService.new()
+    @network = network ? network : Network.new()
   end
 
   # handle the initial connection with the MusicBrainz server
   def queryDisc(musicbrainzLookupPath)
     @musicbrainzLookupPath = musicbrainzLookupPath
+    @network.startCgiConnection(WEB_SERVICE_BASE_URI)
     analyzeQueryResult(queryMusicBrainzForMatches())
   end
 
@@ -61,7 +62,7 @@ private
   # Query the MusicBrainz web service for available matches.
   # There can be none, one or multiple hits, depending on the response.
   def queryMusicBrainzForMatches()
-    uri = URI::parse(File::expand_path(@musicbrainzLookupPath, @server.path))
+    uri = URI::parse(File::expand_path(@musicbrainzLookupPath, @network.path))
     # Add necessary inclusions for proper parsing.
     query = CGI.parse(uri.query)
 
@@ -95,7 +96,7 @@ private
 
     puts "DEBUG: MusicBrainz URL to query disc: #{'http://musicbrainz.org' + uri.to_s}" if @prefs.debug
     # Need to parse the XML response
-    xml = @server.get(uri.to_s)
+    xml = @network.get(uri.to_s)
     puts "DEBUG: XML from MusicBrainz is a Nill object!!" if xml == nil && @prefs.debug
     return REXML::Document.new(xml)
   end
