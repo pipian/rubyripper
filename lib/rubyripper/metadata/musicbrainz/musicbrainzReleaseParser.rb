@@ -138,7 +138,9 @@ private
     end
     # @md.genre is tricky to do at best (since all we have to go on
     # are tags of releases/groups/artists).
-    @md.genre = guessGenre
+    # only assign the genre if found (otherwise @md will have a default value)
+    bestGuessGenre = guessGenre
+    @md.genre = bestGuessGenre if bestGuessGenre
     varArtist = {}
     # We only need tracks on the disc matching our discid.
     REXML::XPath::each(@musicbrainzRelease, "medium-list/medium/disc-list/disc[@id='#{@musicbrainzDiscid}']/../../track-list/track", {'' => MMD_NAMESPACE}) do |track|
