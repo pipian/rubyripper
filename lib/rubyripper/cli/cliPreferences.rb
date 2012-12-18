@@ -221,11 +221,11 @@ private
     @out.puts ''
     @out.puts "*** " + _("CODEC PREFERENCES") + " ***"
     @out.puts ''
-    @out.puts ' 1) ' + _("Flac %s") % [showBool(@prefs.flac)]
-    @out.puts ' 2) ' + _("Flac options passed") + ": %s" % [@prefs.settingsFlac]
+    @out.puts ' 1) ' + _("FLAC %s") % [showBool(@prefs.flac)]
+    @out.puts ' 2) ' + _("FLAC options passed") + ": %s" % [@prefs.settingsFlac]
     @out.puts ' 3) ' + _("Vorbis %s") % [showBool(@prefs.vorbis)]
     @out.puts ' 4) ' + _("Oggenc options passed") + ": %s" % [@prefs.settingsVorbis]
-    @out.puts ' 5) ' + _("Lame MP3 %s") % [showBool(@prefs.mp3)]
+    @out.puts ' 5) ' + _("Lame mp3 %s") % [showBool(@prefs.mp3)]
     @out.puts ' 6) ' + _("Lame options passed") + ": %s" % [@prefs.settingsMp3]
     @out.puts ' 7) ' + _("Nero AAC %s") % [showBool(@prefs.nero)]
     @out.puts ' 8) ' + _("Nero options passed") + ": %s" % [@prefs.settingsNero]
@@ -253,7 +253,7 @@ private
       when 99 then loopMainMenu()
       when 1 then switchBool('flac')
       when 2 then @prefs.settingsFlac = \
-        @string.get(_("Flac options passed"), @prefs.settingsFlac)
+        @string.get(_("FLAC options passed"), @prefs.settingsFlac)
       when 3 then switchBool('vorbis')
       when 4 then @prefs.settingsVorbis = \
         @string.get(_("Oggenc options passed"), @prefs.settingsVorbis)

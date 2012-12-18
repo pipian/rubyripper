@@ -133,11 +133,11 @@ Feature: Manage rubyripper preferences
       """
       *** CODEC PREFERENCES ***
 
-       1) Flac [ ]
-       2) Flac options passed: --best -V
+       1) FLAC [ ]
+       2) FLAC options passed: --best -V
        3) Vorbis [*]
        4) Oggenc options passed: -q 4
-       5) Lame MP3 [ ]
+       5) Lame mp3 [ ]
        6) Lame options passed: -V 3 --id3v2-only
        7) Nero AAC [ ]
        8) Nero options passed: -q 0.5
@@ -190,11 +190,11 @@ Feature: Manage rubyripper preferences
       """
       *** CODEC PREFERENCES ***
 
-       1) Flac [*]
-       2) Flac options passed: --fast -V
+       1) FLAC [*]
+       2) FLAC options passed: --fast -V
        3) Vorbis [ ]
        4) Oggenc options passed: -q 5
-       5) Lame MP3 [*]
+       5) Lame mp3 [*]
        6) Lame options passed: -V 4
        7) Nero AAC [*]
        8) Nero options passed: -q 0.6
