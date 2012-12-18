@@ -20,7 +20,8 @@ require 'rubyripper/system/execute'
 
 # This class calculates the loudness of the file
 class CalcPeakLevel
-  MAX_DECIBEL_LEVEL_16_BIT = 96.0 
+  MAX_DECIBEL_LEVEL_16_BIT = 96.0
+  BYTES_WAV_CONTAINER = 44 # to store the type of wav file
   
   def initialize(exec=nil, deps=nil, prefs=nil)
     @exec = exec ? exec : Execute.new()
