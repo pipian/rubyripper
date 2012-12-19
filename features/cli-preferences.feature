@@ -91,7 +91,7 @@ Feature: Manage rubyripper preferences
        1) Create a cuesheet [ ]
        2) Rip to single file [ ]
        3) Rip hidden audio sectors [*]
-       4) Minimum seconds hidden track: 2
+       4) Mark as a hidden track when bigger than: 2 seconds
        5) Append or prepend audio: prepend
        6) Way to handle pre-emphasis: cue
       99) Back to settings main menu
@@ -117,7 +117,7 @@ Feature: Manage rubyripper preferences
        1) Create a cuesheet [*]
        2) Rip to single file [*]
        3) Rip hidden audio sectors [ ]
-       4) Minimum seconds hidden track: 3
+       4) Mark as a hidden track when bigger than: 3 seconds
        5) Append or prepend audio: append
        6) Way to handle pre-emphasis: sox
       99) Back to settings main menu
