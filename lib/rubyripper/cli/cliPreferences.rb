@@ -334,7 +334,7 @@ private
         'anonymous')
       when 5 then @prefs.hostname = @string.get(_("Freedb hostname"),
         'my_secret.com')
-      when 6 then @prefs.preferMusicBrainzCountries = @string.get(_("Prefer releases from countries (better,worse,...)"),
+      when 6 then @prefs.preferMusicBrainzCountries = @string.get(_("Prefer releases from countries (better, worse, ...)"),
         'US,UK,XW,XE,JP')
       when 7 then setPreferMusicBrainzDate()
       when 8 then switchBool('useEarliestDate')
