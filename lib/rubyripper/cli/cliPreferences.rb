@@ -286,8 +286,8 @@ private
 
   def setOtherCodec
     @out.puts("%a = " + _("Artist") + ", %b = " + _("Album") + ", %g = " + _("Genre") + ", %y = " + _("Year"))
-    @out.puts("%t = " + _("Trackname") + ", %n = " + _("Tracknumber") + ", %i = " + _("Inputfile"))
-    @out.puts("%o = " + _("Outputfile") + _(" (don't forget the extension)"))
+    @out.puts("%t = " + _("Trackname") + ", %n = " + _("Tracknumber") + ", %i = " + _("Input file"))
+    @out.puts("%o = " + _("Output file") + _(" (don't forget the extension)"))
     @prefs.settingsOther = @string.get(_("Commandline passed"), 'lame %i %o.mp3')
   end
 
