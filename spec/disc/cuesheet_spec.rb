@@ -90,13 +90,13 @@ describe Cuesheet do
       cue.cuesheet.should == @cuesheet
     end
     
-    it "should write the ISRC for tracks where the info is found" do
+    it "should write the ISRC for tracks where the info is found without quotes" do
       cdrdao.stub!(:getPregapSectors).and_return 0
       cdrdao.stub!(:getIsrcForTrack).with(1).and_return 'someISRCcode'
       cdrdao.stub!(:getIsrcForTrack).with(2).and_return ''
       cdrdao.stub!(:getIsrcForTrack).with(3).and_return 'someOtherISRCcode'
-      @cuesheet.insert(4, '    ISRC "someISRCcode"')
-      @cuesheet.insert(13, '    ISRC "someOtherISRCcode"')
+      @cuesheet.insert(4, '    ISRC someISRCcode')
+      @cuesheet.insert(13, '    ISRC someOtherISRCcode')
       cue.test_printTrackDataImage('flac')
       cue.cuesheet.should == @cuesheet
     end
