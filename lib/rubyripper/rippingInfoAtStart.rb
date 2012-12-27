@@ -75,7 +75,7 @@ private
     printEncoder('lame', @prefs.settingsMp3) if @prefs.mp3
 
     if @prefs.wav
-      @logString << _("Used output encoder : %s\n") % [_("Internal WAV routines")]
+      @logString << _("Used output encoder : %s\n") % [_("Internal WAVE routines")]
       @logString << _("Sample format") + "       : 44,100 Hz; 16 Bit; Stereo\n\n"
     end
     if @prefs.other
