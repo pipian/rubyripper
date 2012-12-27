@@ -109,7 +109,7 @@ private
     end
     @discid = OpenSSL::Digest.digest('SHA1', digestData)
     @discid = Base64.strict_encode64(@discid)
-    @discid.gsub!(/[+\\=]/, {'+' => '.', '/' => '_', '=' => '-'})
+    @discid.gsub!(/[+\\=\/]/, {'+' => '.', '/' => '_', '=' => '-'})
   end
 
   # now build the MusicBrainz lookup path (relative to the web services root)
