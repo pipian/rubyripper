@@ -347,7 +347,7 @@ It is recommended to enable this option.")
     @tableToc1 = newTable(rows=3, columns=3)
 #create objects
     @ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors'))
-    @markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when bigger than'))
+    @markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when longer than'))
     @markHiddenTrackLabel2 = Gtk::Label.new(_('seconds'))
     @minLengthHiddenTrackSpin = Gtk::SpinButton.new(0, 30, 1)
     @minLengthHiddenTrackSpin.value = 2.0
