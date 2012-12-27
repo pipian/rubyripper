@@ -239,7 +239,7 @@ private
     @out.puts '16) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
     @out.puts '17) ' + _("Maximum extra encoding threads") + ": %s" % [@prefs.maxThreads]
     @out.puts '18) ' + _("Replace spaces with underscores %s") % [showBool(@prefs.noSpaces)]
-    @out.puts '19) ' + _("Downsize all capital letters in filenames %s") %[showBool(@prefs.noCapitals)]
+    @out.puts '19) ' + _("Downsize all capital letters in file names %s") %[showBool(@prefs.noCapitals)]
     @out.puts '20) ' + _("Normalize program") + ": %s" % [@prefs.normalizer]
     @out.puts '21) ' + _("Normalize modus") + ": %s" % [@prefs.gain]
     @out.puts '99) ' + _("Back to settings main menu")
@@ -286,7 +286,7 @@ private
 
   def setOtherCodec
     @out.puts("%a = " + _("Artist") + ", %b = " + _("Album") + ", %g = " + _("Genre") + ", %y = " + _("Year"))
-    @out.puts("%t = " + _("Trackname") + ", %n = " + _("Tracknumber") + ", %i = " + _("Input file"))
+    @out.puts("%t = " + _("Track name") + ", %n = " + _("Tracknumber") + ", %i = " + _("Input file"))
     @out.puts("%o = " + _("Output file") + _(" (don't forget the extension)"))
     @prefs.settingsOther = @string.get(_("Commandline passed"), 'lame %i %o.mp3')
   end
@@ -363,9 +363,9 @@ private
     @out.puts "*** " + _("OTHER PREFERENCES") + " ***"
     @out.puts ''
     @out.puts ' 1) ' + _("Base directory") + ": %s" % [@prefs.basedir]
-    @out.puts ' 2) ' + _("Standard filescheme") + ": %s" % [@prefs.namingNormal]
-    @out.puts ' 3) ' + _("Various artist filescheme") + ": %s" % [@prefs.namingVarious]
-    @out.puts ' 4) ' + _("Single file rip filescheme") + ": %s" % [@prefs.namingImage]
+    @out.puts ' 2) ' + _("Standard file scheme") + ": %s" % [@prefs.namingNormal]
+    @out.puts ' 3) ' + _("Various artist file scheme") + ": %s" % [@prefs.namingVarious]
+    @out.puts ' 4) ' + _("Single file rip file scheme") + ": %s" % [@prefs.namingImage]
     @out.puts ' 5) ' + _("Log file viewer") + ": %s" % [@prefs.editor]
     @out.puts ' 6) ' + _("File manager") + ": %s" % [@prefs.filemanager]
     @out.puts ' 7) ' + _("Verbose mode %s") % [showBool(@prefs.verbose)]
@@ -403,7 +403,7 @@ private
     @out.puts("\n%a = " + _("Artist") + "\n%b = " + _("Album") +
         "\n%g = " + _("Genre")+ "\n%y = " + _("Year") + "\n%f = " +
         _("Codec") + "\n%n = " + _("Tracknumber") + "\n%t = " +
-        _("Trackname") + "\n%va = " + _("Various Artist") + "\n\n")
+        _("Track name") + "\n%va = " + _("Various Artist") + "\n\n")
 
     answer = @string.get(_("New naming scheme (q to quit)"),
       "%f/%a (%y) %b/%n - %t")

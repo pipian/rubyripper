@@ -657,7 +657,7 @@ It is recommended to enable this option.")
     @naming_various_label = Gtk::Label.new(_('Various artists:')) ; @naming_various_label.set_alignment(0.0, 0.5)
     @naming_image_label = Gtk::Label.new(_('Single file image:')) ; @naming_image_label.set_alignment(0.0, 0.5)
     @example_label =Gtk::Label.new('') ; @example_label.set_alignment(0.0, 0.5) ; @example_label.wrap = true
-    @expander100 = Gtk::Expander.new(_('Show options for "Filenaming scheme"'))
+    @expander100 = Gtk::Expander.new(_('Show options for "File naming scheme"'))
 #configure expander
     #@artist_label = Gtk::Label.new("%a = artist   %b = album   %f = codec   %g = genre\n%va = various artists   %n = track   %t = trackname   %y = year")
     @legend_label = Gtk::Label.new("%a=" + _("Artist") + " %g=" + _("Genre") + " %t=" + _("Track name") +

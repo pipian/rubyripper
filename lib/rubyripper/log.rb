@@ -175,7 +175,7 @@ class Log
 
   def newTrack(track=nil)
     @prefs.image ? add(_("Disc Image\n\n")) : add(_("Track %2d\n\n") % [track])
-    @prefs.codecs.each{|codec| add("     " + _("Filename %s\n") % [@fileScheme.getFile(codec, track)])}
+    @prefs.codecs.each{|codec| add("     " + _("File name %s\n") % [@fileScheme.getFile(codec, track)])}
     add("\n")
   end
 

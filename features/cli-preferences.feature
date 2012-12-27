@@ -151,7 +151,7 @@ Feature: Manage rubyripper preferences
       16) Playlist support [*]
       17) Maximum extra encoding threads: 2
       18) Replace spaces with underscores [ ]
-      19) Downsize all capital letters in filenames [ ]
+      19) Downsize all capital letters in file names [ ]
       20) Normalize program: none
       21) Normalize modus: album
       99) Back to settings main menu
@@ -208,7 +208,7 @@ Feature: Manage rubyripper preferences
       16) Playlist support [ ]
       17) Maximum extra encoding threads: 3
       18) Replace spaces with underscores [*]
-      19) Downsize all capital letters in filenames [*]
+      19) Downsize all capital letters in file names [*]
       20) Normalize program: replaygain
       21) Normalize modus: track
       99) Back to settings main menu
@@ -276,9 +276,9 @@ Feature: Manage rubyripper preferences
       *** OTHER PREFERENCES ***
 
        1) Base directory: ~/
-       2) Standard filescheme: %f/%a (%y) %b/%n - %t
-       3) Various artist filescheme: %f/%va (%y) %b/%n - %a - %t
-       4) Single file rip filescheme: %f/%a (%y) %b/%a - %b (%y)
+       2) Standard file scheme: %f/%a (%y) %b/%n - %t
+       3) Various artist file scheme: %f/%va (%y) %b/%n - %a - %t
+       4) Single file rip file scheme: %f/%a (%y) %b/%a - %b (%y)
        5) Log file viewer: mousepad
        6) File manager: thunar
        7) Verbose mode [ ]
@@ -306,9 +306,9 @@ Feature: Manage rubyripper preferences
       *** OTHER PREFERENCES ***
 
        1) Base directory: ~/
-       2) Standard filescheme: %f/%a (%y) %b/%n - %t
-       3) Various artist filescheme: %f/%va (%y) %b/%n - %a - %t
-       4) Single file rip filescheme: %f/%a (%y) %b/%a - %b (%y)
+       2) Standard file scheme: %f/%a (%y) %b/%n - %t
+       3) Various artist file scheme: %f/%va (%y) %b/%n - %a - %t
+       4) Single file rip file scheme: %f/%a (%y) %b/%a - %b (%y)
        5) Log file viewer: mousepad
        6) File manager: thunar
        7) Verbose mode [ ]
