@@ -58,7 +58,7 @@ describe ScanDiscCdrdao do
     
     it "should not give a warning with correct results" do
       exec.stub!(:launch).and_return('ok')
-      log.should_receive(:<<).with("No pregaps, silences, pre-emphasis or datatracks detected\n\n")
+      log.should_receive(:<<).with("No pregaps, silences, pre-emphasis or data tracks detected\n\n")
       cdrdao.scanInBackground()
       cdrdao.joinWithMainThread(log)
       cdrdao.error.nil? == true

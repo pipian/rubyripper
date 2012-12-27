@@ -32,7 +32,7 @@ class Errors
     :binaryNotFound => _("%s is needed, but not detected on your system!"),
     :cdrdaoNotFound => _("Please install cdrdao or disable cuesheet generation."),
     :failedToExecute => _("The program %s failed to execute correctly:\n%s"),
-    :dirNotWritable => _("Can't create output directory!\nYou have no writing access for dir %s"),
+    :dirNotWritable => _("Can't create output directory!\nYou have no writing access for directory %s"),
   }
 
 private
