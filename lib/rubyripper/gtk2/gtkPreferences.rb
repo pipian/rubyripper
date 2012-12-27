@@ -501,8 +501,8 @@ It is recommended to enable this option.")
   end
   
   def addTooltipForOtherCodec(entry)
-    entry.tooltip_text = _('%a=artist %g=genre %t=trackname %f=codec %b=album 
-%y=year %n=track %va=various artist %o=outputfile %i=inputfile') 
+    entry.tooltip_text = _('%a=artist %g=genre %t=track name %f=codec %b=album 
+%y=year %n=track %va=various artist %o=output file %i=input file') 
   end
   
   def createAddCodecRow
@@ -538,8 +538,8 @@ It is recommended to enable this option.")
     @table80 = newTable(rows=4, columns=2)
 #creating objects
     @playlist = Gtk::CheckButton.new(_("Create m3u playlist"))
-    @noSpaces = Gtk::CheckButton.new(_("Replace spaces with underscores in filenames"))
-    @noCapitals = Gtk::CheckButton.new(_("Downsize all capital letters in filenames"))
+    @noSpaces = Gtk::CheckButton.new(_("Replace spaces with underscores in file names"))
+    @noCapitals = Gtk::CheckButton.new(_("Downsize all capital letters in file names"))
     @maxThreads = Gtk::SpinButton.new(0.0, 10.0, 1.0)
     @maxThreadsLabel = Gtk::Label.new(_("Number of extra encoding threads"))
 #packing objects
@@ -660,7 +660,7 @@ It is recommended to enable this option.")
     @expander100 = Gtk::Expander.new(_('Show options for "Filenaming scheme"'))
 #configure expander
     #@artist_label = Gtk::Label.new("%a = artist   %b = album   %f = codec   %g = genre\n%va = various artists   %n = track   %t = trackname   %y = year")
-    @legend_label = Gtk::Label.new("%a=" + _("Artist") + " %g=" + _("Genre") + " %t=" + _("Trackname") +
+    @legend_label = Gtk::Label.new("%a=" + _("Artist") + " %g=" + _("Genre") + " %t=" + _("Track name") +
                                      " %f=" + _("Codec") + "\n%b=" + _("Album") + " %y=" + _("Year") +
                                     " %n=" + _("Track") + " %va=" + _("Various artist"))
     @expander100.add(@legend_label)
@@ -692,20 +692,20 @@ It is recommended to enable this option.")
     @table100.attach(@namingNormalEntry, 1, 2, 1, 2, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table100.attach(@namingVariousEntry, 1, 2, 2, 3, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
     @table100.attach(@namingImageEntry, 1, 2, 3, 4, Gtk::EXPAND|Gtk::FILL, Gtk::SHRINK, 0, 0)
-    @frame100 = newFrame(_('Filenaming scheme'), child=@table100)
+    @frame100 = newFrame(_('File naming scheme'), child=@table100)
   end
   
   def showFileNormal
-    @example_label.text = _("Example filename: ") + Preferences.showFilenameNormal( @basedirEntry.text, @namingNormalEntry.text)
+    @example_label.text = _("Example file name: ") + Preferences.showFilenameNormal( @basedirEntry.text, @namingNormalEntry.text)
   end
   
   def showFileVarious
-    @example_label.text = _("Example filename: ") + Preferences.showFilenameVarious(
+    @example_label.text = _("Example file name: ") + Preferences.showFilenameVarious(
     @basedirEntry.text, @namingVariousEntry.text)
   end
   
   def showFileImage
-    @example_label.text = _("Example filename: ") + Preferences.showFilenameVarious(
+    @example_label.text = _("Example file name: ") + Preferences.showFilenameVarious(
     @basedirEntry.text, @namingImageEntry.text)
   end
 

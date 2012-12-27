@@ -206,7 +206,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     elsif @cancelled == false
       if @prefs.debug
         puts "DEBUG: Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
-        puts "DEBUG: Filesize should be: #{@disc.getFileSize(track)}"
+        puts "DEBUG: File size should be: #{@disc.getFileSize(track)}"
       end
 
       #someone might get out of free diskspace meanwhile
@@ -215,7 +215,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       File.delete(@fileScheme.getTempFile(track, @trial)) # Delete file with wrong filesize
       @trial -= 1 # reset the counter because the filesize is not right
       # TODO: Atack this log entry
-      puts _("Filesize is not correct! Trying another time")
+      puts _("File size is not correct! Trying another time")
       return false
     end
     return true

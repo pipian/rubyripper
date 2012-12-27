@@ -185,7 +185,7 @@ private
         @md.setVarArtist(number,
           @string.get(_("Artist:"), @md.getVarArtist(number)))
       end
-      @md.setTrackname(number, @string.get(_("Trackname:"),
+      @md.setTrackname(number, @string.get(_("Track name:"),
         @md.trackname(number)))
     elsif number == 99 ; loopMainMenu()
     else

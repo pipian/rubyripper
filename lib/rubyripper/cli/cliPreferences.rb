@@ -411,7 +411,7 @@ private
   end
 
   def showExampleForFilescheme(sort, filescheme)
-    print _("Example filename: ")
+    print _("Example file name: ")
     if sort == 'normal'
       @out.puts Preferences.showFilenameNormal(@prefs.basedir, filescheme)
     else
