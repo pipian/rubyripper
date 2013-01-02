@@ -137,15 +137,15 @@ Feature: Manage rubyripper preferences
        2) FLAC options passed: --best -V
        3) Vorbis [*]
        4) Oggenc options passed: -q 4
-       5) Lame mp3 [ ]
-       6) Lame options passed: -V 3 --id3v2-only
+       5) LAME mp3 [ ]
+       6) LAME options passed: -V 3 --id3v2-only
        7) Nero AAC [ ]
        8) Nero options passed: -q 0.5
-       9) Wavpack [ ]
-      10) Wavpack options passed: 
+       9) WavPack [ ]
+      10) WavPack options passed: 
       11) Opus [ ]
       12) Opus options passed: --bitrate 160
-      13) Wav [ ]
+      13) WAVE [ ]
       14) Other codec [ ]
       15) Commandline passed: flac %i %o.flac
       16) Playlist support [*]
@@ -194,15 +194,15 @@ Feature: Manage rubyripper preferences
        2) FLAC options passed: --fast -V
        3) Vorbis [ ]
        4) Oggenc options passed: -q 5
-       5) Lame mp3 [*]
-       6) Lame options passed: -V 4
+       5) LAME mp3 [*]
+       6) LAME options passed: -V 4
        7) Nero AAC [*]
        8) Nero options passed: -q 0.6
-       9) Wavpack [*]
-      10) Wavpack options passed: -f
+       9) WavPack [*]
+      10) WavPack options passed: -f
       11) Opus [*]
       12) Opus options passed: --bitrate 200
-      13) Wav [*]
+      13) WAVE [*]
       14) Other codec [*]
       15) Commandline passed: lame "%i" "%o".mp3
       16) Playlist support [ ]

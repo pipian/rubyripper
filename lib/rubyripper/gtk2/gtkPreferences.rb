@@ -557,7 +557,7 @@ It is recommended to enable this option.")
     @normalize = Gtk::ComboBox.new()
     @normalize.append_text(_("Don't standardize volume"))
     @normalize.append_text(_("Use replaygain on audio files"))
-    @normalize.append_text(_("Use normalize on wav files"))
+    @normalize.append_text(_("Use normalize on WAVE files"))
     @normalize.active=0
     @modus = Gtk::ComboBox.new()
     @modus.append_text(_("Album / Audiophile modus"))

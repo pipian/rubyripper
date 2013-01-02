@@ -186,7 +186,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
   def fileCreated(track=nil) #check if cdparanoia outputs wav files (passing bad parameters?)
     if not File.exist?(@fileScheme.getTempFile(track, @trial))
-      @log.update("error", _("Cdparanoia doesn't output wav files.\nCheck your settings please."))
+      @log.update("error", _("Cdparanoia doesn't output WAVE files.\nCheck your settings please."))
       return false
     end
     return true

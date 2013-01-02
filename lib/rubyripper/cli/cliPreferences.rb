@@ -225,15 +225,15 @@ private
     @out.puts ' 2) ' + _("FLAC options passed") + ": %s" % [@prefs.settingsFlac]
     @out.puts ' 3) ' + _("Vorbis %s") % [showBool(@prefs.vorbis)]
     @out.puts ' 4) ' + _("Oggenc options passed") + ": %s" % [@prefs.settingsVorbis]
-    @out.puts ' 5) ' + _("Lame mp3 %s") % [showBool(@prefs.mp3)]
-    @out.puts ' 6) ' + _("Lame options passed") + ": %s" % [@prefs.settingsMp3]
+    @out.puts ' 5) ' + _("LAME mp3 %s") % [showBool(@prefs.mp3)]
+    @out.puts ' 6) ' + _("LAME options passed") + ": %s" % [@prefs.settingsMp3]
     @out.puts ' 7) ' + _("Nero AAC %s") % [showBool(@prefs.nero)]
     @out.puts ' 8) ' + _("Nero options passed") + ": %s" % [@prefs.settingsNero]
-    @out.puts ' 9) ' + _("Wavpack %s") % [showBool(@prefs.wavpack)]
-    @out.puts '10) ' + _("Wavpack options passed") + ": %s" % [@prefs.settingsWavpack]
+    @out.puts ' 9) ' + _("WavPack %s") % [showBool(@prefs.wavpack)]
+    @out.puts '10) ' + _("WavPack options passed") + ": %s" % [@prefs.settingsWavpack]
     @out.puts '11) ' + _("Opus %s") % [showBool(@prefs.opus)]
     @out.puts '12) ' + _("Opus options passed") + ": %s" % [@prefs.settingsOpus]
-    @out.puts '13) ' + _("Wav %s") % [showBool(@prefs.wav)]
+    @out.puts '13) ' + _("WAVE %s") % [showBool(@prefs.wav)]
     @out.puts '14) ' + _("Other codec %s") % [showBool(@prefs.other)]
     @out.puts '15) ' + _("Commandline passed") + ": %s" % [@prefs.settingsOther]
     @out.puts '16) ' + _("Playlist support %s") %[showBool(@prefs.playlist)]
@@ -265,7 +265,7 @@ private
         @string.get(_("Nero options passed"), @prefs.settingsNero)
       when 9 then switchBool('wavpack')
       when 10 then @prefs.settingsWavpack = \
-        @string.get(_("Wavpack options passed"), @prefs.settingsWavpack)
+        @string.get(_("WavPack options passed"), @prefs.settingsWavpack)
       when 11 then switchBool('opus')
       when 12 then @prefs.settingsOpus = \
         @string.get(_("Opus options passed"), @prefs.settingsOpus)
