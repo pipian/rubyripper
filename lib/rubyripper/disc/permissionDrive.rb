@@ -29,6 +29,7 @@ class PermissionDrive
   def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance()
+    @error = nil
   end
   
   # before trying to query cdparanoia check if permissions of the drive are ok

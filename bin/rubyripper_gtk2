@@ -54,6 +54,8 @@ attr_reader :instances
     @prefs = prefs ? prefs : Preferences::Main.instance
     @shortMessage = short ? short : ShortMessage.new()
     @deps = deps ? deps : Dependency.instance
+    @currentInstance = nil
+    @gtkDisc = nil
   end
   
   def start

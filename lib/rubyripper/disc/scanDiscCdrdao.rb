@@ -42,6 +42,7 @@ class ScanDiscCdrdao
     @exec = execute ? execute : Execute.new()
     @prefs = @prefs = prefs ? prefs : Preferences::Main.instance
     @fileAndDir = fileAndDir ? fileAndDir : FileAndDir.instance()
+    @discType = nil
   end
 
   # The scan is called after the initial scan in Disc.

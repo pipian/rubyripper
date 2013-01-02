@@ -38,6 +38,8 @@ class ScanDiscCdparanoia
     @perm = permissionDrive ? permissionDrive : PermissionDrive.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
     @out = out ? out : $stdout
+    @status = nil
+    @audiotracks = nil
   end
 
   # scan the disc for input and return the object

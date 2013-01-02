@@ -27,6 +27,12 @@ class GtkDisc
 
   attr_reader :display, :error, :selection, :disc
  
+  def initalize
+    @discInfoTable = nil
+    @trackInfoTable = nil
+    @display = nil
+  end
+  
   def start
     refresh(firsttime = true)   
   end

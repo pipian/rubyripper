@@ -31,6 +31,7 @@ class CalcFreedbID
     @exec = exec ? exec : Execute.new()
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance
+    @freedbString = nil
   end
 
   # fetch the freedb string
