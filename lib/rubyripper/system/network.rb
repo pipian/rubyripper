@@ -42,7 +42,7 @@ class Network
 
   # fire up a CGI command to the server
   def get(query)
-    puts "DEBUG: CGI query: #{'http://' +  @host + @path + query}" if @prefs.debug
+    puts "DEBUG: CGI query: #{'http://' +  @host + query}" if @prefs.debug
     @connection.get(query).body
   end
   
