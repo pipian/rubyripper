@@ -145,8 +145,8 @@ private
 
   def printIndexImageOtherTracks(track)
     if @cdrdao.getPregapSectors(track) > 0
-      printIndexLine('00', @disc.getStartSector(track))
-      printIndexLine('01', @disc.getStartSector(track) + @cdrdao.getPregapSectors(track))
+      printIndexLine('00', @disc.getStartSector(track) - @cdrdao.getPregapSectors(track))
+      printIndexLine('01', @disc.getStartSector(track))
     else # no pregap
       printIndexLine('01', @disc.getStartSector(track))
     end

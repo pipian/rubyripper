@@ -120,12 +120,14 @@ describe Cuesheet do
       cue.cuesheet.should == @cuesheet
     end
     
+    # The reported start sectors in the TOC are always after the pregap.
+    # The zero index therefore is the startindex of the track minus the pregap.
     it "should write a zero index for tracks > 1 with a pregap" do
       prefs.stub!(:ripHiddenAudio).and_return true
       cdrdao.stub!(:getPregapSectors).and_return 0
       cdrdao.stub!(:getPregapSectors).with(2).and_return 100
-      @cuesheet.insert(8, '    INDEX 00 00:03:00')
-      @cuesheet[9] = '    INDEX 01 00:04:25'
+      @cuesheet.insert(8, '    INDEX 00 00:01:50')
+      @cuesheet[9] = '    INDEX 01 00:03:00'
       cue.test_printTrackDataImage('flac')
       cue.cuesheet.should == @cuesheet
     end
