@@ -277,6 +277,7 @@ if $GTK2
   makefile.puts "\trm $(prefix)$(DESTDIR)$(BINDIR)/rrip_gui"
   makefile.puts "\trm $(prefix)$(DESTDIR)$(ICONDIR)/rubyripper.png"
   makefile.puts "\trm $(prefix)$(DESTDIR)$(DESKTOP)/rubyripper.desktop"
+  makefile.puts "\tgtk-update-icon-cache #{$PREFIX}#{$DESTDIR}#{$ICONDIR}"
 end
 
 if $CLI
