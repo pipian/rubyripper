@@ -24,11 +24,15 @@ class FileAndDir
 
   # create dir + parent directories if needed
   def createDir(dir)
-    dir = File.dirname(dir) unless File.extname(dir).empty?
     dir = File.expand_path(dir)
     FileUtils.mkdir_p(dir) unless File.directory?(dir)
   end
   
+  # autodetection if it is a file or directory fails when directory contains a dot
+  def createDirForFile(file)
+    createDir(File.dirname(file))
+  end
+
   # remove dir + subdirectories if needed
   def removeDir(dir)
     dir = File.expand_path(dir)
@@ -88,7 +92,7 @@ class FileAndDir
     if !update && File.file?(filename)
       status = 'fileExists'
     else
-      createDir(File.dirname(filename))
+      createDirForFile(filename)
       writeContent(filename, content)
       status = 'ok'
     end

@@ -52,9 +52,9 @@ class Log
   def createLog
     @logfiles = Array.new
     @prefs.codecs.each do |codec|
-      path = @fileScheme.getLogFile(codec)
-      @file.createDir(path)
-      @logfiles << File.open(path, 'a')
+      logfile = @fileScheme.getLogFile(codec)
+      @file.createDirForFile(logfile)
+      @logfiles << File.open(logfile, 'a')
     end
   end
 
