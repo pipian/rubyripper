@@ -93,10 +93,10 @@ class Encode
   end
 
   # respect the normalize setting
-  def waitingForNormalizeToFinish(track)
+  def waitingForNormalizeToFinish(track=nil)
     return false if @prefs.normalizer != 'normalize'
 
-    if @prefs.gain == 'track'
+    if @prefs.gain == 'track' || @prefs.image
       command = "normalize \"#{@scheme.getTempFile(track, 1)}\""
       @exec.launch(command)
       waiting = false
