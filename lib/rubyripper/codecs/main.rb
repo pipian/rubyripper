@@ -124,7 +124,7 @@ module Codecs
           when :encoder then add(value, "\"Rubyripper #{$rr_version}\"")
           when :cuesheet then addCuesheet(value) if @prefs.image
           when :trackname then add(value, @tags.trackname(track)) unless @prefs.image
-          when :tracknumber then add(value, "#{track}")
+          when :tracknumber then add(value, "#{track}") unless @prefs.image
           when :tracktotal then add(value, "#{@disc.audiotracks}")
           when :tracknumberTotal then add(value, "#{track}/#{@disc.audiotracks}")
         end

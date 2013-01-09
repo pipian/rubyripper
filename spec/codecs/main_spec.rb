@@ -53,6 +53,7 @@ describe Codecs::Main do
     context "When calculating the command for encoding a track" do
       before(:each) do
         prefs.should_receive(:settingsMp3).and_return '-V 2'
+        prefs.stub(:image).and_return false
         scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
         scheme.should_receive(:getFile).with('mp3', 1).and_return '/home/mp3/1-test.mp3'
         disc.should_receive(:audiotracks).and_return 99
@@ -115,6 +116,7 @@ describe Codecs::Main do
     
     it "should calculate the command for encoding" do
       prefs.should_receive(:settingsVorbis).and_return '-q 6'
+      prefs.stub(:image).and_return false
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with('vorbis', 1).and_return '/home/vorbis/1-test.ogg'
       disc.should_receive(:audiotracks).and_return 99
@@ -145,9 +147,9 @@ describe Codecs::Main do
       @codec.replaygainAlbum.should == 'metaflac --add-replay-gain "/home/flac"/*.flac'
     end
     
-    it "should calculate the command for encoding" do
+    it "should calculate the command for encoding a track" do
       prefs.should_receive(:settingsFlac).and_return '-q 6'
-      prefs.should_receive(:createCue).and_return false
+      prefs.stub(:image).and_return false
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with('flac', 1).and_return '/home/flac/1-test.flac'
       disc.should_receive(:audiotracks).and_return 99
@@ -163,8 +165,9 @@ describe Codecs::Main do
       @codec.setTagsAfterEncoding(1).should == ''
     end
     
-    it "should save the cuesheet file if available" do
+    it "should save the cuesheet file if available for image rips" do
       prefs.should_receive(:settingsFlac).and_return '-q 6'
+      prefs.stub(:image).and_return true
       prefs.should_receive(:createCue).and_return true
       scheme.should_receive(:getCueFile).and_return '/home/flac/test.cue'
       file.should_receive(:exist?).with('/home/flac/test.cue').and_return true
@@ -178,7 +181,7 @@ describe Codecs::Main do
       @codec.command(1).should == 'flac -o "/home/flac/1-test.flac" -q 6 --tag '\
           'ARTIST="trackArtist 1" --tag ALBUM="album" --tag GENRE="genre" --tag DATE="year" '\
           '--tag "ALBUM ARTIST"="artist" --tag DISCNUMBER=1 --tag ENCODER="Rubyripper test" '\
-          '--tag DISCID="ABCDEFGH" --tag TITLE="trackname 1" --tag TRACKNUMBER=1 --tag '\
+          '--tag DISCID="ABCDEFGH" --tag '\
           'TRACKTOTAL=99 --cuesheet="/home/flac/test.cue" "input_1.wav"'
     end
   end
@@ -223,6 +226,7 @@ describe Codecs::Main do
        
     it "should calculate the command for encoding and tagging" do
       prefs.should_receive(:settingsNero).and_return '-q 1'
+      prefs.stub(:image).and_return false
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with('nero', 1).twice.and_return '/home/nero/1-test.m4a'
       disc.should_receive(:audiotracks).and_return 99
@@ -250,8 +254,9 @@ describe Codecs::Main do
       @codec.replaygainAlbum.should == ''
     end
     
-    it "should calculate the command for encoding" do
+    it "should calculate the command for encoding an image rip" do
       prefs.should_receive(:settingsWavpack).and_return ''
+      prefs.stub(:image).and_return true
       prefs.should_receive(:createCue).and_return true
       scheme.should_receive(:getCueFile).and_return '/home/wavpack/test.cue'
       file.should_receive(:exist?).with('/home/wavpack/test.cue').and_return true
@@ -264,7 +269,7 @@ describe Codecs::Main do
       
       @codec.command(1).should == 'wavpack -w ARTIST="trackArtist 1" -w ALBUM="album" '\
           '-w GENRE="genre" -w DATE="year" -w "ALBUM ARTIST"="artist" -w DISCNUMBER=1 -w '\
-          'ENCODER="Rubyripper test" -w DISCID="ABCDEFGH" -w TITLE="trackname 1" -w TRACKNUMBER=1 -w '\
+          'ENCODER="Rubyripper test" -w DISCID="ABCDEFGH" -w '\
           'TRACKTOTAL=99 -w CUESHEET="/home/wavpack/test.cue" "input_1.wav" -o "/home/wavpack/1-test.wv"'
       @codec.setTagsAfterEncoding(1).should == ''
     end
@@ -277,6 +282,7 @@ describe Codecs::Main do
       
     it "should calculate the command for encoding" do
       prefs.should_receive(:settingsOpus).and_return '--bitrate 160'
+      prefs.stub(:image).and_return false
       scheme.should_receive(:getTempFile).with(1).and_return 'input_1.wav'
       scheme.should_receive(:getFile).with('opus', 1).and_return '/home/opus/1-test.opus'
       disc.should_receive(:audiotracks).and_return 99
