@@ -16,7 +16,7 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/main'
-require 'rubyripper/modules/audiocalculations'
+require 'rubyripper/modules/audioCalculations'
 
 # The Log class is responsible for
 # * updating the log files
