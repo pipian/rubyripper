@@ -96,20 +96,35 @@ class Encode
   def waitingForNormalizeToFinish(track=nil)
     return false if @prefs.normalizer != 'normalize'
 
+    binary = getNormalizeBinary()
+    return false unless binary.class == String
+
     if @prefs.gain == 'track' || @prefs.image
-      command = "normalize \"#{@scheme.getTempFile(track, 1)}\""
+      command = "#{binary} \"#{@scheme.getTempFile(track, 1)}\""
       @exec.launch(command)
       waiting = false
     elsif @prefs.gain == 'album' && @trackSelection[-1] != track
       waiting = true
     elsif @prefs.gain == 'album' && @trackSelection[-1] == track
-      command = "normalize -b \"#{File.join(@scheme.getTempDir(),'*.wav')}\""
+      command = "#{binary} -b \"#{File.join(@scheme.getTempDir(),'*.wav')}\""
       @exec.launch(command)
       # now the wavs are altered, the encoding can start
       @trackSelection.each{|track| startEncoding(track)}
       waiting = true
     end
     return waiting
+  end
+
+  # the binary can differ between distributions
+  def getNormalizeBinary
+    if @deps.installed?('normalize')
+      return 'normalize'
+    elsif @deps.installed?('normalize-audio')
+      return 'normalize-audio'
+    else
+      puts "DEBUG: No normalize binary found, normalizing is skipped.." if @prefs.debug
+      return false
+    end
   end
 
   # call the specific codec function for the track and apply replaygain if desired
