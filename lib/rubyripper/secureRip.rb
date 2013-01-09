@@ -21,6 +21,7 @@ require 'rubyripper/waveFile'
 require 'rubyripper/system/dependency'
 require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
+require 'rubyripper/modules/audioCalculations'
 
 # The SecureRip class is mainly responsible for:
 # * Managing cdparanoia to fetch the files
@@ -28,13 +29,11 @@ require 'rubyripper/preferences/main'
 # * Repairing the files if necessary
 
 class SecureRip
+  include AudioCalculations
   include GetText
   GetText.bindtextdomain("rubyripper")
 
   attr_writer :cancelled
-
-  BYTES_WAV_CONTAINER = 44 # to store the type of wav file
-  BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
 
   def initialize(trackSelection, disc, fileScheme, log, encoding, deps=nil, exec=nil, prefs=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
@@ -199,10 +198,10 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     if sizeDiff == 0
       # expected size matches exactly
     elsif sizeDiff < 0
-      puts "DEBUG: More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_SECTOR} sector(s)" if @prefs.debug
+      puts "DEBUG: More sectors ripped than expected: #{sizeDiff / BYTES_AUDIO_FRAME} sector(s)" if @prefs.debug
     elsif @prefs.offset != 0 && (@prefs.image || track == @disc.audiotracks)
       # This should no longer happen.
-      puts "DEBUG: The ripped file misses %s sectors." % [sizeDiff / BYTES_AUDIO_SECTOR.to_f] if @prefs.debug
+      puts "DEBUG: The ripped file misses %s sectors." % [sizeDiff / BYTES_AUDIO_FRAME.to_f] if @prefs.debug
     elsif @cancelled == false
       if @prefs.debug
         puts "DEBUG: Some sectors are missing for track #{track} : #{sizeDiff} sector(s)"
@@ -274,9 +273,9 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
         if sectorEqual?(files[0], files[trial]) && !@errors.key?(index)
           setFileIndex(files, index) # set back to read again
           @errors[index] = Array.new
-          files.each{|file| @errors[index] << file.sysread(BYTES_AUDIO_SECTOR)}
+          files.each{|file| @errors[index] << file.sysread(BYTES_AUDIO_FRAME)}
         end
-        index += BYTES_AUDIO_SECTOR
+        index += BYTES_AUDIO_FRAME
       end
     end
 
@@ -288,20 +287,18 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
   end
 
   def sectorEqual?(file1, file2)
-    file1.sysread(BYTES_AUDIO_SECTOR) == file2.sysread(BYTES_AUDIO_SECTOR)
+    file1.sysread(BYTES_AUDIO_FRAME) == file2.sysread(BYTES_AUDIO_FRAME)
   end
 
   # When required matches for mismatched sectors are bigger than there are
   # trials to be tested, readErrorPos() just reads the mismatched sectors
   # without analysing them.
-  # Wav-containter overhead = 44 bytes.
-  # Audio-cd sector = 2352 bytes.
 
   def readErrorPos(track=nil)
     file = File.new(@fileScheme.getTempFile(track, @trial), 'r')
     @errors.keys.sort.each do |start_chunk|
       file.pos = start_chunk + BYTES_WAV_CONTAINER
-      @errors[start_chunk] << file.sysread(BYTES_AUDIO_SECTOR)
+      @errors[start_chunk] << file.sysread(BYTES_AUDIO_FRAME)
     end
     file.close
 

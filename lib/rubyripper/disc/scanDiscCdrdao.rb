@@ -31,8 +31,10 @@ require 'rubyripper/preferences/main'
 require 'rubyripper/system/execute'
 require 'rubyripper/system/fileAndDir'
 require 'rubyripper/errors'
+require 'rubyripper/modules/audioCalculations'
 
 class ScanDiscCdrdao
+  include AudioCalculations
   include GetText
   GetText.bindtextdomain("rubyripper")
 
@@ -171,16 +173,6 @@ private
   def displayStartMessage
     @log << _("\nADVANCED TOC ANALYSIS (with cdrdao)\n")
     @log << _("...please be patient, this may take a while\n\n")
-  end
-
-  # minutes:seconds:sectors to sectors
-  def toSectors(time)
-    count = 0
-    minutes, seconds, sectors = time.split(':')
-    count += sectors.to_i
-    count += (seconds.to_i * 75)
-    count += (minutes.to_i * 60 * 75)
-    return count
   end
 
   def displayScanResults

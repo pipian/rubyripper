@@ -26,11 +26,11 @@
 require 'rubyripper/system/fileAndDir'
 require 'rubyripper/preferences/main'
 require 'rubyripper/system/dependency'
+require 'rubyripper/modules/audioCalculations'
 
 class Cuesheet
+  include AudioCalculations
   
-  FRAMES_A_SECOND = 75
-  FRAMES_A_MINUTE = 60 * FRAMES_A_SECOND
   HIDDEN_FIRST_TRACK = 0
   FIRST_TRACK = 1
   
@@ -64,13 +64,6 @@ private
 
   def getCueFileType(codec)
     codec == 'mp3' ? 'MP3' : 'WAVE' 
-  end
-
-  def time(sector) # minutes:seconds:leftover frames
-    minutes = sector / FRAMES_A_MINUTE 
-    seconds = (sector % FRAMES_A_MINUTE) / FRAMES_A_SECOND
-    frames = sector % FRAMES_A_SECOND
-    return "#{sprintf("%02d", minutes)}:#{sprintf("%02d", seconds)}:#{sprintf("%02d", frames)}"
   end
 
   def printDiscData
@@ -117,19 +110,19 @@ private
   
   # print a line for the index of a track
   def printIndexLine(index, sector)
-    @cuesheet << "    INDEX #{index} #{time(sector)}"
+    @cuesheet << "    INDEX #{index} #{toTime(sector)}"
   end
 
   def aHiddenTrackIsRipped
-    hiddenSectorsInMinutes = @disc.getStartSector(FIRST_TRACK) / FRAMES_A_SECOND
-    @prefs.image == false && @prefs.ripHiddenAudio == true && hiddenSectorsInMinutes >= @prefs.minLengthHiddenTrack
+    hiddenSectorsInSeconds = @disc.getStartSector(FIRST_TRACK) / FRAMES_A_SECOND
+    @prefs.image == false && @prefs.ripHiddenAudio == true && hiddenSectorsInSeconds >= @prefs.minLengthHiddenTrack
   end
   
   # if the hidden audio is not prepended to the file, only write a pregap tag
   def printPregapForHiddenTrack
     if (@prefs.ripHiddenAudio == false || aHiddenTrackIsRipped()) &&
         @disc.getStartSector(FIRST_TRACK) > 0
-      @cuesheet << "    PREGAP #{time(@disc.getStartSector(FIRST_TRACK))}"
+      @cuesheet << "    PREGAP #{toTime(@disc.getStartSector(FIRST_TRACK))}"
     end
   end
 

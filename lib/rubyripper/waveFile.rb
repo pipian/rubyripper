@@ -38,13 +38,13 @@
 
 require 'tempfile'
 require 'fileutils'
+require 'rubyripper/modules/audioCalculations'
 
 class WaveFile
+  include AudioCalculations
+  
   attr_reader :path, :offset, :padMissingSamples
   attr_writer :offset, :padMissingSamples
-
-  BYTES_WAV_CONTAINER = 44 # size of the wave header from cdparanoia
-  BYTES_AUDIO_SECTOR = 2352 # size of a sector in bytes
 
   def initialize(path, offset=0, padMissingSamples=false)
     @path = path
@@ -56,7 +56,7 @@ class WaveFile
 
   # Read a CD-audio sector (padding with 0's, regardless of padMissingSamples)
   def read(sector)
-    start = BYTES_WAV_CONTAINER + sector * BYTES_AUDIO_SECTOR + @offset * 4
+    start = BYTES_WAV_CONTAINER + sector * BYTES_AUDIO_FRAME + @offset * 4
     
     if @newSectors.has_key?(sector)
       @newSectors[sector]
@@ -66,23 +66,23 @@ class WaveFile
       if start < BYTES_WAV_CONTAINER and @offset < 0
         # Pad the start.
         data += "\x00" * [(BYTES_WAV_CONTAINER - start),
-                          BYTES_AUDIO_SECTOR].min
+                          BYTES_AUDIO_FRAME].min
         start = BYTES_WAV_CONTAINER
       end
       
-      if data.length == BYTES_AUDIO_SECTOR
+      if data.length == BYTES_AUDIO_FRAME
         # We're before the start of the file, and only have padding!
         data
-      elsif data.length < BYTES_AUDIO_SECTOR
+      elsif data.length < BYTES_AUDIO_FRAME
         @file.seek(start, IO::SEEK_SET)
-        buffer = @file.read(BYTES_AUDIO_SECTOR - data.length)
+        buffer = @file.read(BYTES_AUDIO_FRAME - data.length)
         if !buffer.nil?
           data += buffer
         end
         
-        if data.length < BYTES_AUDIO_SECTOR
+        if data.length < BYTES_AUDIO_FRAME
           # Pad the end.
-          data += "\x00" * (BYTES_AUDIO_SECTOR - data.length)
+          data += "\x00" * (BYTES_AUDIO_FRAME - data.length)
         end
         
         data
@@ -101,7 +101,7 @@ class WaveFile
 
   def numSectors
     audioSize = @file.stat.size - BYTES_WAV_CONTAINER
-    audioSize / BYTES_AUDIO_SECTOR + ((audioSize % BYTES_AUDIO_SECTOR > 0) ? 1 : 0)
+    audioSize / BYTES_AUDIO_FRAME + ((audioSize % BYTES_AUDIO_FRAME > 0) ? 1 : 0)
   end
 
   # Set the contents of the sector to (the raw sample data in) other.
@@ -110,7 +110,7 @@ class WaveFile
   # of sector number [sector] in this with the contents of sector
   # number [sector] in (the WaveFile) that.
   def splice(sector, data)
-    if sector >= 0 and sector < numSectors and data.length == BYTES_AUDIO_SECTOR
+    if sector >= 0 and sector < numSectors and data.length == BYTES_AUDIO_FRAME
       @newSectors[sector] = data
     end
   end
@@ -121,7 +121,7 @@ class WaveFile
     
     # Do we pad the missing samples?
     if @padMissingSamples
-      audioSize = numSectors * BYTES_AUDIO_SECTOR
+      audioSize = numSectors * BYTES_AUDIO_FRAME
     else
       audioSize = @file.stat.size - BYTES_WAV_CONTAINER
       if @offset != 0
@@ -145,9 +145,9 @@ class WaveFile
       # Padding is at the end.
       bytesWritten = 0
       (1..numSectors).each do |sector|
-        if bytesWritten + BYTES_AUDIO_SECTOR < audioSize
+        if bytesWritten + BYTES_AUDIO_FRAME < audioSize
           f.write(read(sector - 1))
-          bytesWritten += BYTES_AUDIO_SECTOR
+          bytesWritten += BYTES_AUDIO_FRAME
         elsif bytesWritten < audioSize
           f.write(read(sector - 1)[0..(audioSize - bytesWritten - 1)])
           bytesWritten = audioSize
@@ -159,15 +159,15 @@ class WaveFile
       # Padding is at the beginning.
       bytesWritten = @offset * 4
       (1..numSectors).each do |sector|
-        if bytesWritten <= -BYTES_AUDIO_SECTOR
+        if bytesWritten <= -BYTES_AUDIO_FRAME
           # Don't bother writing out the sector at all
-          bytesWritten += BYTES_AUDIO_SECTOR
+          bytesWritten += BYTES_AUDIO_FRAME
         elsif bytesWritten < 0
-          f.write(read(sector - 1)[(0 - bytesWritten)..(BYTES_AUDIO_SECTOR - 1)])
-          bytesWritten += BYTES_AUDIO_SECTOR
-        elsif bytesWritten + BYTES_AUDIO_SECTOR <= audioSize
+          f.write(read(sector - 1)[(0 - bytesWritten)..(BYTES_AUDIO_FRAME - 1)])
+          bytesWritten += BYTES_AUDIO_FRAME
+        elsif bytesWritten + BYTES_AUDIO_FRAME <= audioSize
           f.write(read(sector - 1))
-          bytesWritten += BYTES_AUDIO_SECTOR
+          bytesWritten += BYTES_AUDIO_FRAME
         else
           break
         end

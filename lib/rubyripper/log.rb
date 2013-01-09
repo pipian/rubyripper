@@ -16,19 +16,20 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/main'
+require 'rubyripper/modules/audiocalculations'
+
 # The Log class is responsible for
 # * updating the log files
 # * keeping track of the reading trials
 # * passing update messages to the user interface
 
 class Log
+  include AudioCalculations
   include GetText
   GetText.bindtextdomain("rubyripper")
 
   attr_reader :rippingErrors, :encodingErrors, :short_summary
   attr_writer :encodingErrors
-
-  BYTES_AUDIO_SECTOR = 2352 # conform cdparanoia
 
   def initialize(disc, fileScheme, userInterface, updatePercForEachTrack, prefs=nil, fileAndDir=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
@@ -108,38 +109,27 @@ class Log
 
   # Format a list of bad sectors in a rip.
   def listBadSectors(message, errors)
-    add("       #{message}\n")
-    
+    add("       #{message}\n")   
     sequential = false
     lastSector = false
-    errors.each_pair do |k,v|
-      # TODO: Is this right?  Calculate min/sec/frm  Spin into own function.
-      if lastSector != k / BYTES_AUDIO_SECTOR - 1
-        if sequential
-          # Print the last sector in the last sequence of bad sectors
-          min = lastSector / 75 / 60
-          sec = lastSector / 75 % 60
-          frm = lastSector % 75
-          add("%02d:%02d.%02d" % [min, sec, frm])
-        end
+    
+    errors.each_pair do |key, value|
+      # TODO: Is this right?
+      if lastSector != key / BYTES_AUDIO_FRAME - 1
         
+        # Print the last sector in the last sequence of bad sectors
+        add(toTime(lastSector)) if sequential      
         # New sequence starts.
-        if lastSector != false
-          add("\n")
-        end
-        
-        min = k / BYTES_AUDIO_SECTOR / 75 / 60
-        sec = k / BYTES_AUDIO_SECTOR / 75 % 60
-        frm = k / BYTES_AUDIO_SECTOR % 75
-        add("       %02d:%02d.%02d" % [min, sec, frm])
+        add("\n") if lastSector != false
+        add(toTime(key))
         
         sequential = false
-      elsif lastSector == k / BYTES_AUDIO_SECTOR - 1 and !sequential
+      elsif lastSector == key / BYTES_AUDIO_FRAME - 1 and !sequential
         # In an actual sequence, rather than a one-off
         add("-")
         sequential = true
       end
-      lastSector = k / BYTES_AUDIO_SECTOR
+      lastSector = key / BYTES_AUDIO_FRAME
     end
     add("\n")
   end
@@ -148,7 +138,7 @@ class Log
     if !@problem_tracks.key?(track) #First time we encounter this track (Secure_rip->analyzeFiles() )
       @problem_tracks[track] = Hash.new # create the Hash for the track
       indexes_with_errors.each do |index_of_chunk|
-        seconds = index_of_chunk / 176400 # position of chunk rounded in seconds, each second = 176400 bytes
+        seconds = index_of_chunk / BYTES_AUDIO_SECOND
         if !@problem_tracks[track].key?(seconds)
           @problem_tracks[track][seconds] = [1, trial] # different_chunks, trial. First time we encounter this position, so different_chunks = 1
         else
@@ -157,7 +147,7 @@ class Log
       end
     else
       indexes_with_errors.each do |index_of_chunk|
-        seconds = index_of_chunk / 176400 # position of chunk rounded in seconds, each second = 176400 bytes
+        seconds = index_of_chunk / BYTES_AUDIO_SECOND # position of chunk rounded in seconds, each second = 176400 bytes
         @problem_tracks[track][seconds][1] = trial #Update the amount of trials needed
       end
     end

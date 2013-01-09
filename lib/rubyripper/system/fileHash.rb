@@ -19,10 +19,10 @@
 require 'digest/md5'
 # for CRC32 calculation
 require 'zlib'
+require 'rubyripper/modules/audioCalculations'
 
 class FileHash
-  
-  BYTES_WAV_CONTAINER = 44 # to store the type of wav file
+  include AudioCalculations
   
   def initialize(filename, prefs=nil)
     @filename = filename

@@ -17,6 +17,7 @@
 
 require 'rubyripper/preferences/main'
 require 'rubyripper/system/execute'
+require 'rubyripper/modules/audioCalculations'
 
 # A class that interprets the toc with the info of cdcontrol (from
 # FreeBSD) Quite reliable for detecting data tracks and can even
@@ -25,6 +26,8 @@ require 'rubyripper/system/execute'
 # discs with data tracks. For freedb calculation cdcontrol is correct, for
 # detecting the audio part, cdparanoia is correct.
 class ScanDiscCdcontrol
+  include AudioCalculations
+  
   attr_reader :status, :totalSectors, :playtime, :audiotracks,
       :firstAudioTrack, :dataTracks
 
@@ -79,15 +82,6 @@ private
     end
 
     return @status.nil?
-  end
-
-  # now back to time
-  def toTime(sectors)
-    return '' if sectors == nil
-    minutes = sectors / (60*75)
-    seconds = ((sectors % (60*75)) / 75)
-    frames = sectors - minutes*60*75 - seconds*75
-    return "%02d:%02d.%02d" % [minutes, seconds, frames]
   end
 
   # store the info of the query in variables

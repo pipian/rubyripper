@@ -19,12 +19,14 @@ require 'rubyripper/preferences/main'
 require 'rubyripper/disc/permissionDrive'
 require 'rubyripper/system/execute'
 require 'rubyripper/errors'
+require 'rubyripper/modules/audioCalculations'
 
 # A class that interprets the toc with the info of cdparanoia
 # It's purpose is pure for ripping the correct audio, not for
 # creating the freedb string. Cd-info is better for that.
 # Before ripping, the function checkOffsetFirstTrack should be called.
 class ScanDiscCdparanoia
+  include AudioCalculations
   include GetText
   GetText.bindtextdomain("rubyripper")
   
@@ -79,7 +81,11 @@ class ScanDiscCdparanoia
   # return the length in bytes, example for track 1 getFileSize(1)
   def getFileSize(track=nil)
     assertDiscFound('getFileSize')
-    track.nil? ? (44 + @totalSectors * 2352) : (44 + @lengthSector[track] * 2352 if @lengthSector.key?(track))
+    if track.nil?
+      BYTES_WAV_CONTAINER + @totalSectors * BYTES_AUDIO_FRAME
+    elsif @lengthSector.key?(track)
+      BYTES_WAV_CONTAINER + @lengthSector[track] * BYTES_AUDIO_FRAME
+    end
   end
 
   def tracks ; return @audiotracks ; end

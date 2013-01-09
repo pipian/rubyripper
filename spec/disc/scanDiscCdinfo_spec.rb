@@ -107,8 +107,8 @@ describe ScanDiscCdinfo do
       setStandardQueryReply()
       scan.scan()
       scan.getLengthText(14).should == nil
-      scan.getLengthText(15).should == '03:21.15'
-      scan.getLengthText(16).should == '03:37.45'
+      scan.getLengthText(15).should == '03:21:15'
+      scan.getLengthText(16).should == '03:37:45'
       scan.getLengthText(17).should == nil
     end
 

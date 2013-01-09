@@ -16,9 +16,11 @@
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 require 'rubyripper/preferences/main'
-require 'rubyripper/system/execute.rb'
+require 'rubyripper/system/execute'
+require 'rubyripper/modules/audioCalculations'
 
 class RippingInfoAtStart
+  include AudioCalculations
   include GetText
   GetText.bindtextdomain("rubyripper")
   
@@ -102,17 +104,10 @@ private
 
     (1..@disc.audiotracks).each do |track|
       # TODO: Needs start sector of data tracks too.
-      start = @disc.getStartSector(track)
-      start_min = start / 75 / 60
-      start_sec = start / 75 % 60
-      start_frm = start % 60
-      
+      start = @disc.getStartSector(track)    
       length = @disc.getLengthSector(track)
-      length_min = length / 75 / 60
-      length_sec = length / 75 % 60
-      length_frm = length % 60
       
-      @logString << "       %2d  | %2d:%02d.%02d | %2d:%02d.%02d |    %6d    |   %6d   \n" % [track, start_min, start_sec, start_frm, length_min, length_sec, length_frm, start, start + length - 1]
+      @logString << "       %2d  | %s | %s |    %6d    |   %6d   \n" % [track, toTime(start), toTime(length), start, start + length - 1]
     end
     @logString << "\n"
   end

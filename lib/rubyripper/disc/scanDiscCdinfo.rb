@@ -17,6 +17,7 @@
 
 require 'rubyripper/system/execute'
 require 'rubyripper/preferences/main'
+require 'rubyripper/modules/audioCalculations'
 
 # A class that interprets the toc with the info of cd-info
 # Quite reliable for detecting data tracks and generating freedb strings
@@ -24,9 +25,14 @@ require 'rubyripper/preferences/main'
 # discs with data tracks. For freedb calculation cd-info is correct, for
 # detecting the audio part, cdparanoia is correct.
 class ScanDiscCdinfo
+  include AudioCalculations
+
   attr_reader :status, :version, :discMode, :deviceName, :totalSectors,
       :playtime, :audiotracks, :firstAudioTrack, :dataTracks
-
+  
+  # Cd-info starts all tracks with 2 seconds extra if compared with cdparanoia
+  OFFSET_CDINFO = -150
+  
   # * cdrom = a string with the location of the drive
   # * testRead = a string with output of cd-info for unit testing purposes
   def initialize(execute=nil, prefs=nil)
@@ -80,26 +86,6 @@ private
     return @status.nil?
   end
 
-  # minutes:seconds:sectors to sectors
-  # correct for offset of 150 to match cdparanoia
-  def toSectors(time)
-    count = -150
-    minutes, seconds, sectors = time.split(':')
-    count += sectors.to_i
-    count += (seconds.to_i * 75)
-    count += (minutes.to_i * 60 * 75)
-    return count
-  end
-
-  # now back to time
-  def toTime(sectors)
-    return '' if sectors == nil
-    minutes = sectors / (60*75)
-    seconds = ((sectors % (60*75)) / 75)
-    frames = sectors - minutes*60*75 - seconds*75
-    return "%02d:%02d.%02d" % [minutes, seconds, frames]
-  end
-
   # store the info of the query in variables
   def parseQuery(query)
     tracknumber = 0
@@ -114,14 +100,14 @@ private
       if line =~ /\s+\d+:\s/ # for example: '  1: '
         tracknumber = $&.strip()[0..-2].to_i
         trackinfo = $'.split(/\s+/)
-        @startSector[tracknumber] = toSectors(trackinfo[0])
+        @startSector[tracknumber] = toSectors(trackinfo[0]) + OFFSET_CDINFO
         @dataTracks << tracknumber if trackinfo[2] == "data"
         @firstAudioTrack = tracknumber unless @firstAudioTrack || trackinfo[2] == "data"
       end
 
       if line =~ /leadout/
         line =~ /\d\d:\d\d:\d\d/
-        @totalSectors = toSectors($&)
+        @totalSectors = toSectors($&) + OFFSET_CDINFO
         break
       end
     end
