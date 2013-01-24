@@ -182,7 +182,7 @@ private
     end
     
     if @preEmphasis.empty? && @preGap.empty? && @silence.nil? && @dataTracks.empty?
-      @log << _("No pregaps, silences, pre-emphasis or data tracks detected\n\n")
+      @log << _("No pregap, silence, pre-emphasis or data track detected\n\n")
       return true
     end
 

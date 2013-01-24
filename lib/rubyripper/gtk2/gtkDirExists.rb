@@ -55,7 +55,7 @@ class GtkDirExists
     @vbox.border_width = 10
     [@infobox, @separator, @buttonbox].each{|object| @vbox.pack_start(object,false,false,10)}
     
-    @display = Gtk::Frame.new(_("Dir already exists...")) # will contain the above
+    @display = Gtk::Frame.new(_("Directory already exists...")) # will contain the above
     @display.set_shadow_type(Gtk::SHADOW_ETCHED_IN)
     @display.border_width = 5
     @display.add(@vbox)
