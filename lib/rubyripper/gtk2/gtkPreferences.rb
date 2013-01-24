@@ -348,7 +348,7 @@ It is recommended to enable this option.")
 #create objects
     @ripHiddenAudio = Gtk::CheckButton.new(_('Rip hidden audio sectors'))
     @markHiddenTrackLabel1 = Gtk::Label.new(_('Mark as a hidden track when longer than'))
-    @markHiddenTrackLabel2 = Gtk::Label.new(_('seconds'))
+    @markHiddenTrackLabel2 = Gtk::Label.new(_('second(s)'))
     @minLengthHiddenTrackSpin = Gtk::SpinButton.new(0, 30, 1)
     @minLengthHiddenTrackSpin.value = 2.0
     @ripHiddenAudio.tooltip_text = _("Uncheck this if cdparanoia crashes with your ripping drive.")

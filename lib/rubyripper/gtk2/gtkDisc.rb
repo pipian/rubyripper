@@ -174,7 +174,7 @@ class GtkDisc
   def setTrackValues
     @allTracksButton = Gtk::CheckButton.new(_('All'))
     @varArtistLabel = Gtk::Label.new(_('Artist'))
-    @tracknameLabel = Gtk::Label.new(_("Track names \(%s tracks\)") % [@disc.audiotracks])
+    @tracknameLabel = Gtk::Label.new(_("Track names \(%s track(s)\)") % [@disc.audiotracks])
     @lengthLabel = Gtk::Label.new(_("Length \(%s\)") % [@disc.playtime])
 
     @checkTrackArray = Array.new ; @varArtistEntryArray = Array.new ; @trackEntryArray = Array.new ; @lengthLabelArray = Array.new

@@ -180,7 +180,7 @@ private
     @out.puts ' 1) ' + _("Create a cuesheet %s") % [showBool(@prefs.createCue)]
     @out.puts ' 2) ' + _("Rip to single file %s") % [showBool(@prefs.image)]
     @out.puts ' 3) ' + _("Rip hidden audio sectors %s") % [showBool(@prefs.ripHiddenAudio)]
-    @out.puts ' 4) ' + _("Mark as a hidden track when longer than") + ": %s " % [@prefs.minLengthHiddenTrack] + _("seconds")
+    @out.puts ' 4) ' + _("Mark as a hidden track when longer than") + ": %s " % [@prefs.minLengthHiddenTrack] + _("second(s)")
     @out.puts ' 5) ' + _("Append or prepend audio") + ": %s" % [@prefs.preGaps]
     @out.puts ' 6) ' + _("Way to handle pre-emphasis") + ": %s" % [@prefs.preEmphasis]
     @out.puts '99) ' + _("Back to settings main menu")
