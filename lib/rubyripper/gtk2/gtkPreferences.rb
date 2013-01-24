@@ -27,6 +27,7 @@ class GtkPreferences
   DEFAULT_COLUMN_SPACINGS = 5
   DEFAULT_ROW_SPACINGS = 4
   DEFAULT_BORDER_WIDTH = 7
+  CODEC_LABELS = {'flac' => 'FLAC', 'wavpack' => 'WavPack', 'other' => _('Other')}
 
   def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
@@ -174,9 +175,9 @@ class GtkPreferences
     @prefs.preGaps = @appendPregaps.active? ? 'append' : 'prepend'
     @prefs.preEmphasis = @correctPreEmphasis.active? ? 'sox' : 'cue'
 #codec settings
-    @codecRows.each do |codec, objects|
-      @prefs.send(codec + '=', true)
-      @prefs.send('settings' + codec.capitalize + '=', objects[1].text)
+    @codecRows.each do |label, objects|
+      @prefs.send(getCodecForLabel(label) + '=', true)
+      @prefs.send('settings' + getCodecForLabel(label).capitalize + '=', objects[1].text)
     end
     @prefs.playlist = @playlist.active?
     @prefs.noSpaces = @noSpaces.active?
@@ -460,7 +461,7 @@ It is recommended to enable this option.")
   end
   
   def createCodecRow(codec)
-    @codecRows[codec] = [Gtk::Label.new(codec.capitalize)]
+    @codecRows[codec] = [Gtk::Label.new(getLabelForCodec(codec))]
     @codecRows[codec][0].set_alignment(0, 0.5)
     if codec == 'wav'
       @codecRows[codec] << Gtk::Label.new(_('No settings available'))
@@ -479,6 +480,14 @@ It is recommended to enable this option.")
       @prefs.send(codec + '=', false)
       updateCodecsView()
     end
+  end
+  
+  def getLabelForCodec(codec)
+    CODEC_LABELS.key?(codec) ? CODEC_LABELS[codec] : codec.capitalize
+  end
+  
+  def getCodecForLabel(label)
+    CODEC_LABELS.value?(label) ? CODEC_LABELS.key(label) : label.downcase
   end
   
   def updateCodecsView
@@ -508,7 +517,7 @@ It is recommended to enable this option.")
   def createAddCodecRow
     @addCodecComboBox = Gtk::ComboBox.new()
     @prefs.allCodecs.each do |codec|
-      @addCodecComboBox.append_text(codec.capitalize) unless @codecRows.key?(codec)
+      @addCodecComboBox.append_text(getLabelForCodec(codec)) unless @codecRows.key?(codec)
     end
     
     if @addCodecLabel.nil?
@@ -519,9 +528,9 @@ It is recommended to enable this option.")
       # create the signal for the button
       @addCodecButton.signal_connect("button_release_event") do |a, b|
         
-        codec = @addCodecComboBox.active_text
-        if not codec.nil?
-          createCodecRow(codec.downcase)
+        label = @addCodecComboBox.active_text
+        if not label.nil?
+          createCodecRow(getCodecForLabel(label))
           updateCodecsView()
         end
       end
