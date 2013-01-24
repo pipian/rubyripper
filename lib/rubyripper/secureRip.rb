@@ -329,6 +329,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
           file1.pos = key + BYTES_WAV_CONTAINER
           file1.write(result)
           @errors.delete(key)
+          break
         end
       end
     end
