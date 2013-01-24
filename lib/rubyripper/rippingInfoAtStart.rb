@@ -51,7 +51,7 @@ private
   end
 
   def showBasicRipInfo
-    @logString << _("Rubyripper extraction logfile from:\n%s\n\n") % [Time.now.strftime("%a %b %d %H:%M:%S %Z %Y")]
+    @logString << _("Rubyripper extraction logfile from:\n%s\n\n") % [@execute.launch("date")]
     @logString << "%s / %s\n\n" % [@md.artist, @md.album]
   end
 
@@ -60,7 +60,7 @@ private
     @logString << _("Device") + ': ' + @prefs.cdrom + "\n\n"
     
     @logString << _("Used ripper") + '    : ' + version('cdparanoia') + "\n"
-    @logString << _("Selected flags") + ' : ' + @prefs.rippersettings + "\n\n"
+    @logString << _("Selected options") + ' : ' + @prefs.rippersettings + "\n\n"
     
     @logString << _("Matches required for all chunks") + '       : ' + "#{@prefs.reqMatchesAll}\n"
     @logString << _("Matches required for erroneous chunks") + ' : ' + "#{@prefs.reqMatchesErrors}\n\n"
@@ -88,7 +88,7 @@ private
   
   def printEncoder(executable, flags)
     @logString << _("Used output encoder : %s\n") % [version(executable)]
-    @logString << _("Selected flags") + "      : %s\n\n" % [flags]
+    @logString << _("Selected options") + "      : %s\n\n" % [flags]
   end
 
   def version(name)
