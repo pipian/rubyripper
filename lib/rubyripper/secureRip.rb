@@ -326,7 +326,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       @errors[key].uniq.each do |result|
         raise "Invalid chunk data: #{result.class}" unless result.class == String
         if @errors[key].rindex(result) - @errors[key].index(result) >= minimumIndexDiff
-          file1.pos = key
+          file1.pos = key + BYTES_WAV_CONTAINER
           file1.write(result)
           @errors.delete(key)
         end
