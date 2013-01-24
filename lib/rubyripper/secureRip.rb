@@ -320,11 +320,11 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
 
     # Sort the hash keys to prevent jumping forward and backwards in the file
     @errors.keys.sort.each do |key|
-      raise "Wrong class for key: #{key.class}" if key.class != Fixnum
+      raise "Wrong position (key) for @errors: #{key.class}" unless key.class == Fixnum
+      raise "No array for @errors! (#{@errors[key].class)}" unless @errors[key].class == Array
       @errors[key].sort!
       @errors[key].uniq.each do |result|
-        raise "Wrong class for result: #{result.class}" if result.class != String
-        raise "Wrong class for errors[key]: #{@errors[key].class}" if @errors[key].class != Array
+        raise "Invalid chunk data: #{result.class}" unless result.class == String
         if @errors[key].rindex(result) - @errors[key].index(result) >= minimumIndexDiff
           file1.pos = key
           file1.write(result)
