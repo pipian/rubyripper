@@ -27,11 +27,11 @@ class GtkPreferences
   DEFAULT_COLUMN_SPACINGS = 5
   DEFAULT_ROW_SPACINGS = 4
   DEFAULT_BORDER_WIDTH = 7
-  CODEC_LABELS = {'flac' => 'FLAC', 'wavpack' => 'WavPack', 'other' => _('Other')}
 
   def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance
+    @codec_labels = {'flac' => 'FLAC', 'wavpack' => 'WavPack', 'other' => _('Other')}
   end
   
   def start
@@ -483,11 +483,11 @@ It is recommended to enable this option.")
   end
   
   def getLabelForCodec(codec)
-    CODEC_LABELS.key?(codec) ? CODEC_LABELS[codec] : codec.capitalize
+    @codec_labels.key?(codec) ? @codec_labels[codec] : codec.capitalize
   end
   
   def getCodecForLabel(label)
-    CODEC_LABELS.value?(label) ? CODEC_LABELS.key(label) : label.downcase
+    @codec_labels.value?(label) ? @codec_labels.key(label) : label.downcase
   end
   
   def updateCodecsView
