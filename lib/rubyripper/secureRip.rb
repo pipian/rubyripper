@@ -321,7 +321,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     # Sort the hash keys to prevent jumping forward and backwards in the file
     @errors.keys.sort.each do |key|
       raise "Wrong position (key) for @errors: #{key.class}" unless key.class == Fixnum
-      raise "No array for @errors! (#{@errors[key].class)}" unless @errors[key].class == Array
+      raise "No array for @errors! (#{@errors[key].class})" unless @errors[key].class == Array
       @errors[key].sort!
       @errors[key].uniq.each do |result|
         raise "Invalid chunk data: #{result.class}" unless result.class == String
