@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2013  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -65,6 +65,8 @@ module Preferences
       @data.settingsMp3 = '-V 3 --id3v2-only'
       @data.nero = false
       @data.settingsNero = '-q 0.5'
+      @data.fraunhofer = false
+      @data.settingsFraunhofer = '-p 2 -m 5 -a 1'
       @data.wavpack = false
       @data.settingsWavpack = ''
       @data.opus = false

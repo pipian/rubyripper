@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2010  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2013  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -84,6 +84,7 @@ private
     isFound?('oggenc') if @prefs.vorbis
     isFound?('lame') if @prefs.mp3
     isFound?('neroAacEnc') if @prefs.nero
+    isFound?('fdkaac') if @prefs.fraunhofer
     isFound?('wavpack') if @prefs.wavpack
     isFound?('opusenc') if @prefs.opus
     isFound?('normalize') if @prefs.normalizer == 'normalize'
@@ -93,7 +94,7 @@ private
       isFound?('vorbisgain') if @prefs.vorbis
       isFound?('mp3gain') if @prefs.mp3
       isFound?('wavegain') if @prefs.wav
-      isFound?('aacgain') if @prefs.nero
+      isFound?('aacgain') if @prefs.nero || @prefs.fraunhofer
     end
   end
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2012  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2013  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -257,6 +257,7 @@ class FileScheme
       when 'mp3' then '.mp3'
       when 'wav' then '.wav'
       when 'nero' then '.m4a'
+      when 'fraunhofer' then '.m4a'
       when 'wavpack' then '.wv'
       when 'opus' then '.opus'
       when 'other' then @otherExtension

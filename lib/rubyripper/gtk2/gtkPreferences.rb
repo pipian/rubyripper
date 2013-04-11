@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2011 Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2013 Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -31,7 +31,8 @@ class GtkPreferences
   def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance
-    @codec_labels = {'flac' => 'FLAC', 'wavpack' => 'WavPack', 'other' => _('Other')}
+    @codec_labels = {'flac' => 'FLAC', 'wavpack' => 'WavPack', 'nero' => 'Nero AAC',
+                     'fraunhofer' => 'Fraunhofer AAC', 'other' => _('Other')}
   end
   
   def start
@@ -459,7 +460,7 @@ It is recommended to enable this option.")
     createCodecsTable()
     @frame70 = newFrame(_('Active audio codecs'), child=@selectCodecsTable)
   end
-  
+
   def createCodecRow(codec)
     @codecRows[codec] = [Gtk::Label.new(getLabelForCodec(codec))]
     @codecRows[codec][0].set_alignment(0, 0.5)
@@ -471,8 +472,8 @@ It is recommended to enable this option.")
       @codecRows[codec][1].text = @prefs.send('settings' + codec.capitalize)
     end
     @codecRows[codec] << Gtk::Button.new(Gtk::Stock::REMOVE)
-    addTooltipForOtherCodec(@codecRows[codec][1]) if codec == 'other' 
-            
+    addTooltipForOtherCodec(@codecRows[codec][1]) if codec == 'other'
+
     # connect the remove button signal
     @codecRows[codec][2].signal_connect("button_release_event") do |a, b|
       @codecRows[codec].each{|object| @selectCodecsTable.remove(object)}
@@ -481,11 +482,11 @@ It is recommended to enable this option.")
       updateCodecsView()
     end
   end
-  
+
   def getLabelForCodec(codec)
     @codec_labels.key?(codec) ? @codec_labels[codec] : codec.capitalize
   end
-  
+
   def getCodecForLabel(label)
     @codec_labels.value?(label) ? @codec_labels.key(label) : label.downcase
   end

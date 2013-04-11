@@ -23,6 +23,8 @@
 # * Add the option into the user interfaces
 # * Add the extension to filescheme class
 # * Add some configuration checks to CheckConfigBeforeRipping
+# * update the cucumber feature test for cli-metadata
+# * update the spec for codecs
 
 require 'rubyripper/disc/disc'
 require 'rubyripper/fileScheme'

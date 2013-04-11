@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 #    Rubyripper - A secure ripper for Linux/BSD/OSX
-#    Copyright (C) 2007 - 2011  Bouke Woudstra (boukewoudstra@gmail.com)
+#    Copyright (C) 2007 - 2013  Bouke Woudstra (boukewoudstra@gmail.com)
 #
 #    This file is part of Rubyripper. Rubyripper is free software: you can
 #    redistribute it and/or modify it under the terms of the GNU General
@@ -20,20 +20,20 @@ module Preferences
   class Data
 
     def allCodecs
-      ['flac', 'mp3', 'vorbis', 'wav', 'nero', 'wavpack', 'opus', 'other']
+      ['flac', 'mp3', 'vorbis', 'wav', 'nero', 'fraunhofer', 'wavpack', 'opus', 'other']
     end
-    
+
     def codecs
       @codecs ||= setActiveCodecs()
     end
-    
+
     # return all active codecs in an array
     def setActiveCodecs
       @codecs = Array.new
       allCodecs.each{|codec| @codecs << codec if self.send(codec)}
       @codecs
     end
-    
+
     # RIPPING PREFERENCES
     # The location of the drive that does the ripping
     attr_accessor :cdrom
@@ -103,24 +103,33 @@ module Preferences
     # Use wav
     attr_accessor :wav
 
+    # Use wav parameters (only there to be consistent)
+    attr_accessor :settingsWav
+
     # Use Nero AAC
     attr_accessor :nero
-    
+
     # Pass nero parameters
     attr_accessor :settingsNero
-    
+
+    # Use Fraunhofer AAC (fdkaac)
+    attr_accessor :fraunhofer
+
+    # Pass fraunhofer parameters
+    attr_accessor :settingsFraunhofer
+
     # Use Wavpack
     attr_accessor :wavpack
-    
+
     # Pass wavpack parameters
     attr_accessor :settingsWavpack
-    
+
     # Use Opus
     attr_accessor :opus
-    
+
     # Pass Opus parameters
     attr_accessor :settingsOpus
-    
+
     # Use other codec
     attr_accessor :other
 

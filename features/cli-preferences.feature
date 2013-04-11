@@ -79,7 +79,7 @@ Feature: Manage rubyripper preferences
 
       Please type the number of the setting you wish to change [99] : 
       """
-      
+
     Scenario: Show the Toc Analysis submenu
       When I choose "1" in order to get to the preferences menu
       And I choose "2" in order to get to the toc analysis submenu
@@ -91,12 +91,12 @@ Feature: Manage rubyripper preferences
        1) Create a cuesheet [ ]
        2) Rip to single file [ ]
        3) Rip hidden audio sectors [*]
-       4) Mark as a hidden track when longer than: 2 seconds
+       4) Mark as a hidden track when longer than: 2 second(s)
        5) Append or prepend audio: prepend
        6) Way to handle pre-emphasis: cue
       99) Back to settings main menu
 
-      Please type the number of the setting you wish to change [99] : 
+      Please type the number of the setting you wish to change [99] :
       """
       
     Scenario: Update the Toc Analysis Preferences
@@ -117,7 +117,7 @@ Feature: Manage rubyripper preferences
        1) Create a cuesheet [*]
        2) Rip to single file [*]
        3) Rip hidden audio sectors [ ]
-       4) Mark as a hidden track when longer than: 3 seconds
+       4) Mark as a hidden track when longer than: 3 second(s)
        5) Append or prepend audio: append
        6) Way to handle pre-emphasis: sox
       99) Back to settings main menu
@@ -141,19 +141,21 @@ Feature: Manage rubyripper preferences
        6) LAME options passed: -V 3 --id3v2-only
        7) Nero AAC [ ]
        8) Nero options passed: -q 0.5
-       9) WavPack [ ]
-      10) WavPack options passed: 
-      11) Opus [ ]
-      12) Opus options passed: --bitrate 160
-      13) WAVE [ ]
-      14) Other codec [ ]
-      15) Commandline passed: flac %i %o.flac
-      16) Playlist support [*]
-      17) Maximum extra encoding threads: 2
-      18) Replace spaces with underscores [ ]
-      19) Downsize all capital letters in file names [ ]
-      20) Normalize program: none
-      21) Normalize modus: album
+       9) Fraunhofer AAC [ ]
+      10) Fraunhofer options passed: -p 2 -m 5 -a 1
+      11) WavPack [ ]
+      12) WavPack options passed: -q
+      13) Opus [ ]
+      14) Opus options passed: --bitrate 160
+      15) WAVE [ ]
+      16) Other codec [ ]
+      17) Commandline passed: flac %i %o.flac
+      18) Playlist support [*]
+      19) Maximum extra encoding threads: 2
+      20) Replace spaces with underscores [ ]
+      21) Downsize all capital letters in file names [ ]
+      22) Normalize program: none
+      23) Normalize modus: album
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
@@ -172,18 +174,20 @@ Feature: Manage rubyripper preferences
         | 7  |                    |
         | 8  | -q 0.6             |
         | 9  |                    |
-        | 10 | -f                 |
+        | 10 | -p 3 -m 4 -a 2     |
         | 11 |                    |
-        | 12 | --bitrate 200      |
+        | 12 | -f                 |
         | 13 |                    |
-        | 14 |                    |
-        | 15 | lame "%i" "%o".mp3 |
+        | 14 | --bitrate 200      |
+        | 15 |                    |
         | 16 |                    |
-        | 17 | 3                  |
+        | 17 | lame "%i" "%o".mp3 |
         | 18 |                    |
-        | 19 |                    |
-        | 20 | 2                  |
-        | 21 | 2                  |
+        | 19 | 3                  |
+        | 20 |                    |
+        | 21 |                    |
+        | 22 | 2                  |
+        | 23 | 2                  |
 
       And I press ENTER "3" times to close the application
       Then the output should contain:
@@ -198,19 +202,21 @@ Feature: Manage rubyripper preferences
        6) LAME options passed: -V 4
        7) Nero AAC [*]
        8) Nero options passed: -q 0.6
-       9) WavPack [*]
-      10) WavPack options passed: -f
-      11) Opus [*]
-      12) Opus options passed: --bitrate 200
-      13) WAVE [*]
-      14) Other codec [*]
-      15) Commandline passed: lame "%i" "%o".mp3
-      16) Playlist support [ ]
-      17) Maximum extra encoding threads: 3
-      18) Replace spaces with underscores [*]
-      19) Downsize all capital letters in file names [*]
-      20) Normalize program: replaygain
-      21) Normalize modus: track
+       9) Fraunhofer AAC [*]
+      10) Fraunhofer options passed: -p 3 -m 4 -a 2
+      11) WavPack [*]
+      12) WavPack options passed: -f
+      13) Opus [*]
+      14) Opus options passed: --bitrate 200
+      15) WAVE [*]
+      16) Other codec [*]
+      17) Commandline passed: lame "%i" "%o".mp3
+      18) Playlist support [ ]
+      19) Maximum extra encoding threads: 3
+      20) Replace spaces with underscores [*]
+      21) Downsize all capital letters in file names [*]
+      22) Normalize program: replaygain
+      23) Normalize modus: track
       99) Back to settings main menu
 
       Please type the number of the setting you wish to change [99] : 
