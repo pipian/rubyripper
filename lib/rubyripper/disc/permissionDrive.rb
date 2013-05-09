@@ -29,7 +29,7 @@ class PermissionDrive
   def initialize(prefs=nil, deps=nil)
     @prefs = prefs ? prefs : Preferences::Main.instance
     @deps = deps ? deps : Dependency.instance()
-    @error = nil
+    @error = nil # Array for Error class [:symbol, parameters]
   end
   
   # before trying to query cdparanoia check if permissions of the drive are ok
@@ -82,36 +82,21 @@ private
   # check if it is not a fake device
   def isBlockDevice?
     if not File.blockdev?(@cdrom)
-      @error = _("ERROR: Cdrom drive %s does not exist on your system!\n\
-Please configure your cdrom drive first.") % [@cdrom]
+      @error = [:unknownDrive, @cdrom]
     end
   end
   
   # check is the user has read permissions for the drive
   def isDriveReadable?
     unless File.readable?(@cdrom)
-      @error = _("You don't have read permissions for device\n
-%s on your system! These permissions are necessary for\n
-cdparanoia to scan your drive. You might want to add yourself\n
-to the necessary group with gpasswd.") % [@cdrom]
-      if @deps.installed?('ls')
-        permission = `ls -l #{@cdrom}`
-        @error +=  _("\n\nls -l shows %s") % [permission]
-      end
+      @error = [:noReadPermissionsForDrive, @cdrom]
     end
   end
   
   # check if the user has write permissions for the drive
   def isDriveWritable?
     unless File.writable?(@cdrom)
-      @error = _("You don't have write permissions for device\n
-%s on your system! These permissions are necessary for\n
-cdparanoia to scan your drive. You might want to add yourself\n
-to the necessary group with gpasswd.") % [@cdrom]
-      if @deps.installed?('ls')
-        permission = `ls -l #{@cdrom}`
-        @error +=  _("\n\nls -l shows %s") % [permission]
-      end
+      @error = [:noWritePermissionsForDrive, @cdrom]
     end
   end
   
@@ -129,16 +114,7 @@ to the necessary group with gpasswd.") % [@cdrom]
   # lookup the scsi device and it's permissions
   def genericDeviceChecks(drive)
     unless ((File.chardev?(drive) || File.blockdev?(drive)) && File.readable?(drive) && File.writable?(drive))
-      permission = nil
-      if File.chardev?(drive) && @deps.installed?('ls')
-        permission = `ls -l #{drive}`
-      end
-
-      @error = _("You don't have read and write permission\n"\
-      "for device %s on your system! These permissions are\n"\
-      "necessary for cdparanoia to scan your drive.\n\n%s\n"\
-      "You might want to add yourself to the necessary group with gpasswd")\
-      %[device, "#{if permission ; "ls -l shows #{permission}" end}"]
+      @error = [:noPermissionsForSCSIDrive, drive]
     end
   end
 end

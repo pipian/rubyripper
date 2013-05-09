@@ -41,6 +41,7 @@ class ScanDiscCdparanoia
     @prefs = prefs ? prefs : Preferences::Main.instance
     @out = out ? out : $stdout
     @status = nil
+    @error = nil # Array for Error class [:symbol, parameters] in case status != 'ok'
     @audiotracks = nil
   end
 
@@ -48,11 +49,11 @@ class ScanDiscCdparanoia
   def scan
     return true if @status == 'ok'
     if @perm.problems?(@prefs.cdrom)
-      setError(:permissionDrive, @perm.error)
+      updateStatus(@perm.error)
     else
       waitForDisc()
       if @error.nil? && @perm.problemsSCSI?(@query)
-        setError(:permissionScsiDrive, @perm.error)
+	updateStatus(@perm.error)
       elsif @error.nil?
         @status = 'ok'
       end
@@ -105,13 +106,13 @@ class ScanDiscCdparanoia
 
   private
 
-  def setError(code, parameters=nil)
+  def updateStatus(error)
     @status = 'error'
-    @error = [code, parameters]
+    @error = error
   end
 
   # new scan, new chances, so reset the error status
-  def unsetError
+  def restoreStatus
     @status = nil
     @error = nil
   end
@@ -124,7 +125,7 @@ class ScanDiscCdparanoia
   # give the cdrom drive a few seconds to read the disc
   def waitForDisc
     (1..10).each do |trial|
-      unsetError()
+      restoreStatus()
       readDisc()
       break if @error.nil? || @prefs.testdisc || $run_specs
       @out.puts Errors.noDiscYet(trial)
@@ -163,15 +164,15 @@ class ScanDiscCdparanoia
   # check the query result for errors
   def isValidQuery()
     if @query.nil?
-      setError(:notInstalled, 'cdparanoia')
+      updateStatus([:notInstalled, 'cdparanoia'])
       return false
     end
     
     @query.each do |line|
       case line
-        when /Unable to open disc/ then setError(:noDiscInDrive, @prefs.cdrom) ; break
-        when /USAGE/ then setError(:wrongParameters, 'cdparanoia') ; break
-        when /No such file or directory/ then setError(:unknownDrive, @prefs.cdrom) ; break
+        when /Unable to open disc/ then updateStatus([:noDiscInDrive, @prefs.cdrom]) ; break
+        when /USAGE/ then updateStatus([:wrongParameters, 'cdparanoia']) ; break
+        when /No such file or directory/ then updateStatus([:unknownDrive, @prefs.cdrom]) ; break
       end
     end
 
