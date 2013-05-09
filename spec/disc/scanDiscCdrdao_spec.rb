@@ -30,7 +30,7 @@ describe ScanDiscCdrdao do
   context "In case cdrdao exits with an error" do
     it "should detect cdrdao is not installed" do
       exec.stub!(:launch).and_return(nil)
-      log.should_receive(:<<).with('Error: cdrdao is needed, but not detected on your system!')
+      log.should_receive(:<<).with('Error: cdrdao is required, but not detected on your system!')
       cdrdao.scanInBackground()
       cdrdao.joinWithMainThread(log)
     end
@@ -58,7 +58,9 @@ describe ScanDiscCdrdao do
     
     it "should not give a warning with correct results" do
       exec.stub!(:launch).and_return('ok')
-      log.should_receive(:<<).with("No pregaps, silences, pre-emphasis or data tracks detected\n\n")
+      log.should_receive(:<<).with("\nADVANCED TOC ANALYSIS (with cdrdao)\n")
+      log.should_receive(:<<).with("...please be patient, this may take a while\n\n")
+      log.should_receive(:<<).with("No pregap, silence, pre-emphasis or data track detected\n\n")
       cdrdao.scanInBackground()
       cdrdao.joinWithMainThread(log)
       cdrdao.error.nil? == true
