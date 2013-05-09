@@ -31,23 +31,13 @@ module Metadata
       # underscores instead of spaces
       item.gsub!('_', ' ') unless @prefs.noSpaces
 
-      if item.respond_to?(:encoding)
-        # prepare for byte substitutions
-        enc = item.encoding
-        item.force_encoding("ASCII-8BIT")
-      end
-
       # replace utf-8 single quotes with latin single quote
-      item.gsub!(/\342\200\230|\342\200\231/, "'")
+      # see also http://www.utf8-chartable.de/unicode-utf8-table.pl
+      item.gsub!(/\u{02018}|\u{02019}/, "'")
 
       # replace utf-8 double quotes with latin double quote
-      item.gsub!(/\342\200\234|\342\200\235/, '"')
+      item.gsub!(/\u{0201c}|\u{0201d}/, '"')
 
-      if item.respond_to?(:encoding)
-        # restore the old encoding
-        item.force_encoding(enc)
-      end
-      
       item.strip!
       item
     end
