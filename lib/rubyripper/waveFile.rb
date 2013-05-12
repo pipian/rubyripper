@@ -56,7 +56,7 @@ class WaveFile
 
   # Read a CD-audio sector (padding with 0's, regardless of padMissingSamples)
   def read(sector)
-    start = BYTES_WAV_CONTAINER + sector * BYTES_AUDIO_FRAME + @offset * 4
+    start = BYTES_WAV_CONTAINER + sector * BYTES_AUDIO_FRAME + @offset * BYTES_AUDIO_SAMPLE
     
     if @newSectors.has_key?(sector)
       @newSectors[sector]
@@ -125,7 +125,7 @@ class WaveFile
     else
       audioSize = @file.stat.size - BYTES_WAV_CONTAINER
       if @offset != 0
-        audioSize -= @offset.abs * 4
+        audioSize -= @offset.abs * BYTES_AUDIO_SAMPLE
       end
     end
     
@@ -157,7 +157,7 @@ class WaveFile
       end
     else
       # Padding is at the beginning.
-      bytesWritten = @offset * 4
+      bytesWritten = @offset * BYTES_AUDIO_SAMPLE
       (1..numSectors).each do |sector|
         if bytesWritten <= -BYTES_AUDIO_FRAME
           # Don't bother writing out the sector at all
