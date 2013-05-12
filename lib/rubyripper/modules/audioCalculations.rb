@@ -17,8 +17,7 @@
 
 # A shared module for all kinds of audio calculations and standard values
 module AudioCalculations
-  
-  # Wave files have 75 audio frames for each second
+  # Wave files have 75 audio frames / sectors for each second
   FRAMES_A_SECOND = 75
   
   # That makes up 60x75 frames for each minute
@@ -35,6 +34,16 @@ module AudioCalculations
   # Amount of bytes a frame is 176400 / 75 = 2352
   BYTES_AUDIO_FRAME = 2352
   BYTES_AUDIO_SECOND = 2352 * FRAMES_A_SECOND
+
+  # Each frame exists of 588 audio samples of 4 bytes
+  # Samples are used to correct the drive reading offset
+  # Note that offsets in cdparanoia can't be as big as a frame
+  # The following commands return the same output, no matter the device
+  # cdparanoia [.1000]-[.1000] -O 0 001.wav
+  # cdparanoia [.1000]-[.1000] -O 588 002.wav
+  # cdparanoia [.1000]-[.1000] -O -588 003.wav
+  SAMPLES_A_FRAME = 588
+  BYTES_AUDIO_SAMPLE = 4
   
   # minutes:seconds:sectors to sectors
   def toSectors(time)

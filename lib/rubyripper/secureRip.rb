@@ -370,7 +370,8 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
     end
 
     # What start/length do we expect?
-    start = @disc.getStartSector(track) + @prefs.offset / 588
+    # Correct for whole frames if necessary (cdparanoia doesn't do this)
+    start = @disc.getStartSector(track) + @prefs.offset / SAMPLES_A_FRAME
     length = @disc.getLengthSector(track) - 1
 
     if start < 0 and @prefs.offset < 0
@@ -379,7 +380,7 @@ is #{@disc.getFileSize(track)} bytes." if @prefs.debug
       noOffset = true
     elsif @prefs.offset > 0 && (@prefs.image || track == @disc.audiotracks)
       # Adjust the start so that we never read into the lead-out.
-      start -= @prefs.offset / 588
+      start -= @prefs.offset / SAMPLES_A_FRAME
       noOffset = true
     end
     command += " [.#{start}]-[.#{length}]"
